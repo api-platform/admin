@@ -223,8 +223,11 @@ angular.module('api-platform-hydra-admin', [])
 
         RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params) {
             if (operation == 'getList') {
-                params.page = params._page;
+                if (1 !== params._page) {
+                    params.page = params._page;
+                }
                 params.itemsPerPage = params._perPage;
+
                 delete params._page;
                 delete params._perPage;
             }
