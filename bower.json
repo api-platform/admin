@@ -1,0 +1,28 @@
+{
+  "name": "API Platform Admin",
+  "version": "0.1.0",
+  "authors": [
+    "Kévin Dunglas <dunglas@gmail.com>"
+  ],
+  "description": "An admin supporting Hydra",
+  "keywords": [
+    "admin",
+    "REST",
+    "API",
+    "API",
+    "Platform"
+  ],
+  "license": "MIT",
+  "homepage": "https://api-platform.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jsonld": "~0.4.2",
+    "ng-admin": "~0.9.1"
+  }
+}

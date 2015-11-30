@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>My First Admin</title>
+    <link rel="stylesheet" href="bower_components/ng-admin/build/ng-admin.min.css">
+</head>
+<body>
+<div ui-view></div>
+<script src="bower_components/es6-promise/promise.min.js"></script>
+<script src="bower_components/jsonld/js/jsonld.js"></script>
+<script src="bower_components/ng-admin/build/ng-admin.min.js"></script>
+<script src="admin.js"></script>
+<script>
+    var ENTRYPOINT_URL = 'http://localhost:8000';
+
+    (function () {
+        fetchHydraDoc(ENTRYPOINT_URL).then(function (data) {
+            var myApp = angular
+                .module('myApp', ['ng-admin', 'api-platform-hydra-admin'])
+                .config(['ApiPlatformHydraAdminRestangularProvider', function (ApiPlatformHydraAdminRestangularProvider) {
+                    var RestangularProvider = ApiPlatformHydraAdminRestangularProvider.getRestangularProviderForHydra(data);
+                    // Extra Restangular configuration
+                }])
+                .config(['ApiPlatformHydraAdminConfigurationProvider', function(nga) {
+                    var admin = nga.getAdminFromHydraDoc(data);
+                    // Extra ng-admin configuration
+
+                    nga.configure(admin);
+            }]);
+
+            angular.element(document).ready(function() {
+                angular.bootstrap(document, ['myApp']);
+            });
+        });
+    })();
+</script>
+</body>
+</html>
