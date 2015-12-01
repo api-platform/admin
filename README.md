@@ -19,7 +19,7 @@ The admin is generated using the awesome [ng-admin](https://github.com/marmelab/
 
 # Install
 
-1. Clone the project and install dependencies:`git clone https://github.com/api-platform/admin && bower install`
+1. Clone the project and install dependencies:`git clone https://github.com/api-platform/admin && cd admin && bower install`
 2. Edit the `index.html` file and point the `ENTRYPOINT_URL` to your API entrypoint.
 3. Your admin is up and running.
 
