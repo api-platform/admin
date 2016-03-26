@@ -148,8 +148,10 @@ angular.module('api-platform-hydra-admin', [])
                     }
 
                     // Add placeholder
-                    field.attributes({ placeholder: supportedProperty['http://www.w3.org/ns/hydra/core#description'][0]['@value'] });
-
+                    if (supportedProperty['http://www.w3.org/ns/hydra/core#required']) {
+                        field.attributes({ placeholder: supportedProperty['http://www.w3.org/ns/hydra/core#description'][0]['@value'] });
+                    }
+                    
                     // list fields
                     if (supportedProperty['http://www.w3.org/ns/hydra/core#readable'][0]['@value']) {
                         readableFields.push(field);
