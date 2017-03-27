@@ -32,11 +32,11 @@ export default (url, options = {}) => {
             try {
               return Promise.reject(new Error(json[0]['http://www.w3.org/ns/hydra/core#description'][0]['@value']));
             } catch (e) {
-              return Promise.reject(new HttpError((json && json.message) || data.response.statusText, status));
+              return Promise.reject(new HttpError(data.response.statusText, status));
             }
           })
-          .catch(json => {
-            return Promise.reject(new HttpError((json && json.message) || data.response.statusText, status));
+          .catch(() => {
+            return Promise.reject(new HttpError(data.response.statusText, status));
           })
       }
       return {
