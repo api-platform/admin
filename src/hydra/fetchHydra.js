@@ -9,8 +9,6 @@ import {promises} from 'jsonld';
  * Adapted from AdminBuilder On Rest
  *
  * @copyright Kévin Dunglas
- * @copyright Francois Zaninotto, Marmelab
- * @see https://github.com/marmelab/admin-on-rest/blob/v0.9.2/src/util/fetch.js
  *
  * @param {string} url
  * @param {object} options
