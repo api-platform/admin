@@ -27,16 +27,16 @@ export default (url, options = {}) => {
         return promises
           .expand(data.body, { base: getDocumentationUrlFromHeaders(data.response.headers) })
           .then(json => {
-            try {
-              return Promise.reject(new Error(json[0]['http://www.w3.org/ns/hydra/core#description'][0]['@value']));
-            } catch (e) {
-              return Promise.reject(new HttpError(data.response.statusText, status));
+            return Promise.reject(new HttpError(json[0]['http://www.w3.org/ns/hydra/core#description'][0]['@value'], status));
+          }).catch(e => {
+            if (e instanceof HttpError) {
+              return Promise.reject(e);
             }
-          })
-          .catch(() => {
+
             return Promise.reject(new HttpError(data.response.statusText, status));
-          })
+          });
       }
+
       return {
         'status': data.response.status,
         'headers': data.response.headers,
