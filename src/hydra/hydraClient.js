@@ -72,12 +72,15 @@ export default (apiUrl, httpClient = fetchHydra) => {
   };
 
   const transformJsonLdToAOR = (doc) => {
+    if (!doc) return doc;
+
     if ('undefined' !== typeof doc.id) {
       doc.originId = doc.id;
     }
-    doc.id = doc['@id'];
 
-    return doc
+    if (doc['@id']) doc.id = doc['@id'];
+
+    return doc;
   };
 
   /**
