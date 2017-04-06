@@ -23,7 +23,9 @@ export default (url, options = {}) => {
 
   return fetchJsonLd(url, { ...options, headers: requestHeaders })
     .then(data => {
-      if (data.response.status < 200 || data.response.status >= 300) {
+      const status = data.response.status;
+
+      if (status < 200 || status >= 300) {
         return promises
           .expand(data.body, { base: getDocumentationUrlFromHeaders(data.response.headers) })
           .then(json => {
@@ -38,7 +40,7 @@ export default (url, options = {}) => {
       }
 
       return {
-        'status': data.response.status,
+        'status': status,
         'headers': data.response.headers,
         'json': data.body
       };
