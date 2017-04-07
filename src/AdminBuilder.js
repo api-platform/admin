@@ -10,23 +10,25 @@ import Edit from './Edit';
 export default class AdminBuilder extends Component {
   static propTypes = {
     api: React.PropTypes.instanceOf(Api).isRequired,
-    restClient: React.PropTypes.func.isRequired,
+    ...Admin.propTypes,
   };
 
   render() {
-    return <Admin title={this.props.api.title} restClient={this.props.restClient}>
-        {this.props.api.resources.map(resource =>
-          <Resource
-            options={{api: this.props.api, resource}}
-            key={resource.name}
-            name={resource.name}
-            list={List}
-            show={Show}
-            create={Create}
-            edit={Edit}
-            remove={Delete}
-          />
-        )}
-      </Admin>;
+    const { api , ...props } = this.props;
+
+    return <Admin title={api.title} {...props}>
+      {api.resources.map(resource =>
+        <Resource
+          options={{api: this.props.api, resource}}
+          key={resource.name}
+          name={resource.name}
+          list={List}
+          show={Show}
+          create={Create}
+          edit={Edit}
+          remove={Delete}
+        />
+      )}
+    </Admin>;
   }
 }
