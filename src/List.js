@@ -1,13 +1,19 @@
 import React, {Component} from 'react';
 import {List as BaseList, Datagrid, TextField, ShowButton, EditButton} from 'admin-on-rest/lib/mui';
+import Resource from 'api-doc-parser/lib/Resource';
 import fieldFactory from './fieldFactory';
 
 export default class List extends Component {
   static defaultProps = {
     perPage: 30 // Default value in API Platform
   };
+
   static propTypes = {
-    perPage: React.PropTypes.number
+    options: React.PropTypes.shape({
+      inputFactory: React.PropTypes.func,
+      resource: React.PropTypes.instanceOf(Resource),
+    }),
+    ...BaseList.propTypes,
   };
 
   render() {
