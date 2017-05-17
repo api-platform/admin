@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {List as BaseList, Datagrid, TextField, ShowButton, EditButton} from 'admin-on-rest/lib/mui';
 import fieldFactory from './fieldFactory';
 
@@ -7,7 +8,7 @@ export default class List extends Component {
     perPage: 30 // Default value in API Platform
   };
   static propTypes = {
-    perPage: React.PropTypes.number
+    perPage: PropTypes.number
   };
 
   render() {
