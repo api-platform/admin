@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Admin, Resource} from 'admin-on-rest';
 import {Delete} from 'admin-on-rest/lib/mui';
 import Api from 'api-doc-parser/lib/Api';
@@ -9,8 +10,8 @@ import Edit from './Edit';
 
 export default class AdminBuilder extends Component {
   static propTypes = {
-    api: React.PropTypes.instanceOf(Api).isRequired,
-    restClient: React.PropTypes.func.isRequired,
+    api: PropTypes.instanceOf(Api).isRequired,
+    restClient: PropTypes.func.isRequired,
   };
 
   render() {

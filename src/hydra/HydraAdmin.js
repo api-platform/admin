@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import parseHydraDocumentation from 'api-doc-parser/lib/hydra/parseHydraDocumentation';
 import AdminBuilder from '../AdminBuilder';
 import hydraClient from './hydraClient';
 
 export default class HydraAdmin extends Component {
   static propTypes = {
-    entrypoint: React.PropTypes.string.isRequired
+    entrypoint: PropTypes.string.isRequired
   };
   state = {api: null};
 
