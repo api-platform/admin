@@ -8,7 +8,32 @@ import {
   DELETE,
   fetchUtils
 } from 'admin-on-rest';
+import isPlainObject from 'lodash.isplainobject'
 import fetchHydra from './fetchHydra'
+
+/**
+ * Transform a Json-ld document to an Admin On Rest compatible document.
+ *
+ * @param {Number} depth
+ * @param {Number} maxDepth
+ */
+export const transformJsonLdToAOR = (maxDepth = 2, depth = 1) => (doc) => {
+  if (!isPlainObject(doc)) return doc;
+
+  if ('undefined' !== typeof doc.id) {
+    doc.originId = doc.id;
+  }
+
+  if (doc['@id']) doc.id = doc['@id'];
+
+  if (depth < maxDepth) {
+    Object.keys(doc).forEach((key) => {
+      doc[key] = transformJsonLdToAOR(maxDepth, depth++)(doc[key]);
+    });
+  }
+
+  return doc;
+};
 
 /**
  * Maps admin-on-rest queries to a Hydra powered REST API
@@ -71,18 +96,6 @@ export default (apiUrl, httpClient = fetchHydra) => {
     return { url, options };
   };
 
-  const transformJsonLdToAOR = (doc) => {
-    if (!doc) return doc;
-
-    if ('undefined' !== typeof doc.id) {
-      doc.originId = doc.id;
-    }
-
-    if (doc['@id']) doc.id = doc['@id'];
-
-    return doc;
-  };
-
   /**
    * @param {Object} response - HTTP response from fetch()
    * @param {String} type     - One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -95,11 +108,11 @@ export default (apiUrl, httpClient = fetchHydra) => {
       case GET_LIST:
         // TODO: support other prefixes than "hydra:"
         return {
-          data: response.json['hydra:member'].map(transformJsonLdToAOR),
+          data: response.json['hydra:member'].map(transformJsonLdToAOR()),
           total: response.json['hydra:totalItems'],
         };
       default:
-        return {data: transformJsonLdToAOR(response.json)};
+        return {data: transformJsonLdToAOR()(response.json)};
     }
   };
 
