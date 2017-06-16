@@ -1,5 +1,5 @@
 import React from 'react';
-import {DateInput, TextInput, NumberInput, BooleanInput, ReferenceInput, SelectInput} from 'admin-on-rest/lib/mui';
+import {DateInput, TextInput, NumberInput, BooleanInput, ReferenceInput, SelectInput} from 'admin-on-rest';
 
 export default (input) => {
   // To customize the input
@@ -7,11 +7,13 @@ export default (input) => {
     return input.inputComponent;
   }
 
-  let validation = input.required ? {required: true} : {};
+  let validate;
+  if (input.validate) validate = input.validate;
+  else if (input.required) validate = value => value ? undefined : 'Required';
 
   if (null !== input.reference) {
     return <ReferenceInput source={input.name} label={input.name}
-                           reference={input.reference.name} validation={validation} key={input.name} allowEmpty>
+                           reference={input.reference.name} validate={validate} key={input.name} allowEmpty>
       <SelectInput optionText="id"/>
     </ReferenceInput>
   }
@@ -30,7 +32,7 @@ export default (input) => {
       break;
 
     case 'http://www.w3.org/2001/XMLSchema#boolean':
-      delete validation.required;
+      if (!input.validate && input.required) validate = undefined;
       InputType = BooleanInput;
       break;
 
@@ -44,5 +46,5 @@ export default (input) => {
       break;
   }
 
-  return <InputType source={input.name} validation={validation} key={input.name} {...props}/>;
+  return <InputType source={input.name} validate={validate} key={input.name} {...props}/>;
 }

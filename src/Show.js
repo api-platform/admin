@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Show as BaseShow, SimpleShowLayout, TextField} from 'admin-on-rest/lib/mui';
+import {Show as BaseShow, SimpleShowLayout, TextField} from 'admin-on-rest';
 import fieldFactory from './fieldFactory';
 
 export default class Show extends Component {

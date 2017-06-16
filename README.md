@@ -47,7 +47,7 @@ Finally, edit the `src/App.js` file like the following:
 
 ```javascript
 import React, { Component } from 'react';
-import HydraAdmin from 'api-platform-admin/lib/hydra/HydraAdmin';
+import HydraAdmin from 'api-platform-admin';
 
 class App extends Component {
   render() {
@@ -61,3 +61,31 @@ export default App;
 Your new administration interface is ready! Type `yarn start` to try it!
 
 Note: if you don't want to hardcode the API URL, you can [use an environment variable](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables).
+
+## Contribute a Patch
+
+To install the source version of API Platform Admin in your project and contribute a patch, run the following command:
+
+    # Link the source version of API Platform admin
+    $ cd ../admin
+    $ git clone git@github.com:api-platform/admin.git
+    $ yarn link
+    $ cd -
+    $ yarn link api-platform-admin
+    # Use the React version of your project to build API Platform admin
+    $ cd node_modules/react
+    $ yarn link
+    $ cd ../../../admin
+    $ yarn link react
+    $ yarn build # Run this command every time you modify the source code of the library
+
+You can now hack in the cloned repository of `api-platform-admin`. When you're done, be sure to run the following commands
+before opening your Pull Request:
+
+    $ yarn test
+    $ yarn lint
+
+## Credits
+
+Created by [Kévin Dunglas][https://dunglas.fr]. Sponsored by [Les-Tilleuls.coop][https://les-tilleuls.coop].
+Commercial support available upon request.
