@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Create as BaseCreate, SimpleForm} from 'admin-on-rest/lib/mui';
+import {Create as BaseCreate, SimpleForm} from 'admin-on-rest';
 import inputFactory from './inputFactory';
 
 export default class Create extends Component {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ReferenceField, TextField, EmailField, DateField, NumberField, BooleanField} from 'admin-on-rest/lib/mui';
+import {ReferenceField, TextField, EmailField, DateField, NumberField, BooleanField} from 'admin-on-rest';
 
 const getFieldFromId = (id) => {
   if ('http://schema.org/email' === id) {

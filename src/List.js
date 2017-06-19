@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {List as BaseList, Datagrid, TextField, ShowButton, EditButton} from 'admin-on-rest/lib/mui';
+import {List as BaseList, Datagrid, TextField, ShowButton, EditButton} from 'admin-on-rest';
 import fieldFactory from './fieldFactory';
 
 export default class List extends Component {

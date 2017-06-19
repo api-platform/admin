@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Admin, Resource} from 'admin-on-rest';
-import {Delete} from 'admin-on-rest/lib/mui';
+import {Admin, Resource, Delete} from 'admin-on-rest';
 import Api from 'api-doc-parser/lib/Api';
 import List from './List';
 import Show from './Show';
