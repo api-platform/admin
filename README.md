@@ -67,17 +67,18 @@ Note: if you don't want to hardcode the API URL, you can [use an environment var
 To install the source version of API Platform Admin in your project and contribute a patch, run the following command:
 
     # Link the source version of API Platform admin
-    $ cd ../admin
+    $ cd ..
     $ git clone git@github.com:api-platform/admin.git
+    $ cd admin
     $ yarn link
-    $ cd -
+    $ cd ../yourpoject
     $ yarn link api-platform-admin
     # Use the React version of your project to build API Platform admin
     $ cd node_modules/react
     $ yarn link
     $ cd ../../../admin
     $ yarn link react
-    $ yarn build # Run this command every time you modify the source code of the library
+    $ yarn watch # Run this command every time you modify the source code of the library
 
 You can now hack in the cloned repository of `api-platform-admin`. When you're done, be sure to run the following commands
 before opening your Pull Request:
@@ -87,5 +88,5 @@ before opening your Pull Request:
 
 ## Credits
 
-Created by [Kévin Dunglas][https://dunglas.fr]. Sponsored by [Les-Tilleuls.coop][https://les-tilleuls.coop].
+Created by [Kévin Dunglas](https://dunglas.fr). Sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
 Commercial support available upon request.
