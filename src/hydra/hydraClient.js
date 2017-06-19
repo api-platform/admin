@@ -126,7 +126,12 @@ export default (apiUrl, httpClient = fetchHydra) => {
     // Hydra doesn't handle WHERE IN requests, so we fallback to calling GET_ONE n times instead
     if (type === GET_MANY) {
       return Promise.all(params.ids.map(id => httpClient(apiUrl+id)))
-        .then(responses => responses.map(response => response.json));
+        .then((responses) => {
+          const restResponse = { data: [] };
+          restResponse.data = responses.map(response => response.json);
+          restResponse.data.map(transformJsonLdToAOR());
+          return restResponse;
+        });
     }
     const { url, options } = convertRESTRequestToHTTP(type, resource, params);
     return httpClient(url, options)
