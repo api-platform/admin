@@ -78,7 +78,7 @@ To install the source version of API Platform Admin in your project and contribu
     $ yarn link
     $ cd ../../../admin
     $ yarn link react
-    $ yarn watch # Run this command every time you modify the source code of the library
+    $ yarn watch
 
 You can now hack in the cloned repository of `api-platform-admin`. When you're done, be sure to run the following commands
 before opening your Pull Request:
