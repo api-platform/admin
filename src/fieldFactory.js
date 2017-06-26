@@ -34,17 +34,15 @@ export default (field) => {
   }
 
   if (null !== field.reference) {
-    return <ReferenceField source={field.name}
-                           reference={field.reference.name} key={field.name}>
+    return <ReferenceField source={field.name} reference={field.reference.name} key={field.name} {...field.fieldProps}>
       <TextField source="id"/>
-    </ReferenceField>
+    </ReferenceField>;
   }
 
   let FieldType;
-  FieldType = getFieldFromId(field.id);
-  if (null === FieldType) {
-    FieldType = getFieldFromRange(field.range);
-  }
 
-  return <FieldType  source={field.name} key={field.name}/>;
+  FieldType = getFieldFromId(field.id);
+  if (null === FieldType) FieldType = getFieldFromRange(field.range);
+
+  return <FieldType  source={field.name} key={field.name} {...field.fieldProps}/>;
 }

@@ -7,20 +7,16 @@ export default (input) => {
     return input.inputComponent;
   }
 
-  let validate;
-  if (input.validate) validate = input.validate;
-  else if (input.required) validate = value => value ? undefined : 'Required';
+  let props = {...input.inputProps};
+  if (!props.validate) props.validate = value => value ? undefined : 'Required';
 
   if (null !== input.reference) {
-    return <ReferenceInput source={input.name} label={input.name}
-                           reference={input.reference.name} validate={validate} key={input.name} allowEmpty>
+    return <ReferenceInput source={input.name} label={input.name} reference={input.reference.name} key={input.name} allowEmpty {...props}>
       <SelectInput optionText="id"/>
     </ReferenceInput>
   }
 
   let InputType;
-  let props = {};
-
   switch (input.range) {
     case 'http://www.w3.org/2001/XMLSchema#integer':
       InputType = NumberInput;
@@ -32,7 +28,7 @@ export default (input) => {
       break;
 
     case 'http://www.w3.org/2001/XMLSchema#boolean':
-      if (!input.validate && input.required) validate = undefined;
+      if ((!input.inputProps || !input.inputProps.validate) && input.required) props.validate = undefined;
       InputType = BooleanInput;
       break;
 
@@ -46,5 +42,5 @@ export default (input) => {
       break;
   }
 
-  return <InputType source={input.name} validate={validate} key={input.name} {...props}/>;
+  return <InputType source={input.name} key={input.name} {...props}/>;
 }
