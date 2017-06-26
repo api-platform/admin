@@ -9,7 +9,7 @@ export default class Edit extends Component {
     return <BaseEdit {...this.props}>
       <SimpleForm>
       <DisabledInput source="id"/>
-        {this.props.options.resource.readableFields.map(field => factory(field, this.props.options.resource, 'edit', this.props.options.api))}
+        {this.props.options.resource.writableFields.map(field => factory(field, this.props.options.resource, 'edit', this.props.options.api))}
       </SimpleForm>
     </BaseEdit>
   }
