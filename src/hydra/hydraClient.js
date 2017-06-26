@@ -17,7 +17,7 @@ import fetchHydra from './fetchHydra'
  * @param {Number} depth
  * @param {Number} maxDepth
  */
-export const transformJsonLdToAOR = (maxDepth = 2, depth = 1) => (doc) => {
+export const transformJsonLdToAOR = (maxDepth = 2, depth = 1) => doc => {
   if (!isPlainObject(doc)) return doc;
 
   if ('undefined' !== typeof doc.id) {
@@ -27,7 +27,7 @@ export const transformJsonLdToAOR = (maxDepth = 2, depth = 1) => (doc) => {
   if (doc['@id']) doc.id = doc['@id'];
 
   if (depth < maxDepth) {
-    Object.keys(doc).forEach((key) => {
+    Object.keys(doc).forEach(key => {
       doc[key] = transformJsonLdToAOR(maxDepth, depth++)(doc[key]);
     });
   }

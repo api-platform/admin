@@ -4,9 +4,9 @@ import parseHydraDocumentation from 'api-doc-parser/lib/hydra/parseHydraDocument
 import AdminBuilder from '../AdminBuilder';
 import hydraClient from './hydraClient';
 
-export default class HydraAdmin extends Component {
+export default class extends Component {
   static propTypes = {
-    entrypoint: PropTypes.string.isRequired
+    entrypoint: PropTypes.string
   };
   state = {api: null};
 
@@ -15,10 +15,12 @@ export default class HydraAdmin extends Component {
   }
 
   render() {
-    if (null === this.state.api) {
-      return <span>Loading...</span>;
-    }
+    if (null === this.state.api) return <span>Loading...</span>;
 
-    return <AdminBuilder api={this.state.api} restClient={hydraClient(this.props.entrypoint)}/>;
+    let props = {...this.props};
+    if (!props.api) props.api = this.state.api;
+    if (!props.restClient) props.restClient = hydraClient(this.props.entrypoint);
+
+    return <AdminBuilder {...props}/>;
   }
 }

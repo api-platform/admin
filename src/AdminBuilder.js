@@ -7,14 +7,17 @@ import Show from './Show';
 import Create from './Create';
 import Edit from './Edit';
 
-export default class AdminBuilder extends Component {
+export default class extends Component {
   static propTypes = {
     api: PropTypes.instanceOf(Api).isRequired,
     restClient: PropTypes.func.isRequired,
   };
 
   render() {
-    return <Admin title={this.props.api.title} restClient={this.props.restClient}>
+    let props = {...this.props};
+    if (!props.title) props.title = this.props.api.title;
+
+    return <Admin {...props}>
         {this.props.api.resources.map(resource =>
           <Resource
             options={{api: this.props.api, resource}}
@@ -25,6 +28,7 @@ export default class AdminBuilder extends Component {
             create={Create}
             edit={Edit}
             remove={Delete}
+            {...resource.props}
           />
         )}
       </Admin>;

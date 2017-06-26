@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Show as BaseShow, SimpleShowLayout, TextField} from 'admin-on-rest';
 import fieldFactory from './fieldFactory';
 
-export default class Show extends Component {
+export default class extends Component {
   render() {
     const factory = this.props.options.fieldFactory ? this.props.options.fieldFactory : fieldFactory;
 
