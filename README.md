@@ -83,12 +83,14 @@ class App extends Component {
 
   componentDidMount() {
     parseHydraDocumentation(entrypoint).then(api => {
-        api
-            .resources
-            .find(r => 'books' === r.name)
-            .writableFields.find(f => 'description' === f.name)
-            .inputField = <RichTextField source="description" key="description"/>;
-            .inputComponent = <RichTextInput source="description" key="description"/>;
+        const description = api
+          .resources
+          .find(r => 'books' === r.name)
+          .writableFields.find(f => 'description' === f.name)
+        ;
+
+        description.inputField = <RichTextField source="description" key="description"/>;
+        description.inputComponent = <RichTextInput source="description" key="description"/>;
 
         this.setState({api: api});
       }
