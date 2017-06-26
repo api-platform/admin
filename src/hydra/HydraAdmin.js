@@ -19,6 +19,10 @@ export default class HydraAdmin extends Component {
       return <span>Loading...</span>;
     }
 
-    return <AdminBuilder api={this.state.api} restClient={hydraClient(this.props.entrypoint)}/>;
+    let props = {...this.props};
+    if (!props.api) props.api = this.state.api;
+    if (!props.restClient) props.restClient = hydraClient(this.props.entrypoint);
+
+    return <AdminBuilder {...props}/>;
   }
 }
