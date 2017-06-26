@@ -8,7 +8,7 @@ export default class extends Component {
 
     return <BaseCreate {...this.props}>
       <SimpleForm>
-        {this.props.options.resource.readableFields.map(field => factory(field, this.props.options.resource, 'create', this.props.options.api))}
+        {this.props.options.resource.writableFields.map(field => factory(field, this.props.options.resource, 'create', this.props.options.api))}
       </SimpleForm>
     </BaseCreate>
   }
