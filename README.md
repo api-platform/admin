@@ -62,6 +62,56 @@ Your new administration interface is ready! Type `yarn start` to try it!
 
 Note: if you don't want to hardcode the API URL, you can [use an environment variable](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables).
 
+## Customize the Admin
+
+The API Platform's admin parses the Hydra documentation exposed by the API and transforms it to an object data structure. This data structure can be customized to add, remove or customize resources and properties. To do so, we can leverage the `AdminBuilder` component provided by the library. It's a lower level component than the `HydraAdmin` one we used in the previous example. It allows to access to the object storing the structure of admin's screens.
+
+In the following example, we change components used for the `description` property of the `books` resource to ones accepting HTML (respectively `RichTextField` that renders HTML markup and `RichTextInput`, a WYSWYG editor).
+(To use the `RichTextInput`, the `aor-rich-text-input` package is must be installed: `yarn add aor-rich-text-input`).
+
+```javascript
+import React, { Component } from 'react';
+import { RichTextField } from 'admin-on-rest';
+import RichTextInput from 'aor-rich-text-input';
+import { AdminBuilder, hydraClient } from 'api-platform-admin';
+import parseHydraDocumentation from 'api-doc-parser/lib/hydra/parseHydraDocumentation';
+
+const entrypoint = 'https://demo.api-platform.com';
+
+class App extends Component {
+  state = {api: null};
+
+  componentDidMount() {
+    parseHydraDocumentation(entrypoint).then(api => {
+        api
+            .resources
+            .find(r => 'books' === r.name)
+            .writableFields.find(f => 'description' === f.name)
+            .inputField = <RichTextField source="description" key="description"/>;
+            .inputComponent = <RichTextInput source="description" key="description"/>;
+
+        this.setState({api: api});
+      }
+    )
+  }
+
+  render() {
+    if (null === this.state.api) return <div>Loading...</div>;
+
+    return <AdminBuilder api={this.state.api} restClient={hydraClient(entrypoint)}/>
+  }
+}
+
+export default App;
+```
+
+The `fieldComponent` property of the `Field` class allows to set the component used to render a property in list and show screens.
+The `inputComponent` property allows to set the component to use to render the input used in create and edit screens.
+
+Any [field](https://marmelab.com/admin-on-rest/Fields.html) or [input](https://marmelab.com/admin-on-rest/Inputs.html) provided by the Admin On Rest library can be used.
+
+To go further, take a look to the "[Including admin-on-rest on another React app](https://marmelab.com/admin-on-rest/CustomApp.html)" documentation page of Admin On Rest to learn how to use directly redux, react-router, and redux-saga along with components provided by this library.
+
 ## Contribute a Patch
 
 To install the source version of API Platform Admin in your project and contribute a patch, run the following command:
