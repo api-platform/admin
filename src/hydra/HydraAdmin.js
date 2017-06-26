@@ -6,7 +6,7 @@ import hydraClient from './hydraClient';
 
 export default class HydraAdmin extends Component {
   static propTypes = {
-    entrypoint: PropTypes.string.isRequired
+    entrypoint: PropTypes.string
   };
   state = {api: null};
 
