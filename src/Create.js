@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Create as BaseCreate, SimpleForm} from 'admin-on-rest';
 import inputFactory from './inputFactory';
 
-export default class Create extends Component {
+export default class extends Component {
   render() {
     const factory = this.props.options.inputFactory ? this.props.options.inputFactory : inputFactory;
 

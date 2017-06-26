@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {List as BaseList, Datagrid, TextField, ShowButton, EditButton} from 'admin-on-rest';
 import fieldFactory from './fieldFactory';
 
-export default class List extends Component {
+export default class extends Component {
   static defaultProps = {
     perPage: 30 // Default value in API Platform
   };

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Edit as BaseEdit, SimpleForm, DisabledInput} from 'admin-on-rest';
 import inputFactory from './inputFactory';
 
-export default class Edit extends Component {
+export default class extends Component {
   render() {
     const factory = this.props.options.inputFactory ? this.props.options.inputFactory : inputFactory;
 
