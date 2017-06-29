@@ -8,8 +8,9 @@ import {
   DELETE,
   fetchUtils
 } from 'admin-on-rest';
-import isPlainObject from 'lodash.isplainobject'
-import fetchHydra from './fetchHydra'
+import isPlainObject from 'lodash.isplainobject';
+import isArray from 'lodash.isarray';
+import fetchHydra from './fetchHydra';
 
 /**
  * Transform a Json-ld document to an Admin On Rest compatible document.
@@ -18,21 +19,25 @@ import fetchHydra from './fetchHydra'
  * @param {Number} maxDepth
  */
 export const transformJsonLdToAOR = (maxDepth = 2, depth = 1) => doc => {
-  if (!isPlainObject(doc)) return doc;
+  if (!isPlainObject(doc) && !isArray(doc)) return doc;
 
-  if ('undefined' !== typeof doc.id) {
-    doc.originId = doc.id;
-  }
-
-  if (doc['@id']) doc.id = doc['@id'];
+  let jsonLdDocument = isArray(doc) ? Array.from(doc) : Object.assign({}, doc, {
+    originId: doc.id,
+    id: doc['@id'],
+  });
 
   if (depth < maxDepth) {
-    Object.keys(doc).forEach(key => {
-      doc[key] = transformJsonLdToAOR(maxDepth, depth++)(doc[key]);
-    });
+    depth++;
+    if (isArray(jsonLdDocument)) {
+      jsonLdDocument = jsonLdDocument.map(d => transformJsonLdToAOR(maxDepth, depth)(d));
+    } else {
+      Object.keys(jsonLdDocument).forEach((key) => {
+        jsonLdDocument[key] = transformJsonLdToAOR(maxDepth, depth)(jsonLdDocument[key]);
+      });
+    }
   }
 
-  return doc;
+  return jsonLdDocument;
 };
 
 /**
