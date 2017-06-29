@@ -142,7 +142,6 @@ export default (type, params) => {
         .then(({ token }) => {
           localStorage.setItem('token', token); // The JWT token is stored in the browser's local storage
         });
-      break;
 
     case AUTH_LOGOUT:
       localStorage.removeItem('token');
@@ -155,9 +154,10 @@ export default (type, params) => {
         return Promise.reject();
       }
       break;
+      
+      default:
+          return Promise.resolve();
   }
-
-  return Promise.resolve();
 }
 ```
 
@@ -171,9 +171,7 @@ import authClient from './authClient';
 const entrypoint = 'https://demo.api-platform.com';
 
 const fetchWithAuth = (url, options = {}) => {
-  if (!options.headers) {
-    options.headers = new Headers({ Accept: 'application/ld+json' });
-  }
+  if (!options.headers) options.headers = new Headers({ Accept: 'application/ld+json' });
 
   options.headers.set('Authorization', `Bearer ${localStorage.getItem('token')}`);
   return fetchHydra(url, options);
