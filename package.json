@@ -36,7 +36,8 @@
     "api-doc-parser": "^0.1",
     "babel-runtime": "^6.23",
     "jsonld": "^0.4",
-    "lodash.isplainobject": "^4.0",
+    "lodash.isarray": "^4.0.0",
+    "lodash.isplainobject": "^4.0.6",
     "prop-types": "~15.5.7",
     "react": "~15.5.4",
     "react-dom": "~15.5.4"
