@@ -38,6 +38,15 @@ the [Create React App](https://github.com/facebookincubator/create-react-app) to
 Then, create a new React application for your admin:
 
     $ create-react-app my-admin
+    
+**Warning:** Admin On Rest and Material UI [aren't compatible with React 15.6 yet](https://github.com/marmelab/admin-on-rest/issues/802). During the meantime, you need to downgrade React to v15.5. Apply the following patch to `packages.json` then run `yarn upgrade` to downgrade:
+
+```patch
+-    "react": "^15.6.1",
++    "react": "~15.5.4",
+-    "react-dom": "^15.6.1",
++    "react-dom": "~15.5.4",
+```
 
 Now, add install `api-platform-admin` library in your newly created project:
 
