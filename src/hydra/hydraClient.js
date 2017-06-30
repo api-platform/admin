@@ -6,7 +6,7 @@ import {
   CREATE,
   UPDATE,
   DELETE,
-  fetchUtils
+  fetchUtils,
 } from 'admin-on-rest';
 import isPlainObject from 'lodash.isplainobject';
 import isArray from 'lodash.isarray';
@@ -21,18 +21,24 @@ import fetchHydra from './fetchHydra';
 export const transformJsonLdToAOR = (maxDepth = 2, depth = 1) => doc => {
   if (!isPlainObject(doc) && !isArray(doc)) return doc;
 
-  let jsonLdDocument = isArray(doc) ? Array.from(doc) : Object.assign({}, doc, {
-    originId: doc.id,
-    id: doc['@id'],
-  });
+  let jsonLdDocument = isArray(doc)
+    ? Array.from(doc)
+    : Object.assign({}, doc, {
+        originId: doc.id,
+        id: doc['@id'],
+      });
 
   if (depth < maxDepth) {
     depth++;
     if (isArray(jsonLdDocument)) {
-      jsonLdDocument = jsonLdDocument.map(d => transformJsonLdToAOR(maxDepth, depth)(d));
+      jsonLdDocument = jsonLdDocument.map(d =>
+        transformJsonLdToAOR(maxDepth, depth)(d),
+      );
     } else {
-      Object.keys(jsonLdDocument).forEach((key) => {
-        jsonLdDocument[key] = transformJsonLdToAOR(maxDepth, depth)(jsonLdDocument[key]);
+      Object.keys(jsonLdDocument).forEach(key => {
+        jsonLdDocument[key] = transformJsonLdToAOR(maxDepth, depth)(
+          jsonLdDocument[key],
+        );
       });
     }
   }
@@ -64,8 +70,8 @@ export default (apiUrl, httpClient = fetchHydra) => {
     const options = {};
     switch (type) {
       case GET_LIST: {
-        const { page } = params.pagination;
-        const { field, order } = params.sort;
+        const {page} = params.pagination;
+        const {field, order} = params.sort;
         const query = {
           ...params.filter,
           sort: field,
@@ -76,13 +82,15 @@ export default (apiUrl, httpClient = fetchHydra) => {
         break;
       }
       case GET_ONE:
-        url = apiUrl+params.id;
+        url = apiUrl + params.id;
         break;
       case GET_MANY_REFERENCE:
-        url = `${apiUrl}/${resource}?${fetchUtils.queryParameters({ [params.target]: params.id })}`;
+        url = `${apiUrl}/${resource}?${fetchUtils.queryParameters({
+          [params.target]: params.id,
+        })}`;
         break;
       case UPDATE:
-        url = apiUrl+params.id;
+        url = apiUrl + params.id;
         options.method = 'PUT';
         options.body = JSON.stringify(params.data);
         break;
@@ -92,13 +100,13 @@ export default (apiUrl, httpClient = fetchHydra) => {
         options.body = JSON.stringify(params.data);
         break;
       case DELETE:
-        url = apiUrl+params.id;
+        url = apiUrl + params.id;
         options.method = 'DELETE';
         break;
       default:
         throw new Error(`Unsupported fetch action type ${type}`);
     }
-    return { url, options };
+    return {url, options};
   };
 
   /**
@@ -130,16 +138,18 @@ export default (apiUrl, httpClient = fetchHydra) => {
   return (type, resource, params) => {
     // Hydra doesn't handle WHERE IN requests, so we fallback to calling GET_ONE n times instead
     if (type === GET_MANY) {
-      return Promise.all(params.ids.map(id => httpClient(apiUrl+id)))
-        .then((responses) => {
-          const restResponse = { data: [] };
-          restResponse.data = responses.map(response => response.json);
-          restResponse.data.map(transformJsonLdToAOR());
-          return restResponse;
-        });
+      return Promise.all(
+        params.ids.map(id => httpClient(apiUrl + id)),
+      ).then(responses => {
+        const restResponse = {data: []};
+        restResponse.data = responses.map(response => response.json);
+        restResponse.data.map(transformJsonLdToAOR());
+        return restResponse;
+      });
     }
-    const { url, options } = convertRESTRequestToHTTP(type, resource, params);
-    return httpClient(url, options)
-      .then(response => convertHTTPResponseToREST(response, type, resource, params));
+    const {url, options} = convertRESTRequestToHTTP(type, resource, params);
+    return httpClient(url, options).then(response =>
+      convertHTTPResponseToREST(response, type, resource, params),
+    );
   };
 };

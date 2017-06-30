@@ -1,7 +1,14 @@
 import React from 'react';
-import {ReferenceField, TextField, EmailField, DateField, NumberField, BooleanField} from 'admin-on-rest';
+import {
+  ReferenceField,
+  TextField,
+  EmailField,
+  DateField,
+  NumberField,
+  BooleanField,
+} from 'admin-on-rest';
 
-const getFieldFromId = (id) => {
+const getFieldFromId = id => {
   if ('http://schema.org/email' === id) {
     return EmailField;
   }
@@ -9,7 +16,7 @@ const getFieldFromId = (id) => {
   return null;
 };
 
-const getFieldFromRange = (range) => {
+const getFieldFromRange = range => {
   switch (range) {
     case 'http://www.w3.org/2001/XMLSchema#integer':
     case 'http://www.w3.org/2001/XMLSchema#float':
@@ -27,16 +34,22 @@ const getFieldFromRange = (range) => {
   }
 };
 
-export default (field) => {
+export default field => {
   // To customize the field
   if (field.fieldComponent) {
     return field.fieldComponent;
   }
 
   if (null !== field.reference) {
-    return <ReferenceField source={field.name} reference={field.reference.name} key={field.name} {...field.fieldProps}>
-      <TextField source="id"/>
-    </ReferenceField>;
+    return (
+      <ReferenceField
+        source={field.name}
+        reference={field.reference.name}
+        key={field.name}
+        {...field.fieldProps}>
+        <TextField source="id" />
+      </ReferenceField>
+    );
   }
 
   let FieldType;
@@ -44,5 +57,7 @@ export default (field) => {
   FieldType = getFieldFromId(field.id);
   if (null === FieldType) FieldType = getFieldFromRange(field.range);
 
-  return <FieldType  source={field.name} key={field.name} {...field.fieldProps}/>;
-}
+  return (
+    <FieldType source={field.name} key={field.name} {...field.fieldProps} />
+  );
+};

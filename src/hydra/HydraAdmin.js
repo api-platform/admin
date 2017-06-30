@@ -6,12 +6,14 @@ import hydraClient from './hydraClient';
 
 export default class extends Component {
   static propTypes = {
-    entrypoint: PropTypes.string
+    entrypoint: PropTypes.string,
   };
   state = {api: null};
 
   componentDidMount() {
-    parseHydraDocumentation(this.props.entrypoint).then(api => this.setState({api: api}));
+    parseHydraDocumentation(this.props.entrypoint).then(api =>
+      this.setState({api: api}),
+    );
   }
 
   render() {
@@ -19,8 +21,9 @@ export default class extends Component {
 
     let props = {...this.props};
     if (!props.api) props.api = this.state.api;
-    if (!props.restClient) props.restClient = hydraClient(this.props.entrypoint);
+    if (!props.restClient)
+      props.restClient = hydraClient(this.props.entrypoint);
 
-    return <AdminBuilder {...props}/>;
+    return <AdminBuilder {...props} />;
   }
 }

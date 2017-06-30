@@ -4,12 +4,23 @@ import inputFactory from './inputFactory';
 
 export default class extends Component {
   render() {
-    const factory = this.props.options.inputFactory ? this.props.options.inputFactory : inputFactory;
+    const factory = this.props.options.inputFactory
+      ? this.props.options.inputFactory
+      : inputFactory;
 
-    return <BaseCreate {...this.props}>
-      <SimpleForm>
-        {this.props.options.resource.writableFields.map(field => factory(field, this.props.options.resource, 'create', this.props.options.api))}
-      </SimpleForm>
-    </BaseCreate>
+    return (
+      <BaseCreate {...this.props}>
+        <SimpleForm>
+          {this.props.options.resource.writableFields.map(field =>
+            factory(
+              field,
+              this.props.options.resource,
+              'create',
+              this.props.options.api,
+            ),
+          )}
+        </SimpleForm>
+      </BaseCreate>
+    );
   }
 }
