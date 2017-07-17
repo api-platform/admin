@@ -435,6 +435,8 @@ before opening your Pull Request:
     $ yarn test
     $ yarn lint
 
+If you get errors related to coding standards, run `yarn fix` to fix them automatically.
+
 ## Credits
 
 Created by [Kévin Dunglas](https://dunglas.fr). Sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).

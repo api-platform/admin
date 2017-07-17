@@ -4,13 +4,24 @@ import fieldFactory from './fieldFactory';
 
 export default class extends Component {
   render() {
-    const factory = this.props.options.fieldFactory ? this.props.options.fieldFactory : fieldFactory;
+    const factory = this.props.options.fieldFactory
+      ? this.props.options.fieldFactory
+      : fieldFactory;
 
-    return <BaseShow {...this.props}>
-      <SimpleShowLayout>
-        <TextField source="id"/>
-        {this.props.options.resource.readableFields.map(field => factory(field, this.props.options.resource, 'show', this.props.options.api))}
-      </SimpleShowLayout>
-    </BaseShow>
+    return (
+      <BaseShow {...this.props}>
+        <SimpleShowLayout>
+          <TextField source="id" />
+          {this.props.options.resource.readableFields.map(field =>
+            factory(
+              field,
+              this.props.options.resource,
+              'show',
+              this.props.options.api,
+            ),
+          )}
+        </SimpleShowLayout>
+      </BaseShow>
+    );
   }
 }
