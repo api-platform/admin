@@ -1,29 +1,44 @@
-import React, {Component} from 'react';
+import apiDocumentationParser from 'api-doc-parser/lib/hydra/parseHydraDocumentation';
 import PropTypes from 'prop-types';
-import parseHydraDocumentation from 'api-doc-parser/lib/hydra/parseHydraDocumentation';
+import React, {Component} from 'react';
 import AdminBuilder from '../AdminBuilder';
-import hydraClient from './hydraClient';
+import restClient from './hydraClient';
 
-export default class extends Component {
-  static propTypes = {
-    entrypoint: PropTypes.string,
+class HydraAdmin extends Component {
+  static defaultProps = {
+    apiDocumentationParser,
+    restClient,
   };
-  state = {api: null};
+
+  static propTypes = {
+    apiDocumentationParser: PropTypes.func,
+    entrypoint: PropTypes.string.isRequired,
+    restClient: PropTypes.func,
+  };
+
+  state = {
+    api: null,
+  };
 
   componentDidMount() {
-    parseHydraDocumentation(this.props.entrypoint).then(api =>
-      this.setState({api: api}),
-    );
+    this.props
+      .apiDocumentationParser(this.props.entrypoint)
+      .then(api => this.setState({api}));
   }
 
   render() {
-    if (null === this.state.api) return <span>Loading...</span>;
+    if (null === this.state.api) {
+      return <span>Loading...</span>;
+    }
 
-    let props = {...this.props};
-    if (!props.api) props.api = this.state.api;
-    if (!props.restClient)
-      props.restClient = hydraClient(this.props.entrypoint);
-
-    return <AdminBuilder {...props} />;
+    return (
+      <AdminBuilder
+        {...this.props}
+        api={this.state.api}
+        restClient={this.props.restClient(this.state.api)}
+      />
+    );
   }
 }
+
+export default HydraAdmin;

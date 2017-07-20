@@ -1,155 +1,258 @@
 import {
-  GET_LIST,
-  GET_ONE,
-  GET_MANY,
-  GET_MANY_REFERENCE,
   CREATE,
-  UPDATE,
   DELETE,
   fetchUtils,
+  GET_LIST,
+  GET_MANY,
+  GET_MANY_REFERENCE,
+  GET_ONE,
+  UPDATE,
 } from 'admin-on-rest';
-import isPlainObject from 'lodash.isplainobject';
 import isArray from 'lodash.isarray';
+import isPlainObject from 'lodash.isplainobject';
 import fetchHydra from './fetchHydra';
 
 /**
- * Transform a Json-ld document to an Admin On Rest compatible document.
+ * Transforms a JSON-LD document to an admin-on-rest compatible document
  *
- * @param {Number} depth
- * @param {Number} maxDepth
+ * @param {number} maxDepth
+ * @param {number} depth
  */
-export const transformJsonLdToAOR = (maxDepth = 2, depth = 1) => doc => {
-  if (!isPlainObject(doc) && !isArray(doc)) return doc;
+export const transformJsonLdDocumentToAORDocument = (
+  maxDepth = 2,
+  depth = 1,
+) => documents => {
+  if (!isPlainObject(documents) && !isArray(documents)) {
+    return documents;
+  }
 
-  let jsonLdDocument = isArray(doc)
-    ? Array.from(doc)
-    : Object.assign({}, doc, {
-        originId: doc.id,
-        id: doc['@id'],
+  documents = isArray(documents)
+    ? Array.from(documents)
+    : Object.assign({}, documents, {
+        originId: documents.id,
+        id: documents['@id'],
       });
 
   if (depth < maxDepth) {
     depth++;
-    if (isArray(jsonLdDocument)) {
-      jsonLdDocument = jsonLdDocument.map(d =>
-        transformJsonLdToAOR(maxDepth, depth)(d),
+
+    if (isArray(documents)) {
+      documents = documents.map(document =>
+        transformJsonLdDocumentToAORDocument(maxDepth, depth)(document),
       );
     } else {
-      Object.keys(jsonLdDocument).forEach(key => {
-        jsonLdDocument[key] = transformJsonLdToAOR(maxDepth, depth)(
-          jsonLdDocument[key],
+      Object.keys(documents).forEach(key => {
+        documents[key] = transformJsonLdDocumentToAORDocument(maxDepth, depth)(
+          documents[key],
         );
       });
     }
   }
 
-  return jsonLdDocument;
+  return documents;
 };
 
 /**
  * Maps admin-on-rest queries to a Hydra powered REST API
  *
  * @see http://www.hydra-cg.com/
+ *
  * @example
- * GET_LIST     => GET http://my.api.url/posts
- * GET_ONE      => GET http://my.api.url/posts/123
- * GET_MANY     => GET http://my.api.url/posts/123, GET http://my.api.url/posts/456, GET http://my.api.url/posts/789
- * UPDATE       => PUT http://my.api.url/posts/123
- * CREATE       => POST http://my.api.url/posts/123
- * DELETE       => DELETE http://my.api.url/posts/123
+ * CREATE   => POST http://my.api.url/posts/123
+ * DELETE   => DELETE http://my.api.url/posts/123
+ * GET_LIST => GET http://my.api.url/posts
+ * GET_MANY => GET http://my.api.url/posts/123, GET http://my.api.url/posts/456, GET http://my.api.url/posts/789
+ * GET_ONE  => GET http://my.api.url/posts/123
+ * UPDATE   => PUT http://my.api.url/posts/123
  */
-export default (apiUrl, httpClient = fetchHydra) => {
+export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   /**
-   * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
-   * @param {String} resource Name of the resource to fetch, e.g. 'posts'
-   * @param {Object} params The REST request params, depending on the type
-   * @returns {Object} { url, options } The HTTP request parameters
+   * @param {string} resource
+   * @param {Object} data
+   *
+   * @returns {Promise}
    */
-  const convertRESTRequestToHTTP = (type, resource, params) => {
-    let url = '';
-    const options = {};
-    switch (type) {
-      case GET_LIST: {
-        const {page} = params.pagination;
-        const {field, order} = params.sort;
-        const query = {
-          ...params.filter,
-          sort: field,
-          order: order,
-          page: page,
-        };
-        url = `${apiUrl}/${resource}?${fetchUtils.queryParameters(query)}`;
-        break;
+  const convertAORDataToHydraData = (resource, data) => {
+    resource = resources.find(({name}) => resource === name);
+    if (undefined === resource) {
+      return Promise.resolve(data);
+    }
+
+    const fieldData = [];
+    resource.fields.forEach(({name, normalizeData}) => {
+      if (!(name in data) || undefined === normalizeData) {
+        return;
       }
-      case GET_ONE:
-        url = apiUrl + params.id;
-        break;
-      case GET_MANY_REFERENCE:
-        url = `${apiUrl}/${resource}?${fetchUtils.queryParameters({
-          [params.target]: params.id,
-        })}`;
-        break;
-      case UPDATE:
-        url = apiUrl + params.id;
-        options.method = 'PUT';
-        options.body = JSON.stringify(params.data);
-        break;
+
+      fieldData[name] = normalizeData(data[name]);
+    });
+
+    const fieldDataKeys = Object.keys(fieldData);
+    const fieldDataValues = Object.values(fieldData);
+
+    return Promise.all(fieldDataValues).then(fieldData => {
+      const object = {};
+      for (let i = 0; i < fieldDataKeys.length; i++) {
+        object[fieldDataKeys[i]] = fieldData[i];
+      }
+
+      return {...data, ...object};
+    });
+  };
+
+  /**
+   * @param {string} type
+   * @param {string} resource
+   * @param {Object} params
+   *
+   * @returns {Object}
+   */
+  const convertAORRequestToHydraRequest = (type, resource, params) => {
+    switch (type) {
       case CREATE:
-        url = `${apiUrl}/${resource}`;
-        options.method = 'POST';
-        options.body = JSON.stringify(params.data);
-        break;
+        return convertAORDataToHydraData(resource, params.data).then(data => ({
+          options: {
+            body: JSON.stringify(data),
+            method: 'POST',
+          },
+          url: `${entrypoint}/${resource}`,
+        }));
+
       case DELETE:
-        url = apiUrl + params.id;
-        options.method = 'DELETE';
-        break;
+        return Promise.resolve({
+          options: {
+            method: 'DELETE',
+          },
+          url: entrypoint + params.id,
+        });
+
+      case GET_LIST: {
+        const {pagination: {page}} = params;
+
+        return Promise.resolve({
+          options: {},
+          url: `${entrypoint}/${resource}?${fetchUtils.queryParameters({
+            ...params.filter,
+            page,
+          })}`,
+        });
+      }
+
+      case GET_MANY_REFERENCE:
+        return Promise.resolve({
+          options: {},
+          url: `${entrypoint}/${resource}?${fetchUtils.queryParameters({
+            [params.target]: params.id,
+          })}`,
+        });
+
+      case GET_ONE:
+        return Promise.resolve({
+          options: {},
+          url: entrypoint + params.id,
+        });
+
+      case UPDATE:
+        return convertAORDataToHydraData(resource, params.data).then(data => ({
+          options: {
+            body: JSON.stringify(data),
+            method: 'PUT',
+          },
+          url: entrypoint + params.id,
+        }));
+
       default:
         throw new Error(`Unsupported fetch action type ${type}`);
     }
-    return {url, options};
   };
 
   /**
-   * @param {Object} response - HTTP response from fetch()
-   * @param {String} type     - One of the constants appearing at the top if this file, e.g. 'UPDATE'
-   * @param {String} resource -  Name of the resource to fetch, e.g. 'posts'
-   * @param {Object} params   - The REST request params, depending on the type
-   * @returns {Object}        - REST response
+   * @param {string} resource
+   * @param {Object} data
+   *
+   * @returns {Promise}
    */
-  const convertHTTPResponseToREST = (response, type, resource, params) => {
+  const convertHydraDataToAORData = (resource, data) => {
+    resource = resources.find(({name}) => resource === name);
+    if (undefined === resource) {
+      return Promise.resolve(data);
+    }
+
+    const fieldData = {};
+    resource.fields.forEach(({name, denormalizeData}) => {
+      if (!(name in data) || undefined === denormalizeData) {
+        return;
+      }
+
+      fieldData[name] = denormalizeData(data[name]);
+    });
+
+    const fieldDataKeys = Object.keys(fieldData);
+    const fieldDataValues = Object.values(fieldData);
+
+    return Promise.all(fieldDataValues).then(fieldData => {
+      const object = {};
+      for (let i = 0; i < fieldDataKeys.length; i++) {
+        object[fieldDataKeys[i]] = fieldData[i];
+      }
+
+      return {...data, ...object};
+    });
+  };
+
+  /**
+   * @param {Object} response
+   * @param {string} resource
+   * @param {string} type
+   *
+   * @returns {Promise}
+   */
+  const convertHydraResponseToAORResponse = (type, resource, response) => {
     switch (type) {
       case GET_LIST:
         // TODO: support other prefixes than "hydra:"
-        return {
-          data: response.json['hydra:member'].map(transformJsonLdToAOR()),
-          total: response.json['hydra:totalItems'],
-        };
+        return Promise.resolve(
+          response.json['hydra:member'].map(
+            transformJsonLdDocumentToAORDocument(),
+          ),
+        )
+          .then(data =>
+            Promise.all(
+              data.map(data => convertHydraDataToAORData(resource, data)),
+            ),
+          )
+          .then(data => ({data, total: response.json['hydra:totalItems']}));
+
       default:
-        return {data: transformJsonLdToAOR()(response.json)};
+        return Promise.resolve(
+          transformJsonLdDocumentToAORDocument()(response.json),
+        )
+          .then(data => convertHydraDataToAORData(resource, data))
+          .then(data => ({data}));
     }
   };
 
   /**
-   * @param {string} type Request type, e.g GET_LIST
-   * @param {string} resource Resource name, e.g. "posts"
-   * @param {Object} payload Request parameters. Depends on the request type
-   * @returns {Promise} the Promise for a REST response
+   * @param {string} type
+   * @param {string} resource
+   * @param {Object} params
+   *
+   * @returns {Promise}
    */
-  return (type, resource, params) => {
+  const fetchApi = (type, resource, params) => {
     // Hydra doesn't handle WHERE IN requests, so we fallback to calling GET_ONE n times instead
-    if (type === GET_MANY) {
+    if (GET_MANY === type) {
       return Promise.all(
-        params.ids.map(id => httpClient(apiUrl + id)),
-      ).then(responses => {
-        const restResponse = {data: []};
-        restResponse.data = responses.map(response => response.json);
-        restResponse.data.map(transformJsonLdToAOR());
-        return restResponse;
-      });
+        params.ids.map(id => fetchApi(GET_ONE, resource, {id})),
+      ).then(responses => ({data: responses}));
     }
-    const {url, options} = convertRESTRequestToHTTP(type, resource, params);
-    return httpClient(url, options).then(response =>
-      convertHTTPResponseToREST(response, type, resource, params),
-    );
+
+    return convertAORRequestToHydraRequest(type, resource, params)
+      .then(({url, options}) => httpClient(url, options))
+      .then(response =>
+        convertHydraResponseToAORResponse(type, resource, response),
+      );
   };
+
+  return fetchApi;
 };
