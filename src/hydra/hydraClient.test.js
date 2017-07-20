@@ -1,4 +1,4 @@
-import {transformJsonLdToAOR} from './hydraClient';
+import {transformJsonLdDocumentToAORDocument} from './hydraClient';
 
 describe('map a json-ld document to an admin on rest compatible document', () => {
   const jsonLdDocument = {
@@ -36,14 +36,14 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
   };
 
   describe('transform only the main document when called with a max depth of 1', () => {
-    const AORDocument = transformJsonLdToAOR(1)(jsonLdDocument);
+    const AORDocument = transformJsonLdDocumentToAORDocument(1)(jsonLdDocument);
 
     test('add an id property equal to the original @id property', () => {
       expect(AORDocument.id).toEqual(jsonLdDocument['@id']);
     });
 
     test('preserve the previous id property value in a new originId property', () => {
-      expect(AORDocument.originId).toEqual(jsonLdDocument['id']);
+      expect(AORDocument.originId).toEqual(jsonLdDocument.id);
     });
 
     test('do not alter the embedded document', () => {
@@ -54,7 +54,7 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
   });
 
   describe('transform the embedded document when called with a max depth of 2', () => {
-    const AORDocument = transformJsonLdToAOR(2)(jsonLdDocument);
+    const AORDocument = transformJsonLdDocumentToAORDocument(2)(jsonLdDocument);
 
     test('add an id property on the embedded document equal to the @id property of the embedded document', () => {
       expect(AORDocument.itemReviewed.id).toEqual(
@@ -64,7 +64,7 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
   });
 
   describe('transform the embedded document collection when called with a max depth of 3', () => {
-    const AORDocument = transformJsonLdToAOR(3)(jsonLdDocument);
+    const AORDocument = transformJsonLdDocumentToAORDocument(3)(jsonLdDocument);
 
     test('add an id property on each document of an embedded collection equal to the @id property', () => {
       AORDocument.comment.forEach(comment => {

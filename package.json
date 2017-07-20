@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "admin-on-rest": "^1.1",
-    "api-doc-parser": "^0.1",
+    "api-doc-parser": "^0.1.7",
     "babel-runtime": "^6.23",
     "jsonld": "^0.4",
     "lodash.isarray": "^4.0.0",
