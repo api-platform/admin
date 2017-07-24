@@ -72,7 +72,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    *
    * @returns {Promise}
    */
-  const convertAORDataToHydraData = (resource, data) => {
+  const convertAORDataToHydraData = (resource, data = {}) => {
     resource = resources.find(({name}) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
@@ -172,7 +172,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    *
    * @returns {Promise}
    */
-  const convertHydraDataToAORData = (resource, data) => {
+  const convertHydraDataToAORData = (resource, data = {}) => {
     resource = resources.find(({name}) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
