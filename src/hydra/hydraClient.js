@@ -34,15 +34,13 @@ export const transformJsonLdDocumentToAORDocument = (
       });
 
   if (depth < maxDepth) {
-    depth++;
-
     if (isArray(documents)) {
       documents = documents.map(document =>
-        transformJsonLdDocumentToAORDocument(maxDepth, depth)(document),
+        transformJsonLdDocumentToAORDocument(maxDepth, depth+1)(document),
       );
     } else {
       Object.keys(documents).forEach(key => {
-        documents[key] = transformJsonLdDocumentToAORDocument(maxDepth, depth)(
+        documents[key] = transformJsonLdDocumentToAORDocument(maxDepth, depth+1)(
           documents[key],
         );
       });
