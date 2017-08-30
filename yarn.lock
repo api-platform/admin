@@ -115,9 +115,9 @@ anymatch@^1.3.0:
     arrify "^1.0.0"
     micromatch "^2.1.5"
 
-api-doc-parser@^0.1:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/api-doc-parser/-/api-doc-parser-0.1.6.tgz#e0a47ad6f1dffc123906777fc3e44e639f81bd1a"
+api-doc-parser@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/api-doc-parser/-/api-doc-parser-0.1.7.tgz#b55697a92b425b2118e7dcd14f9d444b7e10f673"
   dependencies:
     babel-runtime "^6.23.0"
     jsonld "^0.4.11"
@@ -2722,10 +2722,6 @@ lodash.defaultsdeep@~4.6.0:
 lodash.get@~4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
-
-lodash.isarray@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-4.0.0.tgz#2aca496b28c4ca6d726715313590c02e6ea34403"
 
 lodash.isplainobject@^4.0.6:
   version "4.0.6"
