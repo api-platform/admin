@@ -8,7 +8,6 @@ import {
   GET_ONE,
   UPDATE,
 } from 'admin-on-rest';
-import isArray from 'lodash.isarray';
 import isPlainObject from 'lodash.isplainobject';
 import fetchHydra from './fetchHydra';
 
@@ -22,11 +21,11 @@ export const transformJsonLdDocumentToAORDocument = (
   maxDepth = 2,
   depth = 1,
 ) => documents => {
-  if (!isPlainObject(documents) && !isArray(documents)) {
+  if (!isPlainObject(documents) && !Array.isArray(documents)) {
     return documents;
   }
 
-  documents = isArray(documents)
+  documents = Array.isArray(documents)
     ? Array.from(documents)
     : Object.assign({}, documents, {
         originId: documents.id,
@@ -36,7 +35,7 @@ export const transformJsonLdDocumentToAORDocument = (
   if (depth < maxDepth) {
     depth++;
 
-    if (isArray(documents)) {
+    if (Array.isArray(documents)) {
       documents = documents.map(document =>
         transformJsonLdDocumentToAORDocument(maxDepth, depth)(document),
       );
