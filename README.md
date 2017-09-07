@@ -30,7 +30,7 @@ TODO: Parse and add filters
 
 ## Documentation
 
-The documentation of API Platform Admin can be browsed [on the official website](https://api-platform.com/docs/).
+The documentation of API Platform Admin can be browsed [on the docs repository](https://github.com/api-platform/docs/blob/master/index.md#api-platform-admin-create-a-fancy-and-fully-featured-administration-interface).
 
 ## Credits
 
