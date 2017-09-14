@@ -39,7 +39,7 @@
     "react-dom": "~15.5.4 || ^16.0.0-beta.5"
   },
   "dependencies": {
-    "admin-on-rest": "^1.1",
+    "admin-on-rest": "^1.3",
     "api-doc-parser": "^0.2.0",
     "babel-runtime": "^6.23",
     "jsonld": "^0.4",
