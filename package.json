@@ -41,8 +41,8 @@
     "jsonld": "^0.4",
     "lodash.isplainobject": "^4.0.6",
     "prop-types": "~15.5.7",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react": "^15.4.0 || ^16.0.0-beta.5",
+    "react-dom": "^15.4.0 || ^16.0.0-beta.5"
   },
   "scripts": {
     "test": "jest",
