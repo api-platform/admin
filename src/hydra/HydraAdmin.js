@@ -51,19 +51,19 @@ class HydraAdmin extends Component {
 
   render() {
     if (false === this.state.loaded) {
-      return 'function' === typeof this.props.loading
-        ? <this.props.loading />
-        : <span className="loading">
-            {this.props.loading}
-          </span>;
+      return 'function' === typeof this.props.loading ? (
+        <this.props.loading />
+      ) : (
+        <span className="loading">{this.props.loading}</span>
+      );
     }
 
     if (true === this.state.hasError) {
-      return 'function' === typeof this.props.error
-        ? <this.props.error />
-        : <span className="error">
-            {this.props.error}
-          </span>;
+      return 'function' === typeof this.props.error ? (
+        <this.props.error />
+      ) : (
+        <span className="error">{this.props.error}</span>
+      );
     }
 
     return (

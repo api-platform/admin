@@ -19,7 +19,7 @@ export default class extends Component {
 
     return (
       <Admin {...props}>
-        {this.props.api.resources.map(resource =>
+        {this.props.api.resources.map(resource => (
           <Resource
             options={{api: this.props.api, resource}}
             key={resource.name}
@@ -30,8 +30,8 @@ export default class extends Component {
             edit={Edit}
             remove={Delete}
             {...resource.props}
-          />,
-        )}
+          />
+        ))}
       </Admin>
     );
   }
