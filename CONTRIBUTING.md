@@ -121,6 +121,28 @@ Now force push to update your PR:
 git push --force
 ```
 
+# Tag a new version (contributors only)
+
+Always test before releasing a new one:
+
+```
+yarn build
+yarn test
+yarn lint
+```
+
+To fix linting errors, you can use `yarn fix`.
+
+To release a new version:
+
+```bash
+yarn version # this creates a tag
+git push
+git push --tags
+```
+
+Travis will then publish the version on npm.
+
 # License and copyright attribution
 
 When you open a Pull Request to the API Platform project, you agree to license your code under the [MIT license](LICENSE)
