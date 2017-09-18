@@ -1,14 +1,28 @@
 language: node_js
 
 node_js:
-  - "7"
-  - "6"
+- '7'
+- '6'
 
 cache:
   directories:
-    - node_modules
+  - node_modules
 
 script:
-  - npm run build
-  - npm run test
-  - npm run lint
+- yarn build
+- yarn test
+- yarn lint
+
+deploy:
+  provider: npm
+  email: $NPM_AUTH_EMAIL
+  api_key: $NPM_AUTH_TOKEN
+  on:
+    tags: true
+    node_js: '7'
+  skip_cleanup: true
+
+env:
+  global:
+  - secure: NJPh7qnSsgCkAmmJ2FZv+b193NCZHu+8muA8Wbb3wJ6z9AHmf/qZ30QZrUCtBjjCEplNVWK5X5M1c2lxhYvXXIVclxQLMa2JCNUq9ilByq0nZjnJSs4xddm4E2BMSLv9o9YIUto9xd79ameQOjLJ+6dGwP3APXkyEHb8HhlsmorzrYT56MMtUn5T9715VrLRFJtI8kaoNZ7hVPW2oYqTMZmA+LDC103Z2je7J88OMP0QG5F4vyt9uLmFyVLhmlgmiHjMwJHOLXoxeQRWK4L29n5wkQczYGpTQBxLSzZeP8bbSU9z+5qVsjXZWxhbv4XsvnJblRMyRSwKZuHdlmYGeziPPOsajadmYyHUr90PcEbikNxmHxW827B99GPlll+L2QYYWvhihKhTl4LoXWAa1Z+JGxI3I2ouABFjpUcEGy2pPvX/dEiS0tvGUsMMyCZl1cEaCLXlvnlXgTQ+0Oc0cYvQ0QA6TqasLJ22nmjVRHccN/2mJVbsLVYB7MHYhyOw6hsBZexEDW/87VnCEoKFHObzIKiSKlTfwfb5FwHyZYJMEtqvPx3l3qaPJLA/XJgXFtCBGskacphEBIz+foPEvsZTpG+K38h+qYA/PgwacZMr6Npwh+r9AIdvKOMQyAWiLsQgin8h9bJeU8JUVFTTXcxFBU/AMbCMskdKp3qz9qc=
+  - secure: DBLMYVV/AzjB+wLpXi3JeeTeCBvc/Y0u34avVwk4/gjcagedxhHJpdJr6yx8oMM+A2Xoz1PrCmmr2+ZBEBWaG0DTy8Wz3TkTKd2ZeIJ/gUZRlYYZNpyio+0MJz3lCWKtVzZiY2GMwwmHICeqG0PqcfU5jyIY+LJyhiwd5+w5upWuctayFxgv4FKKu7/L0nHtxusRoKLpWw+5MCcdJMfVxkYuCPtmdOW7KzQ8/M34r6mu44ZmyW/2uPka7WuZdQV/xdPb1PUwMI80ZaD1DiRUShMTmHa+MDDJ7e7UGS7DA+wVkOOZ2PLtXatlQGYMga4r2ApDGkmyoGZy9JiZRAtHE1ASJXqIp9CxUQQ0Uun63uI0JlEzsWQMg9oUYhR5u6x8/ssNKXv6sOLtZpYZSml5T2Zhc28fkRXSD3vHVS8EuuVEAJ2duejKyFpKFZxBZe1sqFrwVuUaWrFEYZMbL3fpzwsO3yo2PXMeS+CMpT/8qcoMDSXxoKIY5LKdVYQ2pErm0tuDGR05bVpuxZDy0/8tyZosdxxJTzOpAVAPNWQ/QUxyvW/js5XASiCKxOJW8ai6qkeC32UoWu+dWGY9Q4nXm35Q6J04Ug/+PTiDW1/hMWdhugxVCoT6jChYCEVEcKS9BA7hDHRgWqz9Mi4101m2SuQ9FtWn+IiIDDXKQ+sf+0Q=
