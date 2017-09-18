@@ -57,5 +57,8 @@
     "setupFiles": [
       "raf/polyfill"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

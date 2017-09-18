@@ -1,11 +1,8 @@
 # API Platform Admin
 
 [![Build Status](https://travis-ci.org/api-platform/admin.svg?branch=master)](https://travis-ci.org/api-platform/admin)
-[![npm version](https://badge.fury.io/js/api-platform-admin.svg)](https://badge.fury.io/js/api-platform-admin)
+[![npm version](https://badge.fury.io/js/%40api-platform%2Fadmin.svg)](https://badge.fury.io/js/%40api-platform%2Fadmin)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
-
-[![NPM](https://nodei.co/npm/api-platform-admin.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/api-platform-admin/)
-
 
 API Platform Admin is a tool to automatically create a fancy (Material Design) and fully-featured administration interface
 for any API supporting [the Hydra Core Vocabulary](http://www.hydra-cg.com/), including but not limited to all APIs created
@@ -33,11 +30,9 @@ You can also customize all screens by using Admin On Rest components and even ra
 * Nicely display server-side errors (e.g. advanced validation)
 * **100% customizable**
 
-TODO: Parse and add filters
-
 ## Documentation
 
-The documentation of API Platform Admin can be browsed [on the docs repository](https://github.com/api-platform/docs/blob/master/index.md#api-platform-admin-create-a-fancy-and-fully-featured-administration-interface).
+The documentation of API Platform Admin can be browsed [on the official website](https://api-platform.com/docs/#api-platform-crud-generator-scaffold-a-react-redux-app-with-crud).
 
 ## Credits
 
