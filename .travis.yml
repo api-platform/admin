@@ -3,6 +3,7 @@ language: node_js
 node_js:
 - '7'
 - '6'
+- '8'
 
 cache:
   directories:
@@ -20,7 +21,7 @@ deploy:
   api_key: $NPM_AUTH_TOKEN
   on:
     tags: true
-    node_js: '7'
+    node_js: '8'
   skip_cleanup: true
 
 env:
