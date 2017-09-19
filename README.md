@@ -17,6 +17,25 @@ for all available resources.
 
 You can also customize all screens by using Admin On Rest components and even raw JavaScript/React code.
 
+## Installation
+
+    yarn add @api-platform/admin
+
+## Usage
+
+```javascript
+import React, { Component } from 'react';
+import { HydraAdmin } from '@api-platform/admin';
+
+class App extends Component {
+  render() {
+    return <HydraAdmin entrypoint="https://demo.api-platform.com"/> // Replace with your own API entrypoint
+  }
+}
+
+export default App;
+```
+
 ## Features
 
 * Automatically generate an admin interface for all the resources of the API thanks to hypermedia features of Hydra
@@ -32,7 +51,7 @@ You can also customize all screens by using Admin On Rest components and even ra
 
 ## Documentation
 
-The documentation of API Platform Admin can be browsed [on the official website](https://api-platform.com/docs/#api-platform-crud-generator-scaffold-a-react-redux-app-with-crud).
+The documentation of API Platform Admin can be browsed [on the official website](https://api-platform.com/docs/admin/).
 
 ## Credits
 
