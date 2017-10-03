@@ -1,4 +1,5 @@
-import {transformJsonLdDocumentToAORDocument} from './hydraClient';
+import hydraClient, {transformJsonLdDocumentToAORDocument} from './hydraClient';
+import {GET_MANY} from 'admin-on-rest';
 
 describe('map a json-ld document to an admin on rest compatible document', () => {
   const jsonLdDocument = {
@@ -70,6 +71,22 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
       AORDocument.comment.forEach(comment => {
         expect(comment.id).toEqual(comment['@id']);
       });
+    });
+  });
+});
+
+describe('fetch data from an hydra api', () => {
+  test('fetch a get_many resource', async () => {
+    const mockHttpClient = jest.fn();
+    mockHttpClient
+      .mockReturnValueOnce(Promise.resolve({json: {'@id': 'books/3'}}))
+      .mockReturnValue(Promise.resolve({json: {'@id': 'books/5'}}));
+
+    await hydraClient({entrypoint: '/'}, mockHttpClient)(GET_MANY, 'books', {
+      ids: [3, 5],
+    }).then(response => {
+      expect(response.data[0].id).toEqual('books/3');
+      expect(response.data[1].id).toEqual('books/5');
     });
   });
 });
