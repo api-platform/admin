@@ -242,7 +242,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
     if (GET_MANY === type) {
       return Promise.all(
         params.ids.map(id => fetchApi(GET_ONE, resource, {id})),
-      ).then(responses => ({data: responses.map(response => response.data)}));
+      ).then(responses => ({data: responses.map(({data}) => data)}));
     }
 
     return convertAORRequestToHydraRequest(type, resource, params)
