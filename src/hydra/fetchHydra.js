@@ -1,6 +1,6 @@
 import HttpError from 'admin-on-rest/lib/util/HttpError';
-import fetchJsonLd from 'api-doc-parser/lib/hydra/fetchJsonLd';
-import {getDocumentationUrlFromHeaders} from 'api-doc-parser/lib/hydra/parseHydraDocumentation';
+import fetchJsonLd from '@api-platform/api-doc-parser/lib/hydra/fetchJsonLd';
+import {getDocumentationUrlFromHeaders} from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
 import {promises} from 'jsonld';
 
 /**

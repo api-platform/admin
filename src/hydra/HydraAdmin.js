@@ -1,4 +1,4 @@
-import apiDocumentationParser from 'api-doc-parser/lib/hydra/parseHydraDocumentation';
+import apiDocumentationParser from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import AdminBuilder from '../AdminBuilder';

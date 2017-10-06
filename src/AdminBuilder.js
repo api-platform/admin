@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Admin, Resource, Delete} from 'admin-on-rest';
-import Api from 'api-doc-parser/lib/Api';
+import Api from '@api-platform/api-doc-parser/lib/Api';
 import List from './List';
 import Show from './Show';
 import Create from './Create';
