@@ -6,7 +6,7 @@ import {promises} from 'jsonld';
 /**
  * Sends HTTP requests to a Hydra API.
  *
- * Adapted from AdminBuilder On Rest
+ * Adapted from admin-on-rest
  *
  * @copyright Kévin Dunglas
  *

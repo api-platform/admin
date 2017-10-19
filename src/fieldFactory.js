@@ -1,63 +1,48 @@
-import React from 'react';
 import {
+  BooleanField,
+  DateField,
+  EmailField,
+  NumberField,
   ReferenceField,
   TextField,
-  EmailField,
-  DateField,
-  NumberField,
-  BooleanField,
 } from 'admin-on-rest';
+import React from 'react';
 
-const getFieldFromId = id => {
-  if ('http://schema.org/email' === id) {
-    return EmailField;
-  }
-
-  return null;
-};
-
-const getFieldFromRange = range => {
-  switch (range) {
-    case 'http://www.w3.org/2001/XMLSchema#integer':
-    case 'http://www.w3.org/2001/XMLSchema#float':
-      return NumberField;
-
-    case 'http://www.w3.org/2001/XMLSchema#date':
-    case 'http://www.w3.org/2001/XMLSchema#dateTime':
-      return DateField;
-
-    case 'http://www.w3.org/2001/XMLSchema#boolean':
-      return BooleanField;
-
-    default:
-      return TextField;
-  }
-};
-
-export default field => {
-  // To customize the field
-  if (field.fieldComponent) {
-    return field.fieldComponent;
+export default (field, options) => {
+  if (field.field) {
+    return (
+      <field.field key={field.name} options={options} source={field.name} />
+    );
   }
 
   if (null !== field.reference) {
     return (
       <ReferenceField
-        source={field.name}
-        reference={field.reference.name}
         key={field.name}
-        {...field.fieldProps}>
+        reference={field.reference.name}
+        source={field.name}>
         <TextField source="id" />
       </ReferenceField>
     );
   }
 
-  let FieldType;
+  if ('http://schema.org/email' === field.id) {
+    return <EmailField key={field.name} source={field.name} />;
+  }
 
-  FieldType = getFieldFromId(field.id);
-  if (null === FieldType) FieldType = getFieldFromRange(field.range);
+  switch (field.range) {
+    case 'http://www.w3.org/2001/XMLSchema#integer':
+    case 'http://www.w3.org/2001/XMLSchema#float':
+      return <NumberField key={field.name} source={field.name} />;
 
-  return (
-    <FieldType source={field.name} key={field.name} {...field.fieldProps} />
-  );
+    case 'http://www.w3.org/2001/XMLSchema#date':
+    case 'http://www.w3.org/2001/XMLSchema#dateTime':
+      return <DateField key={field.name} source={field.name} />;
+
+    case 'http://www.w3.org/2001/XMLSchema#boolean':
+      return <BooleanField key={field.name} source={field.name} />;
+
+    default:
+      return <TextField key={field.name} source={field.name} />;
+  }
 };

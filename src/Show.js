@@ -1,27 +1,34 @@
-import React, {Component} from 'react';
+import Api from '@api-platform/api-doc-parser/lib/Api';
+import Resource from '@api-platform/api-doc-parser/lib/Resource';
 import {Show as BaseShow, SimpleShowLayout, TextField} from 'admin-on-rest';
-import fieldFactory from './fieldFactory';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default class extends Component {
-  render() {
-    const factory = this.props.options.fieldFactory
-      ? this.props.options.fieldFactory
-      : fieldFactory;
+const Show = props => {
+  const {options: {api, fieldFactory, resource}} = props;
 
-    return (
-      <BaseShow {...this.props}>
-        <SimpleShowLayout>
-          <TextField source="id" />
-          {this.props.options.resource.readableFields.map(field =>
-            factory(
-              field,
-              this.props.options.resource,
-              'show',
-              this.props.options.api,
-            ),
-          )}
-        </SimpleShowLayout>
-      </BaseShow>
-    );
-  }
-}
+  return (
+    <BaseShow {...props}>
+      <SimpleShowLayout>
+        <TextField source="id" />
+        {resource.readableFields.map(field =>
+          fieldFactory(field, {
+            action: 'show',
+            api,
+            resource,
+          }),
+        )}
+      </SimpleShowLayout>
+    </BaseShow>
+  );
+};
+
+Show.propTypes = {
+  options: PropTypes.shape({
+    api: PropTypes.instanceOf(Api).isRequired,
+    fieldFactory: PropTypes.func.isRequired,
+    resource: PropTypes.instanceOf(Resource).isRequired,
+  }),
+};
+
+export default Show;

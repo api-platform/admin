@@ -1,43 +1,49 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import Api from '@api-platform/api-doc-parser/lib/Api';
+import Resource from '@api-platform/api-doc-parser/lib/Resource';
 import {
-  List as BaseList,
   Datagrid,
-  TextField,
-  ShowButton,
   EditButton,
+  List as BaseList,
+  ShowButton,
+  TextField,
 } from 'admin-on-rest';
-import fieldFactory from './fieldFactory';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default class extends Component {
-  static defaultProps = {
-    perPage: 30, // Default value in API Platform
-  };
-  static propTypes = {
-    perPage: PropTypes.number,
-  };
+const List = props => {
+  const {hasEdit, hasShow, options: {api, fieldFactory, resource}} = props;
 
-  render() {
-    const factory = this.props.options.fieldFactory
-      ? this.props.options.fieldFactory
-      : fieldFactory;
+  return (
+    <BaseList {...props}>
+      <Datagrid>
+        <TextField source="id" />
+        {resource.readableFields.map(field =>
+          fieldFactory(field, {
+            action: 'list',
+            api,
+            resource,
+          }),
+        )}
+        {hasShow && <ShowButton />}
+        {hasEdit && <EditButton />}
+      </Datagrid>
+    </BaseList>
+  );
+};
 
-    return (
-      <BaseList {...this.props}>
-        <Datagrid>
-          <TextField source="id" />
-          {this.props.options.resource.readableFields.map(field =>
-            factory(
-              field,
-              this.props.options.resource,
-              'list',
-              this.props.options.api,
-            ),
-          )}
-          <ShowButton />
-          <EditButton />
-        </Datagrid>
-      </BaseList>
-    );
-  }
-}
+List.defaultProps = {
+  perPage: 30, // Default value in API Platform
+};
+
+List.propTypes = {
+  options: PropTypes.shape({
+    api: PropTypes.instanceOf(Api).isRequired,
+    fieldFactory: PropTypes.func.isRequired,
+    resource: PropTypes.instanceOf(Resource).isRequired,
+  }),
+  perPage: PropTypes.number,
+  hasEdit: PropTypes.bool.isRequired,
+  hasShow: PropTypes.bool.isRequired,
+};
+
+export default List;
