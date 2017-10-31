@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import AdminBuilder from '../AdminBuilder';
 import restClient from './hydraClient';
 
-class HydraAdmin extends Component {
+export default class extends Component {
   static defaultProps = {
     apiDocumentationParser,
     customRoutes: [],
@@ -39,12 +39,15 @@ class HydraAdmin extends Component {
           hasError: false,
           loaded: true,
         }),
-        ({api, customRoutes = []}) => ({
-          api,
-          customRoutes,
-          hasError: true,
-          loaded: true,
-        }),
+        (data) => {
+          if (data instanceof Error) {
+            console.error(data);
+
+            return { hasError: true, loaded: true };
+          }
+
+          return { api: data.api, customRoutes: data.customRoutes, hasError: true, loaded: true };
+        },
       )
       .then(this.setState.bind(this));
   }
@@ -76,5 +79,3 @@ class HydraAdmin extends Component {
     );
   }
 }
-
-export default HydraAdmin;
