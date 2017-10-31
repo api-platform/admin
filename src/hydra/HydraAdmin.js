@@ -39,14 +39,22 @@ export default class extends Component {
           hasError: false,
           loaded: true,
         }),
-        (data) => {
+        data => {
           if (data instanceof Error) {
             console.error(data);
 
-            return { hasError: true, loaded: true };
+            return {
+              hasError: true,
+              loaded: true,
+            };
           }
 
-          return { api: data.api, customRoutes: data.customRoutes, hasError: true, loaded: true };
+          return {
+            api: data.api,
+            customRoutes: data.customRoutes,
+            hasError: true,
+            loaded: true,
+          };
         },
       )
       .then(this.setState.bind(this));
