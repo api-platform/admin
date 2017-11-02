@@ -9,6 +9,7 @@ import {
   TextInput,
 } from 'admin-on-rest';
 import React from 'react';
+import getReferenceNameField from './getReferenceNameField';
 
 export default (field, options) => {
   const props = {...field.inputProps};
@@ -36,7 +37,7 @@ export default (field, options) => {
           source={field.name}
           {...props}
           allowEmpty>
-          <SelectInput optionText="id" />
+          <SelectInput optionText={getReferenceNameField(field.reference)} />
         </ReferenceInput>
       );
     }
@@ -49,7 +50,7 @@ export default (field, options) => {
         source={field.name}
         {...props}
         allowEmpty>
-        <SelectArrayInput optionText="id" />
+        <SelectArrayInput optionText={getReferenceNameField(field.reference)} />
       </ReferenceArrayInput>
     );
   }
