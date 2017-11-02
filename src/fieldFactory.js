@@ -1,48 +1,73 @@
 import {
   BooleanField,
+  ChipField,
   DateField,
   EmailField,
   NumberField,
   ReferenceField,
+  ReferenceArrayField,
+  SingleFieldList,
   TextField,
 } from 'admin-on-rest';
 import React from 'react';
 
 export default (field, options) => {
+  const props = {...field.fieldProps};
   if (field.field) {
     return (
-      <field.field key={field.name} options={options} source={field.name} />
+      <field.field
+        key={field.name}
+        options={options}
+        source={field.name}
+        {...props}
+      />
     );
   }
 
   if (null !== field.reference) {
+    if (1 === field.maxCardinality) {
+      return (
+        <ReferenceField
+          source={field.name}
+          reference={field.reference.name}
+          key={field.name}
+          {...props}
+          allowEmpty>
+          <ChipField source="id" />
+        </ReferenceField>
+      );
+    }
+
     return (
-      <ReferenceField
-        key={field.name}
+      <ReferenceArrayField
+        source={field.name}
         reference={field.reference.name}
-        source={field.name}>
-        <TextField source="id" />
-      </ReferenceField>
+        key={field.name}
+        {...props}>
+        <SingleFieldList>
+          <ChipField source="id" key="id" />
+        </SingleFieldList>
+      </ReferenceArrayField>
     );
   }
 
   if ('http://schema.org/email' === field.id) {
-    return <EmailField key={field.name} source={field.name} />;
+    return <EmailField key={field.name} source={field.name} {...props} />;
   }
 
   switch (field.range) {
     case 'http://www.w3.org/2001/XMLSchema#integer':
     case 'http://www.w3.org/2001/XMLSchema#float':
-      return <NumberField key={field.name} source={field.name} />;
+      return <NumberField key={field.name} source={field.name} {...props} />;
 
     case 'http://www.w3.org/2001/XMLSchema#date':
     case 'http://www.w3.org/2001/XMLSchema#dateTime':
-      return <DateField key={field.name} source={field.name} />;
+      return <DateField key={field.name} source={field.name} {...props} />;
 
     case 'http://www.w3.org/2001/XMLSchema#boolean':
-      return <BooleanField key={field.name} source={field.name} />;
+      return <BooleanField key={field.name} source={field.name} {...props} />;
 
     default:
-      return <TextField key={field.name} source={field.name} />;
+      return <TextField key={field.name} source={field.name} {...props} />;
   }
 };
