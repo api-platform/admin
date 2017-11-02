@@ -1,27 +1,34 @@
-import React, {Component} from 'react';
-import {Edit as BaseEdit, SimpleForm, DisabledInput} from 'admin-on-rest';
-import inputFactory from './inputFactory';
+import Api from '@api-platform/api-doc-parser/lib/Api';
+import Resource from '@api-platform/api-doc-parser/lib/Resource';
+import {DisabledInput, Edit as BaseEdit, SimpleForm} from 'admin-on-rest';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default class extends Component {
-  render() {
-    const factory = this.props.options.inputFactory
-      ? this.props.options.inputFactory
-      : inputFactory;
+const Edit = props => {
+  const {options: {api, inputFactory, resource}} = props;
 
-    return (
-      <BaseEdit {...this.props}>
-        <SimpleForm>
-          <DisabledInput source="id" />
-          {this.props.options.resource.writableFields.map(field =>
-            factory(
-              field,
-              this.props.options.resource,
-              'edit',
-              this.props.options.api,
-            ),
-          )}
-        </SimpleForm>
-      </BaseEdit>
-    );
-  }
-}
+  return (
+    <BaseEdit {...props}>
+      <SimpleForm>
+        <DisabledInput source="id" />
+        {resource.writableFields.map(field =>
+          inputFactory(field, {
+            action: 'edit',
+            api,
+            resource,
+          }),
+        )}
+      </SimpleForm>
+    </BaseEdit>
+  );
+};
+
+Edit.propTypes = {
+  options: PropTypes.shape({
+    api: PropTypes.instanceOf(Api).isRequired,
+    inputFactory: PropTypes.func.isRequired,
+    resource: PropTypes.instanceOf(Resource).isRequired,
+  }),
+};
+
+export default Edit;

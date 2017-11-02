@@ -1,26 +1,33 @@
-import React, {Component} from 'react';
+import Api from '@api-platform/api-doc-parser/lib/Api';
+import Resource from '@api-platform/api-doc-parser/lib/Resource';
 import {Create as BaseCreate, SimpleForm} from 'admin-on-rest';
-import inputFactory from './inputFactory';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default class extends Component {
-  render() {
-    const factory = this.props.options.inputFactory
-      ? this.props.options.inputFactory
-      : inputFactory;
+const Create = props => {
+  const {options: {api, inputFactory, resource}} = props;
 
-    return (
-      <BaseCreate {...this.props}>
-        <SimpleForm>
-          {this.props.options.resource.writableFields.map(field =>
-            factory(
-              field,
-              this.props.options.resource,
-              'create',
-              this.props.options.api,
-            ),
-          )}
-        </SimpleForm>
-      </BaseCreate>
-    );
-  }
-}
+  return (
+    <BaseCreate {...props}>
+      <SimpleForm>
+        {resource.writableFields.map(field =>
+          inputFactory(field, {
+            action: 'create',
+            api,
+            resource,
+          }),
+        )}
+      </SimpleForm>
+    </BaseCreate>
+  );
+};
+
+Create.propTypes = {
+  options: PropTypes.shape({
+    api: PropTypes.instanceOf(Api).isRequired,
+    inputFactory: PropTypes.func.isRequired,
+    resource: PropTypes.instanceOf(Resource).isRequired,
+  }),
+};
+
+export default Create;

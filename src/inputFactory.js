@@ -1,63 +1,47 @@
-import React from 'react';
 import {
-  DateInput,
-  TextInput,
-  NumberInput,
   BooleanInput,
+  DateInput,
+  NumberInput,
   ReferenceInput,
   SelectInput,
+  TextInput,
 } from 'admin-on-rest';
+import React from 'react';
 
-export default input => {
-  // To customize the input
-  if (input.inputComponent) {
-    return input.inputComponent;
+export default (field, options) => {
+  if (field.input) {
+    return (
+      <field.input key={field.name} options={options} source={field.name} />
+    );
   }
 
-  let props = {...input.inputProps};
-  if (!props.validate)
-    props.validate = value => (value ? undefined : 'Required');
-
-  if (null !== input.reference) {
+  if (null !== field.reference) {
     return (
       <ReferenceInput
-        source={input.name}
-        label={input.name}
-        reference={input.reference.name}
-        key={input.name}
-        allowEmpty
-        {...props}>
+        key={field.name}
+        label={field.name}
+        reference={field.reference.name}
+        source={field.name}>
         <SelectInput optionText="id" />
       </ReferenceInput>
     );
   }
 
-  let InputType;
-  switch (input.range) {
+  switch (field.range) {
     case 'http://www.w3.org/2001/XMLSchema#integer':
-      InputType = NumberInput;
-      break;
+      return <NumberInput key={field.name} source={field.name} />;
 
     case 'http://www.w3.org/2001/XMLSchema#decimal':
-      InputType = NumberInput;
-      props.step = '0.1';
-      break;
+      return <NumberInput key={field.name} source={field.name} step="0.1" />;
 
     case 'http://www.w3.org/2001/XMLSchema#boolean':
-      if ((!input.inputProps || !input.inputProps.validate) && input.required)
-        props.validate = undefined;
-      InputType = BooleanInput;
-      break;
+      return <BooleanInput key={field.name} source={field.name} />;
 
     case 'http://www.w3.org/2001/XMLSchema#date':
     case 'http://www.w3.org/2001/XMLSchema#dateTime':
-      InputType = DateInput;
-      break;
+      return <DateInput key={field.name} source={field.name} />;
 
     default:
-      InputType = TextInput;
-      break;
+      return <TextInput key={field.name} source={field.name} />;
   }
-
-  return <InputType source={input.name} key={input.name} {...props} />;
 };
