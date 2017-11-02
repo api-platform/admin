@@ -11,6 +11,7 @@ import {
   UrlField,
 } from 'admin-on-rest';
 import React from 'react';
+import getReferenceNameField from './getReferenceNameField';
 
 export default (field, options) => {
   const props = {...field.fieldProps};
@@ -34,11 +35,12 @@ export default (field, options) => {
           key={field.name}
           {...props}
           allowEmpty>
-          <ChipField source="id" />
+          <ChipField source={getReferenceNameField(field.reference)} />
         </ReferenceField>
       );
     }
 
+    const referenceNameField = getReferenceNameField(field.reference);
     return (
       <ReferenceArrayField
         source={field.name}
@@ -46,7 +48,7 @@ export default (field, options) => {
         key={field.name}
         {...props}>
         <SingleFieldList>
-          <ChipField source="id" key="id" />
+          <ChipField source={referenceNameField} key={referenceNameField} />
         </SingleFieldList>
       </ReferenceArrayField>
     );
