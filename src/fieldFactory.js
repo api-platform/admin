@@ -8,6 +8,7 @@ import {
   ReferenceArrayField,
   SingleFieldList,
   TextField,
+  UrlField,
 } from 'admin-on-rest';
 import React from 'react';
 
@@ -51,8 +52,15 @@ export default (field, options) => {
     );
   }
 
-  if ('http://schema.org/email' === field.id) {
-    return <EmailField key={field.name} source={field.name} {...props} />;
+  switch (field.id) {
+    case 'http://schema.org/email':
+      return <EmailField key={field.name} source={field.name} {...props} />;
+
+    case 'http://schema.org/url':
+      return <UrlField key={field.name} source={field.name} {...props} />;
+
+    default:
+    // Do nothing
   }
 
   switch (field.range) {
