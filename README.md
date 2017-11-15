@@ -51,7 +51,7 @@ export default App;
 
 ## Documentation
 
-The documentation of API Platform Admin can be browsed [on the official website](https://api-platform.com/docs/admin/).
+The documentation of API Platform Admin can be browsed [on the official website](https://api-platform.com/docs/admin/index#the-api-platform-admin).
 
 ## Credits
 
