@@ -4,6 +4,7 @@ import {
   NumberInput,
   ReferenceArrayInput,
   ReferenceInput,
+  required,
   SelectArrayInput,
   SelectInput,
   TextInput,
@@ -24,8 +25,7 @@ export default (field, options) => {
     );
   }
 
-  if (!props.validate && field.required)
-    props.validate = value => (value ? undefined : 'Required');
+  if (!props.validate && field.required) props.validate = [required];
 
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
