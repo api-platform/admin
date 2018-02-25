@@ -208,6 +208,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   const convertHydraResponseToAORResponse = (type, resource, response) => {
     switch (type) {
       case GET_LIST:
+      case GET_MANY_REFERENCE:
         // TODO: support other prefixes than "hydra:"
         return Promise.resolve(
           response.json['hydra:member'].map(
