@@ -43,7 +43,8 @@
     "babel-runtime": "^6.23",
     "jsonld": "^0.4",
     "lodash.isplainobject": "^4.0.6",
-    "prop-types": "^15.5.7"
+    "prop-types": "^15.5.7",
+    "qs": "^6.5.1"
   },
   "peerDependencies": {
     "react": "^15.4.0 || ^16.0.0",

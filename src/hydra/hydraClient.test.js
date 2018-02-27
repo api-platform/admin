@@ -1,5 +1,5 @@
+import {GET_LIST, GET_MANY} from 'admin-on-rest';
 import hydraClient, {transformJsonLdDocumentToAORDocument} from './hydraClient';
-import {GET_MANY} from 'admin-on-rest';
 
 describe('map a json-ld document to an admin on rest compatible document', () => {
   const jsonLdDocument = {
@@ -76,6 +76,26 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
 });
 
 describe('fetch data from an hydra api', () => {
+  test('fetch a get_list resource', async () => {
+    const mockHttpClient = jest.fn();
+    mockHttpClient.mockReturnValue(
+      Promise.resolve({
+        json: {
+          'hydra:member': [{'@id': 'books/5'}],
+        },
+      }),
+    );
+
+    await hydraClient({entrypoint: ''}, mockHttpClient)(GET_LIST, 'books', {
+      pagination: {page: 2},
+      sort: {field: 'id', order: 'ASC'},
+    }).then(() => {
+      expect(mockHttpClient.mock.calls[0][0]).toBe(
+        '/books?order%5Bid%5D=ASC&page=2',
+      );
+    });
+  });
+
   test('fetch a get_many resource', async () => {
     const mockHttpClient = jest.fn();
     mockHttpClient
