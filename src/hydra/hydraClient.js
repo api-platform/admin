@@ -1,7 +1,6 @@
 import {
   CREATE,
   DELETE,
-  fetchUtils,
   GET_LIST,
   GET_MANY,
   GET_MANY_REFERENCE,
@@ -9,6 +8,7 @@ import {
   UPDATE,
 } from 'admin-on-rest';
 import isPlainObject from 'lodash.isplainobject';
+import qs from 'qs';
 import fetchHydra from './fetchHydra';
 
 /**
@@ -125,12 +125,15 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case GET_LIST: {
-        const {pagination: {page}} = params;
+        const {pagination: {page}, sort: {field, order}} = params;
 
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${fetchUtils.queryParameters({
+          url: `${entrypoint}/${resource}?${qs.stringify({
             ...params.filter,
+            order: {
+              [field]: order,
+            },
             page,
           })}`,
         });
@@ -139,7 +142,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
       case GET_MANY_REFERENCE:
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${fetchUtils.queryParameters({
+          url: `${entrypoint}/${resource}?${qs.stringify({
             [params.target]: params.id,
           })}`,
         });
