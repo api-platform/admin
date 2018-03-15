@@ -4,16 +4,39 @@ import {Show as BaseShow, SimpleShowLayout, TextField} from 'admin-on-rest';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const resolveProps = props => {
+  const {options} = props;
+  const {fieldFactory: defaultFieldFactory, resource} = options;
+  const {
+    showFields: customFields,
+    readableFields: defaultFields,
+    showProps = {},
+  } = resource;
+  const {options: {fieldFactory: customFieldFactory} = {}} = showProps;
+
+  return {
+    ...props,
+    ...showProps,
+    options: {
+      ...options,
+      fieldFactory: customFieldFactory || defaultFieldFactory,
+      fields: customFields || defaultFields,
+    },
+  };
+};
+
 const Show = props => {
-  const {options: {api, fieldFactory, resource}} = props;
+  const {
+    addIdField,
+    options: {api, fieldFactory, fields, resource},
+  } = resolveProps(props);
 
   return (
     <BaseShow {...props}>
       <SimpleShowLayout>
-        <TextField source="id" />
-        {resource.readableFields.map(field =>
+        {addIdField && <TextField source="id" />}
+        {fields.map(field =>
           fieldFactory(field, {
-            action: 'show',
             api,
             resource,
           }),
@@ -23,11 +46,17 @@ const Show = props => {
   );
 };
 
+Show.defaultProps = {
+  addIdField: true,
+};
+
 Show.propTypes = {
+  addIdField: PropTypes.bool,
   options: PropTypes.shape({
     api: PropTypes.instanceOf(Api).isRequired,
     fieldFactory: PropTypes.func.isRequired,
     resource: PropTypes.instanceOf(Resource).isRequired,
+    showProps: PropTypes.object,
   }),
 };
 

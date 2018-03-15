@@ -4,15 +4,35 @@ import {Create as BaseCreate, SimpleForm} from 'admin-on-rest';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const resolveProps = props => {
+  const {options} = props;
+  const {inputFactory: defaultInputFactory, resource} = options;
+  const {
+    createFields: customFields,
+    createProps = {},
+    writableFields: defaultFields,
+  } = resource;
+  const {options: {inputFactory: customInputFactory} = {}} = createProps;
+
+  return {
+    ...props,
+    ...createProps,
+    options: {
+      ...options,
+      fields: customFields || defaultFields,
+      inputFactory: customInputFactory || defaultInputFactory,
+    },
+  };
+};
+
 const Create = props => {
-  const {options: {api, inputFactory, resource}} = props;
+  const {options: {api, fields, inputFactory, resource}} = resolveProps(props);
 
   return (
     <BaseCreate {...props}>
       <SimpleForm>
-        {resource.writableFields.map(field =>
+        {fields.map(field =>
           inputFactory(field, {
-            action: 'create',
             api,
             resource,
           }),

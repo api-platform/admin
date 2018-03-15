@@ -7,7 +7,13 @@ import inputFactory from './inputFactory';
 import resourceFactory from './resourceFactory';
 
 const AdminBuilder = props => {
-  const {api, fieldFactory, inputFactory, title = api.title} = props;
+  const {
+    api,
+    fieldFactory,
+    inputFactory,
+    resourceFactory,
+    title = api.title,
+  } = props;
 
   return (
     <Admin {...props} title={title}>
@@ -21,12 +27,14 @@ const AdminBuilder = props => {
 AdminBuilder.defaultProps = {
   fieldFactory,
   inputFactory,
+  resourceFactory,
 };
 
 AdminBuilder.propTypes = {
   api: PropTypes.instanceOf(Api).isRequired,
   fieldFactory: PropTypes.func,
   inputFactory: PropTypes.func,
+  resourceFactory: PropTypes.func,
   restClient: PropTypes.func.isRequired,
 };
 
