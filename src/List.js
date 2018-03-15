@@ -10,16 +10,41 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const resolveProps = props => {
+  const {options} = props;
+  const {fieldFactory: defaultFieldFactory, resource} = options;
+  const {
+    listFields: customFields,
+    listProps = {},
+    readableFields: defaultFields,
+  } = resource;
+  const {options: {fieldFactory: customFieldFactory} = {}} = listProps;
+
+  return {
+    ...props,
+    ...listProps,
+    options: {
+      ...options,
+      fieldFactory: customFieldFactory || defaultFieldFactory,
+      fields: customFields || defaultFields,
+    },
+  };
+};
+
 const List = props => {
-  const {hasEdit, hasShow, options: {api, fieldFactory, resource}} = props;
+  const {
+    addIdField,
+    hasEdit,
+    hasShow,
+    options: {api, fieldFactory, fields, resource},
+  } = resolveProps(props);
 
   return (
     <BaseList {...props}>
       <Datagrid>
-        <TextField source="id" />
-        {resource.readableFields.map(field =>
+        {addIdField && <TextField source="id" />}
+        {fields.map(field =>
           fieldFactory(field, {
-            action: 'list',
             api,
             resource,
           }),
@@ -32,13 +57,16 @@ const List = props => {
 };
 
 List.defaultProps = {
+  addIdField: true,
   perPage: 30, // Default value in API Platform
 };
 
 List.propTypes = {
+  addIdField: PropTypes.bool,
   options: PropTypes.shape({
     api: PropTypes.instanceOf(Api).isRequired,
     fieldFactory: PropTypes.func.isRequired,
+    listProps: PropTypes.object,
     resource: PropTypes.instanceOf(Resource).isRequired,
   }),
   perPage: PropTypes.number,
