@@ -4,6 +4,12 @@ import {Show as BaseShow, SimpleShowLayout, TextField} from 'admin-on-rest';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const hasIdentifier = fields => {
+  return (
+    undefined !== fields.find(({id}) => 'http://schema.org/identifier' === id)
+  );
+};
+
 const resolveProps = props => {
   const {options} = props;
   const {fieldFactory: defaultFieldFactory, resource} = options;
@@ -28,8 +34,8 @@ const resolveProps = props => {
 
 const Show = props => {
   const {
-    addIdField,
     options: {api, fieldFactory, fields, resource},
+    addIdField = false === hasIdentifier(fields),
   } = resolveProps(props);
 
   return (
@@ -45,10 +51,6 @@ const Show = props => {
       </SimpleShowLayout>
     </BaseShow>
   );
-};
-
-Show.defaultProps = {
-  addIdField: true,
 };
 
 Show.propTypes = {

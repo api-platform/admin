@@ -140,9 +140,9 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   };
 
   /**
-   * @param {Object} resource 
-   * @param {Object} data 
-   * 
+   * @param {Object} resource
+   * @param {Object} data
+   *
    * @returns {Promise}
    */
   const transformAORDataToRequestBody = (resource, data = {}) => {
@@ -168,16 +168,15 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   const convertAORRequestToHydraRequest = (type, resource, params) => {
     switch (type) {
       case CREATE:
-        return transformAORDataToRequestBody(
-          resource,
-          params.data,
-        ).then(body => ({
-          options: {
-            body,
-            method: 'POST',
-          },
-          url: `${entrypoint}/${resource}`,
-        }));
+        return transformAORDataToRequestBody(resource, params.data).then(
+          body => ({
+            options: {
+              body,
+              method: 'POST',
+            },
+            url: `${entrypoint}/${resource}`,
+          }),
+        );
 
       case DELETE:
         return Promise.resolve({
@@ -220,16 +219,15 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case UPDATE:
-        return transformAORDataToRequestBody(
-          resource,
-          params.data,
-        ).then(body => ({
-          options: {
-            body,
-            method: 'PUT',
-          },
-          url: entrypoint + params.id,
-        }));
+        return transformAORDataToRequestBody(resource, params.data).then(
+          body => ({
+            options: {
+              body,
+              method: 'PUT',
+            },
+            url: entrypoint + params.id,
+          }),
+        );
 
       default:
         throw new Error(`Unsupported fetch action type ${type}`);

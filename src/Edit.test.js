@@ -1,7 +1,7 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import Field from '@api-platform/api-doc-parser/lib/Field';
 import Resource from '@api-platform/api-doc-parser/lib/Resource';
-import {TextInput} from 'admin-on-rest';
+import {DisabledInput, TextInput} from 'admin-on-rest';
 import {shallow} from 'enzyme';
 import React from 'react';
 import Edit from './Edit';
@@ -65,6 +65,40 @@ describe('<Edit />', () => {
     );
 
     expect(defaultInputFactory).toHaveBeenCalledTimes(2);
+    expect(render.find(DisabledInput).length).toEqual(1);
+    expect(render.find(DisabledInput).get(0).props.source).toEqual('id');
+    expect(render.find(TextInput).length).toEqual(2);
+    expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
+    expect(render.find(TextInput).get(1).props.source).toEqual('fieldB');
+  });
+
+  test('without default identifier input', () => {
+    const defaultInputFactory = jest.fn(inputFactory);
+
+    const resource = new Resource(resourceData.name, resourceData.url, {
+      ...resourceData,
+      editProps: {
+        addIdInput: false,
+      },
+    });
+
+    const api = new Api(apiData.entrypoint, {
+      ...apiData,
+      resources: [resource],
+    });
+
+    const render = shallow(
+      <Edit
+        options={{
+          api,
+          inputFactory: defaultInputFactory,
+          resource,
+        }}
+      />,
+    );
+
+    expect(defaultInputFactory).toHaveBeenCalledTimes(2);
+    expect(render.find(DisabledInput).length).toEqual(0);
     expect(render.find(TextInput).length).toEqual(2);
     expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
     expect(render.find(TextInput).get(1).props.source).toEqual('fieldB');
@@ -100,6 +134,8 @@ describe('<Edit />', () => {
 
     expect(customInputFactory).toHaveBeenCalledTimes(2);
     expect(defaultInputFactory).toHaveBeenCalledTimes(0);
+    expect(render.find(DisabledInput).length).toEqual(1);
+    expect(render.find(DisabledInput).get(0).props.source).toEqual('id');
     expect(render.find(TextInput).length).toEqual(2);
     expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
     expect(render.find(TextInput).get(1).props.source).toEqual('fieldB');
@@ -136,7 +172,51 @@ describe('<Edit />', () => {
     );
 
     expect(defaultInputFactory).toHaveBeenCalledTimes(1);
+    expect(render.find(DisabledInput).length).toEqual(1);
+    expect(render.find(DisabledInput).get(0).props.source).toEqual('id');
     expect(render.find(TextInput).length).toEqual(1);
     expect(render.find(TextInput).get(0).props.source).toEqual('fieldC');
+  });
+
+  test('with writable identifier', () => {
+    const defaultInputFactory = jest.fn(inputFactory);
+
+    const resource = new Resource(resourceData.name, resourceData.url, {
+      ...resourceData,
+      editProps: {
+        addIdInput: false,
+      },
+      writableFields: [
+        ...resourceData.writableFields,
+        new Field('id', {
+          id: 'http://schema.org/identifier',
+          range: 'http://www.w3.org/2001/XMLSchema#string',
+          reference: null,
+          required: true,
+        }),
+      ],
+    });
+
+    const api = new Api(apiData.entrypoint, {
+      ...apiData,
+      resources: [resource],
+    });
+
+    const render = shallow(
+      <Edit
+        options={{
+          api,
+          inputFactory: defaultInputFactory,
+          resource,
+        }}
+      />,
+    );
+
+    expect(defaultInputFactory).toHaveBeenCalledTimes(3);
+    expect(render.find(DisabledInput).length).toEqual(0);
+    expect(render.find(TextInput).length).toEqual(3);
+    expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
+    expect(render.find(TextInput).get(1).props.source).toEqual('fieldB');
+    expect(render.find(TextInput).get(2).props.source).toEqual('id');
   });
 });

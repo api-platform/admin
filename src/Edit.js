@@ -4,6 +4,12 @@ import {DisabledInput, Edit as BaseEdit, SimpleForm} from 'admin-on-rest';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const hasIdentifier = fields => {
+  return (
+    undefined !== fields.find(({id}) => 'http://schema.org/identifier' === id)
+  );
+};
+
 const resolveProps = props => {
   const {options} = props;
   const {inputFactory: defaultInputFactory, resource} = options;
@@ -29,12 +35,13 @@ const resolveProps = props => {
 const Edit = props => {
   const {
     options: {api, fields, inputFactory, resource},
+    addIdInput = false === hasIdentifier(fields),
   } = resolveProps(props);
 
   return (
     <BaseEdit {...props}>
       <SimpleForm>
-        <DisabledInput source="id" />
+        {addIdInput && <DisabledInput source="id" />}
         {fields.map(field =>
           inputFactory(field, {
             api,
@@ -47,6 +54,7 @@ const Edit = props => {
 };
 
 Edit.propTypes = {
+  addIdInput: PropTypes.bool,
   options: PropTypes.shape({
     api: PropTypes.instanceOf(Api).isRequired,
     inputFactory: PropTypes.func.isRequired,

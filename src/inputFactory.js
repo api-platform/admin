@@ -14,6 +14,7 @@ import getReferenceNameField from './getReferenceNameField';
 
 export default (field, options) => {
   const props = {...field.inputProps};
+
   if (field.input) {
     return (
       <field.input
@@ -53,6 +54,21 @@ export default (field, options) => {
         <SelectArrayInput optionText={getReferenceNameField(field.reference)} />
       </ReferenceArrayInput>
     );
+  }
+
+  if ('http://schema.org/identifier' === field.id) {
+    const {
+      resource: {name},
+      prefix = `/${name}/`,
+    } = options;
+
+    props.format = value => {
+      return 0 === value.indexOf(prefix) ? value.substr(prefix.length) : value;
+    };
+
+    props.parse = value => {
+      return -1 !== value.indexOf(prefix) ? prefix + value : value;
+    };
   }
 
   switch (field.range) {
