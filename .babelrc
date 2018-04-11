@@ -1,16 +1,17 @@
 {
   "plugins": [
     "transform-react-jsx",
-    "transform-runtime"
+    [
+      "transform-runtime",
+      {
+        "polyfill": false,
+        "regenerator": true
+      }
+    ]
   ],
   "presets": [
-    ["es2015", { "loose": true, "modules": false }],
+    "es2015",
     "stage-0",
     "react"
-  ],
-  "env": {
-    "test": {
-      "plugins": [["transform-es2015-modules-commonjs", { "loose": true }]]
-    }
-  }
+  ]
 }
