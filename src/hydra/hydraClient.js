@@ -65,17 +65,12 @@ export const transformJsonLdDocumentToAORDocument = (
  */
 export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   /**
-   * @param {string} resource
+   * @param {Object} resource
    * @param {Object} data
    *
    * @returns {Promise}
    */
   const convertAORDataToHydraData = (resource, data = {}) => {
-    resource = resources.find(({name}) => resource === name);
-    if (undefined === resource) {
-      return Promise.resolve(data);
-    }
-
     const fieldData = [];
     resource.fields.forEach(({name, normalizeData}) => {
       if (!(name in data) || undefined === normalizeData) {
@@ -99,6 +94,25 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   };
 
   /**
+   * @param {Object} resource 
+   * @param {Object} data 
+   * 
+   * @returns {Promise}
+   */
+  const transformAORDataToRequestBody = (resource, data = {}) => {
+    resource = resources.find(({name}) => resource === name);
+    if (undefined === resource) {
+      return Promise.resolve(data);
+    }
+
+    return convertAORDataToHydraData(resource, data).then(data => {
+      return undefined === resource.encodeData
+        ? JSON.stringify(data)
+        : resource.encodeData(data);
+    });
+  };
+
+  /**
    * @param {string} type
    * @param {string} resource
    * @param {Object} params
@@ -108,9 +122,12 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   const convertAORRequestToHydraRequest = (type, resource, params) => {
     switch (type) {
       case CREATE:
-        return convertAORDataToHydraData(resource, params.data).then(data => ({
+        return transformAORDataToRequestBody(
+          resource,
+          params.data,
+        ).then(body => ({
           options: {
-            body: JSON.stringify(data),
+            body,
             method: 'POST',
           },
           url: `${entrypoint}/${resource}`,
@@ -154,9 +171,12 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case UPDATE:
-        return convertAORDataToHydraData(resource, params.data).then(data => ({
+        return transformAORDataToRequestBody(
+          resource,
+          params.data,
+        ).then(body => ({
           options: {
-            body: JSON.stringify(data),
+            body,
             method: 'PUT',
           },
           url: entrypoint + params.id,
