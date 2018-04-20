@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@api-platform/api-doc-parser": "^0.3.2",
-    "admin-on-rest": "^1.4",
+    "admin-on-rest": "^1.4.1",
     "babel-runtime": "^6.23",
     "jsonld": "^0.4",
     "lodash.isplainobject": "^4.0.6",
