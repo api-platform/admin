@@ -42,9 +42,9 @@ acorn@^5.1.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.2.1.tgz#317ac7821826c22c702d66189ab8359675f135d7"
 
-admin-on-rest@^1.4:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/admin-on-rest/-/admin-on-rest-1.4.0.tgz#161d2c6ea76af031f295e2e4aca306012c9f4792"
+admin-on-rest@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/admin-on-rest/-/admin-on-rest-1.4.1.tgz#0a37f76b098fe15d8e8b01705f787d4f58bdf8a2"
   dependencies:
     babel-runtime "~6.26.0"
     inflection "~1.12.0"
@@ -67,7 +67,7 @@ admin-on-rest@^1.4:
     react-router-redux "~5.0.0-alpha.6"
     recompose "~0.25.0"
     redux "~3.7.2"
-    redux-form "~7.0.3"
+    redux-form "~7.1.1"
     redux-saga "~0.15.0"
     reselect "~3.0.0"
 
@@ -3734,13 +3734,13 @@ recompose@~0.25.0:
     hoist-non-react-statics "^2.3.1"
     symbol-observable "^1.0.4"
 
-redux-form@~7.0.3:
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/redux-form/-/redux-form-7.0.4.tgz#2297b6bed40fda8bb58132e261ba0976fb4e530c"
+redux-form@~7.1.1:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/redux-form/-/redux-form-7.1.2.tgz#6b0f25c57fd8130a05ce00f6435fe1b051f402af"
   dependencies:
     deep-equal "^1.0.1"
     es6-error "^4.0.0"
-    hoist-non-react-statics "^2.2.1"
+    hoist-non-react-statics "^2.3.1"
     invariant "^2.2.2"
     is-promise "^2.1.0"
     lodash "^4.17.3"

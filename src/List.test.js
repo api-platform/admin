@@ -49,6 +49,8 @@ describe('<List />', () => {
 
     const render = shallow(
       <List
+        hasEdit={true}
+        hasShow={true}
         options={{
           api,
           fieldFactory: defaultFieldFactory,
@@ -81,6 +83,8 @@ describe('<List />', () => {
 
     const render = shallow(
       <List
+        hasEdit={true}
+        hasShow={true}
         options={{
           api,
           fieldFactory: defaultFieldFactory,
@@ -115,6 +119,8 @@ describe('<List />', () => {
 
     const render = shallow(
       <List
+        hasEdit={true}
+        hasShow={true}
         options={{
           api,
           fieldFactory: defaultFieldFactory,
@@ -153,6 +159,8 @@ describe('<List />', () => {
 
     const render = shallow(
       <List
+        hasEdit={true}
+        hasShow={true}
         options={{
           api,
           fieldFactory: defaultFieldFactory,
