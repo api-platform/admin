@@ -17,7 +17,7 @@ const AdminBuilder = props => {
 
   return (
     <Admin {...props} title={title}>
-      {api.resources.map(resource =>
+      {api.resources.filter(resource => !resource.deprecated).map(resource =>
         resourceFactory(resource, api, fieldFactory, inputFactory),
       )}
     </Admin>
