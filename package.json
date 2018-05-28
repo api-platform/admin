@@ -40,7 +40,7 @@
     "react-test-renderer": "^15.6.1"
   },
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.3.2",
+    "@api-platform/api-doc-parser": "^0.4",
     "admin-on-rest": "^1.4.1",
     "babel-runtime": "^6.23",
     "jsonld": "^0.4",

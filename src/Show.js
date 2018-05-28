@@ -35,7 +35,7 @@ const Show = props => {
     <BaseShow {...props}>
       <SimpleShowLayout>
         {addIdField && <TextField source="id" />}
-        {fields.map(field =>
+        {fields.filter(field => !field.deprecated).map(field =>
           fieldFactory(field, {
             api,
             resource,

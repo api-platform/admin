@@ -26,13 +26,15 @@ const resolveProps = props => {
 };
 
 const Edit = props => {
-  const {options: {api, fields, inputFactory, resource}} = resolveProps(props);
+  const {
+    options: {api, fields, inputFactory, resource},
+  } = resolveProps(props);
 
   return (
     <BaseEdit {...props}>
       <SimpleForm>
         <DisabledInput source="id" />
-        {fields.map(field =>
+        {fields.filter(field => !field.deprecated).map(field =>
           inputFactory(field, {
             api,
             resource,

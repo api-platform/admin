@@ -43,7 +43,7 @@ const List = props => {
     <BaseList {...props}>
       <Datagrid>
         {addIdField && <TextField source="id" />}
-        {fields.map(field =>
+        {fields.filter(field => !field.deprecated).map(field =>
           fieldFactory(field, {
             api,
             resource,
