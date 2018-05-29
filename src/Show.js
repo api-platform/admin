@@ -19,7 +19,8 @@ const resolveProps = props => {
     ...showProps,
     options: {
       ...options,
-      fields: customFields || defaultFields.filter(({deprecated}) => !deprecated),
+      fields:
+        customFields || defaultFields.filter(({deprecated}) => !deprecated),
       fieldFactory: customFieldFactory || defaultFieldFactory,
     },
   };
