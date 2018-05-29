@@ -19,7 +19,7 @@ const resolveProps = props => {
     ...createProps,
     options: {
       ...options,
-      fields: customFields || defaultFields,
+      fields: customFields || defaultFields.filter(field => !field.deprecated),
       inputFactory: customInputFactory || defaultInputFactory,
     },
   };
@@ -33,7 +33,7 @@ const Create = props => {
   return (
     <BaseCreate {...props}>
       <SimpleForm>
-        {fields.filter(field => !field.deprecated).map(field =>
+        {fields.map(field =>
           inputFactory(field, {
             api,
             resource,

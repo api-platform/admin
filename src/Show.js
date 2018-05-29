@@ -19,8 +19,8 @@ const resolveProps = props => {
     ...showProps,
     options: {
       ...options,
+      fields: customFields || defaultFields.filter(field => !field.deprecated),
       fieldFactory: customFieldFactory || defaultFieldFactory,
-      fields: customFields || defaultFields,
     },
   };
 };
@@ -35,7 +35,7 @@ const Show = props => {
     <BaseShow {...props}>
       <SimpleShowLayout>
         {addIdField && <TextField source="id" />}
-        {fields.filter(field => !field.deprecated).map(field =>
+        {fields.map(field =>
           fieldFactory(field, {
             api,
             resource,
