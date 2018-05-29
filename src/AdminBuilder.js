@@ -13,7 +13,7 @@ const AdminBuilder = props => {
     inputFactory,
     resourceFactory,
     title = api.title,
-    resources = api.resources.filter(resource => !resource.deprecated),
+    resources = api.resources.filter(({deprecated}) => !deprecated),
   } = props;
 
   return (
