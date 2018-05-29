@@ -13,11 +13,12 @@ const AdminBuilder = props => {
     inputFactory,
     resourceFactory,
     title = api.title,
+    resources = api.resources.filter(({deprecated}) => !deprecated),
   } = props;
 
   return (
     <Admin {...props} title={title}>
-      {api.resources.map(resource =>
+      {resources.map(resource =>
         resourceFactory(resource, api, fieldFactory, inputFactory),
       )}
     </Admin>
@@ -36,6 +37,7 @@ AdminBuilder.propTypes = {
   inputFactory: PropTypes.func,
   resourceFactory: PropTypes.func,
   restClient: PropTypes.func.isRequired,
+  resource: PropTypes.array,
 };
 
 export default AdminBuilder;

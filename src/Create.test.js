@@ -29,6 +29,13 @@ const resourceData = {
       reference: null,
       required: true,
     }),
+    new Field('deprecatedField', {
+      id: 'http://localhost/deprecatedField',
+      range: 'http://www.w3.org/2001/XMLSchema#string',
+      reference: null,
+      required: true,
+      deprecated: true,
+    }),
   ],
 };
 

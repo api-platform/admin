@@ -19,14 +19,17 @@ const resolveProps = props => {
     ...editProps,
     options: {
       ...options,
-      fields: customFields || defaultFields,
+      fields:
+        customFields || defaultFields.filter(({deprecated}) => !deprecated),
       inputFactory: customInputFactory || defaultInputFactory,
     },
   };
 };
 
 const Edit = props => {
-  const {options: {api, fields, inputFactory, resource}} = resolveProps(props);
+  const {
+    options: {api, fields, inputFactory, resource},
+  } = resolveProps(props);
 
   return (
     <BaseEdit {...props}>

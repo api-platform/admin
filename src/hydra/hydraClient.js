@@ -125,7 +125,10 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case GET_LIST: {
-        const {pagination: {page}, sort: {field, order}} = params;
+        const {
+          pagination: {page},
+          sort: {field, order},
+        } = params;
 
         return Promise.resolve({
           options: {},
