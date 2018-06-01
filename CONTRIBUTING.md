@@ -36,7 +36,7 @@ To install the source version of API Platform Admin in your project and contribu
     $ cd admin
     $ yarn link
     $ cd ../yourpoject
-    $ yarn link api-platform-admin
+    $ yarn link "@api-platform/admin"
     # Use the React version of your project to build API Platform admin
     $ cd node_modules/react
     $ yarn link
