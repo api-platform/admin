@@ -52,6 +52,19 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
         jsonLdDocument.itemReviewed.id,
       );
     });
+
+    test('an AOR can be casted to a string, and this string is the IRI', () => {
+      expect(AORDocument.toString()).toBe('/reviews/327');
+    });
+
+    const AORDocumentDepth3 = transformJsonLdDocumentToAORDocument(3)(
+      jsonLdDocument,
+    );
+
+    test('embedded documents are transformed to AORDocument instancesn and can be casted to strings', () => {
+      expect(AORDocumentDepth3.itemReviewed.toString()).toBe('/books/2');
+      expect(AORDocumentDepth3.comment[0].toString()).toBe('/comments/1');
+    });
   });
 
   describe('transform the embedded document when called with a max depth of 2', () => {

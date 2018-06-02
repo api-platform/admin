@@ -11,6 +11,26 @@ import isPlainObject from 'lodash.isplainobject';
 import qs from 'qs';
 import fetchHydra from './fetchHydra';
 
+class AORDocument {
+  constructor(obj) {
+    Object.assign(this, obj, {
+      originId: obj.id,
+      id: obj['@id'],
+    });
+  }
+
+  /**
+   * Internally, AOR casts references values to string. It's not a problem the reference is an IRI,
+   * but if it's an embedded object, the id becomes [Object]... Not great.
+   * Having a toString returning the IRI of the inner document allows calls to fetchApi to work properly.
+   *
+   * @return {string}
+   */
+  toString() {
+    return this.id || super.toString();
+  }
+}
+
 /**
  * Transforms a JSON-LD document to an admin-on-rest compatible document
  *
@@ -18,7 +38,7 @@ import fetchHydra from './fetchHydra';
  * @param {number} depth
  */
 export const transformJsonLdDocumentToAORDocument = (
-  maxDepth = 2,
+  maxDepth = 3,
   depth = 1,
 ) => documents => {
   if (!isPlainObject(documents) && !Array.isArray(documents)) {
@@ -27,25 +47,24 @@ export const transformJsonLdDocumentToAORDocument = (
 
   documents = Array.isArray(documents)
     ? Array.from(documents)
-    : Object.assign({}, documents, {
-        originId: documents.id,
-        id: documents['@id'],
-      });
-
-  if (depth < maxDepth) {
-    if (Array.isArray(documents)) {
-      documents = documents.map(document =>
-        transformJsonLdDocumentToAORDocument(maxDepth, depth + 1)(document),
-      );
-    } else {
-      Object.keys(documents).forEach(key => {
-        documents[key] = transformJsonLdDocumentToAORDocument(
-          maxDepth,
-          depth + 1,
-        )(documents[key]);
-      });
-    }
+    : new AORDocument(documents);
+  if (depth >= maxDepth) {
+    return documents;
   }
+
+  if (Array.isArray(documents)) {
+    documents = documents.map(document =>
+      transformJsonLdDocumentToAORDocument(maxDepth, depth + 1)(document),
+    );
+
+    return documents;
+  }
+
+  Object.keys(documents).forEach(key => {
+    documents[key] = transformJsonLdDocumentToAORDocument(maxDepth, depth + 1)(
+      documents[key],
+    );
+  });
 
   return documents;
 };
