@@ -27,9 +27,11 @@ class AORDocument {
    * @return {string}
    */
   toString() {
-    return this.id || super.toString();
+    return this.id;
   }
 }
+
+const aorDocumentsCache = new Map();
 
 /**
  * Transforms a JSON-LD document to an admin-on-rest compatible document
@@ -45,9 +47,15 @@ export const transformJsonLdDocumentToAORDocument = (
     return documents;
   }
 
-  documents = Array.isArray(documents)
-    ? Array.from(documents)
-    : new AORDocument(documents);
+  if (Array.isArray(documents)) {
+    documents = Array.from(documents);
+  } else if (documents['@id']) {
+    documents = new AORDocument(documents);
+    aorDocumentsCache[documents.toString()] = documents;
+  } else {
+    documents = Object.assign({}, documents);
+  }
+
   if (depth >= maxDepth) {
     return documents;
   }
@@ -267,7 +275,12 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
     // Hydra doesn't handle WHERE IN requests, so we fallback to calling GET_ONE n times instead
     if (GET_MANY === type) {
       return Promise.all(
-        params.ids.map(id => fetchApi(GET_ONE, resource, {id})),
+        params.ids.map(
+          id =>
+            aorDocumentsCache[id]
+              ? Promise.resolve({data: aorDocumentsCache[id]})
+              : fetchApi(GET_ONE, resource, {id}),
+        ),
       ).then(responses => ({data: responses.map(({data}) => data)}));
     }
 
