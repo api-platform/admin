@@ -20,14 +20,10 @@ class AORDocument {
   }
 
   /**
-   * Internally, AOR casts references values to string. It's not a problem the reference is an IRI,
-   * but if it's an embedded object, the id becomes [Object]... Not great.
-   * Having a toString returning the IRI of the inner document allows calls to fetchApi to work properly.
-   *
    * @return {string}
    */
   toString() {
-    return this.id;
+    return `[object ${this.id}]`;
   }
 }
 
@@ -36,45 +32,57 @@ const aorDocumentsCache = new Map();
 /**
  * Transforms a JSON-LD document to an admin-on-rest compatible document
  *
- * @param {number} maxDepth
- * @param {number} depth
+ * @param {Object} document
+ * @param {bool} clone
+ *
+ * @return {AORDocument}
  */
 export const transformJsonLdDocumentToAORDocument = (
-  maxDepth = 3,
-  depth = 1,
-) => documents => {
-  if (!isPlainObject(documents) && !Array.isArray(documents)) {
-    return documents;
+  document,
+  clone = true,
+) => {
+  if (clone) {
+    // deep clone documents
+    document = JSON.parse(JSON.stringify(document));
   }
 
-  if (Array.isArray(documents)) {
-    documents = Array.from(documents);
-  } else if (documents['@id']) {
-    documents = new AORDocument(documents);
-    aorDocumentsCache[documents.toString()] = documents;
-  } else {
-    documents = Object.assign({}, documents);
+  // The main document is a JSON-LD document, convert it and store it in the cache
+  if (document['@id']) {
+    document = new AORDocument(document);
+    aorDocumentsCache[document['@id']] = document;
   }
 
-  if (depth >= maxDepth) {
-    return documents;
-  }
+  // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
+  Object.keys(document).forEach(key => {
+    // to-one
+    if (isPlainObject(document[key]) && document[key]['@id']) {
+      aorDocumentsCache[
+        document[key]['@id']
+      ] = transformJsonLdDocumentToAORDocument(document[key], false);
+      document[key] = document[key]['@id'];
 
-  if (Array.isArray(documents)) {
-    documents = documents.map(document =>
-      transformJsonLdDocumentToAORDocument(maxDepth, depth + 1)(document),
-    );
+      return;
+    }
 
-    return documents;
-  }
+    // to-many
+    if (
+      Array.isArray(document[key]) &&
+      document[key].length &&
+      isPlainObject(document[key][0]) &&
+      document[key][0]['@id']
+    ) {
+      document[key] = document[key].map(obj => {
+        aorDocumentsCache[obj['@id']] = transformJsonLdDocumentToAORDocument(
+          obj,
+          false,
+        );
 
-  Object.keys(documents).forEach(key => {
-    documents[key] = transformJsonLdDocumentToAORDocument(maxDepth, depth + 1)(
-      documents[key],
-    );
+        return obj['@id'];
+      });
+    }
   });
 
-  return documents;
+  return document;
 };
 
 /**
@@ -245,7 +253,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         // TODO: support other prefixes than "hydra:"
         return Promise.resolve(
           response.json['hydra:member'].map(
-            transformJsonLdDocumentToAORDocument(),
+            transformJsonLdDocumentToAORDocument,
           ),
         )
           .then(data =>
@@ -257,7 +265,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
       default:
         return Promise.resolve(
-          transformJsonLdDocumentToAORDocument()(response.json),
+          transformJsonLdDocumentToAORDocument(response.json),
         )
           .then(data => convertHydraDataToAORData(resource, data))
           .then(data => ({data}));
