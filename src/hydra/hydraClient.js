@@ -27,10 +27,16 @@ class AORDocument {
   }
 }
 
+/**
+ * Local cache containing embedded documents.
+ * It will be used to prevent useless extra HTTP query if the relation is displayed.
+ *
+ * @type {Map}
+ */
 const aorDocumentsCache = new Map();
 
 /**
- * Transforms a JSON-LD document to an admin-on-rest compatible document
+ * Transforms a JSON-LD document to an admin-on-rest compatible document.
  *
  * @param {Object} document
  * @param {bool} clone
@@ -40,6 +46,7 @@ const aorDocumentsCache = new Map();
 export const transformJsonLdDocumentToAORDocument = (
   document,
   clone = true,
+  addToCache = true,
 ) => {
   if (clone) {
     // deep clone documents
@@ -49,16 +56,17 @@ export const transformJsonLdDocumentToAORDocument = (
   // The main document is a JSON-LD document, convert it and store it in the cache
   if (document['@id']) {
     document = new AORDocument(document);
-    aorDocumentsCache[document['@id']] = document;
   }
 
   // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
   Object.keys(document).forEach(key => {
     // to-one
     if (isPlainObject(document[key]) && document[key]['@id']) {
-      aorDocumentsCache[
-        document[key]['@id']
-      ] = transformJsonLdDocumentToAORDocument(document[key], false);
+      if (addToCache) {
+        aorDocumentsCache[
+          document[key]['@id']
+        ] = transformJsonLdDocumentToAORDocument(document[key], false, false);
+      }
       document[key] = document[key]['@id'];
 
       return;
@@ -72,10 +80,13 @@ export const transformJsonLdDocumentToAORDocument = (
       document[key][0]['@id']
     ) {
       document[key] = document[key].map(obj => {
-        aorDocumentsCache[obj['@id']] = transformJsonLdDocumentToAORDocument(
-          obj,
-          false,
-        );
+        if (addToCache) {
+          aorDocumentsCache[obj['@id']] = transformJsonLdDocumentToAORDocument(
+            obj,
+            false,
+            false,
+          );
+        }
 
         return obj['@id'];
       });
