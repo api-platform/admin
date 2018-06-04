@@ -71,13 +71,10 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Promise}
    */
   const convertAORDataToHydraData = (resource, data = {}) => {
-    resource = resources.find(({name}) => resource === name);
-    if (undefined === resource) {
-      return Promise.resolve(data);
-    }
+    const {fields = []} = resources.find(({name}) => resource === name) || {};
 
     const fieldData = [];
-    resource.fields.forEach(({name, normalizeData}) => {
+    fields.forEach(({name, normalizeData}) => {
       if (!(name in data) || undefined === normalizeData) {
         return;
       }
@@ -106,6 +103,9 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Object}
    */
   const convertAORRequestToHydraRequest = (type, resource, params) => {
+    const {url = `${entrypoint}/${resource}`} =
+      resources.find(({name}) => resource === name) || {};
+
     switch (type) {
       case CREATE:
         return convertAORDataToHydraData(resource, params.data).then(data => ({
@@ -113,7 +113,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
             body: JSON.stringify(data),
             method: 'POST',
           },
-          url: `${entrypoint}/${resource}`,
+          url: `${url}`,
         }));
 
       case DELETE:
@@ -132,7 +132,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${qs.stringify({
+          url: `${url}?${qs.stringify({
             ...params.filter,
             order: {
               [field]: order,
@@ -145,7 +145,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
       case GET_MANY_REFERENCE:
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${qs.stringify({
+          url: `${url}?${qs.stringify({
             [params.target]: params.id,
           })}`,
         });
@@ -177,13 +177,10 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Promise}
    */
   const convertHydraDataToAORData = (resource, data = {}) => {
-    resource = resources.find(({name}) => resource === name);
-    if (undefined === resource) {
-      return Promise.resolve(data);
-    }
+    const {fields = []} = resources.find(({name}) => resource === name) || {};
 
     const fieldData = {};
-    resource.fields.forEach(({name, denormalizeData}) => {
+    fields.forEach(({name, denormalizeData}) => {
       if (!(name in data) || undefined === denormalizeData) {
         return;
       }
