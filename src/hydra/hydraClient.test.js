@@ -34,43 +34,37 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
         dateCreated: '2017-04-27T00:00:00+00:00',
       },
     ],
+    aNestedObject: {
+      foo: 'bar',
+    },
   };
 
-  describe('transform only the main document when called with a max depth of 1', () => {
-    const AORDocument = transformJsonLdDocumentToAORDocument(1)(jsonLdDocument);
+  describe('transform the JSON-LD document in AOR document', () => {
+    const AORDocument = transformJsonLdDocumentToAORDocument(jsonLdDocument);
+
+    test('deep clone the original object', () => {
+      expect(AORDocument).not.toBe(jsonLdDocument);
+      expect(AORDocument.aNestedObject).not.toBe(jsonLdDocument.aNestedObject);
+    });
 
     test('add an id property equal to the original @id property', () => {
-      expect(AORDocument.id).toEqual(jsonLdDocument['@id']);
+      expect(AORDocument.id).toBe(jsonLdDocument['@id']);
     });
 
     test('preserve the previous id property value in a new originId property', () => {
-      expect(AORDocument.originId).toEqual(jsonLdDocument.id);
+      expect(AORDocument.originId).toBe(jsonLdDocument.id);
     });
 
-    test('do not alter the embedded document', () => {
-      expect(AORDocument.itemReviewed.id).toEqual(
-        jsonLdDocument.itemReviewed.id,
-      );
+    test('an AOR has a custom toString method', () => {
+      expect(AORDocument.toString()).toBe('[object /reviews/327]');
     });
-  });
 
-  describe('transform the embedded document when called with a max depth of 2', () => {
-    const AORDocument = transformJsonLdDocumentToAORDocument(2)(jsonLdDocument);
-
-    test('add an id property on the embedded document equal to the @id property of the embedded document', () => {
-      expect(AORDocument.itemReviewed.id).toEqual(
-        AORDocument.itemReviewed['@id'],
-      );
+    test('transform embedded documents to their IRIs', () => {
+      expect(AORDocument.itemReviewed).toBe('/books/2');
     });
-  });
 
-  describe('transform the embedded document collection when called with a max depth of 3', () => {
-    const AORDocument = transformJsonLdDocumentToAORDocument(3)(jsonLdDocument);
-
-    test('add an id property on each document of an embedded collection equal to the @id property', () => {
-      AORDocument.comment.forEach(comment => {
-        expect(comment.id).toEqual(comment['@id']);
-      });
+    test('transform arrays of embedded documents to their IRIs', () => {
+      expect(AORDocument.comment[0]).toBe('/comments/1');
     });
   });
 });

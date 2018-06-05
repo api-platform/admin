@@ -11,43 +11,89 @@ import isPlainObject from 'lodash.isplainobject';
 import qs from 'qs';
 import fetchHydra from './fetchHydra';
 
+class AORDocument {
+  constructor(obj) {
+    Object.assign(this, obj, {
+      originId: obj.id,
+      id: obj['@id'],
+    });
+  }
+
+  /**
+   * @return {string}
+   */
+  toString() {
+    return `[object ${this.id}]`;
+  }
+}
+
 /**
- * Transforms a JSON-LD document to an admin-on-rest compatible document
+ * Local cache containing embedded documents.
+ * It will be used to prevent useless extra HTTP query if the relation is displayed.
  *
- * @param {number} maxDepth
- * @param {number} depth
+ * @type {Map}
+ */
+const aorDocumentsCache = new Map();
+
+/**
+ * Transforms a JSON-LD document to an admin-on-rest compatible document.
+ *
+ * @param {Object} document
+ * @param {bool} clone
+ *
+ * @return {AORDocument}
  */
 export const transformJsonLdDocumentToAORDocument = (
-  maxDepth = 2,
-  depth = 1,
-) => documents => {
-  if (!isPlainObject(documents) && !Array.isArray(documents)) {
-    return documents;
+  document,
+  clone = true,
+  addToCache = true,
+) => {
+  if (clone) {
+    // deep clone documents
+    document = JSON.parse(JSON.stringify(document));
   }
 
-  documents = Array.isArray(documents)
-    ? Array.from(documents)
-    : Object.assign({}, documents, {
-        originId: documents.id,
-        id: documents['@id'],
-      });
+  // The main document is a JSON-LD document, convert it and store it in the cache
+  if (document['@id']) {
+    document = new AORDocument(document);
+  }
 
-  if (depth < maxDepth) {
-    if (Array.isArray(documents)) {
-      documents = documents.map(document =>
-        transformJsonLdDocumentToAORDocument(maxDepth, depth + 1)(document),
-      );
-    } else {
-      Object.keys(documents).forEach(key => {
-        documents[key] = transformJsonLdDocumentToAORDocument(
-          maxDepth,
-          depth + 1,
-        )(documents[key]);
+  // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
+  Object.keys(document).forEach(key => {
+    // to-one
+    if (isPlainObject(document[key]) && document[key]['@id']) {
+      if (addToCache) {
+        aorDocumentsCache[
+          document[key]['@id']
+        ] = transformJsonLdDocumentToAORDocument(document[key], false, false);
+      }
+      document[key] = document[key]['@id'];
+
+      return;
+    }
+
+    // to-many
+    if (
+      Array.isArray(document[key]) &&
+      document[key].length &&
+      isPlainObject(document[key][0]) &&
+      document[key][0]['@id']
+    ) {
+      document[key] = document[key].map(obj => {
+        if (addToCache) {
+          aorDocumentsCache[obj['@id']] = transformJsonLdDocumentToAORDocument(
+            obj,
+            false,
+            false,
+          );
+        }
+
+        return obj['@id'];
       });
     }
-  }
+  });
 
-  return documents;
+  return document;
 };
 
 /**
@@ -218,7 +264,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         // TODO: support other prefixes than "hydra:"
         return Promise.resolve(
           response.json['hydra:member'].map(
-            transformJsonLdDocumentToAORDocument(),
+            transformJsonLdDocumentToAORDocument,
           ),
         )
           .then(data =>
@@ -230,7 +276,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
       default:
         return Promise.resolve(
-          transformJsonLdDocumentToAORDocument()(response.json),
+          transformJsonLdDocumentToAORDocument(response.json),
         )
           .then(data => convertHydraDataToAORData(resource, data))
           .then(data => ({data}));
@@ -248,7 +294,12 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
     // Hydra doesn't handle WHERE IN requests, so we fallback to calling GET_ONE n times instead
     if (GET_MANY === type) {
       return Promise.all(
-        params.ids.map(id => fetchApi(GET_ONE, resource, {id})),
+        params.ids.map(
+          id =>
+            aorDocumentsCache[id]
+              ? Promise.resolve({data: aorDocumentsCache[id]})
+              : fetchApi(GET_ONE, resource, {id}),
+        ),
       ).then(responses => ({data: responses.map(({data}) => data)}));
     }
 
