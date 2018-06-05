@@ -1,6 +1,6 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import Resource from '@api-platform/api-doc-parser/lib/Resource';
-import {Show as BaseShow, SimpleShowLayout, TextField} from 'admin-on-rest';
+import {Show as BaseShow, SimpleShowLayout, TextField} from 'react-admin';
 import PropTypes from 'prop-types';
 import React from 'react';
 
