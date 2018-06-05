@@ -63,6 +63,9 @@ describe('<List />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -97,6 +100,9 @@ describe('<List />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -133,6 +139,9 @@ describe('<List />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -173,6 +182,9 @@ describe('<List />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -215,6 +227,9 @@ describe('<List />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 

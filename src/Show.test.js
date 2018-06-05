@@ -61,6 +61,9 @@ describe('<Show />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -93,6 +96,9 @@ describe('<Show />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -127,6 +133,9 @@ describe('<Show />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -165,6 +174,9 @@ describe('<Show />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -205,6 +217,9 @@ describe('<Show />', () => {
           fieldFactory: defaultFieldFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 

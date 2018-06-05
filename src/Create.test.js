@@ -61,6 +61,9 @@ describe('<Create />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -95,6 +98,9 @@ describe('<Create />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -132,6 +138,9 @@ describe('<Create />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 

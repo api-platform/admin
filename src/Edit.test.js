@@ -61,6 +61,9 @@ describe('<Edit />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -94,6 +97,9 @@ describe('<Edit />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -129,6 +135,9 @@ describe('<Edit />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -168,6 +177,9 @@ describe('<Edit />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -209,6 +221,9 @@ describe('<Edit />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
