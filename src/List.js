@@ -10,6 +10,12 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const hasIdentifier = fields => {
+  return (
+    undefined !== fields.find(({id}) => 'http://schema.org/identifier' === id)
+  );
+};
+
 const resolveProps = props => {
   const {options} = props;
   const {fieldFactory: defaultFieldFactory, resource} = options;
@@ -34,10 +40,10 @@ const resolveProps = props => {
 
 const List = props => {
   const {
-    addIdField,
     hasEdit,
     hasShow,
     options: {api, fieldFactory, fields, resource},
+    addIdField = false === hasIdentifier(fields),
   } = resolveProps(props);
 
   return (
@@ -58,7 +64,6 @@ const List = props => {
 };
 
 List.defaultProps = {
-  addIdField: true,
   perPage: 30, // Default value in API Platform
 };
 
