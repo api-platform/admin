@@ -6,12 +6,12 @@ import {
   GET_MANY_REFERENCE,
   GET_ONE,
   UPDATE,
-} from 'admin-on-rest';
+} from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
 import qs from 'qs';
 import fetchHydra from './fetchHydra';
 
-class AORDocument {
+class ReactAdminDocument {
   constructor(obj) {
     Object.assign(this, obj, {
       originId: obj.id,
@@ -33,17 +33,17 @@ class AORDocument {
  *
  * @type {Map}
  */
-const aorDocumentsCache = new Map();
+const reactAdminDocumentsCache = new Map();
 
 /**
- * Transforms a JSON-LD document to an admin-on-rest compatible document.
+ * Transforms a JSON-LD document to a react-admin compatible document.
  *
  * @param {Object} document
  * @param {bool} clone
  *
- * @return {AORDocument}
+ * @return {ReactAdminDocument}
  */
-export const transformJsonLdDocumentToAORDocument = (
+export const transformJsonLdDocumentToReactAdminDocument = (
   document,
   clone = true,
   addToCache = true,
@@ -55,7 +55,7 @@ export const transformJsonLdDocumentToAORDocument = (
 
   // The main document is a JSON-LD document, convert it and store it in the cache
   if (document['@id']) {
-    document = new AORDocument(document);
+    document = new ReactAdminDocument(document);
   }
 
   // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
@@ -63,9 +63,13 @@ export const transformJsonLdDocumentToAORDocument = (
     // to-one
     if (isPlainObject(document[key]) && document[key]['@id']) {
       if (addToCache) {
-        aorDocumentsCache[
+        reactAdminDocumentsCache[
           document[key]['@id']
-        ] = transformJsonLdDocumentToAORDocument(document[key], false, false);
+        ] = transformJsonLdDocumentToReactAdminDocument(
+          document[key],
+          false,
+          false,
+        );
       }
       document[key] = document[key]['@id'];
 
@@ -81,11 +85,9 @@ export const transformJsonLdDocumentToAORDocument = (
     ) {
       document[key] = document[key].map(obj => {
         if (addToCache) {
-          aorDocumentsCache[obj['@id']] = transformJsonLdDocumentToAORDocument(
-            obj,
-            false,
-            false,
-          );
+          reactAdminDocumentsCache[
+            obj['@id']
+          ] = transformJsonLdDocumentToReactAdminDocument(obj, false, false);
         }
 
         return obj['@id'];
@@ -97,7 +99,7 @@ export const transformJsonLdDocumentToAORDocument = (
 };
 
 /**
- * Maps admin-on-rest queries to a Hydra powered REST API
+ * Maps react-admin queries to a Hydra powered REST API
  *
  * @see http://www.hydra-cg.com/
  *
@@ -116,7 +118,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    *
    * @returns {Promise}
    */
-  const convertAORDataToHydraData = (resource, data = {}) => {
+  const convertReactAdminDataToHydraData = (resource, data = {}) => {
     const fieldData = [];
     resource.fields.forEach(({name, normalizeData}) => {
       if (!(name in data) || undefined === normalizeData) {
@@ -145,13 +147,13 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    *
    * @returns {Promise}
    */
-  const transformAORDataToRequestBody = (resource, data = {}) => {
+  const transformReactAdminDataToRequestBody = (resource, data = {}) => {
     resource = resources.find(({name}) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
     }
 
-    return convertAORDataToHydraData(resource, data).then(data => {
+    return convertReactAdminDataToHydraData(resource, data).then(data => {
       return undefined === resource.encodeData
         ? JSON.stringify(data)
         : resource.encodeData(data);
@@ -165,10 +167,10 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    *
    * @returns {Object}
    */
-  const convertAORRequestToHydraRequest = (type, resource, params) => {
+  const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
     switch (type) {
       case CREATE:
-        return transformAORDataToRequestBody(resource, params.data).then(
+        return transformReactAdminDataToRequestBody(resource, params.data).then(
           body => ({
             options: {
               body,
@@ -219,7 +221,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case UPDATE:
-        return transformAORDataToRequestBody(resource, params.data).then(
+        return transformReactAdminDataToRequestBody(resource, params.data).then(
           body => ({
             options: {
               body,
@@ -240,7 +242,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    *
    * @returns {Promise}
    */
-  const convertHydraDataToAORData = (resource, data = {}) => {
+  const convertHydraDataToReactAdminData = (resource, data = {}) => {
     resource = resources.find(({name}) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
@@ -275,28 +277,34 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    *
    * @returns {Promise}
    */
-  const convertHydraResponseToAORResponse = (type, resource, response) => {
+  const convertHydraResponseToReactAdminResponse = (
+    type,
+    resource,
+    response,
+  ) => {
     switch (type) {
       case GET_LIST:
       case GET_MANY_REFERENCE:
         // TODO: support other prefixes than "hydra:"
         return Promise.resolve(
           response.json['hydra:member'].map(
-            transformJsonLdDocumentToAORDocument,
+            transformJsonLdDocumentToReactAdminDocument,
           ),
         )
           .then(data =>
             Promise.all(
-              data.map(data => convertHydraDataToAORData(resource, data)),
+              data.map(data =>
+                convertHydraDataToReactAdminData(resource, data),
+              ),
             ),
           )
           .then(data => ({data, total: response.json['hydra:totalItems']}));
 
       default:
         return Promise.resolve(
-          transformJsonLdDocumentToAORDocument(response.json),
+          transformJsonLdDocumentToReactAdminDocument(response.json),
         )
-          .then(data => convertHydraDataToAORData(resource, data))
+          .then(data => convertHydraDataToReactAdminData(resource, data))
           .then(data => ({data}));
     }
   };
@@ -314,17 +322,17 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
       return Promise.all(
         params.ids.map(
           id =>
-            aorDocumentsCache[id]
-              ? Promise.resolve({data: aorDocumentsCache[id]})
+            reactAdminDocumentsCache[id]
+              ? Promise.resolve({data: reactAdminDocumentsCache[id]})
               : fetchApi(GET_ONE, resource, {id}),
         ),
       ).then(responses => ({data: responses.map(({data}) => data)}));
     }
 
-    return convertAORRequestToHydraRequest(type, resource, params)
+    return convertReactAdminRequestToHydraRequest(type, resource, params)
       .then(({url, options}) => httpClient(url, options))
       .then(response =>
-        convertHydraResponseToAORResponse(type, resource, response),
+        convertHydraResponseToReactAdminResponse(type, resource, response),
       );
   };
 

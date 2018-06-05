@@ -1,4 +1,4 @@
-import {Resource} from 'admin-on-rest';
+import {Resource} from 'react-admin';
 import resourceFactory from './resourceFactory';
 
 describe('makes Resource component', () => {
@@ -33,11 +33,10 @@ describe('makes Resource component', () => {
       expect(resourceComponent.props.name).toEqual(resource.name);
     });
 
-    test('have default actions: create, edit, list, remove, show set', () => {
+    test('have default actions: create, edit, list, show set', () => {
       expect(resourceComponent.props.create).toBeInstanceOf(Function);
       expect(resourceComponent.props.edit).toBeInstanceOf(Function);
       expect(resourceComponent.props.list).toBeInstanceOf(Function);
-      expect(resourceComponent.props.remove).toBeInstanceOf(Function);
       expect(resourceComponent.props.show).toBeInstanceOf(Function);
     });
 
@@ -112,20 +111,6 @@ describe('makes Resource component', () => {
       );
 
       expect(resourceComponent.props.show).toEqual(customShow);
-    });
-
-    test('have custom remove action', () => {
-      const customDelete = jest.fn();
-      const resourceComponent = resourceFactory(
-        Object.assign({}, resource, {
-          remove: customDelete,
-        }),
-        api,
-        fieldFactory,
-        inputFactory,
-      );
-
-      expect(resourceComponent.props.remove).toEqual(customDelete);
     });
 
     test('have custom edit action', () => {

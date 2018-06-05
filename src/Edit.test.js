@@ -1,7 +1,7 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import Field from '@api-platform/api-doc-parser/lib/Field';
 import Resource from '@api-platform/api-doc-parser/lib/Resource';
-import {DisabledInput, TextInput} from 'admin-on-rest';
+import {DisabledInput, TextInput} from 'react-admin';
 import {shallow} from 'enzyme';
 import React from 'react';
 import Edit from './Edit';

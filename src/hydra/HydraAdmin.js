@@ -2,7 +2,7 @@ import apiDocumentationParser from '@api-platform/api-doc-parser/lib/hydra/parse
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import AdminBuilder from '../AdminBuilder';
-import restClient from './hydraClient';
+import dataProvider from './hydraClient';
 
 export default class extends Component {
   static defaultProps = {
@@ -10,7 +10,7 @@ export default class extends Component {
     customRoutes: [],
     error: 'Unable to retrieve API documentation.',
     loading: 'Loading...',
-    restClient,
+    dataProvider,
   };
 
   static propTypes = {
@@ -19,7 +19,7 @@ export default class extends Component {
     entrypoint: PropTypes.string.isRequired,
     error: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
     loading: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
-    restClient: PropTypes.func,
+    dataProvider: PropTypes.func,
   };
 
   state = {
@@ -82,7 +82,7 @@ export default class extends Component {
         {...this.props}
         api={this.state.api}
         customRoutes={this.props.customRoutes.concat(this.state.customRoutes)}
-        restClient={this.props.restClient(this.state.api)}
+        dataProvider={this.props.dataProvider(this.state.api)}
       />
     );
   }

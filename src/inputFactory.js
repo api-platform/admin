@@ -8,7 +8,7 @@ import {
   SelectArrayInput,
   SelectInput,
   TextInput,
-} from 'admin-on-rest';
+} from 'react-admin';
 import React from 'react';
 import getReferenceNameField from './getReferenceNameField';
 

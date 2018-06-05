@@ -1,5 +1,5 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
-import {Admin} from 'admin-on-rest';
+import {Admin} from 'react-admin';
 import PropTypes from 'prop-types';
 import React from 'react';
 import fieldFactory from './fieldFactory';
@@ -36,7 +36,7 @@ AdminBuilder.propTypes = {
   fieldFactory: PropTypes.func,
   inputFactory: PropTypes.func,
   resourceFactory: PropTypes.func,
-  restClient: PropTypes.func.isRequired,
+  dataProvider: PropTypes.func.isRequired,
   resource: PropTypes.array,
 };
 

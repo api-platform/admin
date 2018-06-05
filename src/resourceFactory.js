@@ -1,4 +1,4 @@
-import {Delete, Resource} from 'admin-on-rest';
+import {Resource} from 'react-admin';
 import React from 'react';
 import Create from './Create';
 import Edit from './Edit';
@@ -12,7 +12,6 @@ export default (resource, api, fieldFactory, inputFactory) => {
     list = List,
     name,
     props,
-    remove = Delete,
     show = Show,
   } = resource;
   return (
@@ -29,7 +28,6 @@ export default (resource, api, fieldFactory, inputFactory) => {
         inputFactory,
         resource,
       }}
-      remove={remove}
       show={show}
     />
   );
