@@ -26,7 +26,7 @@ export default (field, options) => {
     );
   }
 
-  if (!props.validate && field.required) props.validate = [required];
+  if (!props.validate && field.required) props.validate = [required()];
 
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
