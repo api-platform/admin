@@ -8,7 +8,7 @@ import {
   SelectArrayInput,
   SelectInput,
   TextInput,
-} from 'admin-on-rest';
+} from 'react-admin';
 import React from 'react';
 import getReferenceNameField from './getReferenceNameField';
 
@@ -26,7 +26,7 @@ export default (field, options) => {
     );
   }
 
-  if (!props.validate && field.required) props.validate = [required];
+  if (!props.validate && field.required) props.validate = [required()];
 
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {

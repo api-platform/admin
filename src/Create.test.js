@@ -1,7 +1,7 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import Field from '@api-platform/api-doc-parser/lib/Field';
 import Resource from '@api-platform/api-doc-parser/lib/Resource';
-import {TextInput} from 'admin-on-rest';
+import {TextInput} from 'react-admin';
 import {shallow} from 'enzyme';
 import React from 'react';
 import Create from './Create';
@@ -61,6 +61,9 @@ describe('<Create />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -95,6 +98,9 @@ describe('<Create />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 
@@ -132,6 +138,9 @@ describe('<Create />', () => {
           inputFactory: defaultInputFactory,
           resource,
         }}
+        location={{}}
+        match={{}}
+        resource=""
       />,
     );
 

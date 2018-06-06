@@ -1,6 +1,6 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import Resource from '@api-platform/api-doc-parser/lib/Resource';
-import {Create as BaseCreate, SimpleForm} from 'admin-on-rest';
+import {Create as BaseCreate, SimpleForm} from 'react-admin';
 import PropTypes from 'prop-types';
 import React from 'react';
 

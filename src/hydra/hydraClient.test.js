@@ -1,5 +1,7 @@
-import {GET_LIST, GET_MANY} from 'admin-on-rest';
-import hydraClient, {transformJsonLdDocumentToAORDocument} from './hydraClient';
+import {GET_LIST, GET_MANY} from 'react-admin';
+import hydraClient, {
+  transformJsonLdDocumentToReactAdminDocument,
+} from './hydraClient';
 
 describe('map a json-ld document to an admin on rest compatible document', () => {
   const jsonLdDocument = {
@@ -39,32 +41,36 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
     },
   };
 
-  describe('transform the JSON-LD document in AOR document', () => {
-    const AORDocument = transformJsonLdDocumentToAORDocument(jsonLdDocument);
+  describe('transform the JSON-LD document in React Admin document', () => {
+    const reactAdminDocument = transformJsonLdDocumentToReactAdminDocument(
+      jsonLdDocument,
+    );
 
     test('deep clone the original object', () => {
-      expect(AORDocument).not.toBe(jsonLdDocument);
-      expect(AORDocument.aNestedObject).not.toBe(jsonLdDocument.aNestedObject);
+      expect(reactAdminDocument).not.toBe(jsonLdDocument);
+      expect(reactAdminDocument.aNestedObject).not.toBe(
+        jsonLdDocument.aNestedObject,
+      );
     });
 
     test('add an id property equal to the original @id property', () => {
-      expect(AORDocument.id).toBe(jsonLdDocument['@id']);
+      expect(reactAdminDocument.id).toBe(jsonLdDocument['@id']);
     });
 
     test('preserve the previous id property value in a new originId property', () => {
-      expect(AORDocument.originId).toBe(jsonLdDocument.id);
+      expect(reactAdminDocument.originId).toBe(jsonLdDocument.id);
     });
 
-    test('an AOR has a custom toString method', () => {
-      expect(AORDocument.toString()).toBe('[object /reviews/327]');
+    test('an React Admin has a custom toString method', () => {
+      expect(reactAdminDocument.toString()).toBe('[object /reviews/327]');
     });
 
     test('transform embedded documents to their IRIs', () => {
-      expect(AORDocument.itemReviewed).toBe('/books/2');
+      expect(reactAdminDocument.itemReviewed).toBe('/books/2');
     });
 
     test('transform arrays of embedded documents to their IRIs', () => {
-      expect(AORDocument.comment[0]).toBe('/comments/1');
+      expect(reactAdminDocument.comment[0]).toBe('/comments/1');
     });
   });
 });

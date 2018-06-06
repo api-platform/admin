@@ -6,7 +6,7 @@ import {
   List as BaseList,
   ShowButton,
   TextField,
-} from 'admin-on-rest';
+} from 'react-admin';
 import PropTypes from 'prop-types';
 import React from 'react';
 
