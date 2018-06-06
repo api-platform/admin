@@ -1,6 +1,7 @@
 import {
   CREATE,
   DELETE,
+  DELETE_MANY,
   GET_LIST,
   GET_MANY,
   GET_MANY_REFERENCE,
@@ -300,6 +301,9 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           )
           .then(data => ({data, total: response.json['hydra:totalItems']}));
 
+      case DELETE:
+        return Promise.resolve(() => ({data: {}}));
+
       default:
         return Promise.resolve(
           transformJsonLdDocumentToReactAdminDocument(response.json),
@@ -317,23 +321,30 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Promise}
    */
   const fetchApi = (type, resource, params) => {
-    // Hydra doesn't handle WHERE IN requests, so we fallback to calling GET_ONE n times instead
-    if (GET_MANY === type) {
-      return Promise.all(
-        params.ids.map(
-          id =>
-            reactAdminDocumentsCache[id]
-              ? Promise.resolve({data: reactAdminDocumentsCache[id]})
-              : fetchApi(GET_ONE, resource, {id}),
-        ),
-      ).then(responses => ({data: responses.map(({data}) => data)}));
-    }
+    // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
+    switch (type) {
+      case GET_MANY:
+        return Promise.all(
+          params.ids.map(
+            id =>
+              reactAdminDocumentsCache[id]
+                ? Promise.resolve({data: reactAdminDocumentsCache[id]})
+                : fetchApi(GET_ONE, resource, {id}),
+          ),
+        ).then(responses => ({data: responses.map(({data}) => data)}));
 
-    return convertReactAdminRequestToHydraRequest(type, resource, params)
-      .then(({url, options}) => httpClient(url, options))
-      .then(response =>
-        convertHydraResponseToReactAdminResponse(type, resource, response),
-      );
+      case DELETE_MANY:
+        return Promise.all(
+          params.ids.map(id => fetchApi(DELETE, resource, {id})),
+        ).then(responses => ({data: {}}));
+
+      default:
+        return convertReactAdminRequestToHydraRequest(type, resource, params)
+          .then(({url, options}) => httpClient(url, options))
+          .then(response =>
+            convertHydraResponseToReactAdminResponse(type, resource, response),
+          );
+    }
   };
 
   return fetchApi;
