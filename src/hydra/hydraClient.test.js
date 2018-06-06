@@ -1,4 +1,4 @@
-import {GET_LIST, GET_MANY} from 'react-admin';
+import {DELETE, DELETE_MANY, GET_LIST, GET_MANY} from 'react-admin';
 import hydraClient, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './hydraClient';
@@ -99,14 +99,40 @@ describe('fetch data from an hydra api', () => {
   test('fetch a get_many resource', async () => {
     const mockHttpClient = jest.fn();
     mockHttpClient
-      .mockReturnValueOnce(Promise.resolve({json: {'@id': 'books/3'}}))
-      .mockReturnValue(Promise.resolve({json: {'@id': 'books/5'}}));
+      .mockReturnValueOnce(Promise.resolve({json: {'@id': '/books/3'}}))
+      .mockReturnValue(Promise.resolve({json: {'@id': '/books/5'}}));
 
-    await hydraClient({entrypoint: '/'}, mockHttpClient)(GET_MANY, 'books', {
+    await hydraClient({entrypoint: ''}, mockHttpClient)(GET_MANY, 'books', {
       ids: [3, 5],
     }).then(response => {
-      expect(response.data[0].id).toEqual('books/3');
-      expect(response.data[1].id).toEqual('books/5');
+      expect(response.data[0].id).toEqual('/books/3');
+      expect(response.data[1].id).toEqual('/books/5');
+    });
+  });
+
+  test('delete resource', async () => {
+    const mockHttpClient = jest.fn();
+    mockHttpClient.mockReturnValueOnce(Promise.resolve(''));
+
+    await hydraClient({entrypoint: ''}, mockHttpClient)(DELETE, 'books', {
+      id: '/books/1',
+    }).then(() => {
+      expect(mockHttpClient.mock.calls[0][0]).toBe('/books/1');
+      expect(mockHttpClient.mock.calls[0][1].method).toBe('DELETE');
+    });
+  });
+
+  test('delete many resources', async () => {
+    const mockHttpClient = jest.fn();
+    mockHttpClient.mockReturnValueOnce(Promise.resolve(''));
+
+    await hydraClient({entrypoint: ''}, mockHttpClient)(DELETE_MANY, 'books', {
+      ids: ['/books/1', '/books/2'],
+    }).then(() => {
+      expect(mockHttpClient.mock.calls[0][0]).toBe('/books/1');
+      expect(mockHttpClient.mock.calls[0][1].method).toBe('DELETE');
+      expect(mockHttpClient.mock.calls[1][0]).toBe('/books/2');
+      expect(mockHttpClient.mock.calls[1][1].method).toBe('DELETE');
     });
   });
 });
