@@ -302,7 +302,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           .then(data => ({data, total: response.json['hydra:totalItems']}));
 
       case DELETE:
-        return Promise.resolve(() => ({data: {}}));
+        return Promise.resolve({data: {}});
 
       default:
         return Promise.resolve(
