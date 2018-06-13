@@ -57,10 +57,7 @@ export default (field, options) => {
   }
 
   if ('http://schema.org/identifier' === field.id) {
-    const {
-      resource: {name},
-      prefix = `/${name}/`,
-    } = options;
+    const {resource: {name}, prefix = `/${name}/`} = options;
 
     props.format = value => {
       return 0 === value.indexOf(prefix) ? value.substr(prefix.length) : value;

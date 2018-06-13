@@ -171,15 +171,16 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
     switch (type) {
       case CREATE:
-        return transformReactAdminDataToRequestBody(resource, params.data).then(
-          body => ({
-            options: {
-              body,
-              method: 'POST',
-            },
-            url: `${entrypoint}/${resource}`,
-          }),
-        );
+        return transformReactAdminDataToRequestBody(
+          resource,
+          params.data,
+        ).then(body => ({
+          options: {
+            body,
+            method: 'POST',
+          },
+          url: `${entrypoint}/${resource}`,
+        }));
 
       case DELETE:
         return Promise.resolve({
@@ -190,10 +191,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case GET_LIST: {
-        const {
-          pagination: {page},
-          sort: {field, order},
-        } = params;
+        const {pagination: {page}, sort: {field, order}} = params;
 
         return Promise.resolve({
           options: {},
@@ -222,15 +220,16 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case UPDATE:
-        return transformReactAdminDataToRequestBody(resource, params.data).then(
-          body => ({
-            options: {
-              body,
-              method: 'PUT',
-            },
-            url: entrypoint + params.id,
-          }),
-        );
+        return transformReactAdminDataToRequestBody(
+          resource,
+          params.data,
+        ).then(body => ({
+          options: {
+            body,
+            method: 'PUT',
+          },
+          url: entrypoint + params.id,
+        }));
 
       default:
         throw new Error(`Unsupported fetch action type ${type}`);
@@ -302,7 +301,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           .then(data => ({data, total: response.json['hydra:totalItems']}));
 
       case DELETE:
-        return Promise.resolve(() => ({data: {}}));
+        return Promise.resolve(({data}) => data);
 
       default:
         return Promise.resolve(
