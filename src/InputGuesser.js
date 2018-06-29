@@ -38,8 +38,11 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
           reference={field.reference.name}
           source={field.name}
           validate={validate}
-          {...props}
-          allowEmpty>
+          format={inputValue =>
+            typeof inputValue === 'object' ? inputValue['@id'] : inputValue
+          }
+          allowEmpty
+          {...props}>
           <SelectInput optionText={getReferenceNameField(field.reference)} />
         </ReferenceInput>
       );
@@ -51,9 +54,16 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
         label={field.name}
         reference={field.reference.name}
         source={field.name}
+        format={inputValue =>
+          Array.isArray(inputValue)
+            ? inputValue.map(value =>
+                typeof value === 'object' ? value['@id'] : value,
+              )
+            : null
+        }
         validate={validate}
-        {...props}
-        allowEmpty>
+        allowEmpty
+        {...props}>
         <SelectArrayInput optionText={getReferenceNameField(field.reference)} />
       </ReferenceArrayInput>
     );

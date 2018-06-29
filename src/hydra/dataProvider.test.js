@@ -67,7 +67,8 @@ describe('map a json-ld document to an admin on rest compatible document', () =>
     });
 
     test('transform arrays of embedded documents to their IRIs', () => {
-      expect(reactAdminDocument.comment[0]).toBe('/comments/1');
+      expect(reactAdminDocument.comment[0]['@id']).toBe('/comments/1');
+      expect(reactAdminDocument.comment[0]['id']).toBe(1);
     });
   });
 });

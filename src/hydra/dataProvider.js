@@ -12,6 +12,18 @@ import isPlainObject from 'lodash.isplainobject';
 import fetchHydra from './fetchHydra';
 import parseHydraDocumentation from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
 
+const isIri = (key, value) => {
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  if (key === 'id' || key === '@id') {
+    return false;
+  }
+
+  return value.match(/\/[a-z]+\/[0-9]+/g);
+};
+
 class ReactAdminDocument {
   constructor(obj) {
     Object.assign(this, obj, {
@@ -41,6 +53,8 @@ const reactAdminDocumentsCache = new Map();
  *
  * @param {Object} document
  * @param {bool} clone
+ * @param {bool} addToCache
+ * @param {bool} doNoAlterRelations
  *
  * @return {ReactAdminDocument}
  */
@@ -48,6 +62,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   document,
   clone = true,
   addToCache = true,
+  doNoAlterRelations = false,
 ) => {
   if (clone) {
     // deep clone documents
@@ -72,9 +87,17 @@ export const transformJsonLdDocumentToReactAdminDocument = (
           false,
         );
       }
-      document[key] = document[key]['@id'];
+
+      document[key] =
+        doNoAlterRelations || !document[key]['@id']
+          ? document[key]
+          : document[key]['@id'];
 
       return;
+    }
+
+    if (doNoAlterRelations && isIri(key, document[key])) {
+      document[key] = {'@id': document[key], id: 1};
     }
 
     // to-many
@@ -91,8 +114,10 @@ export const transformJsonLdDocumentToReactAdminDocument = (
           ] = transformJsonLdDocumentToReactAdminDocument(obj, false, false);
         }
 
-        return obj['@id'];
+        return doNoAlterRelations ? obj : {'@id': obj['@id'], id: 1};
       });
+
+      document[`${key}_ids`] = document[key].map(obj => obj['@id']);
     }
   });
 
@@ -331,6 +356,18 @@ export default (
 
       case DELETE:
         return Promise.resolve({data: {id: null}});
+
+      case GET_ONE:
+        return Promise.resolve(
+          transformJsonLdDocumentToReactAdminDocument(
+            response.json,
+            true,
+            true,
+            true,
+          ),
+        )
+          .then(data => convertHydraDataToReactAdminData(resource, data))
+          .then(data => ({data}));
 
       default:
         return Promise.resolve(
