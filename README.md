@@ -11,11 +11,11 @@ using [the API Platform framework](https://api-platform.com).
 The generated administration is a 100% standalone Single-Page-Application with no coupling to the server part, according
 to the API-first paradigm.
 
-API Platform Admin parses the Hydra documentation then uses the awesome [Admin On Rest](https://marmelab.com/admin-on-rest/)
+API Platform Admin parses the Hydra documentation then uses the awesome [React-admin](https://marmelab.com/react-admin/)
 library (and [React](https://facebook.github.io/react/)) to expose a nice, responsive, management interface (Create-Retrieve-Update-Delete)
 for all available resources.
 
-You can also customize all screens by using Admin On Rest components and even raw JavaScript/React code.
+You can also customize all screens by using React-admin components and even raw JavaScript/React code.
 
 ## Installation
 
