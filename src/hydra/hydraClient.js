@@ -41,6 +41,7 @@ const reactAdminDocumentsCache = new Map();
  *
  * @param {Object} document
  * @param {bool} clone
+ * @param {bool} addToCache
  *
  * @return {ReactAdminDocument}
  */
@@ -120,7 +121,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Promise}
    */
   const convertReactAdminDataToHydraData = (resource, data = {}) => {
-    const fieldData = [];
+    const fieldData = {};
     resource.fields.forEach(({name, normalizeData}) => {
       if (!(name in data) || undefined === normalizeData) {
         return;
@@ -169,16 +170,13 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Object}
    */
   const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
+    const {url = `${entrypoint}/${resource}`} =
+      resources.find(({name}) => resource === name) || {};
+
     switch (type) {
       case CREATE:
         return transformReactAdminDataToRequestBody(resource, params.data).then(
-          body => ({
-            options: {
-              body,
-              method: 'POST',
-            },
-            url: `${entrypoint}/${resource}`,
-          }),
+          body => ({options: {body, method: 'POST'}, url}),
         );
 
       case DELETE:
@@ -197,7 +195,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${qs.stringify({
+          url: `${url}?${qs.stringify({
             ...params.filter,
             order: {
               [field]: order,
@@ -210,7 +208,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
       case GET_MANY_REFERENCE:
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${qs.stringify({
+          url: `${url}?${qs.stringify({
             [params.target]: params.id,
           })}`,
         });
@@ -224,10 +222,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
       case UPDATE:
         return transformReactAdminDataToRequestBody(resource, params.data).then(
           body => ({
-            options: {
-              body,
-              method: 'PUT',
-            },
+            options: {body, method: 'PUT'},
             url: entrypoint + params.id,
           }),
         );
