@@ -64,6 +64,7 @@ describe('<Edit />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -100,6 +101,7 @@ describe('<Edit />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -138,6 +140,7 @@ describe('<Edit />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -180,6 +183,7 @@ describe('<Edit />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -224,6 +228,7 @@ describe('<Edit />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 

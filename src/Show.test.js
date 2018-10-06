@@ -64,6 +64,7 @@ describe('<Show />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -99,6 +100,7 @@ describe('<Show />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -136,6 +138,7 @@ describe('<Show />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -177,6 +180,7 @@ describe('<Show />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
@@ -220,6 +224,7 @@ describe('<Show />', () => {
         location={{}}
         match={{}}
         resource=""
+        id=""
       />,
     );
 
