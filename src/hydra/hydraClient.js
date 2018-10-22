@@ -191,7 +191,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
       case GET_LIST: {
         const {
-          pagination: {page},
+          pagination: {page, perPage},
           sort: {field, order},
         } = params;
 
@@ -203,6 +203,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
               [field]: order,
             },
             page,
+            perPage,
           })}`,
         });
       }
