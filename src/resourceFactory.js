@@ -5,7 +5,13 @@ import Edit from './Edit';
 import List from './List';
 import Show from './Show';
 
-export default (resource, api, fieldFactory, inputFactory) => {
+export default (
+  resource,
+  api,
+  fieldFactory,
+  inputFactory,
+  parameterFactory,
+) => {
   const {
     create = Create,
     edit = Edit,
@@ -26,6 +32,7 @@ export default (resource, api, fieldFactory, inputFactory) => {
         api,
         fieldFactory,
         inputFactory,
+        parameterFactory,
         resource,
       }}
       show={show}

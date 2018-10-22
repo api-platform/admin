@@ -13,6 +13,16 @@ import {
 import React from 'react';
 import getReferenceNameField from './getReferenceNameField';
 
+export const isFieldSortable = (field, resource) => {
+  return (
+    resource.parameters.filter(parameter => parameter.variable === field.name)
+      .length > 0 &&
+    resource.parameters.filter(
+      parameter => parameter.variable === `order[${field.name}]`,
+    ).length > 0
+  );
+};
+
 export default (field, options) => {
   const props = {...field.fieldProps};
   if (field.field) {
@@ -33,6 +43,7 @@ export default (field, options) => {
           source={field.name}
           reference={field.reference.name}
           key={field.name}
+          sortable={isFieldSortable(field, options.resource)}
           {...props}
           allowEmpty>
           <ChipField source={getReferenceNameField(field.reference)} />
@@ -46,6 +57,7 @@ export default (field, options) => {
         source={field.name}
         reference={field.reference.name}
         key={field.name}
+        sortable={isFieldSortable(field, options.resource)}
         {...props}>
         <SingleFieldList>
           <ChipField source={referenceNameField} key={referenceNameField} />
@@ -56,10 +68,24 @@ export default (field, options) => {
 
   switch (field.id) {
     case 'http://schema.org/email':
-      return <EmailField key={field.name} source={field.name} {...props} />;
+      return (
+        <EmailField
+          key={field.name}
+          source={field.name}
+          sortable={isFieldSortable(field, options.resource)}
+          {...props}
+        />
+      );
 
     case 'http://schema.org/url':
-      return <UrlField key={field.name} source={field.name} {...props} />;
+      return (
+        <UrlField
+          key={field.name}
+          source={field.name}
+          sortable={isFieldSortable(field, options.resource)}
+          {...props}
+        />
+      );
 
     default:
     // Do nothing
@@ -68,16 +94,44 @@ export default (field, options) => {
   switch (field.range) {
     case 'http://www.w3.org/2001/XMLSchema#integer':
     case 'http://www.w3.org/2001/XMLSchema#float':
-      return <NumberField key={field.name} source={field.name} {...props} />;
+      return (
+        <NumberField
+          key={field.name}
+          source={field.name}
+          sortable={isFieldSortable(field, options.resource)}
+          {...props}
+        />
+      );
 
     case 'http://www.w3.org/2001/XMLSchema#date':
     case 'http://www.w3.org/2001/XMLSchema#dateTime':
-      return <DateField key={field.name} source={field.name} {...props} />;
+      return (
+        <DateField
+          key={field.name}
+          source={field.name}
+          sortable={isFieldSortable(field, options.resource)}
+          {...props}
+        />
+      );
 
     case 'http://www.w3.org/2001/XMLSchema#boolean':
-      return <BooleanField key={field.name} source={field.name} {...props} />;
+      return (
+        <BooleanField
+          key={field.name}
+          source={field.name}
+          sortable={isFieldSortable(field, options.resource)}
+          {...props}
+        />
+      );
 
     default:
-      return <TextField key={field.name} source={field.name} {...props} />;
+      return (
+        <TextField
+          key={field.name}
+          source={field.name}
+          sortable={isFieldSortable(field, options.resource)}
+          {...props}
+        />
+      );
   }
 };

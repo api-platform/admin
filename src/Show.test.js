@@ -5,6 +5,7 @@ import {TextField} from 'react-admin';
 import {shallow} from 'enzyme';
 import React from 'react';
 import fieldFactory from './fieldFactory';
+import parameterFactory from './parameterFactory';
 import Show from './Show';
 
 const entrypoint = 'http://entrypoint';
@@ -36,12 +37,14 @@ const resourceData = {
       deprecated: true,
     }),
   ],
+  parameters: [],
   url: `${entrypoint}/users`,
 };
 
 describe('<Show />', () => {
   test('without overrides', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultFilterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(
       resourceData.name,
@@ -59,6 +62,7 @@ describe('<Show />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultFilterFactory,
           resource,
         }}
         location={{}}
@@ -76,6 +80,7 @@ describe('<Show />', () => {
 
   test('without default identifier field', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultFilterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -94,6 +99,7 @@ describe('<Show />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultFilterFactory,
           resource,
         }}
         location={{}}
@@ -111,6 +117,7 @@ describe('<Show />', () => {
   test('with custom fieldFactory', () => {
     const customFieldFactory = jest.fn(fieldFactory);
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultFilterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -131,6 +138,7 @@ describe('<Show />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultFilterFactory,
           resource,
         }}
         location={{}}
@@ -149,6 +157,7 @@ describe('<Show />', () => {
 
   test('with custom fields', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultFilterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -172,6 +181,7 @@ describe('<Show />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultFilterFactory,
           resource,
         }}
         location={{}}
@@ -188,6 +198,7 @@ describe('<Show />', () => {
 
   test('with readable identifier', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultFilterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -215,6 +226,7 @@ describe('<Show />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultFilterFactory,
           resource,
         }}
         location={{}}

@@ -40,7 +40,7 @@
     "react-test-renderer": "~16.3.1"
   },
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.4",
+    "@api-platform/api-doc-parser": "^0.6",
     "@babel/runtime": "7.0.0-beta.55",
     "jsonld": "^0.4",
     "lodash.isplainobject": "^4.0.6",
