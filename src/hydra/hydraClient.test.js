@@ -86,12 +86,16 @@ describe('fetch data from an hydra api', () => {
       }),
     );
 
-    await hydraClient({entrypoint: ''}, mockHttpClient)(GET_LIST, 'books', {
-      pagination: {page: 2},
-      sort: {field: 'id', order: 'ASC'},
-    }).then(() => {
-      expect(mockHttpClient.mock.calls[0][0]).toBe(
-        '/books?order%5Bid%5D=ASC&page=2',
+    await hydraClient({entrypoint: 'http://www.example.com'}, mockHttpClient)(
+      GET_LIST,
+      'books',
+      {
+        pagination: {page: 2},
+        sort: {field: 'id', order: 'ASC'},
+      },
+    ).then(() => {
+      expect(mockHttpClient.mock.calls[0][0].href).toBe(
+        'http://www.example.com/books?order%5Bid%5D=ASC&page=2',
       );
     });
   });
@@ -102,9 +106,13 @@ describe('fetch data from an hydra api', () => {
       .mockReturnValueOnce(Promise.resolve({json: {'@id': '/books/3'}}))
       .mockReturnValue(Promise.resolve({json: {'@id': '/books/5'}}));
 
-    await hydraClient({entrypoint: ''}, mockHttpClient)(GET_MANY, 'books', {
-      ids: [3, 5],
-    }).then(response => {
+    await hydraClient({entrypoint: 'http://www.example.com'}, mockHttpClient)(
+      GET_MANY,
+      'books',
+      {
+        ids: [3, 5],
+      },
+    ).then(response => {
       expect(response.data[0].id).toEqual('/books/3');
       expect(response.data[1].id).toEqual('/books/5');
     });
@@ -114,10 +122,16 @@ describe('fetch data from an hydra api', () => {
     const mockHttpClient = jest.fn();
     mockHttpClient.mockReturnValueOnce(Promise.resolve(''));
 
-    await hydraClient({entrypoint: ''}, mockHttpClient)(DELETE, 'books', {
-      id: '/books/1',
-    }).then(() => {
-      expect(mockHttpClient.mock.calls[0][0]).toBe('/books/1');
+    await hydraClient({entrypoint: 'http://www.example.com'}, mockHttpClient)(
+      DELETE,
+      'books',
+      {
+        id: '/books/1',
+      },
+    ).then(() => {
+      expect(mockHttpClient.mock.calls[0][0].href).toBe(
+        'http://www.example.com/books/1',
+      );
       expect(mockHttpClient.mock.calls[0][1].method).toBe('DELETE');
     });
   });
@@ -126,12 +140,20 @@ describe('fetch data from an hydra api', () => {
     const mockHttpClient = jest.fn();
     mockHttpClient.mockReturnValueOnce(Promise.resolve(''));
 
-    await hydraClient({entrypoint: ''}, mockHttpClient)(DELETE_MANY, 'books', {
-      ids: ['/books/1', '/books/2'],
-    }).then(() => {
-      expect(mockHttpClient.mock.calls[0][0]).toBe('/books/1');
+    await hydraClient({entrypoint: 'http://www.example.com'}, mockHttpClient)(
+      DELETE_MANY,
+      'books',
+      {
+        ids: ['/books/1', '/books/2'],
+      },
+    ).then(() => {
+      expect(mockHttpClient.mock.calls[0][0].href).toBe(
+        'http://www.example.com/books/1',
+      );
       expect(mockHttpClient.mock.calls[0][1].method).toBe('DELETE');
-      expect(mockHttpClient.mock.calls[1][0]).toBe('/books/2');
+      expect(mockHttpClient.mock.calls[1][0].href).toBe(
+        'http://www.example.com/books/2',
+      );
       expect(mockHttpClient.mock.calls[1][1].method).toBe('DELETE');
     });
   });

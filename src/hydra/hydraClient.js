@@ -168,9 +168,8 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Object}
    */
   const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
-    const collectionIri = new URL(`${entrypoint}/${resource}`);
-    const singleIri = new URL(params.id, entrypoint);
-    const searchParams = new URLSearchParams(collectionIri.search);
+    const collectionUrl = new URL(`${entrypoint}/${resource}`);
+    const itemUrl = new URL(params.id, entrypoint);
 
     switch (type) {
       case CREATE:
@@ -180,7 +179,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
               body,
               method: 'POST',
             },
-            url: collectionIri,
+            url: collectionUrl,
           }),
         );
 
@@ -189,7 +188,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           options: {
             method: 'DELETE',
           },
-          url: singleIri,
+          url: itemUrl,
         });
 
       case GET_LIST: {
@@ -198,32 +197,34 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           sort: {field, order},
         } = params;
 
-        searchParams.set(`order[${field}]`, order);
-        searchParams.set('page', page);
-        searchParams.set('perPage', perPage);
-        Object.keys(params.filter).map(key =>
-          searchParams.set(key, params.filter[key]),
-        );
-        collectionIri.search = searchParams.toString();
+        if (order) collectionUrl.searchParams.set(`order[${field}]`, order);
+        if (page) collectionUrl.searchParams.set('page', page);
+        if (perPage) collectionUrl.searchParams.set('perPage', perPage);
+        if (params.filter) {
+          Object.keys(params.filter).map(key =>
+            collectionUrl.searchParams.set(key, params.filter[key]),
+          );
+        }
 
         return Promise.resolve({
           options: {},
-          url: collectionIri,
+          url: collectionUrl,
         });
       }
 
       case GET_MANY_REFERENCE:
-        searchParams.set(params.target, params.id);
-        collectionIri.search = searchParams.toString();
+        if (params.target) {
+          collectionUrl.searchParams.set(params.target, params.id);
+        }
         return Promise.resolve({
           options: {},
-          url: collectionIri,
+          url: collectionUrl,
         });
 
       case GET_ONE:
         return Promise.resolve({
           options: {},
-          url: singleIri,
+          url: itemUrl,
         });
 
       case UPDATE:
@@ -233,7 +234,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
               body,
               method: 'PUT',
             },
-            url: singleIri,
+            url: itemUrl,
           }),
         );
 
