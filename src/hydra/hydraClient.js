@@ -9,7 +9,6 @@ import {
   UPDATE,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
-import qs from 'qs';
 import fetchHydra from './fetchHydra';
 
 class ReactAdminDocument {
@@ -169,6 +168,9 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Object}
    */
   const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
+    const collectionUrl = new URL(`${entrypoint}/${resource}`);
+    const itemUrl = new URL(params.id, entrypoint);
+
     switch (type) {
       case CREATE:
         return transformReactAdminDataToRequestBody(resource, params.data).then(
@@ -177,7 +179,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
               body,
               method: 'POST',
             },
-            url: `${entrypoint}/${resource}`,
+            url: collectionUrl,
           }),
         );
 
@@ -186,7 +188,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           options: {
             method: 'DELETE',
           },
-          url: entrypoint + params.id,
+          url: itemUrl,
         });
 
       case GET_LIST: {
@@ -195,31 +197,34 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           sort: {field, order},
         } = params;
 
+        if (order) collectionUrl.searchParams.set(`order[${field}]`, order);
+        if (page) collectionUrl.searchParams.set('page', page);
+        if (perPage) collectionUrl.searchParams.set('perPage', perPage);
+        if (params.filter) {
+          Object.keys(params.filter).map(key =>
+            collectionUrl.searchParams.set(key, params.filter[key]),
+          );
+        }
+
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${qs.stringify({
-            ...params.filter,
-            order: {
-              [field]: order,
-            },
-            page,
-            perPage,
-          })}`,
+          url: collectionUrl,
         });
       }
 
       case GET_MANY_REFERENCE:
+        if (params.target) {
+          collectionUrl.searchParams.set(params.target, params.id);
+        }
         return Promise.resolve({
           options: {},
-          url: `${entrypoint}/${resource}?${qs.stringify({
-            [params.target]: params.id,
-          })}`,
+          url: collectionUrl,
         });
 
       case GET_ONE:
         return Promise.resolve({
           options: {},
-          url: entrypoint + params.id,
+          url: itemUrl,
         });
 
       case UPDATE:
@@ -229,7 +234,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
               body,
               method: 'PUT',
             },
-            url: entrypoint + params.id,
+            url: itemUrl,
           }),
         );
 
