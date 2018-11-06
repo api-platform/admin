@@ -1,0 +1,1 @@
+export overrideResources from './functions';
