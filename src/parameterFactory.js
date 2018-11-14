@@ -31,7 +31,7 @@ function guessType(parameter, fields) {
 function guessTypeFromResource(parameter, fields) {
   const type = fields
     .filter(field => {
-      return field['name'] === parameter.property;
+      return field['name'] === parameter.variable;
     })
     .map(field => {
       switch (field.id) {
