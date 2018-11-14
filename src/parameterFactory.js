@@ -60,6 +60,10 @@ function guessTypeFromResource(parameter, fields) {
 export default (parameter, fields, options) => {
   let type = guessType(parameter, fields);
 
+  if (parameter.variable.match(/.*\[\]/i)) {
+    return null;
+  }
+
   switch (type) {
     case 'date':
       return (
