@@ -202,11 +202,12 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         if (perPage) collectionUrl.searchParams.set('perPage', perPage);
         if (params.filter) {
           Object.keys(params.filter).forEach(key => {
-            if (Object.keys(params.filter[key]).length > 0) {
-              Object.keys(params.filter[key]).forEach(subKey => {
+            const filterValue = params.filter[key];
+            if (isPlainObject(filterValue)) {
+              Object.keys(filterValue).forEach(subKey => {
                 collectionUrl.searchParams.set(
                   `${key}[${subKey}]`,
-                  params.filter[key][subKey],
+                  filterValue[subKey],
                 );
               });
             } else {
