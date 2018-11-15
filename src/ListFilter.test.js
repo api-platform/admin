@@ -62,7 +62,7 @@ describe('<ListFilter />', () => {
     );
 
     expect(defaultParameterFactory).toHaveBeenCalledTimes(2);
+    expect(render.find(TextInput).getNodes()).toHaveLength(1);
     expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
-    expect(render.find(TextInput).get(1).props.source).toEqual('order[fieldA]');
   });
 });

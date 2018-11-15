@@ -58,11 +58,16 @@ function guessTypeFromResource(parameter, fields) {
 }
 
 export default (parameter, fields, options) => {
-  let type = guessType(parameter, fields);
-
-  if (parameter.variable.match(/.*\[\]/i)) {
+  if (
+    // List filters are discarded because there is no built-in filter component in react-admin that can handle this case.
+    parameter.variable.match(/.*\[\]/i) ||
+    // Order filters are discaded because it is only used to know if a column should be sortable or not.
+    parameter.variable.match(/^order\[.+\]$/)
+  ) {
     return null;
   }
+
+  let type = guessType(parameter, fields);
 
   switch (type) {
     case 'date':
