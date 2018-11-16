@@ -1,4 +1,5 @@
 import {
+  ArrayInput,
   BooleanInput,
   DateInput,
   NumberInput,
@@ -7,6 +8,7 @@ import {
   required,
   SelectArrayInput,
   SelectInput,
+  SimpleFormIterator,
   TextInput,
 } from 'react-admin';
 import React from 'react';
@@ -72,6 +74,15 @@ export default (field, options) => {
   }
 
   switch (field.range) {
+    case 'http://www.w3.org/2001/XMLSchema#array':
+      return (
+        <ArrayInput key={field.name} source={field.name} {...props}>
+          <SimpleFormIterator>
+            <TextInput />
+          </SimpleFormIterator>
+        </ArrayInput>
+      );
+
     case 'http://www.w3.org/2001/XMLSchema#integer':
       return <NumberInput key={field.name} source={field.name} {...props} />;
 
