@@ -168,8 +168,9 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Object}
    */
   const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
-    const collectionUrl = new URL(`${entrypoint}/${resource}`);
-    const itemUrl = new URL(params.id, entrypoint);
+    const entrypointUrl = new URL(entrypoint, window.location.href);
+    const collectionUrl = new URL(`${entrypoint}/${resource}`, entrypointUrl);
+    const itemUrl = new URL(params.id, entrypointUrl);
 
     switch (type) {
       case CREATE:

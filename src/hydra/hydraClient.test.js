@@ -100,6 +100,26 @@ describe('fetch data from an hydra api', () => {
     });
   });
 
+  test('fetch a get_list resource with relative api url', async () => {
+    const mockHttpClient = jest.fn();
+    mockHttpClient.mockReturnValue(
+      Promise.resolve({
+        json: {
+          'hydra:member': [{'@id': 'books/5'}],
+        },
+      }),
+    );
+
+    await hydraClient({entrypoint: '/api'}, mockHttpClient)(GET_LIST, 'books', {
+      pagination: {page: 2},
+      sort: {field: 'id', order: 'ASC'},
+    }).then(() => {
+      expect(mockHttpClient.mock.calls[0][0].href).toBe(
+        `${window.location.origin}/api/books?order%5Bid%5D=ASC&page=2`,
+      );
+    });
+  });
+
   test('fetch a get_many resource', async () => {
     const mockHttpClient = jest.fn();
     mockHttpClient
