@@ -1,6 +1,5 @@
 import {
   DateInput,
-  EmailInput,
   NullableBooleanInput,
   NumberInput,
   TextInput,
@@ -26,12 +25,6 @@ function guessTypeFromResource(parameter, fields) {
       return field['name'] === parameter.variable;
     })
     .map(field => {
-      switch (field.id) {
-        case 'http://schema.org/email':
-          return 'email';
-        default:
-      }
-
       const type = guessTypeFromRange(field.range);
       return type ? type : 'text';
     });
@@ -87,15 +80,6 @@ export default (parameter, fields, options) => {
     // TODO : create a dedicated Input
     case 'between':
       return null;
-
-    case 'email':
-      return (
-        <EmailInput
-          key={parameter.variable}
-          source={parameter.variable}
-          {...options}
-        />
-      );
 
     case 'number':
       return (
