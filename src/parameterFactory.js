@@ -8,21 +8,13 @@ import {
 import React from 'react';
 
 function guessType(parameter, fields) {
-  if (parameter.variable.match(/.*\[exists\]/i) !== null) {
-    return 'nullableBoolean';
-  }
-
-  if (
-    parameter.variable.match(/.*\[after\]/i) !== null ||
-    parameter.variable.match(/.*\[before\]/i) !== null ||
-    parameter.variable.match(/.*\[strictly_after\]/i) !== null ||
-    parameter.variable.match(/.*\[strictly_after\]/i) !== null
-  ) {
-    return 'date';
-  }
-
   if (parameter.variable.match(/.*\[between\]/i) !== null) {
     return 'between';
+  }
+
+  const type = guessTypeFromRange(parameter.range);
+  if (type) {
+    return type;
   }
 
   return guessTypeFromResource(parameter, fields);
@@ -40,21 +32,25 @@ function guessTypeFromResource(parameter, fields) {
         default:
       }
 
-      switch (field.range) {
-        case 'http://www.w3.org/2001/XMLSchema#integer':
-        case 'http://www.w3.org/2001/XMLSchema#float':
-          return 'number';
-
-        case 'http://www.w3.org/2001/XMLSchema#boolean':
-          return 'nullableBoolean';
-
-        default:
-      }
-
-      return 'text';
+      const type = guessTypeFromRange(field.range);
+      return type ? type : 'text';
     });
 
   return type.length > 0 ? type[0] : 'text';
+}
+
+function guessTypeFromRange(range) {
+  switch (range) {
+    case 'http://www.w3.org/2001/XMLSchema#integer':
+    case 'http://www.w3.org/2001/XMLSchema#float':
+      return 'number';
+    case 'http://www.w3.org/2001/XMLSchema#boolean':
+      return 'nullableBoolean';
+    case 'http://www.w3.org/2001/XMLSchema#dateTime':
+      return 'date';
+    default:
+      return;
+  }
 }
 
 export default (parameter, fields, options) => {
