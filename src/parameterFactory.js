@@ -11,25 +11,7 @@ function guessType(parameter, fields) {
     return 'between';
   }
 
-  const type = guessTypeFromRange(parameter.range);
-  if (type) {
-    return type;
-  }
-
-  return guessTypeFromResource(parameter, fields);
-}
-
-function guessTypeFromResource(parameter, fields) {
-  const type = fields
-    .filter(field => {
-      return field['name'] === parameter.variable;
-    })
-    .map(field => {
-      const type = guessTypeFromRange(field.range);
-      return type ? type : 'text';
-    });
-
-  return type.length > 0 ? type[0] : 'text';
+  return guessTypeFromRange(parameter.range);
 }
 
 function guessTypeFromRange(range) {
@@ -42,7 +24,7 @@ function guessTypeFromRange(range) {
     case 'http://www.w3.org/2001/XMLSchema#dateTime':
       return 'date';
     default:
-      return;
+      return 'text';
   }
 }
 
