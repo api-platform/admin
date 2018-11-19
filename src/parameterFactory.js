@@ -6,12 +6,20 @@ import {
 } from 'react-admin';
 import React from 'react';
 
-function guessType(parameter, fields) {
-  if (parameter.variable.match(/.*\[between\]/i) !== null) {
-    return 'between';
-  }
+function guessType(parameter, apiPlatform) {
+  let type = guessTypeForApiPlatform(parameter, apiPlatform);
 
-  return guessTypeFromRange(parameter.range);
+  return type !== undefined ? type : guessTypeFromRange(parameter.range);
+}
+
+function guessTypeForApiPlatform(parameter, apiPlatform = true) {
+  if (apiPlatform) {
+    // List filters are discarded because there is no built-in filter component in react-admin that can handle this case.
+    if (parameter.variable.match(/.*\[\]/i)) return null;
+    // Order filters are discaded because it is only used to know if a column should be sortable or not.
+    if (parameter.variable.match(/^order\[.+\]$/)) return null;
+    if (parameter.variable.match(/.*\[between\]/i) !== null) return 'between';
+  }
 }
 
 function guessTypeFromRange(range) {
@@ -28,17 +36,8 @@ function guessTypeFromRange(range) {
   }
 }
 
-export default (parameter, fields, options) => {
-  if (
-    // List filters are discarded because there is no built-in filter component in react-admin that can handle this case.
-    parameter.variable.match(/.*\[\]/i) ||
-    // Order filters are discaded because it is only used to know if a column should be sortable or not.
-    parameter.variable.match(/^order\[.+\]$/)
-  ) {
-    return null;
-  }
-
-  let type = guessType(parameter, fields);
+export default (parameter, options) => {
+  let type = guessType(parameter, options.apiPlatform);
 
   switch (type) {
     case 'date':

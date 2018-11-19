@@ -64,7 +64,7 @@ const List = props => {
   return (
     <BaseList
       {...props}
-      filters={<ListFilter options={{parameterFactory, fields, parameters}} />}>
+      filters={<ListFilter options={{parameterFactory, parameters}} />}>
       <Datagrid>
         {addIdField && (
           <TextField

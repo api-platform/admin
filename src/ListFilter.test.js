@@ -49,13 +49,12 @@ describe('<ListFilter />', () => {
       resourceData,
     );
 
-    const {fields, parameters} = resource;
+    const {parameters} = resource;
 
     const render = shallow(
       <ListFilter
         options={{
           parameters,
-          fields,
           parameterFactory: defaultParameterFactory,
         }}
       />,
