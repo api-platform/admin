@@ -7,4 +7,4 @@ export resourceFactory from './resourceFactory';
 export List from './List';
 export Show from './Show';
 export * from './hydra';
-export * from './override';
+export * from './docsUtils';

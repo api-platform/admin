@@ -9,9 +9,7 @@ export function getResourceField(resource, resourceFieldName) {
 export function replaceInput(resource, resourceFieldName, replaceInput) {
   const resourceField = getResourceField(resource, resourceFieldName);
 
-  if (undefined === resourceField) {
-    return;
-  }
+  if (undefined === resourceField) return;
 
   resourceField.input = replaceInput;
 }
@@ -19,9 +17,7 @@ export function replaceInput(resource, resourceFieldName, replaceInput) {
 export function replaceField(resource, resourceFieldName, replaceField) {
   const resourceField = getResourceField(resource, resourceFieldName);
 
-  if (undefined === resourceField) {
-    return;
-  }
+  if (undefined === resourceField) return;
 
   resourceField.field = replaceField;
 }
@@ -58,8 +54,8 @@ export function replaceResource(resources, replaceResource) {
   }
 }
 
-export default (resources, replaceResources) => {
+export function replaceResources(resources, replaceResources) {
   replaceResources.forEach(resource => {
     replaceResource(resources, resource);
   });
-};
+}

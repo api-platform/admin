@@ -1,1 +1,0 @@
-export replaceResources from './functions';
