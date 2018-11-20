@@ -4,14 +4,14 @@
 [![npm version](https://badge.fury.io/js/%40api-platform%2Fadmin.svg)](https://badge.fury.io/js/%40api-platform%2Fadmin)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
-API Platform Admin is a tool to automatically create a fancy (Material Design) and fully-featured administration interface
+API Platform Admin is a tool to automatically create a beautiful (Material Design) and fully-featured administration interface
 for any API supporting [the Hydra Core Vocabulary](http://www.hydra-cg.com/), including but not limited to all APIs created
 using [the API Platform framework](https://api-platform.com).
 
 The generated administration is a 100% standalone Single-Page-Application with no coupling to the server part, according
 to the API-first paradigm.
 
-API Platform Admin parses the Hydra documentation then uses the awesome [React-admin](https://marmelab.com/react-admin/)
+API Platform Admin parses Hydra or OpenAPI documentations, then uses the awesome [React-admin](https://marmelab.com/react-admin/)
 library (and [React](https://facebook.github.io/react/)) to expose a nice, responsive, management interface (Create-Retrieve-Update-Delete)
 for all available resources.
 
