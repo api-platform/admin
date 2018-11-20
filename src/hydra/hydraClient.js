@@ -203,16 +203,17 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         if (params.filter) {
           Object.keys(params.filter).forEach(key => {
             const filterValue = params.filter[key];
-            if (isPlainObject(filterValue)) {
-              Object.keys(filterValue).forEach(subKey => {
-                collectionUrl.searchParams.set(
-                  `${key}[${subKey}]`,
-                  filterValue[subKey],
-                );
-              });
-            } else {
+            if (!isPlainObject(filterValue)) {
               collectionUrl.searchParams.set(key, params.filter[key]);
+              return;
             }
+
+            Object.keys(filterValue).forEach(subKey => {
+              collectionUrl.searchParams.set(
+                `${key}[${subKey}]`,
+                filterValue[subKey],
+              );
+            });
           });
         }
 
