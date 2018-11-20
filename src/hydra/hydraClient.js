@@ -343,11 +343,10 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
     switch (type) {
       case GET_MANY:
         return Promise.all(
-          params.ids.map(
-            id =>
-              reactAdminDocumentsCache[id]
-                ? Promise.resolve({data: reactAdminDocumentsCache[id]})
-                : fetchApi(GET_ONE, resource, {id}),
+          params.ids.map(id =>
+            reactAdminDocumentsCache[id]
+              ? Promise.resolve({data: reactAdminDocumentsCache[id]})
+              : fetchApi(GET_ONE, resource, {id}),
           ),
         ).then(responses => ({data: responses.map(({data}) => data)}));
 
