@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import fieldFactory from './fieldFactory';
 import inputFactory from './inputFactory';
+import parameterFactory from './parameterFactory';
 import resourceFactory from './resourceFactory';
 
 const AdminBuilder = props => {
@@ -12,6 +13,7 @@ const AdminBuilder = props => {
     fieldFactory,
     inputFactory,
     resourceFactory,
+    parameterFactory,
     title = api.title,
     resources = api.resources.filter(({deprecated}) => !deprecated),
   } = props;
@@ -19,7 +21,13 @@ const AdminBuilder = props => {
   return (
     <Admin {...props} title={title}>
       {resources.map(resource =>
-        resourceFactory(resource, api, fieldFactory, inputFactory),
+        resourceFactory(
+          resource,
+          api,
+          fieldFactory,
+          inputFactory,
+          parameterFactory,
+        ),
       )}
     </Admin>
   );
@@ -29,12 +37,14 @@ AdminBuilder.defaultProps = {
   fieldFactory,
   inputFactory,
   resourceFactory,
+  parameterFactory,
 };
 
 AdminBuilder.propTypes = {
   api: PropTypes.instanceOf(Api).isRequired,
   fieldFactory: PropTypes.func,
   inputFactory: PropTypes.func,
+  parameterFactory: PropTypes.func,
   resourceFactory: PropTypes.func,
   dataProvider: PropTypes.func.isRequired,
   resource: PropTypes.array,

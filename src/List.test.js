@@ -1,10 +1,12 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import Field from '@api-platform/api-doc-parser/lib/Field';
+import Parameter from '@api-platform/api-doc-parser/lib/Parameter';
 import Resource from '@api-platform/api-doc-parser/lib/Resource';
 import {TextField} from 'react-admin';
 import {shallow} from 'enzyme';
 import React from 'react';
 import fieldFactory from './fieldFactory';
+import parameterFactory from './parameterFactory';
 import List from './List';
 
 const entrypoint = 'http://entrypoint';
@@ -36,12 +38,17 @@ const resourceData = {
       deprecated: true,
     }),
   ],
+  parameters: [
+    new Parameter('fieldA', '', false, ''),
+    new Parameter('order[fieldA]', '', false, ''),
+  ],
   url: `${entrypoint}/users`,
 };
 
 describe('<List />', () => {
   test('without overrides', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultParameterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(
       resourceData.name,
@@ -61,6 +68,7 @@ describe('<List />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultParameterFactory,
           resource,
         }}
         location={{}}
@@ -78,6 +86,7 @@ describe('<List />', () => {
 
   test('without default identifier field', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultParameterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -98,6 +107,7 @@ describe('<List />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultParameterFactory,
           resource,
         }}
         location={{}}
@@ -115,6 +125,7 @@ describe('<List />', () => {
   test('with custom fieldFactory', () => {
     const customFieldFactory = jest.fn(fieldFactory);
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultParameterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -137,6 +148,7 @@ describe('<List />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultParameterFactory,
           resource,
         }}
         location={{}}
@@ -155,6 +167,7 @@ describe('<List />', () => {
 
   test('with custom fields', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultParameterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -180,6 +193,7 @@ describe('<List />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultParameterFactory,
           resource,
         }}
         location={{}}
@@ -196,6 +210,7 @@ describe('<List />', () => {
 
   test('with readable identifier', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
+    const defaultParameterFactory = jest.fn(parameterFactory);
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
@@ -225,6 +240,7 @@ describe('<List />', () => {
         options={{
           api,
           fieldFactory: defaultFieldFactory,
+          parameterFactory: defaultParameterFactory,
           resource,
         }}
         location={{}}

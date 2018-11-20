@@ -12,6 +12,7 @@ describe('makes Resource component', () => {
 
   const fieldFactory = jest.fn();
   const inputFactory = jest.fn();
+  const parameterFactory = jest.fn();
 
   describe('makes default Resource component', () => {
     const resourceComponent = resourceFactory(
@@ -19,6 +20,7 @@ describe('makes Resource component', () => {
       api,
       fieldFactory,
       inputFactory,
+      parameterFactory,
     );
 
     test('is Resource component', () => {
@@ -51,6 +53,7 @@ describe('makes Resource component', () => {
         api,
         fieldFactory,
         inputFactory,
+        parameterFactory,
         resource,
       });
     });
@@ -80,6 +83,7 @@ describe('makes Resource component', () => {
         api,
         fieldFactory,
         inputFactory,
+        parameterFactory,
       );
 
       expect(resourceComponent.props.create).toEqual(customCreate);
@@ -94,6 +98,7 @@ describe('makes Resource component', () => {
         api,
         fieldFactory,
         inputFactory,
+        parameterFactory,
       );
 
       expect(resourceComponent.props.list).toEqual(customList);
@@ -108,6 +113,7 @@ describe('makes Resource component', () => {
         api,
         fieldFactory,
         inputFactory,
+        parameterFactory,
       );
 
       expect(resourceComponent.props.show).toEqual(customShow);
@@ -122,6 +128,7 @@ describe('makes Resource component', () => {
         api,
         fieldFactory,
         inputFactory,
+        parameterFactory,
       );
 
       expect(resourceComponent.props.edit).toEqual(customEdit);

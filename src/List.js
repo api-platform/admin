@@ -9,6 +9,8 @@ import {
 } from 'react-admin';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ListFilter from './ListFilter';
+import {isFieldSortable} from './fieldFactory';
 
 const hasIdentifier = fields => {
   return (
@@ -18,7 +20,11 @@ const hasIdentifier = fields => {
 
 const resolveProps = props => {
   const {options} = props;
-  const {fieldFactory: defaultFieldFactory, resource} = options;
+  const {
+    fieldFactory: defaultFieldFactory,
+    parameterFactory,
+    resource,
+  } = options;
   const {
     listFields: customFields,
     listProps = {},
@@ -34,6 +40,8 @@ const resolveProps = props => {
       fields:
         customFields || defaultFields.filter(({deprecated}) => !deprecated),
       fieldFactory: customFieldFactory || defaultFieldFactory,
+      parameterFactory: parameterFactory,
+      parameters: resource.parameters,
     },
   };
 };
@@ -42,14 +50,28 @@ const List = props => {
   const {
     hasEdit,
     hasShow,
-    options: {api, fieldFactory, fields, resource},
+    options: {
+      api,
+      fieldFactory,
+      fields,
+      parameterFactory,
+      parameters,
+      resource,
+    },
     addIdField = false === hasIdentifier(fields),
   } = resolveProps(props);
 
   return (
-    <BaseList {...props}>
+    <BaseList
+      {...props}
+      filters={<ListFilter options={{parameterFactory, parameters}} />}>
       <Datagrid>
-        {addIdField && <TextField source="id" />}
+        {addIdField && (
+          <TextField
+            source="id"
+            sortable={isFieldSortable({name: 'id'}, resource)}
+          />
+        )}
         {fields.map(field =>
           fieldFactory(field, {
             api,
@@ -72,6 +94,7 @@ List.propTypes = {
   options: PropTypes.shape({
     api: PropTypes.instanceOf(Api).isRequired,
     fieldFactory: PropTypes.func.isRequired,
+    parameterFactory: PropTypes.func.isRequired,
     listProps: PropTypes.object,
     resource: PropTypes.instanceOf(Resource).isRequired,
   }),
