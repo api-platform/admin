@@ -34,7 +34,7 @@ describe('makes Resource component', () => {
     test('have proper name prop set', () => {
       expect(resourceComponent.props.name).toEqual(resource.name);
     });
-    
+
     test('have proper icon prop set', () => {
       expect(resourceComponent.props.icon).toEqual(resource.icon);
     });
