@@ -35,6 +35,10 @@ describe('makes Resource component', () => {
       expect(resourceComponent.props.name).toEqual(resource.name);
     });
 
+    test('have proper icon prop set', () => {
+      expect(resourceComponent.props.icon).toEqual(resource.icon);
+    });
+
     test('have default actions: create, edit, list, show set', () => {
       expect(resourceComponent.props.create).toBeInstanceOf(Function);
       expect(resourceComponent.props.edit).toBeInstanceOf(Function);
@@ -87,6 +91,21 @@ describe('makes Resource component', () => {
       );
 
       expect(resourceComponent.props.create).toEqual(customCreate);
+    });
+
+    test('have custom icon action', () => {
+      const customIcon = jest.fn();
+      const resourceComponent = resourceFactory(
+        Object.assign({}, resource, {
+          icon: customIcon,
+        }),
+        api,
+        fieldFactory,
+        inputFactory,
+        parameterFactory,
+      );
+
+      expect(resourceComponent.props.icon).toEqual(customIcon);
     });
 
     test('have custom list action', () => {

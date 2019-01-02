@@ -16,6 +16,7 @@ export default (
     create = Create,
     edit = Edit,
     list = List,
+    icon,
     name,
     props,
     show = Show,
@@ -28,6 +29,7 @@ export default (
       key={name}
       list={list}
       name={name}
+      icon={icon}
       options={{
         api,
         fieldFactory,
