@@ -43,7 +43,7 @@ export default (url, options = {}) => {
           );
         })
         .catch(e => {
-          if (e instanceof HttpError) {
+          if (e.hasOwnProperty('body')) {
             return Promise.reject(e);
           }
 
