@@ -61,7 +61,7 @@ describe('<ListFilter />', () => {
     );
 
     expect(defaultParameterFactory).toHaveBeenCalledTimes(2);
-    expect(render.find(TextInput).getNodes()).toHaveLength(1);
+    expect(render.find(TextInput).getElements()).toHaveLength(1);
     expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
   });
 });

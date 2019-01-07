@@ -1,17 +1,11 @@
 {
   "plugins": [
-    "transform-react-jsx",
-    [
-      "transform-runtime",
-      {
-        "polyfill": false,
-        "regenerator": true
-      }
-    ]
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-transform-runtime"
   ],
   "presets": [
-    "es2015",
-    "stage-0",
-    "react"
+      "@babel/preset-env",
+      "@babel/preset-react"
   ]
 }
