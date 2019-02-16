@@ -2,10 +2,24 @@ import Api from '@api-platform/api-doc-parser/lib/Api';
 import {Admin} from 'react-admin';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {createMuiTheme} from '@material-ui/core/styles';
 import fieldFactory from './fieldFactory';
 import inputFactory from './inputFactory';
+import {Layout} from './layout';
 import parameterFactory from './parameterFactory';
 import resourceFactory from './resourceFactory';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#38a9b4',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#288690',
+    },
+  },
+});
 
 const AdminBuilder = props => {
   const {
@@ -38,6 +52,8 @@ AdminBuilder.defaultProps = {
   inputFactory,
   resourceFactory,
   parameterFactory,
+  theme,
+  appLayout: Layout,
 };
 
 AdminBuilder.propTypes = {
