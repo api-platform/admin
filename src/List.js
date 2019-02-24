@@ -23,6 +23,7 @@ const resolveProps = props => {
   const {
     fieldFactory: defaultFieldFactory,
     parameterFactory,
+    listFieldFilter,
     resource,
   } = options;
   const {
@@ -42,6 +43,7 @@ const resolveProps = props => {
       fieldFactory: customFieldFactory || defaultFieldFactory,
       parameterFactory: parameterFactory,
       parameters: resource.parameters,
+      listFieldFilter: listFieldFilter,
     },
   };
 };
@@ -56,6 +58,7 @@ const List = props => {
       fields,
       parameterFactory,
       parameters,
+      listFieldFilter,
       resource,
     },
     addIdField = false === hasIdentifier(fields),
@@ -72,12 +75,14 @@ const List = props => {
             sortable={isFieldSortable({name: 'id'}, resource)}
           />
         )}
-        {fields.map(field =>
-          fieldFactory(field, {
-            api,
-            resource,
-          }),
-        )}
+        {fields
+          .filter(field => !listFieldFilter || listFieldFilter(resource, field))
+          .map(field =>
+            fieldFactory(field, {
+              api,
+              resource,
+            }),
+          )}
         {hasShow && <ShowButton />}
         {hasEdit && <EditButton />}
       </Datagrid>
