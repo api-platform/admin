@@ -192,7 +192,8 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           url: itemUrl,
         });
 
-      case GET_LIST: {
+      case GET_LIST:
+      case GET_MANY_REFERENCE:
         const {
           pagination: {page, perPage},
           sort: {field, order},
@@ -218,16 +219,10 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           });
         }
 
-        return Promise.resolve({
-          options: {},
-          url: collectionUrl,
-        });
-      }
-
-      case GET_MANY_REFERENCE:
-        if (params.target) {
+        if (type === GET_MANY_REFERENCE && params.target) {
           collectionUrl.searchParams.set(params.target, params.id);
         }
+
         return Promise.resolve({
           options: {},
           url: collectionUrl,

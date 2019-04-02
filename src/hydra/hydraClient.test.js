@@ -1,4 +1,10 @@
-import {DELETE, DELETE_MANY, GET_LIST, GET_MANY} from 'react-admin';
+import {
+  DELETE,
+  DELETE_MANY,
+  GET_LIST,
+  GET_MANY,
+  GET_MANY_REFERENCE,
+} from 'react-admin';
 import hydraClient, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './hydraClient';
@@ -135,6 +141,37 @@ describe('fetch data from an hydra api', () => {
     ).then(response => {
       expect(response.data[0].id).toEqual('/books/3');
       expect(response.data[1].id).toEqual('/books/5');
+    });
+  });
+
+  test('fetch a get_many_reference resource', async () => {
+    const mockHttpClient = jest.fn();
+    mockHttpClient.mockReturnValue(
+      Promise.resolve({
+        json: {
+          'hydra:member': [{'@id': 'books/5'}],
+        },
+      }),
+    );
+
+    await hydraClient({entrypoint: '/api'}, mockHttpClient)(
+      GET_MANY_REFERENCE,
+      'books',
+      {
+        target: 'author',
+        id: 'string',
+        pagination: {page: 2},
+        sort: {field: 'id', order: 'ASC'},
+        filter: {
+          is_published: 1,
+        },
+      },
+    ).then(response => {
+      expect(mockHttpClient.mock.calls[0][0].href).toBe(
+        `${
+          window.location.origin
+        }/api/books?order%5Bid%5D=ASC&page=2&is_published=1&author=string`,
+      );
     });
   });
 
