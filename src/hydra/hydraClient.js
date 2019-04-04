@@ -193,7 +193,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
         });
 
       case GET_LIST:
-      case GET_MANY_REFERENCE:
+      case GET_MANY_REFERENCE: {
         const {
           pagination: {page, perPage},
           sort: {field, order},
@@ -227,6 +227,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
           options: {},
           url: collectionUrl,
         });
+      }
 
       case GET_ONE:
         return Promise.resolve({
