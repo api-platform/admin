@@ -43,7 +43,7 @@
     "regenerator-runtime": "^0.13.1"
   },
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.6",
+    "@api-platform/api-doc-parser": "^0.7.2",
     "@babel/runtime": "^7.2.0",
     "jsonld": "^1.2.1",
     "lodash.isplainobject": "^4.0.6",
