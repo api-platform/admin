@@ -33,12 +33,24 @@ export default class extends Component {
     this.props
       .apiDocumentationParser(this.props.entrypoint)
       .then(
-        ({api, customRoutes = []}) => ({
-          api,
-          customRoutes,
-          hasError: false,
-          loaded: true,
-        }),
+        ({api, customRoutes = []}) => {
+          const promises = api.resources.forEach(resource =>
+            promises.push(resource.getParameters()),
+          );
+
+          return Promise.all(promises).then(responses => {
+            api.resources.forEach((resource, index) => {
+              resource.parameters = responses[index];
+            });
+
+            return {
+              api,
+              customRoutes,
+              hasError: false,
+              loaded: true,
+            };
+          });
+        },
         data => {
           if (data instanceof Error) {
             console.error(data);
