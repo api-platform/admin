@@ -34,8 +34,8 @@ export default class extends Component {
       .apiDocumentationParser(this.props.entrypoint)
       .then(
         ({api, customRoutes = []}) => {
-          const promises = api.resources.forEach(resource =>
-            promises.push(resource.getParameters()),
+          const promises = api.resources.map(resource =>
+            resource.getParameters(),
           );
 
           return Promise.all(promises).then(responses => {
