@@ -28,7 +28,7 @@ export function replaceResource(resources, replaceResource) {
   if (undefined !== replaceResource.listFields) {
     resource.listFields = replaceResource.listFields;
   }
-  
+
   if (undefined !== replaceResource.showFields) {
     resource.showFields = replaceResource.showFields;
   }
