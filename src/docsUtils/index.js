@@ -45,6 +45,10 @@ export function replaceResource(resources, replaceResource) {
     resource.list = replaceResource.list;
   }
 
+  if (undefined !== replaceResource.show) {
+    resource.show = replaceResource.show;
+  }
+
   if (undefined !== replaceResource.create) {
     resource.create = replaceResource.create;
   }
