@@ -52,6 +52,10 @@ export function replaceResource(resources, replaceResource) {
   if (undefined !== replaceResource.edit) {
     resource.edit = replaceResource.edit;
   }
+
+  if (undefined !== replaceResource.icon) {
+    resource.icon = replaceResource.icon;
+  }
 }
 
 export function replaceResources(resources, replaceResources) {
