@@ -1,32 +1,32 @@
-import React from "react";
+import React from 'react';
 import {
   Admin,
   Resource,
   Loading,
   TranslationProvider,
   Query,
-  EditGuesser
-} from "react-admin";
+  EditGuesser,
+} from 'react-admin';
 import PropTypes from 'prop-types';
 import Api from '@api-platform/api-doc-parser/lib/Api';
-import { createMuiTheme } from "@material-ui/core/styles";
-import ListGuesser from "./ListGuesser";
+import {createMuiTheme} from '@material-ui/core/styles';
+import ListGuesser from './ListGuesser';
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#38a9b4",
-      contrastText: "#fff"
+      main: '#38a9b4',
+      contrastText: '#fff',
     },
     secondary: {
-      main: "#288690"
-    }
-  }
+      main: '#288690',
+    },
+  },
 });
 
 const AdminBuilder = props => (
   <Query type="INTROSPECT">
-    {({ data, loading, error }) => {
+    {({data, loading, error}) => {
       if (loading) {
         return (
           <TranslationProvider>
