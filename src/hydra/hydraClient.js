@@ -348,7 +348,7 @@ export default (entrypoint, httpClient = fetchHydra) => {
     // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
     switch (type) {
       case "INTROSPECT":
-        if (apiSchema) return Promise.resolve(apiSchema);
+        if (apiSchema) return Promise.resolve({ data: apiSchema });
         return apiDocumentationParser(entrypoint).then(({ api }) => {
           apiSchema = api;
           return { data: api };

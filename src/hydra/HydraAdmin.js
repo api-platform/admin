@@ -6,40 +6,35 @@ import withContext from "recompose/withContext";
 import { createAdminStore } from "react-admin";
 
 import dataProviderFactory from "./hydraClient";
-import AdminBuilder from '../AdminBuilder';
+import AdminBuilder from "../AdminBuilder";
 
 const history = createHashHistory();
 
 const HydraAdmin = ({
   entrypoint,
   hydraClient,
-  dataProvider,
+  dataProvider = dataProviderFactory(entrypoint, hydraClient),
   i18nProvider,
   authProvider,
   ...rest
-}) => {
-  const apiDataProvider = dataProvider || dataProviderFactory(entrypoint, hydraClient);
-
-  return (
-    <Provider
-      store={createAdminStore({
-        authProvider,
-        dataProvider,
-        i18nProvider,
-        history
-      })}
-    >
-      <AdminBuilder
-        apiDataProvider={apiDataProvider}
-        authProvider={authProvider}
-        history={history}
-        i18nProvider={i18nProvider}
-        {...rest}
-      />
-    </Provider>
-  );
-};
-
+}) => (
+  <Provider
+    store={createAdminStore({
+      authProvider,
+      dataProvider,
+      i18nProvider,
+      history
+    })}
+  >
+    <AdminBuilder
+      dataProvider={dataProvider}
+      authProvider={authProvider}
+      history={history}
+      i18nProvider={i18nProvider}
+      {...rest}
+    />
+  </Provider>
+);
 export default withContext(
   {
     authProvider: PropTypes.func
