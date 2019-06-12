@@ -1,101 +1,48 @@
-import apiDocumentationParser from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
-import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React from "react";
+import PropTypes from "prop-types";
+import { Provider } from "react-redux";
+import { createHashHistory } from "history";
+import withContext from "recompose/withContext";
+import { createAdminStore } from "react-admin";
+
+import dataProviderFactory from "./hydraClient";
 import AdminBuilder from '../AdminBuilder';
-import dataProvider from './hydraClient';
 
-export default class extends Component {
-  static defaultProps = {
-    apiDocumentationParser,
-    customRoutes: [],
-    error: 'Unable to retrieve API documentation.',
-    loading: 'Loading...',
-    dataProvider,
-  };
+const history = createHashHistory();
 
-  static propTypes = {
-    apiDocumentationParser: PropTypes.func,
-    customRoutes: PropTypes.array,
-    entrypoint: PropTypes.string.isRequired,
-    error: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
-    loading: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
-    dataProvider: PropTypes.func,
-  };
+const HydraAdmin = ({
+  entrypoint,
+  hydraClient,
+  dataProvider,
+  i18nProvider,
+  authProvider,
+  ...rest
+}) => {
+  const apiDataProvider = dataProvider || dataProviderFactory(entrypoint, hydraClient);
 
-  state = {
-    api: null,
-    customRoutes: [],
-    hasError: false,
-    loaded: false,
-  };
-
-  componentDidMount() {
-    this.props
-      .apiDocumentationParser(this.props.entrypoint)
-      .then(
-        ({api, customRoutes = []}) => {
-          const promises = api.resources.map(resource =>
-            resource.getParameters(),
-          );
-
-          return Promise.all(promises).then(responses => {
-            api.resources.forEach((resource, index) => {
-              resource.parameters = responses[index];
-            });
-
-            return {
-              api,
-              customRoutes,
-              hasError: false,
-              loaded: true,
-            };
-          });
-        },
-        data => {
-          if (data instanceof Error) {
-            console.error(data);
-
-            return {
-              hasError: true,
-              loaded: true,
-            };
-          }
-
-          return {
-            api: data.api,
-            customRoutes: data.customRoutes,
-            hasError: true,
-            loaded: true,
-          };
-        },
-      )
-      .then(this.setState.bind(this));
-  }
-
-  render() {
-    if (false === this.state.loaded) {
-      return 'function' === typeof this.props.loading ? (
-        <this.props.loading />
-      ) : (
-        <span className="loading">{this.props.loading}</span>
-      );
-    }
-
-    if (true === this.state.hasError) {
-      return 'function' === typeof this.props.error ? (
-        <this.props.error />
-      ) : (
-        <span className="error">{this.props.error}</span>
-      );
-    }
-
-    return (
+  return (
+    <Provider
+      store={createAdminStore({
+        authProvider,
+        dataProvider,
+        i18nProvider,
+        history
+      })}
+    >
       <AdminBuilder
-        {...this.props}
-        api={this.state.api}
-        customRoutes={this.props.customRoutes.concat(this.state.customRoutes)}
-        dataProvider={this.props.dataProvider(this.state.api)}
+        apiDataProvider={apiDataProvider}
+        authProvider={authProvider}
+        history={history}
+        i18nProvider={i18nProvider}
+        {...rest}
       />
-    );
-  }
-}
+    </Provider>
+  );
+};
+
+export default withContext(
+  {
+    authProvider: PropTypes.func
+  },
+  props => ({ authProvider: props.authProvider })
+)(HydraAdmin);

@@ -1,13 +1,8 @@
-import Api from '@api-platform/api-doc-parser/lib/Api';
-import {Admin} from 'react-admin';
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
+import {Admin, Resource, Loading, TranslationProvider, withDataProvider, ListGuesser, EditGuesser} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
-import fieldFactory from './fieldFactory';
-import inputFactory from './inputFactory';
-import {Layout} from './layout';
-import parameterFactory from './parameterFactory';
-import resourceFactory from './resourceFactory';
+import PropTypes from 'prop-types';
+import Api from '@api-platform/api-doc-parser/lib/Api';
 
 const theme = createMuiTheme({
   palette: {
@@ -21,42 +16,38 @@ const theme = createMuiTheme({
   },
 });
 
-const AdminBuilder = props => {
-  const {
-    api,
-    fieldFactory,
-    inputFactory,
-    resourceFactory,
-    parameterFactory,
-    title = api.title,
-    resources = api.resources.filter(({deprecated}) => !deprecated),
-    listFieldFilter,
-  } = props;
+class AdminBuilder extends Component {
+  state = { api: null };
 
-  return (
-    <Admin {...props} title={title}>
-      {resources.map(resource =>
-        resourceFactory(
-          resource,
-          api,
-          fieldFactory,
-          inputFactory,
-          parameterFactory,
-          listFieldFilter,
-        ),
-      )}
-    </Admin>
-  );
-};
+  componentDidMount() {
+    this.props.dataProvider("INTROSPECT").then(({ data }) => {
+      this.setState({ api: data });
+    });
+  }
 
-AdminBuilder.defaultProps = {
-  fieldFactory,
-  inputFactory,
-  resourceFactory,
-  parameterFactory,
-  theme,
-  appLayout: Layout,
-};
+  render() {
+    // FIXME: dump Admin Resource code to console
+    const { dataProvider, apiDataProvider, listFieldFilter, ...rest } = this.props;
+    return this.state.api ? (
+      <Admin dataProvider={apiDataProvider} theme={theme} {...rest}>
+        {this.state.api.resources.map(resource => (
+          <Resource
+            name={resource.name}
+            key={resource.name}
+            list={ListGuesser}
+            edit={EditGuesser}
+          />
+        ))}
+      </Admin>
+    ) : (
+      <TranslationProvider>
+        <Loading />
+      </TranslationProvider>
+    );
+  }
+}
+
+export default withDataProvider(AdminBuilder);
 
 AdminBuilder.propTypes = {
   api: PropTypes.instanceOf(Api).isRequired,
@@ -67,5 +58,3 @@ AdminBuilder.propTypes = {
   dataProvider: PropTypes.func.isRequired,
   resources: PropTypes.array,
 };
-
-export default AdminBuilder;
