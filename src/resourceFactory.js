@@ -11,6 +11,7 @@ export default (
   fieldFactory,
   inputFactory,
   parameterFactory,
+  listFieldFilter,
 ) => {
   const {
     create = Create,
@@ -35,6 +36,7 @@ export default (
         fieldFactory,
         inputFactory,
         parameterFactory,
+        listFieldFilter,
         resource,
       }}
       show={show}
