@@ -168,9 +168,7 @@ describe('fetch data from an hydra api', () => {
       },
     ).then(response => {
       expect(mockHttpClient.mock.calls[0][0].href).toBe(
-        `${
-          window.location.origin
-        }/api/books?order%5Bid%5D=ASC&page=2&is_published=1&author=string`,
+        `${window.location.origin}/api/books?order%5Bid%5D=ASC&page=2&is_published=1&author=string`,
       );
     });
   });
