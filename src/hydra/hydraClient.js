@@ -120,8 +120,17 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    */
   const convertReactAdminDataToHydraData = (resource, data = {}) => {
     const fieldData = [];
-    resource.fields.forEach(({name, normalizeData}) => {
-      if (!(name in data) || undefined === normalizeData) {
+    resource.fields.forEach(({name, reference, normalizeData}) => {
+      if (!(name in data)) {
+        return;
+      }
+
+      if (reference && data[name] === '') {
+        data[name] = null;
+        return;
+      }
+
+      if (undefined === normalizeData) {
         return;
       }
 
