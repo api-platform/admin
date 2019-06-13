@@ -63,7 +63,7 @@ AdminBuilder.propTypes = {
   parameterFactory: PropTypes.func,
   resourceFactory: PropTypes.func,
   dataProvider: PropTypes.func.isRequired,
-  resource: PropTypes.array,
+  resources: PropTypes.array,
 };
 
 export default AdminBuilder;
