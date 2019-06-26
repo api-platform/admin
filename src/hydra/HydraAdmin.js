@@ -6,7 +6,7 @@ import withContext from 'recompose/withContext';
 import {createAdminStore} from 'react-admin';
 
 import dataProviderFactory from './hydraClient';
-import AdminBuilder from '../AdminBuilder';
+import AdminGuesser from '../AdminGuesser';
 
 const history = createHashHistory();
 
@@ -25,7 +25,7 @@ const HydraAdmin = ({
       i18nProvider,
       history,
     })}>
-    <AdminBuilder
+    <AdminGuesser
       dataProvider={dataProvider}
       authProvider={authProvider}
       history={history}
