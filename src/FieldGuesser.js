@@ -96,6 +96,19 @@ const FieldGuesser = props => {
 
         const field = getResourceField(resource, fieldName);
 
+        if (!field) {
+          console.error(
+            `Field ${props.source} not present inside the api description for the resource ${props.resource}`,
+          );
+
+          return (
+            <div>
+              Field ${fieldName} not present inside the api description for the
+              resource ${resourceName}
+            </div>
+          );
+        }
+
         return renderField(resource, field, {
           sortable: isFieldSortable(field, resource),
           ...props,
