@@ -1,31 +1,8 @@
-import React, {Component, cloneElement} from 'react';
+import React, {cloneElement} from 'react';
 import {Query} from 'react-admin';
 import inputFactory from './inputFactory';
 
-class InputGuesser extends Component {
-  state = {inferredElement: null};
-
-  componentDidMount() {
-    if (!this.state.inferredElement) {
-      const inferredElement = inputFactory(this.props.fieldDefinition, {
-        resource: this.props.resource,
-      });
-      this.setState({inferredElement});
-    }
-  }
-  render() {
-    const {fieldDefinition, ...props} = this.props;
-    const {inferredElement} = this.state;
-
-    if (!inferredElement) {
-      return null;
-    }
-
-    return cloneElement(inferredElement, props);
-  }
-}
-
-const EnhancedInputGuesser = props => (
+const InputGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>
     {({data, loading, error}) => {
       if (loading) {
@@ -61,9 +38,13 @@ const EnhancedInputGuesser = props => (
         );
       }
 
-      return <InputGuesser fieldDefinition={fieldDefinition} {...props} />;
+      const inferredElement = inputFactory(fieldDefinition, {
+        resource: this.props.resource,
+      });
+
+      return cloneElement(inferredElement, props);
     }}
   </Query>
 );
 
-export default EnhancedInputGuesser;
+export default InputGuesser;
