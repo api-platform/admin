@@ -16,7 +16,7 @@ const theme = createMuiTheme({
   },
 });
 
-const AdminBuilder = ({children, blacklist, ...props}) => {
+const AdminGuesser = ({children, blacklist, ...props}) => {
   const defined = new Set(
     React.Children.map(children, child => child.props.name),
   );
@@ -56,9 +56,7 @@ const AdminBuilder = ({children, blacklist, ...props}) => {
   );
 };
 
-export default AdminBuilder;
-
-AdminBuilder.propTypes = {
+AdminGuesser.propTypes = {
   fieldFactory: PropTypes.func,
   inputFactory: PropTypes.func,
   parameterFactory: PropTypes.func,
@@ -66,5 +64,7 @@ AdminBuilder.propTypes = {
   dataProvider: PropTypes.func.isRequired,
   resources: PropTypes.array,
   blacklist: PropTypes.array,
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
+
+export default AdminGuesser;
