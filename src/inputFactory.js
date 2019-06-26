@@ -17,17 +17,6 @@ import getReferenceNameField from './getReferenceNameField';
 export default (field, options) => {
   const props = {...field.inputProps};
 
-  if (field.input) {
-    return (
-      <field.input
-        key={field.name}
-        options={options}
-        source={field.name}
-        {...props}
-      />
-    );
-  }
-
   if (!props.validate && field.required) props.validate = [required()];
 
   if (null !== field.reference) {

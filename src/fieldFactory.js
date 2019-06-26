@@ -25,16 +25,6 @@ export const isFieldSortable = (field, resource) => {
 
 export default (field, options) => {
   const props = {...field.fieldProps};
-  if (field.field) {
-    return (
-      <field.field
-        key={field.name}
-        options={options}
-        source={field.name}
-        {...props}
-      />
-    );
-  }
 
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
