@@ -6,7 +6,6 @@ import {
   Query,
   EditButton,
   ShowButton,
-  TranslationProvider,
   Loading,
 } from 'react-admin';
 import {getResource} from './docsUtils';
@@ -30,11 +29,7 @@ const ListGuesser = props => {
     <Query type="INTROSPECT">
       {({data: api, loading, error}) => {
         if (loading) {
-          return (
-            <TranslationProvider>
-              <Loading />
-            </TranslationProvider>
-          );
+          return <Loading />;
         }
 
         if (error) {

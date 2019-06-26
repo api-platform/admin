@@ -12,7 +12,6 @@ import {
   TextField,
   UrlField,
   Query,
-  TranslationProvider,
   Loading,
 } from 'react-admin';
 import {getResource, getResourceField} from './docsUtils';
@@ -74,11 +73,7 @@ const FieldGuesser = props => {
     <Query type="INTROSPECT">
       {({data: api, loading, error}) => {
         if (loading) {
-          return (
-            <TranslationProvider>
-              <Loading />
-            </TranslationProvider>
-          );
+          return <Loading />;
         }
 
         if (error) {
