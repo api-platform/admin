@@ -1,8 +1,7 @@
 import React from 'react';
-import {Edit} from 'ra-core';
-import {SimpleForm} from 'ra-ui-materialui';
-import {Query} from 'react-admin';
-import inputFactory from './inputFactory';
+import {Query, Edit, Loading, SimpleForm} from 'react-admin';
+
+import InputGuesser from './InputGuesser';
 
 const existsAsChild = children => {
   const childrenNames = new Set(
@@ -17,12 +16,12 @@ const EditGuesser = props => (
     {({data, loading, error}) => {
       const {resource, children} = props;
       if (loading) {
-        return <div>LOADING</div>;
+        return <Loading />;
       }
 
       if (error) {
         console.error(error);
-        return <div>ERROR</div>;
+        return <div>Error while reading the API schema</div>;
       }
       const resourceSchema = data.resources.find(r => r.name === resource);
 
@@ -31,18 +30,25 @@ const EditGuesser = props => (
         !resourceSchema.fields ||
         !resourceSchema.fields.length
       ) {
-        throw new Error('Resource not present inside api description');
+        console.error(
+          `Resource ${props.resource} not present inside api description`,
+        );
+        return (
+          <div>
+            Resource ${props.resource} not present inside api description
+          </div>
+        );
       }
 
-      const inferredElements = resourceSchema.fields
-        .map(field => inputFactory(field, {resource}))
-        .filter(existsAsChild(children));
+      const fields = resourceSchema.fields.filter(existsAsChild(children));
 
       return (
         <Edit {...props}>
           <SimpleForm>
             {children}
-            {inferredElements}
+            {fields.map(field => (
+              <InputGuesser key={field.name} source={field.name} />
+            ))}
           </SimpleForm>
         </Edit>
       );
