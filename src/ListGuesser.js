@@ -10,6 +10,7 @@ import {
 } from 'react-admin';
 import {getResource} from './docsUtils';
 import FieldGuesser from './FieldGuesser';
+import existsAsChild from './existsAsChild';
 
 const getFields = (
   {fields},
@@ -50,19 +51,17 @@ const ListGuesser = props => {
           );
         }
 
+        const fields = getFields(resource, allowedFieldNames).filter(
+          existsAsChild(children),
+        );
+
         return (
           <List {...props}>
             <Datagrid>
-              {getFields(resource, allowedFieldNames).map(field => {
-                const child = children.find(
-                  ({props: {source}}) => source === field.name,
-                );
-                if (undefined === child) {
-                  return <FieldGuesser key={field.name} source={field.name} />;
-                }
-
-                return child;
-              })}
+              {children}
+              {fields.map(field => (
+                <FieldGuesser key={field.name} source={field.name} />
+              ))}
               {hasShow && <ShowButton />}
               {hasEdit && <EditButton />}
             </Datagrid>

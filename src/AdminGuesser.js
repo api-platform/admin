@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Admin, Loading, TranslationProvider, Query} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
 import ResourceGuesser from './ResourceGuesser';
+import existsAsChild from './existsAsChild';
 
 const theme = createMuiTheme({
   palette: {
@@ -17,9 +18,6 @@ const theme = createMuiTheme({
 });
 
 const AdminGuesser = ({children, blacklist, ...props}) => {
-  const defined = new Set(
-    React.Children.map(children, child => child.props.name),
-  );
   const blacklisted = new Set(blacklist);
 
   return (
@@ -44,7 +42,7 @@ const AdminGuesser = ({children, blacklist, ...props}) => {
                 resource =>
                   !resource.deprecated &&
                   !blacklisted.has(resource.name) &&
-                  !defined.has(resource.name),
+                  !existsAsChild(children)(resource.name),
               )
               .map(resource => (
                 <ResourceGuesser name={resource.name} key={resource.name} />
