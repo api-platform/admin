@@ -1,7 +1,7 @@
 import React from 'react';
-import {EditController} from 'ra-core';
+import {Edit} from 'ra-core';
 import {SimpleForm} from 'ra-ui-materialui';
-import {Query, EditView} from 'react-admin';
+import {Query} from 'react-admin';
 import inputFactory from './inputFactory';
 
 const existsAsChild = children => {
@@ -12,37 +12,10 @@ const existsAsChild = children => {
   return ({name}) => !childrenNames.has(name);
 };
 
-export const EditViewGuesser = props => {
-  const {api, resource, children} = props;
-  const resourceSchema = api.resources.find(r => r.name === resource);
-
-  if (
-    !resourceSchema ||
-    !resourceSchema.fields ||
-    !resourceSchema.fields.length
-  ) {
-    throw new Error('Resource not present inside api description');
-  }
-
-  const inferredElements = resourceSchema.fields
-    .map(field => inputFactory(field, {resource}))
-    .filter(existsAsChild(children));
-
-  return (
-    <EditView {...props}>
-      <SimpleForm>
-        {children}
-        {inferredElements}
-      </SimpleForm>
-    </EditView>
-  );
-};
-
-EditViewGuesser.propTypes = EditView.propTypes;
-
 const EditGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>
     {({data, loading, error}) => {
+      const {resource, children} = props;
       if (loading) {
         return <div>LOADING</div>;
       }
@@ -51,13 +24,27 @@ const EditGuesser = props => (
         console.error(error);
         return <div>ERROR</div>;
       }
+      const resourceSchema = data.resources.find(r => r.name === resource);
+
+      if (
+        !resourceSchema ||
+        !resourceSchema.fields ||
+        !resourceSchema.fields.length
+      ) {
+        throw new Error('Resource not present inside api description');
+      }
+
+      const inferredElements = resourceSchema.fields
+        .map(field => inputFactory(field, {resource}))
+        .filter(existsAsChild(children));
 
       return (
-        <EditController {...props}>
-          {controllerProps => (
-            <EditViewGuesser api={data} {...controllerProps} />
-          )}
-        </EditController>
+        <Edit {...props}>
+          <SimpleForm>
+            {children}
+            {inferredElements}
+          </SimpleForm>
+        </Edit>
       );
     }}
   </Query>
