@@ -3,6 +3,7 @@ import {
   ArrayInput,
   BooleanInput,
   DateInput,
+  Loading,
   NumberInput,
   ReferenceArrayInput,
   ReferenceInput,
@@ -20,13 +21,12 @@ const InputGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>
     {({data, loading, error}) => {
       if (loading) {
-        return <div>LOADING</div>;
+        return <Loading />;
       }
 
       if (error) {
         console.error(error);
-
-        return <div>ERROR</div>;
+        return <div>Error while reading the API schema</div>;
       }
 
       const resourceSchema = data.resources.find(
@@ -38,8 +38,13 @@ const InputGuesser = props => (
         !resourceSchema.fields ||
         !resourceSchema.fields.length
       ) {
-        throw new Error(
+        console.error(
           `Resource ${props.resource} not present inside api description`,
+        );
+        return (
+          <div>
+            Resource ${props.resource} not present inside api description
+          </div>
         );
       }
 
@@ -47,8 +52,15 @@ const InputGuesser = props => (
         ({name}) => name === props.source,
       );
       if (!field) {
-        throw new Error(
+        console.error(
           `Field ${props.source} not present inside the api description for the resource ${props.resource}`,
+        );
+
+        return (
+          <div>
+            Field ${props.source} not present inside the api description for the
+            resource ${props.resource}
+          </div>
         );
       }
 
