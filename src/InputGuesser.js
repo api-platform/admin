@@ -64,7 +64,6 @@ const InputGuesser = props => (
               reference={field.reference.name}
               source={field.name}
               validate={validate}
-              {...field.inputProps}
               {...props}
               allowEmpty>
               <SelectInput
@@ -81,7 +80,6 @@ const InputGuesser = props => (
             reference={field.reference.name}
             source={field.name}
             validate={validate}
-            {...field.inputProps}
             {...props}
             allowEmpty>
             <SelectArrayInput
@@ -112,7 +110,6 @@ const InputGuesser = props => (
               key={field.name}
               source={field.name}
               validate={validate}
-              {...field.inputProps}
               {...props}>
               <SimpleFormIterator>
                 <TextInput />
@@ -126,7 +123,6 @@ const InputGuesser = props => (
               key={field.name}
               source={field.name}
               validate={validate}
-              {...field.inputProps}
               {...props}
             />
           );
@@ -138,7 +134,6 @@ const InputGuesser = props => (
               source={field.name}
               step="0.1"
               validate={validate}
-              {...field.inputProps}
               {...props}
             />
           );
@@ -149,7 +144,6 @@ const InputGuesser = props => (
               key={field.name}
               source={field.name}
               validate={validate}
-              {...field.inputProps}
               {...props}
             />
           );
@@ -161,7 +155,6 @@ const InputGuesser = props => (
               key={field.name}
               source={field.name}
               validate={validate}
-              {...field.inputProps}
               {...props}
             />
           );
@@ -172,7 +165,6 @@ const InputGuesser = props => (
               key={field.name}
               source={field.name}
               validate={validate}
-              {...field.inputProps}
               {...props}
             />
           );
