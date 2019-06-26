@@ -4,7 +4,6 @@ import {
   Create,
   SimpleForm,
   Query,
-  TranslationProvider,
   Loading,
 } from 'react-admin';
 import inputFactory from './inputFactory';
@@ -23,11 +22,7 @@ const CreateGuesser = ({...props}) => {
     <Query type="INTROSPECT">
       {({data: api, loading, error}) => {
         if (loading) {
-          return (
-            <TranslationProvider>
-              <Loading />
-            </TranslationProvider>
-          );
+          return <Loading />;
         }
 
         if (error) {
