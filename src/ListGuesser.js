@@ -11,6 +11,7 @@ import {
 import {getResource} from './docsUtils';
 import FieldGuesser from './FieldGuesser';
 import existsAsChild from './existsAsChild';
+import FilterGuesser from './FilterGuesser';
 
 const getFields = (
   {fields},
@@ -78,4 +79,9 @@ ListGuesser.propTypes = {
   children: PropTypes.object,
   resource: PropTypes.string.isRequired,
   fields: PropTypes.array,
+  filters: PropTypes.object.isRequired,
+};
+
+ListGuesser.defaultProps = {
+  filters: <FilterGuesser />,
 };
