@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {EditController} from 'ra-core';
 import {SimpleForm} from 'ra-ui-materialui';
 import {Query, EditView} from 'react-admin';
@@ -12,43 +12,31 @@ const existsAsChild = children => {
   return ({name}) => !childrenNames.has(name);
 };
 
-export class EditViewGuesser extends Component {
-  state = {
-    inferredElements: null,
-  };
-  componentDidUpdate() {
-    const {api, resource, children} = this.props;
-    if (!this.state.inferredElements) {
-      const resourceSchema = api.resources.find(r => r.name === resource);
+export const EditViewGuesser = props => {
+  const {api, resource, children} = props;
+  const resourceSchema = api.resources.find(r => r.name === resource);
 
-      if (
-        !resourceSchema ||
-        !resourceSchema.fields ||
-        !resourceSchema.fields.length
-      ) {
-        throw new Error('Resource not present inside api description');
-      }
-
-      const inferredElements = resourceSchema.fields
-        .map(field => inputFactory(field, {resource}))
-        .filter(existsAsChild(children));
-
-      this.setState({inferredElements});
-    }
+  if (
+    !resourceSchema ||
+    !resourceSchema.fields ||
+    !resourceSchema.fields.length
+  ) {
+    throw new Error('Resource not present inside api description');
   }
 
-  render() {
-    const {children} = this.props;
-    return (
-      <EditView {...this.props}>
-        <SimpleForm>
-          {children}
-          {this.state.inferredElements}
-        </SimpleForm>
-      </EditView>
-    );
-  }
-}
+  const inferredElements = resourceSchema.fields
+    .map(field => inputFactory(field, {resource}))
+    .filter(existsAsChild(children));
+
+  return (
+    <EditView {...props}>
+      <SimpleForm>
+        {children}
+        {inferredElements}
+      </SimpleForm>
+    </EditView>
+  );
+};
 
 EditViewGuesser.propTypes = EditView.propTypes;
 
@@ -61,7 +49,6 @@ const EditGuesser = props => (
 
       if (error) {
         console.error(error);
-
         return <div>ERROR</div>;
       }
 
