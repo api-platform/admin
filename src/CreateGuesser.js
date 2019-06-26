@@ -1,17 +1,17 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
-import {Datagrid, List, Query} from 'react-admin';
-import fieldFactory from './fieldFactory';
+import {Create, SimpleForm, Query} from 'react-admin';
+import inputFactory from './inputFactory';
 import {getResource} from './docsUtils';
 
-const getFields = (
-  {fields},
-  allowedFieldNames = fields.map(defaultField => defaultField.name),
-) => fields.filter(({name}) => allowedFieldNames.includes(name));
+const getInputs = (
+  {writableFields: inputs},
+  allowedInputNames = inputs.map(defaultInput => defaultInput.name),
+) => inputs.filter(({name}) => allowedInputNames.includes(name));
 
-const ListGuesser = ({...props}) => {
+const CreateGuesser = ({...props}) => {
   const children = Children.toArray(props.children);
-  const {resource: resourceName, fields: allowedFieldNames} = props;
+  const {resource: resourceName, fields: allowedInputNames} = props;
 
   return (
     <Query type="INTROSPECT">
@@ -29,30 +29,30 @@ const ListGuesser = ({...props}) => {
         const resource = getResource(api.resources, resourceName);
 
         return (
-          <List {...props}>
-            <Datagrid>
-              {getFields(resource, allowedFieldNames).map(field => {
+          <Create {...props}>
+            <SimpleForm>
+              {getInputs(resource, allowedInputNames).map(input => {
                 const child = children.find(
-                  ({props: {source}}) => source === field.name,
+                  ({props: {source}}) => source === input.name,
                 );
                 if (undefined === child) {
-                  return fieldFactory(field, {resource});
+                  return inputFactory(input, {resource});
                 }
 
                 return child;
               })}
-            </Datagrid>
-          </List>
+            </SimpleForm>
+          </Create>
         );
       }}
     </Query>
   );
 };
 
-export default ListGuesser;
+export default CreateGuesser;
 
-ListGuesser.propTypes = {
+CreateGuesser.propTypes = {
   children: PropTypes.object,
   resource: PropTypes.string.isRequired,
-  fields: PropTypes.array,
+  inputs: PropTypes.array,
 };
