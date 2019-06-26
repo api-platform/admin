@@ -1,6 +1,14 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
-import {Datagrid, List, Query, EditButton, ShowButton} from 'react-admin';
+import {
+  Datagrid,
+  List,
+  Query,
+  EditButton,
+  ShowButton,
+  TranslationProvider,
+  Loading,
+} from 'react-admin';
 import {getResource} from './docsUtils';
 import FieldGuesser from './FieldGuesser';
 
@@ -22,7 +30,11 @@ const ListGuesser = props => {
     <Query type="INTROSPECT">
       {({data: api, loading, error}) => {
         if (loading) {
-          return <div>LOADING</div>;
+          return (
+            <TranslationProvider>
+              <Loading />
+            </TranslationProvider>
+          );
         }
 
         if (error) {
