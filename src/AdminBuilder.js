@@ -42,6 +42,7 @@ const AdminBuilder = ({children, blacklist, ...props}) => {
             {data.resources
               .filter(
                 resource =>
+                  !resource.deprecated &&
                   !blacklisted.has(resource.name) &&
                   !defined.has(resource.name),
               )
