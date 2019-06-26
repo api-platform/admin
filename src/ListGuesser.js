@@ -1,8 +1,15 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
-import {Datagrid, List, Query, EditButton, ShowButton} from 'react-admin';
-import fieldFactory from './fieldFactory';
+import {
+  Datagrid,
+  List,
+  Query,
+  EditButton,
+  ShowButton,
+  Loading,
+} from 'react-admin';
 import {getResource} from './docsUtils';
+import FieldGuesser from './FieldGuesser';
 
 const getFields = (
   {fields},
@@ -22,16 +29,26 @@ const ListGuesser = props => {
     <Query type="INTROSPECT">
       {({data: api, loading, error}) => {
         if (loading) {
-          return <div>LOADING</div>;
+          return <Loading />;
         }
 
         if (error) {
-          console.log(error);
-
-          return <div>ERROR</div>;
+          console.error(error);
+          return <div>Error while reading the API schema</div>;
         }
 
         const resource = getResource(api.resources, resourceName);
+
+        if (!resource || !resource.fields) {
+          console.error(
+            `Resource ${resourceName} not present inside api description`,
+          );
+          return (
+            <div>
+              Resource ${resourceName} not present inside api description
+            </div>
+          );
+        }
 
         return (
           <List {...props}>
@@ -41,7 +58,7 @@ const ListGuesser = props => {
                   ({props: {source}}) => source === field.name,
                 );
                 if (undefined === child) {
-                  return fieldFactory(field, {resource});
+                  return <FieldGuesser key={field.name} source={field.name} />;
                 }
 
                 return child;

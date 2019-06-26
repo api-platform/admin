@@ -3,7 +3,7 @@ import {Query, Edit, Loading, SimpleForm} from 'react-admin';
 
 import InputGuesser from './InputGuesser';
 
-const existsAsChild = children => {
+export const existsAsChild = children => {
   const childrenNames = new Set(
     React.Children.map(children, child => child.props.name),
   );
@@ -25,11 +25,7 @@ const EditGuesser = props => (
       }
       const resourceSchema = data.resources.find(r => r.name === resource);
 
-      if (
-        !resourceSchema ||
-        !resourceSchema.fields ||
-        !resourceSchema.fields.length
-      ) {
+      if (!resourceSchema || !resourceSchema.fields) {
         console.error(
           `Resource ${props.resource} not present inside api description`,
         );
