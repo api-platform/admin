@@ -1,6 +1,12 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
-import {Create, SimpleForm, Query} from 'react-admin';
+import {
+  Create,
+  SimpleForm,
+  Query,
+  TranslationProvider,
+  Loading,
+} from 'react-admin';
 import inputFactory from './inputFactory';
 import {getResource} from './docsUtils';
 
@@ -17,7 +23,11 @@ const CreateGuesser = ({...props}) => {
     <Query type="INTROSPECT">
       {({data: api, loading, error}) => {
         if (loading) {
-          return <div>LOADING</div>;
+          return (
+            <TranslationProvider>
+              <Loading />
+            </TranslationProvider>
+          );
         }
 
         if (error) {
