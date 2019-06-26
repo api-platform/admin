@@ -5,10 +5,11 @@ import {Query, EditView} from 'react-admin';
 import inputFactory from './inputFactory';
 
 const existsAsChild = children => {
-  const childrenNames =
-    React.Children.map(children, ({props: {source}}) => source) || [];
+  const childrenNames = new Set(
+    React.Children.map(children, child => child.props.name),
+  );
 
-  return ({name}) => !childrenNames.includes(name);
+  return ({name}) => !childrenNames.has(name);
 };
 
 export class EditViewGuesser extends Component {
