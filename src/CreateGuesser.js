@@ -1,17 +1,13 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
 import {Create, SimpleForm, Query, Loading} from 'react-admin';
-import inputFactory from './inputFactory';
 import {getResource} from './docsUtils';
-
-const getInputs = (
-  {writableFields: inputs},
-  allowedInputNames = inputs.map(defaultInput => defaultInput.name),
-) => inputs.filter(({name}) => allowedInputNames.includes(name));
+import InputGuesser from './InputGuesser';
+import {existsAsChild} from './EditGuesser';
 
 const CreateGuesser = ({...props}) => {
   const children = Children.toArray(props.children);
-  const {resource: resourceName, fields: allowedInputNames} = props;
+  const {resource: resourceName} = props;
 
   return (
     <Query type="INTROSPECT">
@@ -21,26 +17,32 @@ const CreateGuesser = ({...props}) => {
         }
 
         if (error) {
-          console.log(error);
-
-          return <div>ERROR</div>;
+          console.error(error);
+          return <div>Error while reading the API schema</div>;
         }
 
         const resource = getResource(api.resources, resourceName);
 
+        if (!resource || !resource.writableFields) {
+          console.error(
+            `Resource ${resourceName} not present inside api description`,
+          );
+          return (
+            <div>
+              Resource ${resourceName} not present inside api description
+            </div>
+          );
+        }
+
+        const fields = resource.fields.filter(existsAsChild(children));
+
         return (
           <Create {...props}>
             <SimpleForm>
-              {getInputs(resource, allowedInputNames).map(input => {
-                const child = children.find(
-                  ({props: {source}}) => source === input.name,
-                );
-                if (undefined === child) {
-                  return inputFactory(input, {resource});
-                }
-
-                return child;
-              })}
+              {children}
+              {fields.map(field => (
+                <InputGuesser key={field.name} source={field.name} />
+              ))}
             </SimpleForm>
           </Create>
         );

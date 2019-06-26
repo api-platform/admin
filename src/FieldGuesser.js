@@ -77,12 +77,23 @@ const FieldGuesser = props => {
         }
 
         if (error) {
-          console.log(error);
-
-          return <div>ERROR</div>;
+          console.error(error);
+          return <div>Error while reading the API schema</div>;
         }
 
         const resource = getResource(api.resources, resourceName);
+
+        if (!resource || !resource.fields) {
+          console.error(
+            `Resource ${resourceName} not present inside api description`,
+          );
+          return (
+            <div>
+              Resource ${resourceName} not present inside api description
+            </div>
+          );
+        }
+
         const field = getResourceField(resource, fieldName);
 
         return renderField(resource, field, {
