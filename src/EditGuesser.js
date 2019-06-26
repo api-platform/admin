@@ -1,18 +1,23 @@
 import React, {Component} from 'react';
-import inflection from 'inflection';
-import {withStyles} from '@material-ui/core/styles';
 import {EditController} from 'ra-core';
 import {SimpleForm} from 'ra-ui-materialui';
 import {Query, EditView} from 'react-admin';
 import inputFactory from './inputFactory';
+
+const existsAsChild = children => {
+  const childrenNames =
+    React.Children.map(children, ({props: {source}}) => source) || [];
+
+  return ({name}) => !childrenNames.includes(name);
+};
 
 export class EditViewGuesser extends Component {
   state = {
     inferredChild: null,
   };
   componentDidUpdate() {
-    const {api, record, resource} = this.props;
-    if (record && !this.state.inferredElements) {
+    const {api, resource, children} = this.props;
+    if (!this.state.inferredElements) {
       const resourceSchema = api.resources.find(r => r.name === resource);
 
       if (
@@ -23,18 +28,22 @@ export class EditViewGuesser extends Component {
         throw new Error('Resource not present inside api description');
       }
 
-      const inferredElements = resourceSchema.fields.map(field =>
-        inputFactory(field, {resource}),
-      );
+      const inferredElements = resourceSchema.fields
+        .map(field => inputFactory(field, {resource}))
+        .filter(existsAsChild(children));
 
       this.setState({inferredElements});
     }
   }
 
   render() {
+    const {children} = this.props;
     return (
       <EditView {...this.props}>
-        <SimpleForm>{this.state.inferredElements}</SimpleForm>
+        <SimpleForm>
+          {children}
+          {this.state.inferredElements}
+        </SimpleForm>
       </EditView>
     );
   }
