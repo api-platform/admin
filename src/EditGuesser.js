@@ -1,8 +1,7 @@
 import React from 'react';
-import {Edit} from 'ra-core';
+import {Query, Edit} from 'ra-core';
 import {SimpleForm} from 'ra-ui-materialui';
-import {Query} from 'react-admin';
-import inputFactory from './inputFactory';
+import InputGuesser from './InputGuesser';
 
 const existsAsChild = children => {
   const childrenNames = new Set(
@@ -34,9 +33,7 @@ const EditGuesser = props => (
         throw new Error('Resource not present inside api description');
       }
 
-      const inferredElements = resourceSchema.fields
-        .map(field => inputFactory(field, {resource}))
-        .filter(existsAsChild(children));
+      const fields = resourceSchema.fields.filter(existsAsChild(children));
 
       return (
         <Edit {...props}>
