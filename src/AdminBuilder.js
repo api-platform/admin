@@ -38,7 +38,7 @@ const AdminBuilder = ({children, blacklist, ...props}) => {
         }
         return (
           <Admin theme={theme} {...props}>
-            {children}
+            {children || <></>}
             {data.resources
               .filter(
                 resource =>
@@ -65,5 +65,5 @@ AdminBuilder.propTypes = {
   dataProvider: PropTypes.func.isRequired,
   resources: PropTypes.array,
   blacklist: PropTypes.array,
-  children: PropTypes.element,
+  children: PropTypes.object,
 };
