@@ -14,7 +14,7 @@ const existsAsChild = children => {
 
 export class EditViewGuesser extends Component {
   state = {
-    inferredChild: null,
+    inferredElements: null,
   };
   componentDidUpdate() {
     const {api, resource, children} = this.props;
