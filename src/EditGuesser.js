@@ -1,6 +1,6 @@
 import React from 'react';
-import {Query, Edit} from 'ra-core';
-import {SimpleForm, Loading} from 'ra-ui-materialui';
+import {Query, Edit, Loading, SimpleForm} from 'react-admin';
+
 import InputGuesser from './InputGuesser';
 
 const existsAsChild = children => {
