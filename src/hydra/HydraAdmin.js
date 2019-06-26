@@ -1,12 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Provider } from "react-redux";
-import { createHashHistory } from "history";
-import withContext from "recompose/withContext";
-import { createAdminStore } from "react-admin";
+import React from 'react';
+import PropTypes from 'prop-types';
+import {Provider} from 'react-redux';
+import {createHashHistory} from 'history';
+import withContext from 'recompose/withContext';
+import {createAdminStore} from 'react-admin';
 
-import dataProviderFactory from "./hydraClient";
-import AdminBuilder from "../AdminBuilder";
+import dataProviderFactory from './hydraClient';
+import AdminBuilder from '../AdminBuilder';
 
 const history = createHashHistory();
 
@@ -23,9 +23,8 @@ const HydraAdmin = ({
       authProvider,
       dataProvider,
       i18nProvider,
-      history
-    })}
-  >
+      history,
+    })}>
     <AdminBuilder
       dataProvider={dataProvider}
       authProvider={authProvider}
@@ -37,7 +36,7 @@ const HydraAdmin = ({
 );
 export default withContext(
   {
-    authProvider: PropTypes.func
+    authProvider: PropTypes.func,
   },
-  props => ({ authProvider: props.authProvider })
+  props => ({authProvider: props.authProvider}),
 )(HydraAdmin);
