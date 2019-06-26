@@ -1,11 +1,6 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
-import {
-  Create,
-  SimpleForm,
-  Query,
-  Loading,
-} from 'react-admin';
+import {Create, SimpleForm, Query, Loading} from 'react-admin';
 import inputFactory from './inputFactory';
 import {getResource} from './docsUtils';
 
