@@ -1,8 +1,8 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
 import {Datagrid, List, Query, EditButton, ShowButton} from 'react-admin';
-import fieldFactory from './fieldFactory';
 import {getResource} from './docsUtils';
+import FieldGuesser from './FieldGuesser';
 
 const getFields = (
   {fields},
@@ -41,7 +41,7 @@ const ListGuesser = props => {
                   ({props: {source}}) => source === field.name,
                 );
                 if (undefined === child) {
-                  return fieldFactory(field, {resource});
+                  return <FieldGuesser key={field.name} source={field.name} />;
                 }
 
                 return child;
