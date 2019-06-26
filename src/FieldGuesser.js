@@ -97,4 +97,5 @@ export default FieldGuesser;
 
 FieldGuesser.propTypes = {
   source: PropTypes.string.isRequired,
+  resource: PropTypes.string.isRequired,
 };
