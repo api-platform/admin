@@ -1,6 +1,6 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
-import {Datagrid, List, Query} from 'react-admin';
+import {Datagrid, List, Query, EditButton, ShowButton} from 'react-admin';
 import fieldFactory from './fieldFactory';
 import {getResource} from './docsUtils';
 
@@ -9,9 +9,14 @@ const getFields = (
   allowedFieldNames = fields.map(defaultField => defaultField.name),
 ) => fields.filter(({name}) => allowedFieldNames.includes(name));
 
-const ListGuesser = ({...props}) => {
+const ListGuesser = props => {
   const children = Children.toArray(props.children);
-  const {resource: resourceName, fields: allowedFieldNames} = props;
+  const {
+    resource: resourceName,
+    fields: allowedFieldNames,
+    hasEdit,
+    hasShow,
+  } = props;
 
   return (
     <Query type="INTROSPECT">
@@ -41,6 +46,8 @@ const ListGuesser = ({...props}) => {
 
                 return child;
               })}
+              {hasShow && <ShowButton />}
+              {hasEdit && <EditButton />}
             </Datagrid>
           </List>
         );
