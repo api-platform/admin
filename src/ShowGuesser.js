@@ -1,6 +1,5 @@
 import React from 'react';
 import {Query, Show, Loading, SimpleShowLayout} from 'react-admin';
-
 import FieldGuesser from './FieldGuesser';
 
 export const existsAsChild = children => {
