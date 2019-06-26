@@ -5,12 +5,12 @@ import {
   Loading,
   TranslationProvider,
   Query,
-  ListGuesser,
   EditGuesser
 } from "react-admin";
 import PropTypes from 'prop-types';
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import { createMuiTheme } from "@material-ui/core/styles";
+import ListGuesser from "./ListGuesser";
 
 const theme = createMuiTheme({
   palette: {
