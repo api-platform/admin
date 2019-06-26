@@ -23,9 +23,9 @@ module.exports = {
 
   parser: 'babel-eslint',
 
-  plugins: ['import', 'flowtype', 'jsx-a11y', 'react', 'prettier'],
+  plugins: ['import', 'jsx-a11y', 'react', 'prettier'],
 
-  extends: ['prettier', 'prettier/flowtype', 'prettier/react'],
+  extends: ['prettier', 'prettier/react'],
 
   env: {
     browser: true,
@@ -54,7 +54,7 @@ module.exports = {
       },
     },
     react: {
-      version: 'detect', // React version. "detect" automatically picks the version you have installed.
+      version: 'detect',
     },
   },
 
@@ -223,10 +223,6 @@ module.exports = {
     'jsx-a11y/img-redundant-alt': 'warn',
     'jsx-a11y/no-access-key': 'warn',
 
-    // https://github.com/gajus/eslint-plugin-flowtype
-    'flowtype/define-flow-type': 'warn',
-    'flowtype/require-valid-file-annotation': 'warn',
-    'flowtype/use-flow-type': 'warn',
     'prettier/prettier': [
       'error',
       {
@@ -234,7 +230,6 @@ module.exports = {
         trailingComma: 'all',
         bracketSpacing: false,
         jsxBracketSameLine: true,
-        //"parser": "flow"
       },
     ],
   },
