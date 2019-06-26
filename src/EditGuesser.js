@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {EditController} from 'ra-core';
 import {SimpleForm} from 'ra-ui-materialui';
 import {Query, EditView} from 'react-admin';
-import inputFactory from './inputFactory';
+import InputGuesser from './InputGuesser';
 
 const existsAsChild = children => {
   const childrenNames =
@@ -13,13 +13,12 @@ const existsAsChild = children => {
 
 export class EditViewGuesser extends Component {
   state = {
-    inferredChild: null,
+    fields: [],
   };
   componentDidUpdate() {
     const {api, resource, children} = this.props;
-    if (!this.state.inferredElements) {
+    if (!this.state.fields || !this.state.fields.length) {
       const resourceSchema = api.resources.find(r => r.name === resource);
-
       if (
         !resourceSchema ||
         !resourceSchema.fields ||
@@ -28,11 +27,9 @@ export class EditViewGuesser extends Component {
         throw new Error('Resource not present inside api description');
       }
 
-      const inferredElements = resourceSchema.fields
-        .map(field => inputFactory(field, {resource}))
-        .filter(existsAsChild(children));
+      const fields = resourceSchema.fields.filter(existsAsChild(children));
 
-      this.setState({inferredElements});
+      this.setState({fields});
     }
   }
 
@@ -42,7 +39,9 @@ export class EditViewGuesser extends Component {
       <EditView {...this.props}>
         <SimpleForm>
           {children}
-          {this.state.inferredElements}
+          {this.state.fields.map(field => (
+            <InputGuesser key={field.name} source={field.name} />
+          ))}
         </SimpleForm>
       </EditView>
     );

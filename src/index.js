@@ -6,5 +6,6 @@ export inputFactory from './inputFactory';
 export resourceFactory from './resourceFactory';
 export List from './List';
 export Show from './Show';
+export InputGuesser from './InputGuesser';
 export * from './hydra';
 export * from './docsUtils';
