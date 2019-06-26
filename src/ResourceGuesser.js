@@ -1,5 +1,6 @@
 import React from 'react';
-import {Resource, ListGuesser, EditGuesser} from 'react-admin';
+import {Resource, ListGuesser} from 'react-admin';
+import EditGuesser from './EditGuesser';
 
 const ResourceGuesser = ({list, edit, ...props}) => (
   <Resource list={list || ListGuesser} edit={edit || EditGuesser} {...props} />
