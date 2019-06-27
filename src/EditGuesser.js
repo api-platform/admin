@@ -2,14 +2,7 @@ import React from 'react';
 import {Query, Edit, Loading, SimpleForm} from 'react-admin';
 
 import InputGuesser from './InputGuesser';
-
-export const existsAsChild = children => {
-  const childrenNames = new Set(
-    React.Children.map(children, child => child.props.name),
-  );
-
-  return ({name}) => !childrenNames.has(name);
-};
+import existsAsChild from './existsAsChild';
 
 const EditGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>
