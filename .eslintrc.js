@@ -23,13 +23,9 @@ module.exports = {
 
   parser: 'babel-eslint',
 
-  plugins: ['import', 'flowtype', 'jsx-a11y', 'react', 'prettier'],
+  plugins: ['import', 'jsx-a11y', 'react', 'prettier'],
 
-  extends: [
-    "prettier",
-    "prettier/flowtype",
-    "prettier/react"
-  ],
+  extends: ['prettier', 'prettier/react'],
 
   env: {
     browser: true,
@@ -57,13 +53,15 @@ module.exports = {
         extensions: ['.js', '.json'],
       },
     },
-
+    react: {
+      version: 'detect',
+    },
   },
 
   rules: {
     // http://eslint.org/docs/rules/
     'array-callback-return': 'warn',
-    'default-case': ['warn', { commentPattern: '^no default$' }],
+    'default-case': ['warn', {commentPattern: '^no default$'}],
     eqeqeq: ['warn', 'allow-null'],
     'no-array-constructor': 'warn',
     'no-caller': 'warn',
@@ -88,7 +86,7 @@ module.exports = {
     'no-invalid-regexp': 'warn',
     'no-iterator': 'warn',
     'no-label-var': 'warn',
-    'no-labels': ['warn', { allowLoop: false, allowSwitch: false }],
+    'no-labels': ['warn', {allowLoop: false, allowSwitch: false}],
     'no-lone-blocks': 'warn',
     'no-loop-func': 'warn',
     'no-multi-str': 'warn',
@@ -159,12 +157,14 @@ module.exports = {
       {
         object: 'require',
         property: 'ensure',
-        message: 'Please use import() instead. More info: https://webpack.js.org/guides/code-splitting-import/#dynamic-import',
+        message:
+          'Please use import() instead. More info: https://webpack.js.org/guides/code-splitting-import/#dynamic-import',
       },
       {
         object: 'System',
         property: 'import',
-        message: 'Please use import() instead. More info: https://webpack.js.org/guides/code-splitting-import/#dynamic-import',
+        message:
+          'Please use import() instead. More info: https://webpack.js.org/guides/code-splitting-import/#dynamic-import',
       },
     ],
 
@@ -199,7 +199,7 @@ module.exports = {
     'import/no-webpack-loader-syntax': 'error',
 
     // https://github.com/yannickcr/eslint-plugin-react/tree/master/docs/rules
-    'react/jsx-no-duplicate-props': ['warn', { ignoreCase: true }],
+    'react/jsx-no-duplicate-props': ['warn', {ignoreCase: true}],
     'react/jsx-no-undef': 'error',
     'react/jsx-pascal-case': [
       'warn',
@@ -223,18 +223,14 @@ module.exports = {
     'jsx-a11y/img-redundant-alt': 'warn',
     'jsx-a11y/no-access-key': 'warn',
 
-    // https://github.com/gajus/eslint-plugin-flowtype
-    'flowtype/define-flow-type': 'warn',
-    'flowtype/require-valid-file-annotation': 'warn',
-    'flowtype/use-flow-type': 'warn',
-    "prettier/prettier": ["error", {
-      "singleQuote": true,
-      "trailingComma": "all",
-      "bracketSpacing": false,
-      "jsxBracketSameLine": true,
-      //"parser": "flow"
-    }],
-
-},
-
+    'prettier/prettier': [
+      'error',
+      {
+        singleQuote: true,
+        trailingComma: 'all',
+        bracketSpacing: false,
+        jsxBracketSameLine: true,
+      },
+    ],
+  },
 };
