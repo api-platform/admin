@@ -221,7 +221,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
             Object.keys(filterValue).forEach(subKey => {
               collectionUrl.searchParams.set(
-                `${key}[${subKey}]`,
+                `${key}.${subKey}`,
                 filterValue[subKey],
               );
             });
