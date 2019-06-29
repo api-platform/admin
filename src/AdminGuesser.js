@@ -42,7 +42,7 @@ const AdminGuesser = ({children, blacklist, ...props}) => {
                 resource =>
                   !resource.deprecated &&
                   !blacklisted.has(resource.name) &&
-                  !existsAsChild(children)(resource.name),
+                  existsAsChild(children)(resource.name),
               )
               .map(resource => (
                 <ResourceGuesser name={resource.name} key={resource.name} />
