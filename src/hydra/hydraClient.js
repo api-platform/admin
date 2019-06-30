@@ -120,6 +120,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    */
   const convertReactAdminDataToHydraData = (resource, data = {}) => {
     const fieldData = [];
+
     resource.fields.forEach(({name, reference, normalizeData}) => {
       if (!(name in data)) {
         return;
@@ -139,7 +140,6 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
     const fieldDataKeys = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
-
     return Promise.all(fieldDataValues).then(fieldData => {
       const object = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
@@ -203,6 +203,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
 
       case GET_LIST:
       case GET_MANY_REFERENCE: {
+
         const {
           pagination: {page, perPage},
           sort: {field, order},

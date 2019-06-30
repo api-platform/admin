@@ -153,7 +153,6 @@ describe('fetch data from an hydra api', () => {
         },
       }),
     );
-
     await hydraClient({entrypoint: '/api'}, mockHttpClient)(
       GET_MANY_REFERENCE,
       'books',
@@ -210,6 +209,34 @@ describe('fetch data from an hydra api', () => {
         'http://www.example.com/books/2',
       );
       expect(mockHttpClient.mock.calls[1][1].method).toBe('DELETE');
+    });
+  });
+
+  test('fetch a get_many_reference resource with nested prop filter', async () => {
+    const mockHttpClient = jest.fn();
+    mockHttpClient.mockReturnValue(
+      Promise.resolve({
+        json: {
+          'hydra:member': [{'@id': 'reviews/327'}],
+        },
+      }),
+    );
+    await hydraClient({entrypoint: '/api'}, mockHttpClient)(
+      GET_MANY_REFERENCE,
+      'reviews',
+      {
+        target: 'reviews',
+        id: 'string',
+        pagination: {page: 2},
+        sort: {field: 'id', order: 'ASC'},
+        filter: {
+          'aNestedObject.foo': 'bar',
+        },
+      },
+    ).then(response => {
+      expect(mockHttpClient.mock.calls[0][0].href).toBe(
+        `${window.location.origin}/api/reviews?order%5Bid%5D=ASC&page=2&aNestedObject.foo=bar&reviews=string`,
+      );
     });
   });
 });
