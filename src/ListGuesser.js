@@ -12,15 +12,7 @@ import {getResource} from './docsUtils';
 import FieldGuesser from './FieldGuesser';
 import existsAsChild from './existsAsChild';
 import FilterGuesser from './FilterGuesser';
-
-const getOrderParametersFromResourceSchema = resourceSchema => {
-  const authorizedFields = resourceSchema.fields.map(field => field.name);
-  return resourceSchema.parameters
-    .map(filter => filter.variable)
-    .filter(filter => filter.includes('order['))
-    .map(orderFilter => orderFilter.replace('order[', '').replace(']', ''))
-    .filter(filter => authorizedFields.includes(filter));
-};
+import {getOrderParametersFromResourceSchema} from './docsUtils';
 
 const getFields = (
   {fields},
