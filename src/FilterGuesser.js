@@ -2,17 +2,7 @@ import React from 'react';
 import {Filter, Loading, Query} from 'react-admin';
 import {getResource} from './docsUtils';
 import InputGuesser from './InputGuesser';
-
-const getFiltersParametersFromResourceSchema = resourceSchema => {
-  const authorizedFields = resourceSchema.fields.map(field => field.name);
-  return resourceSchema.parameters
-    .map(filter => ({
-      name: filter.variable,
-      isRequired: filter.required,
-    }))
-    .filter(filter => !filter.name.includes('order['))
-    .filter(filter => authorizedFields.includes(filter.name));
-};
+import {getFiltersParametersFromResourceSchema} from './docsUtils';
 
 class Filters extends React.Component {
   constructor(props) {
