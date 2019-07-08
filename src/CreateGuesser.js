@@ -1,9 +1,8 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
 import {Create, SimpleForm, Query, Loading} from 'react-admin';
-import {getResource} from './docsUtils';
+import {existsAsChild, getResource} from './docsUtils';
 import InputGuesser from './InputGuesser';
-import existsAsChild from './existsAsChild';
 
 const CreateGuesser = ({...props}) => {
   const children = Children.toArray(props.children);

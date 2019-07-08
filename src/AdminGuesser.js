@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Admin, Loading, TranslationProvider, Query} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
 import ResourceGuesser from './ResourceGuesser';
-import existsAsChild from './existsAsChild';
+import {existsAsChild} from './docsUtils';
 
 const theme = createMuiTheme({
   palette: {

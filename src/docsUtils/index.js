@@ -1,3 +1,5 @@
+import {Children} from 'react';
+
 export function getResource(resources, resourceName) {
   return resources.find(({name}) => resourceName === name);
 }
@@ -78,6 +80,22 @@ export function replaceResources(resources, replaceResources) {
   replaceResources.forEach(resource => {
     replaceResource(resources, resource);
   });
+}
+
+export function existsAsChild(children) {
+  const childrenNames = new Set(
+    Children.map(children, child => child.props.name),
+  );
+
+  return ({name}) => !childrenNames.has(name);
+}
+
+export function getReferenceNameField(reference) {
+  const field = reference.fields.find(
+    field => 'http://schema.org/name' === field.id,
+  );
+
+  return field ? field.name : 'id';
 }
 
 const ORDER_MARKER = 'order[';

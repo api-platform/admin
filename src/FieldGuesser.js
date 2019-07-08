@@ -14,9 +14,21 @@ import {
   Query,
   Loading,
 } from 'react-admin';
-import {getResource, getResourceField} from './docsUtils';
-import getReferenceNameField from './getReferenceNameField';
-import {isFieldSortable} from './fieldFactory';
+import {
+  getReferenceNameField,
+  getResource,
+  getResourceField,
+} from './docsUtils';
+
+const isFieldSortable = (field, resource) => {
+  return (
+    resource.parameters.filter(parameter => parameter.variable === field.name)
+      .length > 0 &&
+    resource.parameters.filter(
+      parameter => parameter.variable === `order[${field.name}]`,
+    ).length > 0
+  );
+};
 
 const renderField = (resource, field, props) => {
   if (null !== field.reference) {

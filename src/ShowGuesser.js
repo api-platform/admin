@@ -1,14 +1,7 @@
 import React from 'react';
 import {Query, Show, Loading, SimpleShowLayout} from 'react-admin';
 import FieldGuesser from './FieldGuesser';
-
-export const existsAsChild = children => {
-  const childrenNames = new Set(
-    React.Children.map(children, child => child.props.name),
-  );
-
-  return ({name}) => !childrenNames.has(name);
-};
+import {existsAsChild} from './docsUtils';
 
 const ShowGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>
