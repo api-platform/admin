@@ -14,7 +14,7 @@ import {
   TextInput,
   Query,
 } from 'react-admin';
-import {getReferenceNameField} from './docsUtils';
+import {getReferenceNameField} from './helpers';
 
 const InputGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>
@@ -40,11 +40,7 @@ const InputGuesser = props => (
         console.error(
           `Resource ${props.resource} not present inside api description`,
         );
-        return (
-          <div>
-            Resource ${props.resource} not present inside api description
-          </div>
-        );
+        return `<div>Resource ${props.resource} not present inside api description</div>`;
       }
 
       const field = resourceSchema.fields.find(
@@ -55,12 +51,7 @@ const InputGuesser = props => (
           `Field ${props.source} not present inside the api description for the resource ${props.resource}`,
         );
 
-        return (
-          <div>
-            Field ${props.source} not present inside the api description for the
-            resource ${props.resource}
-          </div>
-        );
+        return `<div>Field ${props.source} not present inside the api description for the resource ${props.resource}</div>`;
       }
 
       const validate =
