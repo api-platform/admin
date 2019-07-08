@@ -7,7 +7,7 @@ import {shallow} from 'enzyme';
 import React from 'react';
 import fieldFactory from './fieldFactory';
 import parameterFactory from './parameterFactory';
-import List from './List';
+import ListGuesser from './ListGuesser';
 
 const entrypoint = 'http://entrypoint';
 
@@ -45,7 +45,7 @@ const resourceData = {
   url: `${entrypoint}/users`,
 };
 
-describe('<List />', () => {
+describe('<ListGuesser />', () => {
   test('without overrides', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
     const defaultParameterFactory = jest.fn(parameterFactory);
@@ -62,7 +62,7 @@ describe('<List />', () => {
     });
 
     const render = shallow(
-      <List
+      <ListGuesser
         hasEdit={true}
         hasShow={true}
         options={{
@@ -101,7 +101,7 @@ describe('<List />', () => {
     });
 
     const render = shallow(
-      <List
+      <ListGuesser
         hasEdit={true}
         hasShow={true}
         options={{
@@ -142,7 +142,7 @@ describe('<List />', () => {
     });
 
     const render = shallow(
-      <List
+      <ListGuesser
         hasEdit={true}
         hasShow={true}
         options={{
@@ -187,7 +187,7 @@ describe('<List />', () => {
     });
 
     const render = shallow(
-      <List
+      <ListGuesser
         hasEdit={true}
         hasShow={true}
         options={{
@@ -234,7 +234,7 @@ describe('<List />', () => {
     });
 
     const render = shallow(
-      <List
+      <ListGuesser
         hasEdit={true}
         hasShow={true}
         options={{

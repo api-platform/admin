@@ -1,15 +1,10 @@
 import Api from '@api-platform/api-doc-parser/lib/Api';
 import Field from '@api-platform/api-doc-parser/lib/Field';
 import Resource from '@api-platform/api-doc-parser/lib/Resource';
-import {
-  ArrayInput,
-  DisabledInput,
-  SimpleFormIterator,
-  TextInput,
-} from 'react-admin';
+import {ArrayInput, SimpleFormIterator, TextInput} from 'react-admin';
 import {shallow} from 'enzyme';
 import React from 'react';
-import Edit from './Edit';
+import CreateGuesser from './CreateGuesser';
 import inputFactory from './inputFactory';
 
 const entrypoint = 'http://entrypoint';
@@ -50,7 +45,7 @@ const resourceData = {
   ],
 };
 
-describe('<Edit />', () => {
+describe('<CreateGuesser />', () => {
   test('without overrides', () => {
     const defaultInputFactory = jest.fn(inputFactory);
 
@@ -66,7 +61,7 @@ describe('<Edit />', () => {
     });
 
     const render = shallow(
-      <Edit
+      <CreateGuesser
         options={{
           api,
           inputFactory: defaultInputFactory,
@@ -80,46 +75,7 @@ describe('<Edit />', () => {
 
     expect(defaultInputFactory).toHaveBeenCalledTimes(3);
     expect(render.find(ArrayInput).length).toEqual(1);
-    expect(render.find(DisabledInput).length).toEqual(1);
-    expect(render.find(DisabledInput).get(0).props.source).toEqual('id');
     expect(render.find(SimpleFormIterator).length).toEqual(1);
-    expect(render.find(TextInput).length).toEqual(3);
-    expect(render.find(ArrayInput).get(0).props.source).toEqual('fieldD');
-    expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
-    expect(render.find(TextInput).get(1).props.source).toEqual('fieldB');
-  });
-
-  test('without default identifier input', () => {
-    const defaultInputFactory = jest.fn(inputFactory);
-
-    const resource = new Resource(resourceData.name, resourceData.url, {
-      ...resourceData,
-      editProps: {
-        addIdInput: false,
-      },
-    });
-
-    const api = new Api(apiData.entrypoint, {
-      ...apiData,
-      resources: [resource],
-    });
-
-    const render = shallow(
-      <Edit
-        options={{
-          api,
-          inputFactory: defaultInputFactory,
-          resource,
-        }}
-        location={{}}
-        match={{}}
-        resource=""
-      />,
-    );
-
-    expect(defaultInputFactory).toHaveBeenCalledTimes(3);
-    expect(render.find(ArrayInput).length).toEqual(1);
-    expect(render.find(DisabledInput).length).toEqual(0);
     expect(render.find(TextInput).length).toEqual(3);
     expect(render.find(ArrayInput).get(0).props.source).toEqual('fieldD');
     expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
@@ -132,7 +88,7 @@ describe('<Edit />', () => {
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
-      editProps: {
+      createProps: {
         options: {
           inputFactory: customInputFactory,
         },
@@ -145,7 +101,7 @@ describe('<Edit />', () => {
     });
 
     const render = shallow(
-      <Edit
+      <CreateGuesser
         options={{
           api,
           inputFactory: defaultInputFactory,
@@ -160,8 +116,6 @@ describe('<Edit />', () => {
     expect(customInputFactory).toHaveBeenCalledTimes(3);
     expect(defaultInputFactory).toHaveBeenCalledTimes(0);
     expect(render.find(ArrayInput).length).toEqual(1);
-    expect(render.find(DisabledInput).length).toEqual(1);
-    expect(render.find(DisabledInput).get(0).props.source).toEqual('id');
     expect(render.find(SimpleFormIterator).length).toEqual(1);
     expect(render.find(TextInput).length).toEqual(3);
     expect(render.find(ArrayInput).get(0).props.source).toEqual('fieldD');
@@ -174,7 +128,7 @@ describe('<Edit />', () => {
 
     const resource = new Resource(resourceData.name, resourceData.url, {
       ...resourceData,
-      editFields: [
+      createFields: [
         new Field('fieldC', {
           id: 'http://schema.org/fieldC',
           range: 'http://www.w3.org/2001/XMLSchema#string',
@@ -196,7 +150,7 @@ describe('<Edit />', () => {
     });
 
     const render = shallow(
-      <Edit
+      <CreateGuesser
         options={{
           api,
           inputFactory: defaultInputFactory,
@@ -210,59 +164,9 @@ describe('<Edit />', () => {
 
     expect(defaultInputFactory).toHaveBeenCalledTimes(2);
     expect(render.find(ArrayInput).length).toEqual(1);
-    expect(render.find(DisabledInput).length).toEqual(1);
-    expect(render.find(DisabledInput).get(0).props.source).toEqual('id');
     expect(render.find(SimpleFormIterator).length).toEqual(1);
     expect(render.find(TextInput).length).toEqual(2);
     expect(render.find(ArrayInput).get(0).props.source).toEqual('fieldE');
     expect(render.find(TextInput).get(0).props.source).toEqual('fieldC');
-  });
-
-  test('with writable identifier', () => {
-    const defaultInputFactory = jest.fn(inputFactory);
-
-    const resource = new Resource(resourceData.name, resourceData.url, {
-      ...resourceData,
-      editProps: {
-        addIdInput: false,
-      },
-      writableFields: [
-        ...resourceData.writableFields,
-        new Field('id', {
-          id: 'http://schema.org/identifier',
-          range: 'http://www.w3.org/2001/XMLSchema#string',
-          reference: null,
-          required: true,
-        }),
-      ],
-    });
-
-    const api = new Api(apiData.entrypoint, {
-      ...apiData,
-      resources: [resource],
-    });
-
-    const render = shallow(
-      <Edit
-        options={{
-          api,
-          inputFactory: defaultInputFactory,
-          resource,
-        }}
-        location={{}}
-        match={{}}
-        resource=""
-      />,
-    );
-
-    expect(defaultInputFactory).toHaveBeenCalledTimes(4);
-    expect(render.find(ArrayInput).length).toEqual(1);
-    expect(render.find(DisabledInput).length).toEqual(0);
-    expect(render.find(TextInput).length).toEqual(4);
-    expect(render.find(ArrayInput).get(0).props.source).toEqual('fieldD');
-    expect(render.find(TextInput).get(0).props.source).toEqual('fieldA');
-    expect(render.find(TextInput).get(1).props.source).toEqual('fieldB');
-    expect(render.find(TextInput).get(2).props.source).toEqual(undefined);
-    expect(render.find(TextInput).get(3).props.source).toEqual('id');
   });
 });

@@ -14,8 +14,7 @@ import {
   TextInput,
   Query,
 } from 'react-admin';
-
-import getReferenceNameField from './getReferenceNameField';
+import {getReferenceNameField} from './docsUtils';
 
 const InputGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>

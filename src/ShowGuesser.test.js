@@ -6,7 +6,7 @@ import {shallow} from 'enzyme';
 import React from 'react';
 import fieldFactory from './fieldFactory';
 import parameterFactory from './parameterFactory';
-import Show from './Show';
+import ShowGuesser from './ShowGuesser';
 
 const entrypoint = 'http://entrypoint';
 
@@ -41,7 +41,7 @@ const resourceData = {
   url: `${entrypoint}/users`,
 };
 
-describe('<Show />', () => {
+describe('<ShowGuesser />', () => {
   test('without overrides', () => {
     const defaultFieldFactory = jest.fn(fieldFactory);
     const defaultFilterFactory = jest.fn(parameterFactory);
@@ -58,7 +58,7 @@ describe('<Show />', () => {
     });
 
     const render = shallow(
-      <Show
+      <ShowGuesser
         options={{
           api,
           fieldFactory: defaultFieldFactory,
@@ -95,7 +95,7 @@ describe('<Show />', () => {
     });
 
     const render = shallow(
-      <Show
+      <ShowGuesser
         options={{
           api,
           fieldFactory: defaultFieldFactory,
@@ -134,7 +134,7 @@ describe('<Show />', () => {
     });
 
     const render = shallow(
-      <Show
+      <ShowGuesser
         options={{
           api,
           fieldFactory: defaultFieldFactory,
@@ -177,7 +177,7 @@ describe('<Show />', () => {
     });
 
     const render = shallow(
-      <Show
+      <ShowGuesser
         options={{
           api,
           fieldFactory: defaultFieldFactory,
@@ -222,7 +222,7 @@ describe('<Show />', () => {
     });
 
     const render = shallow(
-      <Show
+      <ShowGuesser
         options={{
           api,
           fieldFactory: defaultFieldFactory,
