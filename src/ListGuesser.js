@@ -11,20 +11,71 @@ import {
 import {getResource} from './docsUtils';
 import FieldGuesser from './FieldGuesser';
 import existsAsChild from './existsAsChild';
+import FilterGuesser from './FilterGuesser';
+import {getOrderParametersFromResourceSchema} from './docsUtils';
 
 const getFields = (
   {fields},
   allowedFieldNames = fields.map(defaultField => defaultField.name),
 ) => fields.filter(({name}) => allowedFieldNames.includes(name));
 
+class ResourcesList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      orderParameters: this.props.resourceSchema
+        ? getOrderParametersFromResourceSchema(this.props.resourceSchema)
+        : [],
+    };
+  }
+
+  componentDidMount() {
+    if (!this.state.orderParameters.length) {
+      this.props.resourceSchema.getParameters().then(parameters => {
+        this.setState({
+          orderParameters: getOrderParametersFromResourceSchema({
+            ...this.props.resourceSchema,
+            parameters,
+          }),
+        });
+      });
+    }
+  }
+
+  render() {
+    const {
+      resourceSchema: resource,
+      fields: allowedFieldNames,
+      ...props
+    } = this.props;
+
+    const children = Children.toArray(props.children);
+
+    const fields = getFields(resource, allowedFieldNames).filter(
+      existsAsChild(children),
+    );
+
+    return (
+      <List {...props}>
+        <Datagrid>
+          {children}
+          {fields.map(field => (
+            <FieldGuesser
+              key={field.name}
+              source={field.name}
+              sortable={this.state.orderParameters.includes(field.name)}
+            />
+          ))}
+          {props.hasShow && <ShowButton />}
+          {props.hasEdit && <EditButton />}
+        </Datagrid>
+      </List>
+    );
+  }
+}
+
 const ListGuesser = props => {
-  const children = Children.toArray(props.children);
-  const {
-    resource: resourceName,
-    fields: allowedFieldNames,
-    hasEdit,
-    hasShow,
-  } = props;
+  const {resource: resourceName} = props;
 
   return (
     <Query type="INTROSPECT">
@@ -38,9 +89,9 @@ const ListGuesser = props => {
           return <div>Error while reading the API schema</div>;
         }
 
-        const resource = getResource(api.resources, resourceName);
+        const resourceSchema = getResource(api.resources, resourceName);
 
-        if (!resource || !resource.fields) {
+        if (!resourceSchema || !resourceSchema.fields) {
           console.error(
             `Resource ${resourceName} not present inside api description`,
           );
@@ -51,22 +102,7 @@ const ListGuesser = props => {
           );
         }
 
-        const fields = getFields(resource, allowedFieldNames).filter(
-          existsAsChild(children),
-        );
-
-        return (
-          <List {...props}>
-            <Datagrid>
-              {children}
-              {fields.map(field => (
-                <FieldGuesser key={field.name} source={field.name} />
-              ))}
-              {hasShow && <ShowButton />}
-              {hasEdit && <EditButton />}
-            </Datagrid>
-          </List>
-        );
+        return <ResourcesList resourceSchema={resourceSchema} {...props} />;
       }}
     </Query>
   );
@@ -78,4 +114,9 @@ ListGuesser.propTypes = {
   children: PropTypes.object,
   resource: PropTypes.string.isRequired,
   fields: PropTypes.array,
+  filters: PropTypes.object.isRequired,
+};
+
+ListGuesser.defaultProps = {
+  filters: <FilterGuesser />,
 };
