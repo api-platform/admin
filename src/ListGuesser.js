@@ -8,9 +8,8 @@ import {
   ShowButton,
   Loading,
 } from 'react-admin';
-import {getResource} from './docsUtils';
+import {existsAsChild, getResource} from './docsUtils';
 import FieldGuesser from './FieldGuesser';
-import existsAsChild from './existsAsChild';
 import FilterGuesser from './FilterGuesser';
 import {getOrderParametersFromResourceSchema} from './docsUtils';
 

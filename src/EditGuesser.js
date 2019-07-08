@@ -1,8 +1,7 @@
 import React from 'react';
 import {Query, Edit, Loading, SimpleForm} from 'react-admin';
-
 import InputGuesser from './InputGuesser';
-import existsAsChild from './existsAsChild';
+import {existsAsChild} from './docsUtils';
 
 const EditGuesser = props => (
   <Query type="INTROSPECT" resource={props.ressource}>
