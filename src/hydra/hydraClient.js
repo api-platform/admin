@@ -58,6 +58,11 @@ export const transformJsonLdDocumentToReactAdminDocument = (
     document = new ReactAdminDocument(document);
   }
 
+  // Convert translations from Object to Array
+  if ('translations' in document) {
+    document['translations'] = Object.values(document['translations']);
+  }
+
   // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
   Object.keys(document).forEach(key => {
     // to-one
