@@ -7,11 +7,11 @@ import ShowGuesser from './ShowGuesser';
 
 const ResourceGuesser = ({list, edit, create, show, ...props}) => (
   <Resource
-    list={list || ListGuesser}
+    {...props}
     create={create || CreateGuesser}
     edit={edit || EditGuesser}
+    list={list || ListGuesser}
     show={show || ShowGuesser}
-    {...props}
   />
 );
 

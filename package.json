@@ -15,18 +15,16 @@
   "author": "Kévin Dunglas",
   "license": "MIT",
   "devDependencies": {
+    "@api-platform/api-doc-parser": "^0.7.2",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
-    "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
-    "babel-core": "^7.0.0-bridge.0",
+    "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.8.0",
-    "enzyme": "^3.8.0",
-    "enzyme-adapter-react-16": "^1.7.1",
     "eslint": "^5.11.1",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-import": "^2.14.0",
@@ -34,42 +32,27 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.1",
     "jest": "^24.8.0",
-    "prettier": "^1.15.3",
-    "raf": "^3.4.1",
-    "react": "~16.9.0",
-    "react-dom": "~16.3.1",
-    "react-test-renderer": "~16.3.1",
-    "regenerator-runtime": "^0.13.1"
-  },
-  "dependencies": {
-    "@api-platform/api-doc-parser": "^0.7.2",
-    "@babel/runtime": "^7.2.0",
-    "react-redux": "~5.0.7",
     "jsonld": "^1.2.1",
     "lodash.isplainobject": "^4.0.6",
+    "prettier": "^1.15.3",
     "prop-types": "^15.6.2",
-    "react-admin": "^2.7.0"
+    "react": "~16.9.0",
+    "react-admin": "^2.7.0",
+    "react-dom": "~16.3.1",
+    "react-redux": "~5.0.7",
+    "react-test-renderer": "^16.8.6"
   },
   "peerDependencies": {
     "react": "~16.0.0 || ~16.1.0 || ~16.2.0 || ~16.3.0",
     "react-dom": "~16.0.0 || ~16.1.0 || ~16.2.0 || ~16.3.0"
   },
   "scripts": {
+    "build": "babel src -d lib --ignore '*.test.js'",
+    "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "fix": "eslint --fix src",
+    "lint": "eslint src",
     "test": "jest src",
     "test:watch": "jest --watch src",
-    "lint": "eslint src",
-    "fix": "eslint --fix src",
-    "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
-    "build": "babel src -d lib --ignore '*.test.js'",
     "watch": "babel src -d lib --ignore '*.test.js' --watch"
-  },
-  "jest": {
-    "setupFiles": [
-      "<rootDir>/src/setupTests.js",
-      "raf/polyfill"
-    ]
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
