@@ -3,7 +3,7 @@ import {TextField} from 'react-admin';
 import {shallow} from 'enzyme';
 import FieldGuesser from './FieldGuesser';
 
-import {API_INPUT_DATA, API_FIELDS_DATA} from './common-data-test';
+import {API_INPUT_DATA, API_FIELDS_DATA} from './common-test/common-data-test';
 import {ShowGuesserComponent} from './ShowGuesser';
 
 describe('<ShowGuesser />', () => {

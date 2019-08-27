@@ -14,7 +14,11 @@ import {
   Query,
   Loading,
 } from 'react-admin';
-import {getReferenceNameField} from './helpers';
+import {
+  getReferenceNameField,
+  getResource,
+  getResourceField,
+} from './docsUtils';
 
 const isFieldSortable = (field, resource) => {
   return (
@@ -79,7 +83,7 @@ const FieldGuesser = props => {
 
   return (
     <Query type="INTROSPECT">
-      {({data, loading, error}) => {
+      {({data: api, loading, error}) => {
         if (loading) {
           return <Loading />;
         }
@@ -89,25 +93,32 @@ const FieldGuesser = props => {
           return <div>Error while reading the API schema</div>;
         }
 
-        const resource = data.resources.find(({name}) => resourceName === name);
+        const resource = getResource(api.resources, resourceName);
 
         if (!resource || !resource.fields) {
           console.error(
             `Resource ${resourceName} not present inside api description`,
           );
-          return `<div>Resource ${resourceName} not present inside api description</div>`;
+          return (
+            <div>
+              Resource ${resourceName} not present inside api description
+            </div>
+          );
         }
 
-        const field = resource.readableFields.find(
-          ({name}) => fieldName === name,
-        );
+        const field = getResourceField(resource, fieldName);
 
         if (!field) {
           console.error(
             `Field ${props.source} not present inside the api description for the resource ${props.resource}`,
           );
 
-          return `<div>Field ${fieldName} not present inside the api description for the resource ${resourceName}</div>`;
+          return (
+            <div>
+              Field ${fieldName} not present inside the api description for the
+              resource ${resourceName}
+            </div>
+          );
         }
 
         return renderField(resource, field, {

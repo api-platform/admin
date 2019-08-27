@@ -3,7 +3,7 @@ import ShallowRenderer from 'react-test-renderer/shallow';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 import {render} from './AdminGuesser';
-import {resources} from "./__fixtures__";
+import {resources} from './__fixtures__';
 
 describe('<AdminGuesser />', () => {
   const renderer = new ShallowRenderer();

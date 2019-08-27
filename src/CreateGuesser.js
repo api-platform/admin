@@ -1,63 +1,54 @@
-import React, {Fragment} from 'react';
+import React, {Children} from 'react';
 import PropTypes from 'prop-types';
 import {Create, SimpleForm, Query, Loading} from 'react-admin';
-import {getResourcePropertiesNames, renderInput} from './helpers';
+import {existsAsChild, getResource} from './docsUtils';
+import InputGuesser from './InputGuesser';
 
-const CreateGuesserView = ({children, inputsNames, ...props}) => (
-  <Create {...props}>
-    <SimpleForm>
-      {inputsNames.map(inputName => (
-        <Fragment key={inputName}>
-          {renderInput(children, inputName, props.resource)}
-        </Fragment>
-      ))}
-    </SimpleForm>
-  </Create>
-);
+const CreateGuesser = ({...props}) => {
+  const children = Children.toArray(props.children);
+  const {resource: resourceName} = props;
 
-CreateGuesserView.propTypes = {
-  children: PropTypes.object,
-  inputsNames: PropTypes.array.isRequired,
-};
+  return (
+    <Query type="INTROSPECT">
+      {({data: api, loading, error}) => {
+        if (loading) {
+          return <Loading />;
+        }
 
-const CreateGuesser = props => (
-  <Query type="INTROSPECT">
-    {({data, loading, error}) => {
-      if (loading) {
-        return <Loading />;
-      }
+        if (error) {
+          console.error(error);
+          return <div>Error while reading the API schema</div>;
+        }
 
-      if (error) {
-        console.error(error);
-        return <div>Error while reading the API schema</div>;
-      }
+        const resource = getResource(api.resources, resourceName);
 
-      const {
-        resource: resourceName,
-        inputs: allowedInputNames,
-        children,
-      } = props;
+        if (!resource || !resource.writableFields) {
+          console.error(
+            `Resource ${resourceName} not present inside api description`,
+          );
+          return (
+            <div>
+              Resource ${resourceName} not present inside api description
+            </div>
+          );
+        }
 
-      const resource = data.resources.find(({name}) => resourceName === name);
+        const fields = resource.fields.filter(existsAsChild(children));
 
-      if (!resource || !resource.writableFields) {
-        console.error(
-          `Resource ${resourceName} not present inside api description`,
+        return (
+          <Create {...props}>
+            <SimpleForm>
+              {children}
+              {fields.map(field => (
+                <InputGuesser key={field.name} source={field.name} />
+              ))}
+            </SimpleForm>
+          </Create>
         );
-        return `<div>Resource ${resourceName} not present inside api description</div>`;
-      }
-
-      const inputsNames = getResourcePropertiesNames(
-        resource,
-        'writable',
-        allowedInputNames,
-        children,
-      );
-
-      return <CreateGuesserView {...props} inputsNames={inputsNames} />;
-    }}
-  </Query>
-);
+      }}
+    </Query>
+  );
+};
 
 export default CreateGuesser;
 
