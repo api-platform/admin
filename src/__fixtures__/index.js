@@ -1,5 +1,3 @@
-import resources from "./resources";
+import resources from './resources';
 
-export {
-  resources
-};
+export {resources};
