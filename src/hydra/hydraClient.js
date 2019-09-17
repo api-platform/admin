@@ -10,6 +10,7 @@ import {
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
 import fetchHydra from './fetchHydra';
+import apiDocumentationParser from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
 
 class ReactAdminDocument {
   constructor(obj) {
@@ -111,7 +112,9 @@ export const transformJsonLdDocumentToReactAdminDocument = (
  * GET_ONE  => GET http://my.api.url/posts/123
  * UPDATE   => PUT http://my.api.url/posts/123
  */
-export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
+export default (entrypoint, httpClient = fetchHydra) => {
+  let apiSchema;
+
   /**
    * @param {Object} resource
    * @param {Object} data
@@ -157,7 +160,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Promise}
    */
   const transformReactAdminDataToRequestBody = (resource, data = {}) => {
-    resource = resources.find(({name}) => resource === name);
+    resource = apiSchema.resources.find(({name}) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
     }
@@ -267,7 +270,7 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
    * @returns {Promise}
    */
   const convertHydraDataToReactAdminData = (resource, data = {}) => {
-    resource = resources.find(({name}) => resource === name);
+    resource = apiSchema.resources.find(({name}) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
     }
@@ -346,6 +349,13 @@ export default ({entrypoint, resources = []}, httpClient = fetchHydra) => {
   const fetchApi = (type, resource, params) => {
     // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
     switch (type) {
+      case 'INTROSPECT':
+        if (apiSchema) return Promise.resolve({data: apiSchema});
+        return apiDocumentationParser(entrypoint).then(({api}) => {
+          apiSchema = api;
+          return {data: api};
+        });
+
       case GET_MANY:
         return Promise.all(
           params.ids.map(id =>

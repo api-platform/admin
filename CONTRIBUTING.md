@@ -30,19 +30,45 @@ Otherwise, you should base your changes on the `master` branch.
 
 To install the source version of API Platform Admin in your project and contribute a patch, run the following command:
 
-    # Link the source version of API Platform admin
+    # Create your `CLIENT` that will use `api-platform-admin` (replace <yourproject> by your project's name) :
+    $ npm install -g npx
+    $ npx create-react-app <yourproject>
+    $ cd <yourproject>
+    $ yarn add @api-platform/admin
+
+    # Replace src/App.js by this one
+    ```
+    import React from 'react';
+    import { HydraAdmin } from '@api-platform/admin';
+
+    export default () => <HydraAdmin entrypoint="https://demo.api-platform.com"/>; // Replace with your own API entrypoint
+    ```
+
+    # Install your own version of `api-platform-admin`
     $ cd ..
-    $ git clone git@github.com:api-platform/admin.git -b the-latest-stable-branch
+    $ git clone https://github.com/api-platform/admin.git
+
+    # Link it to your `CLIENT`
     $ cd admin
     $ yarn link
-    $ cd ../yourpoject
+    $ cd ../<yourproject>
     $ yarn link "@api-platform/admin"
-    # Use the React version of your project to build API Platform admin
-    $ cd node_modules/react
+
+    # Use the React version of your project to build `api-platform-admin`
+    $ cd node_modules/react/
     $ yarn link
     $ cd ../../../admin
     $ yarn link react
+
+    # Start your `api-platform-admin` version
+    $ yarn install
     $ yarn watch
+
+    (open a new terminal console with the same path)
+
+    # Start your `CLIENT`
+    $ cd ../<yourproject>/
+    $ yarn start
 
 You can now hack in the cloned repository of `api-platform-admin`.
 
