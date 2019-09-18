@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@api-platform/api-doc-parser@^0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@api-platform/api-doc-parser/-/api-doc-parser-0.7.2.tgz#c5ca5913fa6ee319016a635df5225e0db5ecc9ab"
-  integrity sha512-FHzAldq1/ZZZhRyI8sgfxIrf3NtKLNgaW6P8Z12cjK3qWDuYCjsQZ1H2Z4WGZk0tGhDxA3lVJXcw4HHD5kjTrQ==
+"@api-platform/api-doc-parser@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@api-platform/api-doc-parser/-/api-doc-parser-0.8.1.tgz#256cd7719d85b1f54440841a77679c19c9b97058"
+  integrity sha512-AfyeuQL58zjayiiB5fysY88twkDfGTWCYr7R/mtWxGJVXJHp0nJwaNWHQD00VzFYLoDXcDq1l/dZjOZA79YUAg==
   dependencies:
-    babel-runtime "^6.23.0"
+    "@babel/runtime" "^7.0.0"
     jsonld "^1.5.0"
     lodash.get "^4.4.2"
     lodash.uniq "^4.5.0"
@@ -747,7 +747,7 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.4.5":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.4.5":
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.6.0.tgz#4fc1d642a9fd0299754e8b5de62c631cf5568205"
   integrity sha512-89eSBLJsxNxOERC0Op4vd+0Bqm6wRMqMbFtV3i0/fbaWw/mJ8Q3eBvgX0G4SyrOOLCtbu98HspF8o09MRT+KzQ==
@@ -1490,7 +1490,7 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.26.0:
+babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
@@ -5169,7 +5169,7 @@ rdf-canonize@^1.0.2:
     node-forge "^0.8.1"
     semver "^5.6.0"
 
-react-admin@^2.7.0:
+react-admin@^2.9.0:
   version "2.9.6"
   resolved "https://registry.yarnpkg.com/react-admin/-/react-admin-2.9.6.tgz#ee5d4198a03d9cbc157a10ecaa901464b54ae3b6"
   integrity sha512-AhhsbJxabP9SaA1hBAY12fEVL0GxlBPld+vcVAlThtb0zy8HVlUxdD1pqKcNnWClFmKsgP0LFEalcZP+vcgkzQ==
