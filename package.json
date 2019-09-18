@@ -1,6 +1,6 @@
 {
   "name": "@api-platform/admin",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Automatic administration interface for Hydra-enabled APIs.",
   "files": [
     "*.md",
@@ -15,7 +15,6 @@
   "author": "Kévin Dunglas",
   "license": "MIT",
   "devDependencies": {
-    "@api-platform/api-doc-parser": "^0.8.1",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
@@ -35,12 +34,8 @@
     "eslint-plugin-react": "^7.12.1",
     "jest": "^24.8.0",
     "jest-enzyme": "^7.1.0",
-    "jsonld": "^1.2.1",
-    "lodash.isplainobject": "^4.0.6",
     "prettier": "^1.15.3",
-    "prop-types": "^15.6.2",
     "react": "~16.9.0",
-    "react-admin": "^2.9.0",
     "react-dom": "~16.9.0",
     "react-redux": "~5.0.7",
     "react-test-renderer": "^16.8.6"
@@ -63,5 +58,11 @@
       "./src/setupTests.js"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "@api-platform/api-doc-parser": "^0.8.1",
+    "jsonld": "^1.2.1",
+    "lodash.isplainobject": "^4.0.6",
+    "prop-types": "^15.6.2",
+    "react-admin": "^2.9.0"
+  }
 }
