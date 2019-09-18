@@ -24,22 +24,21 @@ export const render = (
     return <div>Error while reading the API schema</div>;
   }
 
-  const resourceGuessers = data.resources
+  const childrenAsArray = React.Children.toArray(children);
+  data.resources
     .filter(
       resource =>
         !resource.deprecated &&
         !blacklist.includes(resource.name) &&
         existsAsChild(children)(resource.name),
     )
-    .map(resource => (
-      <ResourceGuesser name={resource.name} key={resource.name} />
-    ));
+    .forEach(resource =>
+      childrenAsArray.push(
+        <ResourceGuesser name={resource.name} key={resource.name} />,
+      ),
+    );
 
-  if (children) {
-    resourceGuessers.unshift(children);
-  }
-
-  return <Admin {...props}>{resourceGuessers}</Admin>;
+  return <Admin {...props}>{childrenAsArray}</Admin>;
 };
 
 const AdminGuesser = props => (
