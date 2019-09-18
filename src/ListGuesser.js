@@ -32,7 +32,7 @@ class ListGuesserComponent extends React.Component {
   }
 
   render() {
-    const {resourceSchema, fields, hasShow, hasEdit, ...props} = this.props;
+    const {resourceSchema, fields, ...props} = this.props;
     const children = Children.toArray(props.children);
     return (
       <List {...props}>
@@ -45,8 +45,8 @@ class ListGuesserComponent extends React.Component {
               sortable={this.state.orderParameters.includes(field.name)}
             />
           ))}
-          {hasShow && <ShowButton />}
-          {hasEdit && <EditButton />}
+          {props.hasShow && <ShowButton />}
+          {props.hasEdit && <EditButton />}
         </Datagrid>
       </List>
     );

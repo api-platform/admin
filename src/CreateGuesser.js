@@ -1,54 +1,27 @@
 import React, {Children} from 'react';
 import PropTypes from 'prop-types';
-import {Create, SimpleForm, Query, Loading} from 'react-admin';
-import {existsAsChild, getResource} from './docsUtils';
+import {Create, SimpleForm} from 'react-admin';
 import InputGuesser from './InputGuesser';
+import WithReactAdminQuery from './withReactAdminQuery';
 
-const CreateGuesser = ({...props}) => {
+const CreateGuesserComponent = ({...props}) => {
+  const {fields, resourceSchema, ...filteredProps} = props;
   const children = Children.toArray(props.children);
-  const {resource: resourceName} = props;
+
+  fields.map(field =>
+    children.push(<InputGuesser key={field.name} source={field.name} />),
+  );
 
   return (
-    <Query type="INTROSPECT">
-      {({data: api, loading, error}) => {
-        if (loading) {
-          return <Loading />;
-        }
-
-        if (error) {
-          console.error(error);
-          return <div>Error while reading the API schema</div>;
-        }
-
-        const resource = getResource(api.resources, resourceName);
-
-        if (!resource || !resource.writableFields) {
-          console.error(
-            `Resource ${resourceName} not present inside api description`,
-          );
-          return (
-            <div>
-              Resource ${resourceName} not present inside api description
-            </div>
-          );
-        }
-
-        const fields = resource.fields.filter(existsAsChild(children));
-
-        return (
-          <Create {...props}>
-            <SimpleForm>
-              {children}
-              {fields.map(field => (
-                <InputGuesser key={field.name} source={field.name} />
-              ))}
-            </SimpleForm>
-          </Create>
-        );
-      }}
-    </Query>
+    <Create {...filteredProps}>
+      <SimpleForm>{children}</SimpleForm>
+    </Create>
   );
 };
+
+const CreateGuesser = props => (
+  <WithReactAdminQuery component={CreateGuesserComponent} {...props} />
+);
 
 export default CreateGuesser;
 

@@ -33,9 +33,9 @@ const withReactAdminQuery = ({component: Component, ...props}) => (
         );
       }
 
-      const fields = resourceSchema.fields.filter(
-        existsAsChild(props.children),
-      );
+      const fields = resourceSchema.fields
+        .filter(({deprecated}) => !deprecated)
+        .filter(existsAsChild(props.children));
 
       return (
         <Component
