@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {Admin, Loading, Query, TranslationProvider} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
@@ -24,21 +24,22 @@ export const render = (
     return <div>Error while reading the API schema</div>;
   }
 
-  return (
-    <Admin {...props}>
-      {children || <Fragment />}
-      {data.resources
-        .filter(
-          resource =>
-            !resource.deprecated &&
-            !blacklist.includes(resource.name) &&
-            existsAsChild(children)(resource.name),
-        )
-        .map(resource => (
-          <ResourceGuesser name={resource.name} key={resource.name} />
-        ))}
-    </Admin>
-  );
+  const resourceGuessers = data.resources
+    .filter(
+      resource =>
+        !resource.deprecated &&
+        !blacklist.includes(resource.name) &&
+        existsAsChild(children)(resource.name),
+    )
+    .map(resource => (
+      <ResourceGuesser name={resource.name} key={resource.name} />
+    ));
+
+  if (children) {
+    resourceGuessers.unshift(children);
+  }
+
+  return <Admin {...props}>{resourceGuessers}</Admin>;
 };
 
 const AdminGuesser = props => (

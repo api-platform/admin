@@ -20,7 +20,6 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
   loginPage={[Function]}
   logoutButton={[Function]}
 >
-  <React.Fragment />
   <ResourceGuesser
     name="books"
   />
