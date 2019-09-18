@@ -1,10 +1,10 @@
 import React from 'react';
-import {Filter, Loading, Query} from 'react-admin';
-import {getResource} from './docsUtils';
+import {Filter} from 'react-admin';
 import InputGuesser from './InputGuesser';
+import WithReactAdminQuery from './withReactAdminQuery';
 import {getFiltersParametersFromResourceSchema} from './docsUtils';
 
-class Filters extends React.Component {
+class FilterGuesserComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,18 +28,11 @@ class Filters extends React.Component {
   }
 
   render() {
-    const {
-      resourceSchema: resource,
-      fields: allowedFieldNames,
-      hasEdit,
-      hasShow,
-      ...props
-    } = this.props;
-
     if (!this.state.filtersParameters.length) {
       return null;
     }
 
+    const {resourceSchema, fields, hasShow, hasEdit, ...props} = this.props;
     return (
       <Filter {...props}>
         {this.state.filtersParameters.map(filter => (
@@ -54,37 +47,8 @@ class Filters extends React.Component {
   }
 }
 
-const FilterGuesser = props => {
-  const {resource: resourceName} = props;
-  return (
-    <Query type="INTROSPECT">
-      {({data: api, loading, error}) => {
-        if (loading) {
-          return <Loading />;
-        }
-
-        if (error) {
-          console.error(error);
-          return <div>Error while reading the API schema</div>;
-        }
-
-        const resourceSchema = getResource(api.resources, resourceName);
-
-        if (!resourceSchema || !resourceSchema.fields) {
-          console.error(
-            `Resource ${resourceName} not present inside api description`,
-          );
-          return (
-            <div>
-              Resource ${resourceName} not present inside api description
-            </div>
-          );
-        }
-
-        return <Filters resourceSchema={resourceSchema} {...props} />;
-      }}
-    </Query>
-  );
-};
+const FilterGuesser = props => (
+  <WithReactAdminQuery component={FilterGuesserComponent} {...props} />
+);
 
 export default FilterGuesser;

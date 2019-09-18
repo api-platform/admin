@@ -6,10 +6,10 @@ import WithReactAdminQuery from './withReactAdminQuery';
 
 // useful for testing (we don't need Query)
 const EditGuesserComponent = props => {
-  const {children, fields} = props;
+  const {children, fields, resourceSchema, ...filteredProps} = props;
 
   return (
-    <Edit {...props}>
+    <Edit {...filteredProps} undoable={false}>
       <SimpleForm>
         {children}
         {fields.map(field => (
