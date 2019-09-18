@@ -15,7 +15,7 @@
   "author": "Kévin Dunglas",
   "license": "MIT",
   "devDependencies": {
-    "@api-platform/api-doc-parser": "^0.7.2",
+    "@api-platform/api-doc-parser": "^0.8.1",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
@@ -40,14 +40,14 @@
     "prettier": "^1.15.3",
     "prop-types": "^15.6.2",
     "react": "~16.9.0",
-    "react-admin": "^2.7.0",
+    "react-admin": "^2.9.0",
     "react-dom": "~16.3.1",
     "react-redux": "~5.0.7",
     "react-test-renderer": "^16.8.6"
   },
   "peerDependencies": {
-    "react": "~16.0.0 || ~16.1.0 || ~16.2.0 || ~16.3.0",
-    "react-dom": "~16.0.0 || ~16.1.0 || ~16.2.0 || ~16.3.0"
+    "react": "~16.0.0 || ~16.1.0 || ~16.2.0 || ~16.3.0 || ~16.4.0",
+    "react-dom": "~16.0.0 || ~16.1.0 || ~16.2.0 || ~16.3.0 || ~16.4.0"
   },
   "scripts": {
     "build": "babel src -d lib --ignore '*.test.js'",
