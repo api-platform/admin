@@ -165,11 +165,9 @@ export default (entrypoint, httpClient = fetchHydra) => {
       return Promise.resolve(data);
     }
 
-    return convertReactAdminDataToHydraData(resource, data).then(data => {
-      return undefined === resource.encodeData
-        ? JSON.stringify(data)
-        : resource.encodeData(data);
-    });
+    return convertReactAdminDataToHydraData(resource, data).then(data =>
+      JSON.stringify(data),
+    );
   };
 
   /**

@@ -5,10 +5,6 @@ import {existsAsChild} from './docsUtils';
 const withReactAdminQuery = ({component: Component, ...props}) => (
   <Query type="INTROSPECT" resource={props.ressource}>
     {({data, loading, error}) => {
-      if (data == null) {
-        return null;
-      }
-
       if (loading) {
         return <Loading />;
       }
@@ -16,6 +12,10 @@ const withReactAdminQuery = ({component: Component, ...props}) => (
       if (error) {
         console.error(error);
         return <div>Error while reading the API schema</div>;
+      }
+
+      if (data == null) {
+        return null;
       }
 
       const resourceSchema = data.resources.find(
@@ -41,6 +41,7 @@ const withReactAdminQuery = ({component: Component, ...props}) => (
         <Component
           data={data}
           resource={props.ressource}
+          resourceSchema={resourceSchema}
           fields={fields}
           {...props}
         />
