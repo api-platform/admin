@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import {Admin, Loading, Query, TranslationProvider} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
 import ResourceGuesser from './ResourceGuesser';
-import {existsAsChild} from './docsUtils';
 
 export const render = (
-  {blacklist = [], children, ...props},
+  {resources, children, ...props},
   {data, error, loading},
 ) => {
   if (loading) {
@@ -24,19 +23,25 @@ export const render = (
     return <div>Error while reading the API schema</div>;
   }
 
+  // Children are always rendered, first
+  // Then resources listed in the "resources" prop are rendered, in that order
+  // If and only if both children and the "resources" prop are empty, then all available resources are rendered
+
   const childrenAsArray = React.Children.toArray(children);
-  data.resources
-    .filter(
-      resource =>
-        !resource.deprecated &&
-        !blacklist.includes(resource.name) &&
-        existsAsChild(children)(resource.name),
-    )
-    .forEach(resource =>
-      childrenAsArray.push(
-        <ResourceGuesser name={resource.name} key={resource.name} />,
-      ),
+  const useResourcesProp = Array.isArray(resources);
+  if (useResourcesProp) {
+    resources.forEach(name =>
+      childrenAsArray.push(<ResourceGuesser name={name} key={name} />),
     );
+  }
+
+  if (!children && !useResourcesProp) {
+    data.resources
+      .filter(r => !r.deprecated)
+      .forEach(r =>
+        childrenAsArray.push(<ResourceGuesser name={r.name} key={r.name} />),
+      );
+  }
 
   return <Admin {...props}>{childrenAsArray}</Admin>;
 };
@@ -60,7 +65,7 @@ AdminGuesser.defaultProps = {
 };
 
 AdminGuesser.propTypes = {
-  blacklist: PropTypes.array,
+  resources: PropTypes.array,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
 };
