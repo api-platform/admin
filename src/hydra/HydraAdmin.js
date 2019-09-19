@@ -5,7 +5,7 @@ import {createHashHistory} from 'history';
 import withContext from 'recompose/withContext';
 import {createAdminStore} from 'react-admin';
 
-import dataProviderFactory from './hydraClient';
+import dataProviderFactory from './dataProvider';
 import AdminGuesser from '../AdminGuesser';
 
 const history = createHashHistory();

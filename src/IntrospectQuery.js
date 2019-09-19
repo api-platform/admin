@@ -1,8 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Query, Loading} from 'react-admin';
-import {existsAsChild} from './docsUtils';
 
-const withReactAdminQuery = ({component: Component, ...props}) => (
+const IntrospectQuery = ({
+  component: Component,
+  includeDeprecated,
+  ...props
+}) => (
   <Query type="INTROSPECT" resource={props.ressource}>
     {({data, loading, error}) => {
       if (loading) {
@@ -33,9 +37,9 @@ const withReactAdminQuery = ({component: Component, ...props}) => (
         );
       }
 
-      const fields = resourceSchema.fields
-        .filter(({deprecated}) => !deprecated)
-        .filter(existsAsChild(props.children));
+      const fields = includeDeprecated
+        ? resourceSchema.fields
+        : resourceSchema.fields.filter(({deprecated}) => !deprecated);
 
       return (
         <Component
@@ -50,4 +54,14 @@ const withReactAdminQuery = ({component: Component, ...props}) => (
   </Query>
 );
 
-export default withReactAdminQuery;
+IntrospectQuery.defaultProps = {
+  includeDeprecated: false,
+};
+
+IntrospectQuery.propTypes = {
+  component: PropTypes.elementType,
+  resource: PropTypes.string,
+  includeDeprecated: PropTypes.bool,
+};
+
+export default IntrospectQuery;

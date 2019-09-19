@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {
   BooleanField,
@@ -11,26 +11,22 @@ import {
   SingleFieldList,
   TextField,
   UrlField,
-  Query,
-  Loading,
 } from 'react-admin';
-import {
-  getReferenceNameField,
-  getResource,
-  getResourceField,
-} from './docsUtils';
+import {getReferenceNameField} from './docsUtils';
+import IntrospectQuery from './IntrospectQuery';
 
-const isFieldSortable = (field, resource) => {
+const isFieldSortable = (field, resourceSchema) => {
   return (
-    resource.parameters.filter(parameter => parameter.variable === field.name)
-      .length > 0 &&
-    resource.parameters.filter(
+    resourceSchema.parameters.filter(
+      parameter => parameter.variable === field.name,
+    ).length > 0 &&
+    resourceSchema.parameters.filter(
       parameter => parameter.variable === `order[${field.name}]`,
     ).length > 0
   );
 };
 
-const renderField = (resource, field, props) => {
+const renderField = (field, props) => {
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
       return (
@@ -78,61 +74,33 @@ const renderField = (resource, field, props) => {
   }
 };
 
-const FieldGuesser = props => {
-  const {source: fieldName, resource: resourceName} = props;
+export const FieldGuesserComponent = ({fields, resourceSchema, ...props}) => {
+  const field = fields.find(f => f.name === props.source);
 
-  return (
-    <Query type="INTROSPECT">
-      {({data: api, loading, error}) => {
-        if (loading) {
-          return <Loading />;
-        }
+  if (!field) {
+    console.error(
+      `Field "${props.source}" not present inside the api description for the resource "${props.resource}"`,
+    );
 
-        if (error) {
-          console.error(error);
-          return <div>Error while reading the API schema</div>;
-        }
+    return <Fragment />;
+  }
 
-        const resource = getResource(api.resources, resourceName);
-
-        if (!resource || !resource.fields) {
-          console.error(
-            `Resource ${resourceName} not present inside api description`,
-          );
-          return (
-            <div>
-              Resource ${resourceName} not present inside api description
-            </div>
-          );
-        }
-
-        const field = getResourceField(resource, fieldName);
-
-        if (!field) {
-          console.error(
-            `Field ${props.source} not present inside the api description for the resource ${props.resource}`,
-          );
-
-          return (
-            <div>
-              Field ${fieldName} not present inside the api description for the
-              resource ${resourceName}
-            </div>
-          );
-        }
-
-        return renderField(resource, field, {
-          sortable: isFieldSortable(field, resource),
-          ...props,
-        });
-      }}
-    </Query>
-  );
+  return renderField(field, {
+    sortable: isFieldSortable(field, resourceSchema),
+    ...props,
+  });
 };
 
-export default FieldGuesser;
+const FieldGuesser = props => (
+  <IntrospectQuery
+    component={FieldGuesserComponent}
+    includeDeprecated={true}
+    {...props}
+  />
+);
 
 FieldGuesser.propTypes = {
   source: PropTypes.string.isRequired,
-  resource: PropTypes.string,
 };
+
+export default FieldGuesser;

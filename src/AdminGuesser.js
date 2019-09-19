@@ -4,8 +4,13 @@ import {Admin, Loading, Query, TranslationProvider} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
 import ResourceGuesser from './ResourceGuesser';
 
-export const render = (
-  {resources, children, ...props},
+/**
+ * AdminGuesserComponent automatically renders and `<Admin>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
+ * If children components are passed (usually `<ResourceGuesser>` or `<Resource>` components, but it can be any other React component), they are rendered in the given order.
+ * If no children are passed, a `<ResourceGuesser>` component created for each resource type exposed by the API, in the order they are specified in the API documentation.
+ */
+export const AdminGuesserComponent = (
+  {children, ...props},
   {data, error, loading},
 ) => {
   if (loading) {
@@ -23,31 +28,19 @@ export const render = (
     return <div>Error while reading the API schema</div>;
   }
 
-  // Children are always rendered, first
-  // Then resources listed in the "resources" prop are rendered, in that order
-  // If and only if both children and the "resources" prop are empty, then all available resources are rendered
-
-  const childrenAsArray = React.Children.toArray(children);
-  const useResourcesProp = Array.isArray(resources);
-  if (useResourcesProp) {
-    resources.forEach(name =>
-      childrenAsArray.push(<ResourceGuesser name={name} key={name} />),
-    );
-  }
-
-  if (!children && !useResourcesProp) {
-    data.resources
+  if (!children) {
+    children = data.resources
       .filter(r => !r.deprecated)
-      .forEach(r =>
-        childrenAsArray.push(<ResourceGuesser name={r.name} key={r.name} />),
-      );
+      .map(r => <ResourceGuesser name={r.name} key={r.name} />);
   }
 
-  return <Admin {...props}>{childrenAsArray}</Admin>;
+  return <Admin {...props}>{children}</Admin>;
 };
 
 const AdminGuesser = props => (
-  <Query type={'INTROSPECT'}>{state => render(props, state)}</Query>
+  <Query type={'INTROSPECT'}>
+    {state => AdminGuesserComponent(props, state)}
+  </Query>
 );
 
 AdminGuesser.defaultProps = {
@@ -65,7 +58,6 @@ AdminGuesser.defaultProps = {
 };
 
 AdminGuesser.propTypes = {
-  resources: PropTypes.array,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 import {Filter} from 'react-admin';
 import InputGuesser from './InputGuesser';
-import WithReactAdminQuery from './withReactAdminQuery';
+import IntrospectQuery from './IntrospectQuery';
 import {getFiltersParametersFromResourceSchema} from './docsUtils';
 
-class FilterGuesserComponent extends React.Component {
+export class FilterGuesserComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +48,7 @@ class FilterGuesserComponent extends React.Component {
 }
 
 const FilterGuesser = props => (
-  <WithReactAdminQuery component={FilterGuesserComponent} {...props} />
+  <IntrospectQuery component={FilterGuesserComponent} {...props} />
 );
 
 export default FilterGuesser;
