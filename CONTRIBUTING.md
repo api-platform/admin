@@ -31,8 +31,7 @@ Otherwise, you should base your changes on the `master` branch.
 To install the source version of API Platform Admin in your project and contribute a patch, run the following command:
 
     # Create your `CLIENT` that will use `api-platform-admin` (replace <yourproject> by your project's name) :
-    $ npm install -g npx
-    $ npx create-react-app <yourproject>
+    $ yarn create react-app <yourproject>
     $ cd <yourproject>
     $ yarn add @api-platform/admin
 
@@ -44,17 +43,17 @@ To install the source version of API Platform Admin in your project and contribu
     export default () => <HydraAdmin entrypoint="https://demo.api-platform.com"/>; // Replace with your own API entrypoint
     ```
 
-    # Install your own version of `api-platform-admin`
+    # Install your own version of `@api-platform/admin`
     $ cd ..
     $ git clone https://github.com/api-platform/admin.git
 
-    # Link it to your `CLIENT`
+    # Link it
     $ cd admin
     $ yarn link
     $ cd ../<yourproject>
     $ yarn link "@api-platform/admin"
 
-    # Use the React version of your project to build `api-platform-admin`
+    # Use the React version of your project to build `@api-platform/admin`
     $ cd node_modules/react/
     $ yarn link
     $ cd ../../../admin
