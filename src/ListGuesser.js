@@ -1,12 +1,12 @@
-import React, {Children} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {Datagrid, List, EditButton, ShowButton} from 'react-admin';
 import {getOrderParametersFromResourceSchema} from './docsUtils';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
-import WithReactAdminQuery from './withReactAdminQuery';
+import IntrospectQuery from './IntrospectQuery';
 
-class ListGuesserComponent extends React.Component {
+export class ListGuesserComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -33,18 +33,21 @@ class ListGuesserComponent extends React.Component {
 
   render() {
     const {resourceSchema, fields, ...props} = this.props;
-    const children = Children.toArray(props.children);
+
+    if (!props.children) {
+      props.children = fields.map(field => (
+        <FieldGuesser
+          key={field.name}
+          source={field.name}
+          sortable={this.state.orderParameters.includes(field.name)}
+        />
+      ));
+    }
+
     return (
       <List {...props}>
         <Datagrid>
-          {children}
-          {fields.map(field => (
-            <FieldGuesser
-              key={field.name}
-              source={field.name}
-              sortable={this.state.orderParameters.includes(field.name)}
-            />
-          ))}
+          {props.children}
           {props.hasShow && <ShowButton />}
           {props.hasEdit && <EditButton />}
         </Datagrid>
@@ -54,18 +57,17 @@ class ListGuesserComponent extends React.Component {
 }
 
 const ListGuesser = props => (
-  <WithReactAdminQuery component={ListGuesserComponent} {...props} />
+  <IntrospectQuery component={ListGuesserComponent} {...props} />
 );
 
-export default ListGuesser;
-
 ListGuesser.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
-  fields: PropTypes.array,
   filters: PropTypes.object.isRequired,
 };
 
 ListGuesser.defaultProps = {
   filters: <FilterGuesser />,
 };
+
+export default ListGuesser;

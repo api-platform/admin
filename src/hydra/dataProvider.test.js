@@ -8,7 +8,7 @@
 // import hydraClient, {
 //   transformJsonLdDocumentToReactAdminDocument,
 // } from './hydraClient';
-import {transformJsonLdDocumentToReactAdminDocument} from './hydraClient';
+import {transformJsonLdDocumentToReactAdminDocument} from './dataProvider';
 
 describe('map a json-ld document to an admin on rest compatible document', () => {
   const JSON_LD_DOCUMENT = {

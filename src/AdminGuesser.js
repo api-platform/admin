@@ -3,10 +3,14 @@ import PropTypes from 'prop-types';
 import {Admin, Loading, Query, TranslationProvider} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
 import ResourceGuesser from './ResourceGuesser';
-import {existsAsChild} from './docsUtils';
 
-export const render = (
-  {blacklist = [], children, ...props},
+/**
+ * AdminGuesserComponent automatically renders an `<Admin>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
+ * If child components are passed (usually `<ResourceGuesser>` or `<Resource>` components, but it can be any other React component), they are rendered in the given order.
+ * If no children are passed, a `<ResourceGuesser>` component created for each resource type exposed by the API, in the order they are specified in the API documentation.
+ */
+export const AdminGuesserComponent = (
+  {children, includeDeprecated, ...props},
   {data, error, loading},
 ) => {
   if (loading) {
@@ -24,28 +28,26 @@ export const render = (
     return <div>Error while reading the API schema</div>;
   }
 
-  const childrenAsArray = React.Children.toArray(children);
-  data.resources
-    .filter(
-      resource =>
-        !resource.deprecated &&
-        !blacklist.includes(resource.name) &&
-        existsAsChild(children)(resource.name),
-    )
-    .forEach(resource =>
-      childrenAsArray.push(
-        <ResourceGuesser name={resource.name} key={resource.name} />,
-      ),
-    );
+  if (!children) {
+    const resources = includeDeprecated
+      ? data.resources
+      : data.resources.filter(r => !r.deprecated);
+    children = resources.map(r => (
+      <ResourceGuesser name={r.name} key={r.name} />
+    ));
+  }
 
-  return <Admin {...props}>{childrenAsArray}</Admin>;
+  return <Admin {...props}>{children}</Admin>;
 };
 
 const AdminGuesser = props => (
-  <Query type={'INTROSPECT'}>{state => render(props, state)}</Query>
+  <Query type={'INTROSPECT'}>
+    {state => AdminGuesserComponent(props, state)}
+  </Query>
 );
 
 AdminGuesser.defaultProps = {
+  includeDeprecated: false,
   theme: createMuiTheme({
     palette: {
       primary: {
@@ -60,9 +62,9 @@ AdminGuesser.defaultProps = {
 };
 
 AdminGuesser.propTypes = {
-  blacklist: PropTypes.array,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
+  includeDeprecated: PropTypes.bool,
 };
 
 export default AdminGuesser;

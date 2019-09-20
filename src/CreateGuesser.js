@@ -1,32 +1,35 @@
-import React, {Children} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {Create, SimpleForm} from 'react-admin';
 import InputGuesser from './InputGuesser';
-import WithReactAdminQuery from './withReactAdminQuery';
+import IntrospectQuery from './IntrospectQuery';
 
-const CreateGuesserComponent = ({...props}) => {
-  const {fields, resourceSchema, ...filteredProps} = props;
-  const children = Children.toArray(props.children);
-
-  fields.map(field =>
-    children.push(<InputGuesser key={field.name} source={field.name} />),
-  );
+export const CreateGuesserComponent = ({
+  fields,
+  resourceSchema,
+  children,
+  ...props
+}) => {
+  if (!children) {
+    children = fields.map(field => (
+      <InputGuesser key={field.name} source={field.name} />
+    ));
+  }
 
   return (
-    <Create {...filteredProps}>
+    <Create {...props}>
       <SimpleForm>{children}</SimpleForm>
     </Create>
   );
 };
 
 const CreateGuesser = props => (
-  <WithReactAdminQuery component={CreateGuesserComponent} {...props} />
+  <IntrospectQuery component={CreateGuesserComponent} {...props} />
 );
 
-export default CreateGuesser;
-
 CreateGuesser.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
-  inputs: PropTypes.array,
 };
+
+export default CreateGuesser;

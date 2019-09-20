@@ -2,7 +2,7 @@ import React from 'react';
 import ShallowRenderer from 'react-test-renderer/shallow';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
-import {render} from './AdminGuesser';
+import {AdminGuesserComponent} from './AdminGuesser';
 import {resources} from './__fixtures__';
 
 describe('<AdminGuesser />', () => {
@@ -12,7 +12,10 @@ describe('<AdminGuesser />', () => {
   test('renders errors', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {render({}, {error: 'Failed to fetch documentation', loading: false})}
+        {AdminGuesserComponent(
+          {},
+          {error: 'Failed to fetch documentation', loading: false},
+        )}
       </Provider>,
     );
 
@@ -21,7 +24,9 @@ describe('<AdminGuesser />', () => {
 
   test('renders loading', () => {
     const tree = renderer.render(
-      <Provider store={store}>{render({}, {loading: true})}</Provider>,
+      <Provider store={store}>
+        {AdminGuesserComponent({}, {loading: true})}
+      </Provider>,
     );
 
     expect(tree).toMatchSnapshot();
@@ -30,7 +35,7 @@ describe('<AdminGuesser />', () => {
   test('renders without custom resources', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {render({}, {data: {resources}, loading: false})}
+        {AdminGuesserComponent({}, {data: {resources}, loading: false})}
       </Provider>,
     );
 

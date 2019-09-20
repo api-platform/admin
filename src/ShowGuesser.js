@@ -2,32 +2,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Show, SimpleShowLayout} from 'react-admin';
 import FieldGuesser from './FieldGuesser';
-import WithReactAdminQuery from './withReactAdminQuery';
+import IntrospectQuery from './IntrospectQuery';
 
 // useful for testing (we don't need Query)
-export const ShowGuesserComponent = props => {
-  const {children, fields} = props;
+export const ShowGuesserComponent = ({
+  fields,
+  children,
+  resourceSchema,
+  ...props
+}) => {
+  if (!children) {
+    children = fields.map(field => (
+      <FieldGuesser key={field.name} source={field.name} addLabel={true} />
+    ));
+  }
 
   return (
     <Show {...props}>
-      <SimpleShowLayout>
-        {children}
-        {fields.map(field => (
-          <FieldGuesser key={field.name} source={field.name} addLabel={true} />
-        ))}
-      </SimpleShowLayout>
+      <SimpleShowLayout>{children}</SimpleShowLayout>
     </Show>
   );
 };
 
 const ShowGuesser = props => (
-  <WithReactAdminQuery component={ShowGuesserComponent} {...props} />
+  <IntrospectQuery component={ShowGuesserComponent} {...props} />
 );
 
-export default ShowGuesser;
-
 ShowGuesser.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
-  fields: PropTypes.array,
 };
+
+export default ShowGuesser;
