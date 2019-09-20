@@ -10,7 +10,7 @@ import ResourceGuesser from './ResourceGuesser';
  * If no children are passed, a `<ResourceGuesser>` component created for each resource type exposed by the API, in the order they are specified in the API documentation.
  */
 export const AdminGuesserComponent = (
-  {children, ...props},
+  {children, includeDeprecated, ...props},
   {data, error, loading},
 ) => {
   if (loading) {
@@ -29,9 +29,12 @@ export const AdminGuesserComponent = (
   }
 
   if (!children) {
-    children = data.resources
-      .filter(r => !r.deprecated)
-      .map(r => <ResourceGuesser name={r.name} key={r.name} />);
+    const resources = includeDeprecated
+      ? data.resources
+      : data.resources.filter(r => !r.deprecated);
+    children = resources.map(r => (
+      <ResourceGuesser name={r.name} key={r.name} />
+    ));
   }
 
   return <Admin {...props}>{children}</Admin>;
@@ -57,9 +60,14 @@ AdminGuesser.defaultProps = {
   }),
 };
 
+AdminGuesser.defaultProps = {
+  includeDeprecated: false,
+};
+
 AdminGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
+  includeDeprecated: PropTypes.bool,
 };
 
 export default AdminGuesser;

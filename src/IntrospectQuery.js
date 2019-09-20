@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Query, Loading} from 'react-admin';
+import {Query, Loading, TranslationProvider} from 'react-admin';
 
 const IntrospectQuery = ({
   component: Component,
@@ -10,7 +10,11 @@ const IntrospectQuery = ({
   <Query type="INTROSPECT" resource={props.ressource}>
     {({data, loading, error}) => {
       if (loading) {
-        return <Loading />;
+        return (
+          <TranslationProvider>
+            <Loading />
+          </TranslationProvider>
+        );
       }
 
       if (error) {
