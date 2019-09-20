@@ -47,6 +47,7 @@ const AdminGuesser = props => (
 );
 
 AdminGuesser.defaultProps = {
+  includeDeprecated: false,
   theme: createMuiTheme({
     palette: {
       primary: {
@@ -58,10 +59,6 @@ AdminGuesser.defaultProps = {
       },
     },
   }),
-};
-
-AdminGuesser.defaultProps = {
-  includeDeprecated: false,
 };
 
 AdminGuesser.propTypes = {
