@@ -5,8 +5,8 @@ import {createMuiTheme} from '@material-ui/core/styles';
 import ResourceGuesser from './ResourceGuesser';
 
 /**
- * AdminGuesserComponent automatically renders and `<Admin>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
- * If children components are passed (usually `<ResourceGuesser>` or `<Resource>` components, but it can be any other React component), they are rendered in the given order.
+ * AdminGuesserComponent automatically renders an `<Admin>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
+ * If child components are passed (usually `<ResourceGuesser>` or `<Resource>` components, but it can be any other React component), they are rendered in the given order.
  * If no children are passed, a `<ResourceGuesser>` component created for each resource type exposed by the API, in the order they are specified in the API documentation.
  */
 export const AdminGuesserComponent = (
