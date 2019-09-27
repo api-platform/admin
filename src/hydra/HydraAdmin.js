@@ -12,8 +12,7 @@ const history = createHashHistory();
 
 const HydraAdmin = ({
   entrypoint,
-  hydraClient,
-  dataProvider = dataProviderFactory(entrypoint, hydraClient),
+  dataProvider = dataProviderFactory(entrypoint),
   i18nProvider,
   authProvider,
   ...rest
