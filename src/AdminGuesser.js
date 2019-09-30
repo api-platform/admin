@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Admin, Loading, Query, TranslationProvider} from 'react-admin';
 import {createMuiTheme} from '@material-ui/core/styles';
+import {Layout} from './layout';
 import ResourceGuesser from './ResourceGuesser';
 
 /**
@@ -59,6 +60,7 @@ AdminGuesser.defaultProps = {
       },
     },
   }),
+  appLayout: Layout,
 };
 
 AdminGuesser.propTypes = {
