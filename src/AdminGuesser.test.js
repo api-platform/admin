@@ -14,7 +14,11 @@ describe('<AdminGuesser />', () => {
       <Provider store={store}>
         {AdminGuesserComponent(
           {},
-          {error: 'Failed to fetch documentation', loading: false},
+          {
+            error: 'Failed to fetch documentation',
+            data: {resources},
+            loading: false,
+          },
         )}
       </Provider>,
     );
@@ -36,6 +40,29 @@ describe('<AdminGuesser />', () => {
     const tree = renderer.render(
       <Provider store={store}>
         {AdminGuesserComponent({}, {data: {resources}, loading: false})}
+      </Provider>,
+    );
+
+    expect(tree).toMatchSnapshot();
+  });
+
+  test('renders without data', () => {
+    const tree = renderer.render(
+      <Provider store={store}>
+        {AdminGuesserComponent({}, {loading: false})}
+      </Provider>,
+    );
+
+    expect(tree).toMatchSnapshot();
+  });
+
+  test('renders errors without data', () => {
+    const tree = renderer.render(
+      <Provider store={store}>
+        {AdminGuesserComponent(
+          {},
+          {error: 'Failed to fetch documentation', loading: false},
+        )}
       </Provider>,
     );
 
