@@ -10,7 +10,7 @@ import {
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
 import fetchHydra from './fetchHydra';
-import apiDocumentationParser from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
+import parseHydraDocumentation from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
 
 class ReactAdminDocument {
   constructor(obj) {
@@ -112,7 +112,11 @@ export const transformJsonLdDocumentToReactAdminDocument = (
  * GET_ONE  => GET http://my.api.url/posts/123
  * UPDATE   => PUT http://my.api.url/posts/123
  */
-export default (entrypoint, httpClient = fetchHydra) => {
+export default (
+  entrypoint,
+  httpClient = fetchHydra,
+  apiDocumentationParser = parseHydraDocumentation,
+) => {
   let apiSchema;
 
   /**
