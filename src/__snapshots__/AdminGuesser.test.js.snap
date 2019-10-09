@@ -6,6 +6,16 @@ exports[`<AdminGuesser /> renders errors 1`] = `
 </div>
 `;
 
+exports[`<AdminGuesser /> renders errors without data 1`] = `
+<withContext(CoreAdminBase)
+  appLayout={[Function]}
+  catchAll={[Function]}
+  loading={[Function]}
+  loginPage={[Function]}
+  logoutButton={[Function]}
+/>
+`;
+
 exports[`<AdminGuesser /> renders loading 1`] = `
 <Connect(TranslationProviderView)>
   <WithStyles(translate(Loading)) />
@@ -24,4 +34,14 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
     name="books"
   />
 </withContext(CoreAdminBase)>
+`;
+
+exports[`<AdminGuesser /> renders without data 1`] = `
+<withContext(CoreAdminBase)
+  appLayout={[Function]}
+  catchAll={[Function]}
+  loading={[Function]}
+  loginPage={[Function]}
+  logoutButton={[Function]}
+/>
 `;

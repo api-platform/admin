@@ -22,14 +22,14 @@ export const AdminGuesserComponent = (
     );
   }
 
-  if (error) {
+  if (error && data) {
     if ('production' === process.env.NODE_ENV) {
       console.error(error);
     }
     return <div>Error while reading the API schema</div>;
   }
 
-  if (!children) {
+  if (!children && data) {
     const resources = includeDeprecated
       ? data.resources
       : data.resources.filter(r => !r.deprecated);
