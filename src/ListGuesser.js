@@ -63,7 +63,7 @@ const ListGuesser = props => (
 ListGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
-  filters: PropTypes.object.isRequired,
+  filters: PropTypes.element,
 };
 
 ListGuesser.defaultProps = {
