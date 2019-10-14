@@ -5,6 +5,16 @@ import {createMuiTheme} from '@material-ui/core/styles';
 import {Layout} from './layout';
 import ResourceGuesser from './ResourceGuesser';
 
+const displayOverrideCode = resources => {
+  let code =
+    'If you want to override at least one resource, paste this content in the <HydraAdmin> component of your app:\n\n';
+
+  resources.forEach(r => {
+    code += `<ResourceGuesser name={"${r.name}"} />\n`;
+  });
+  console.info(code);
+};
+
 /**
  * AdminGuesserComponent automatically renders an `<Admin>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
  * If child components are passed (usually `<ResourceGuesser>` or `<Resource>` components, but it can be any other React component), they are rendered in the given order.
@@ -36,6 +46,7 @@ export const AdminGuesserComponent = (
     children = resources.map(r => (
       <ResourceGuesser name={r.name} key={r.name} />
     ));
+    displayOverrideCode(resources);
   }
 
   return <Admin {...props}>{children}</Admin>;

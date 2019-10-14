@@ -11,6 +11,7 @@ describe('<ShowGuesser />', () => {
     const wrapper = shallow(
       <ShowGuesserComponent
         resource="user"
+        resourceSchema={{name: 'users', title: 'User'}}
         data={API_INPUT_DATA}
         fields={API_FIELDS_DATA}
         id="ShowComponentId"
