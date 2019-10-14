@@ -15,6 +15,9 @@ const HydraAdmin = ({
   dataProvider = dataProviderFactory(entrypoint),
   i18nProvider,
   authProvider,
+  customReducers,
+  customSagas,
+  locale,
   ...rest
 }) => (
   <Provider
@@ -23,12 +26,18 @@ const HydraAdmin = ({
       dataProvider,
       i18nProvider,
       history,
+      customReducers,
+      customSagas,
+      locale,
     })}>
     <AdminGuesser
       dataProvider={dataProvider}
       authProvider={authProvider}
       history={history}
       i18nProvider={i18nProvider}
+      customReducers={customReducers}
+      customSagas={customSagas}
+      locale={locale}
       {...rest}
     />
   </Provider>
