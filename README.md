@@ -37,7 +37,7 @@ ReactDOM.render(<Admin />, document.getElementById('root'));
 * Automatically generate an admin interface for all the resources of the API thanks to hypermedia features of Hydra
 * Generate list, create, show, edit screens as well as a delete button
 * Generate suitable inputs and fields according to the API doc (e.g. number HTML input for numbers, checkbox for booleans, selectbox for relationships...)
-* Generate suitable inputs and fields according to Schema.org types if available (e.g. email field for http://schema.org/email)
+* Generate suitable inputs and fields according to Schema.org types if available (e.g. email field for https://schema.org/email)
 * Handle relationships
 * Pagination support
 * Automatically validate if a field is mandatory client-side according to the API description
