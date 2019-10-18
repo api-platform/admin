@@ -7,6 +7,8 @@ API Platform Admin is a tool to automatically create a beautiful (Material Desig
 for any API supporting [the Hydra Core Vocabulary](http://www.hydra-cg.com/), including but not limited to all APIs created
 using [the API Platform framework](https://api-platform.com).
 
+![Demo of API Platform Admin in action](https://api-platform.com/97cd2738071d63989db0bbcb6ba85a25/admin-demo.gif)
+
 The generated administration is a 100% standalone Single-Page-Application with no coupling to the server part, according
 to the API-first paradigm.
 
