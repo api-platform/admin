@@ -28,13 +28,12 @@ const isFieldSortable = (field, resourceSchema) => {
 
 const renderField = (field, props) => {
   if (null !== field.reference) {
-    if (1 === field.maxCardinality) {
+    if (1 === field.maxCardinality) 
       return (
         <ReferenceField reference={field.reference.name} {...props} allowEmpty>
           <ChipField source={getReferenceNameField(field.reference)} />
         </ReferenceField>
       );
-    }
 
     const referenceNameField = getReferenceNameField(field.reference);
     return (
@@ -47,11 +46,9 @@ const renderField = (field, props) => {
   }
 
   switch (field.id) {
-    case 'http://schema.org/email':
-      return <EmailField {...props} />;
+    case 'http://schema.org/email': return <EmailField {...props} />;
 
-    case 'http://schema.org/url':
-      return <UrlField {...props} />;
+    case 'http://schema.org/url':   return <UrlField {...props} />;
 
     default:
     // Do nothing
@@ -59,18 +56,14 @@ const renderField = (field, props) => {
 
   switch (field.range) {
     case 'http://www.w3.org/2001/XMLSchema#integer':
-    case 'http://www.w3.org/2001/XMLSchema#float':
-      return <NumberField {...props} />;
+    case 'http://www.w3.org/2001/XMLSchema#float': return <NumberField {...props} />;
 
     case 'http://www.w3.org/2001/XMLSchema#date':
-    case 'http://www.w3.org/2001/XMLSchema#dateTime':
-      return <DateField {...props} />;
+    case 'http://www.w3.org/2001/XMLSchema#dateTime': return <DateField {...props} />;
 
-    case 'http://www.w3.org/2001/XMLSchema#boolean':
-      return <BooleanField {...props} />;
+    case 'http://www.w3.org/2001/XMLSchema#boolean': return <BooleanField {...props} />;
 
-    default:
-      return <TextField {...props} />;
+    default: return <TextField {...props} />;
   }
 };
 
