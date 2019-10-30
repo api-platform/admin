@@ -217,19 +217,31 @@ export default (
         if (page) collectionUrl.searchParams.set('page', page);
         if (perPage) collectionUrl.searchParams.set('perPage', perPage);
         if (params.filter) {
-          Object.keys(params.filter).forEach(key => {
-            const filterValue = params.filter[key];
+          const buildFilterParams = (key, nestedFilter, rootKey) => {
+            const filterValue = nestedFilter[key];
+
+            if (Array.isArray(filterValue)) {
+              filterValue.forEach((arrayFilterValue, index) => {
+                collectionUrl.searchParams.set(
+                  `${rootKey}[${index}]`,
+                  arrayFilterValue,
+                );
+              });
+              return;
+            }
+
             if (!isPlainObject(filterValue)) {
-              collectionUrl.searchParams.set(key, params.filter[key]);
+              collectionUrl.searchParams.set(rootKey, filterValue);
               return;
             }
 
             Object.keys(filterValue).forEach(subKey => {
-              collectionUrl.searchParams.set(
-                `${key}[${subKey}]`,
-                filterValue[subKey],
-              );
+              buildFilterParams(subKey, filterValue, `${rootKey}.${subKey}`);
             });
+          };
+
+          Object.keys(params.filter).forEach(key => {
+            buildFilterParams(key, params.filter, key);
           });
         }
 
