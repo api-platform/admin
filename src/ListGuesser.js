@@ -6,6 +6,24 @@ import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import IntrospectQuery from './IntrospectQuery';
 
+const displayOverrideCode = (resourceSchema, fields) => {
+  let code =
+    'If you want to override at least one field, paste this content in the <ListGuesser> component of your resource:\n\n';
+
+  code += `const ${resourceSchema.title}List = props => (\n`;
+  code += `    <ListGuesser {...props}>\n`;
+
+  fields.forEach(field => {
+    code += `        <FieldGuesser source={"${field.name}"} />\n`;
+  });
+  code += `    </ListGuesser>\n`;
+  code += `);\n`;
+  code += `\n`;
+  code += `And don't forget update your <ResourceGuesser> component:\n`;
+  code += `<ResourceGuesser name={"${resourceSchema.name}"} list={${resourceSchema.title}List} />`;
+  console.info(code);
+};
+
 export class ListGuesserComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -42,6 +60,7 @@ export class ListGuesserComponent extends React.Component {
           sortable={this.state.orderParameters.includes(field.name)}
         />
       ));
+      displayOverrideCode(resourceSchema, fields);
     }
 
     return (

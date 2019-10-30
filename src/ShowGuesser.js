@@ -4,6 +4,24 @@ import {Show, SimpleShowLayout} from 'react-admin';
 import FieldGuesser from './FieldGuesser';
 import IntrospectQuery from './IntrospectQuery';
 
+const displayOverrideCode = (resourceSchema, fields) => {
+  let code =
+    'If you want to override at least one field, paste this content in the <ShowGuesser> component of your resource:\n\n';
+
+  code += `const ${resourceSchema.title}Show = props => (\n`;
+  code += `    <ShowGuesser {...props}>\n`;
+
+  fields.forEach(field => {
+    code += `        <FieldGuesser source={"${field.name}"} addLabel={true} />\n`;
+  });
+  code += `    </ShowGuesser>\n`;
+  code += `);\n`;
+  code += `\n`;
+  code += `And don't forget update your <ResourceGuesser> component:\n`;
+  code += `<ResourceGuesser name={"${resourceSchema.name}"} show={${resourceSchema.title}Show} />`;
+  console.info(code);
+};
+
 // useful for testing (we don't need Query)
 export const ShowGuesserComponent = ({
   fields,
@@ -15,6 +33,7 @@ export const ShowGuesserComponent = ({
     children = fields.map(field => (
       <FieldGuesser key={field.name} source={field.name} addLabel={true} />
     ));
+    displayOverrideCode(resourceSchema, fields);
   }
 
   return (
