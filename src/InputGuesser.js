@@ -63,7 +63,9 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
     const prefix = `/${props.resource}/`;
 
     props.format = value => {
-      return 0 === value.indexOf(prefix) ? value.substr(prefix.length) : value;
+      return value && 0 === value.indexOf(prefix)
+        ? value.substr(prefix.length)
+        : value;
     };
 
     props.parse = value => {
