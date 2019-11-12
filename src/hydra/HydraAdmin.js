@@ -1,12 +1,11 @@
-import React from 'react';
+import { ConnectedRouter } from 'connected-react-router';
+import { createHashHistory } from 'history';
+import React, { useEffect, useState } from "react";
+import { AdminContext, CoreAdminUI, Loading, TranslationProvider} from 'react-admin';
 import PropTypes from 'prop-types';
-import {Provider} from 'react-redux';
-import {createHashHistory} from 'history';
 import withContext from 'recompose/withContext';
-import {createAdminStore} from 'react-admin';
-
 import dataProviderFactory from './dataProvider';
-import AdminGuesser from '../AdminGuesser';
+import ResourceGuesser from "../ResourceGuesser";
 
 const history = createHashHistory();
 
@@ -19,18 +18,35 @@ const HydraAdmin = ({
   customSagas,
   locale,
   ...rest
-}) => (
-  <Provider
-    store={createAdminStore({
-      authProvider,
-      dataProvider,
-      i18nProvider,
-      history,
-      customReducers,
-      customSagas,
-      locale,
-    })}>
-    <AdminGuesser
+}) => {
+  const [fetching, setFetching] = useState(false);
+  const [resources, setResources] = useState(null);
+
+  useEffect(() => {
+    const doFetch = async () => {
+      setFetching(true);
+      const result = await dataProvider('INTROSPECT');
+      setFetching(false);
+      setResources(result.data.resources);
+    };
+
+    doFetch();
+  }, []);
+
+  if (fetching) {
+    return (
+      <TranslationProvider>
+        <Loading />
+      </TranslationProvider>
+    );
+  }
+
+  if (!resources || !resources.length) {
+    return null;
+  }
+
+  return (
+    <AdminContext
       dataProvider={dataProvider}
       authProvider={authProvider}
       history={history}
@@ -39,9 +55,16 @@ const HydraAdmin = ({
       customSagas={customSagas}
       locale={locale}
       {...rest}
-    />
-  </Provider>
-);
+    >
+     <CoreAdminUI>
+       {resources.map(({name}) => (
+         <ResourceGuesser key={name} name={name} />
+       ))}
+     </CoreAdminUI>
+    </AdminContext>
+  );
+};
+
 export default withContext(
   {
     authProvider: PropTypes.func,

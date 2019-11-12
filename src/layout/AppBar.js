@@ -20,7 +20,7 @@ const styles = {
 const CustomAppBar = withStyles(styles)(({classes, ...props}) => (
   <AppBar {...props}>
     <Typography
-      variant="title"
+      variant="h1"
       color="inherit"
       className={classes.title}
       id="react-admin-title"
