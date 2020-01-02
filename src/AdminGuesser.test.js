@@ -12,14 +12,11 @@ describe('<AdminGuesser />', () => {
   test('renders errors', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesserComponent(
-          {},
-          {
-            error: 'Failed to fetch documentation',
-            data: {resources},
-            loading: false,
-          },
-        )}
+        {AdminGuesserComponent({
+          error: 'Failed to fetch documentation',
+          resources: resources,
+          fetching: false,
+        })}
       </Provider>,
     );
 
@@ -29,7 +26,7 @@ describe('<AdminGuesser />', () => {
   test('renders loading', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesserComponent({}, {loading: true})}
+        {AdminGuesserComponent({fetching: true})}
       </Provider>,
     );
 
@@ -39,7 +36,7 @@ describe('<AdminGuesser />', () => {
   test('renders without custom resources', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesserComponent({}, {data: {resources}, loading: false})}
+        {AdminGuesserComponent({resources: resources, fetching: false})}
       </Provider>,
     );
 
@@ -49,7 +46,7 @@ describe('<AdminGuesser />', () => {
   test('renders without data', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesserComponent({}, {loading: false})}
+        {AdminGuesserComponent({fetching: false})}
       </Provider>,
     );
 
@@ -59,10 +56,10 @@ describe('<AdminGuesser />', () => {
   test('renders errors without data', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesserComponent(
-          {},
-          {error: 'Failed to fetch documentation', loading: false},
-        )}
+        {AdminGuesserComponent({
+          error: 'Failed to fetch documentation',
+          fetching: false,
+        })}
       </Provider>,
     );
 

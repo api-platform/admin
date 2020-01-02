@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ResourceGuesser /> renders with create 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}
@@ -10,7 +10,7 @@ exports[`<ResourceGuesser /> renders with create 1`] = `
 `;
 
 exports[`<ResourceGuesser /> renders with edit 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}
@@ -19,7 +19,7 @@ exports[`<ResourceGuesser /> renders with edit 1`] = `
 `;
 
 exports[`<ResourceGuesser /> renders with list 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}
@@ -28,7 +28,7 @@ exports[`<ResourceGuesser /> renders with list 1`] = `
 `;
 
 exports[`<ResourceGuesser /> renders with show 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}
@@ -37,7 +37,7 @@ exports[`<ResourceGuesser /> renders with show 1`] = `
 `;
 
 exports[`<ResourceGuesser /> renders without create 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}
@@ -46,7 +46,7 @@ exports[`<ResourceGuesser /> renders without create 1`] = `
 `;
 
 exports[`<ResourceGuesser /> renders without edit 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}
@@ -55,7 +55,7 @@ exports[`<ResourceGuesser /> renders without edit 1`] = `
 `;
 
 exports[`<ResourceGuesser /> renders without list 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}
@@ -64,7 +64,7 @@ exports[`<ResourceGuesser /> renders without list 1`] = `
 `;
 
 exports[`<ResourceGuesser /> renders without show 1`] = `
-<Connect(Resource)
+<Resource
   create={[Function]}
   edit={[Function]}
   list={[Function]}

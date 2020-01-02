@@ -1,50 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {Provider} from 'react-redux';
+import {AdminContext} from 'react-admin';
 import {createHashHistory} from 'history';
-import withContext from 'recompose/withContext';
-import {createAdminStore} from 'react-admin';
 
 import dataProviderFactory from './dataProvider';
 import AdminGuesser from '../AdminGuesser';
 
-const history = createHashHistory();
-
 const HydraAdmin = ({
   entrypoint,
   dataProvider = dataProviderFactory(entrypoint),
-  i18nProvider,
   authProvider,
+  i18nProvider,
+  history = createHashHistory(),
   customReducers,
   customSagas,
-  locale,
+  initialState,
   ...rest
 }) => (
-  <Provider
-    store={createAdminStore({
-      authProvider,
-      dataProvider,
-      i18nProvider,
-      history,
-      customReducers,
-      customSagas,
-      locale,
-    })}>
-    <AdminGuesser
-      dataProvider={dataProvider}
-      authProvider={authProvider}
-      history={history}
-      i18nProvider={i18nProvider}
-      customReducers={customReducers}
-      customSagas={customSagas}
-      locale={locale}
-      {...rest}
-    />
-  </Provider>
+  <AdminContext
+    authProvider={authProvider}
+    dataProvider={dataProvider}
+    i18nProvider={i18nProvider}
+    history={history}
+    customReducers={customReducers}
+    customSagas={customSagas}
+    initialState={initialState}>
+    <AdminGuesser {...rest} />
+  </AdminContext>
 );
-export default withContext(
-  {
-    authProvider: PropTypes.func,
-  },
-  props => ({authProvider: props.authProvider}),
-)(HydraAdmin);
+
+export default HydraAdmin;
