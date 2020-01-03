@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Edit, SimpleForm} from 'react-admin';
 import InputGuesser from './InputGuesser';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
 const displayOverrideCode = (resourceSchema, fields) => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one input, paste this content in the <EditGuesser> component of your resource:\n\n';
 
@@ -22,7 +24,6 @@ const displayOverrideCode = (resourceSchema, fields) => {
   console.info(code);
 };
 
-// useful for testing (we don't need Query)
 export const EditGuesserComponent = ({
   children,
   fields,
@@ -37,16 +38,14 @@ export const EditGuesserComponent = ({
   }
 
   return (
-    // FIXME: enabling the undoable feature breaks API Platform Admin...
-    // see https://github.com/api-platform/admin/pull/217
-    <Edit {...props} undoable={false}>
+    <Edit {...props}>
       <SimpleForm>{children}</SimpleForm>
     </Edit>
   );
 };
 
 const EditGuesser = props => (
-  <IntrospectQuery component={EditGuesserComponent} {...props} />
+  <Introspecter component={EditGuesserComponent} {...props} />
 );
 
 EditGuesser.propTypes = {

@@ -361,7 +361,6 @@ export default (
    * @returns {Promise}
    */
   const fetchApi = (type, resource, params) => {
-    // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
     switch (type) {
       case 'INTROSPECT':
         if (apiSchema) return Promise.resolve({data: apiSchema});
@@ -370,6 +369,7 @@ export default (
           return {data: api};
         });
 
+      // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
       case GET_MANY:
         return Promise.all(
           params.ids.map(id =>

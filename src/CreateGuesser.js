@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Create, SimpleForm} from 'react-admin';
 import InputGuesser from './InputGuesser';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
 const displayOverrideCode = (resourceSchema, fields) => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one input, paste this content in the <CreateGuesser> component of your resource:\n\n';
 
@@ -43,7 +45,7 @@ export const CreateGuesserComponent = ({
 };
 
 const CreateGuesser = props => (
-  <IntrospectQuery component={CreateGuesserComponent} {...props} />
+  <Introspecter component={CreateGuesserComponent} {...props} />
 );
 
 CreateGuesser.propTypes = {

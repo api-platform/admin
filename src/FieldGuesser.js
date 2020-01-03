@@ -13,7 +13,7 @@ import {
   UrlField,
 } from 'react-admin';
 import {getReferenceNameField} from './docsUtils';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
 const isFieldSortable = (field, resourceSchema) => {
   return (
@@ -92,7 +92,7 @@ export const FieldGuesserComponent = ({fields, resourceSchema, ...props}) => {
 };
 
 const FieldGuesser = props => (
-  <IntrospectQuery
+  <Introspecter
     component={FieldGuesserComponent}
     includeDeprecated={true}
     {...props}
@@ -101,6 +101,7 @@ const FieldGuesser = props => (
 
 FieldGuesser.propTypes = {
   source: PropTypes.string.isRequired,
+  resource: PropTypes.string.isRequired,
 };
 
 export default FieldGuesser;

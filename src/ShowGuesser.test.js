@@ -19,13 +19,13 @@ describe('<ShowGuesser />', () => {
     );
 
     expect(wrapper).toContainReact(
-      <FieldGuesser source="fieldA" addLabel={true} />,
+      <FieldGuesser source="fieldA" addLabel={true} resource="user" />,
     );
     expect(wrapper).toContainReact(
-      <FieldGuesser source="fieldB" addLabel={true} />,
+      <FieldGuesser source="fieldB" addLabel={true} resource="user" />,
     );
     expect(wrapper).toContainReact(
-      <FieldGuesser source="deprecatedField" addLabel={true} />,
+      <FieldGuesser source="deprecatedField" addLabel={true} resource="user" />,
     );
   });
 

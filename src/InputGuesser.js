@@ -14,7 +14,7 @@ import {
   TextInput,
 } from 'react-admin';
 import {getReferenceNameField} from './docsUtils';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
 export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
   const field = fields.find(({name}) => name === props.source);
@@ -142,7 +142,7 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
 };
 
 const InputGuesser = props => (
-  <IntrospectQuery
+  <Introspecter
     component={InputGuesserComponent}
     includeDeprecated={true}
     {...props}

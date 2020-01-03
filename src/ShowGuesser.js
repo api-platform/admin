@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Show, SimpleShowLayout} from 'react-admin';
 import FieldGuesser from './FieldGuesser';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
 const displayOverrideCode = (resourceSchema, fields) => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one field, paste this content in the <ShowGuesser> component of your resource:\n\n';
 
@@ -22,7 +24,6 @@ const displayOverrideCode = (resourceSchema, fields) => {
   console.info(code);
 };
 
-// useful for testing (we don't need Query)
 export const ShowGuesserComponent = ({
   fields,
   children,
@@ -31,7 +32,12 @@ export const ShowGuesserComponent = ({
 }) => {
   if (!children) {
     children = fields.map(field => (
-      <FieldGuesser key={field.name} source={field.name} addLabel={true} />
+      <FieldGuesser
+        key={field.name}
+        source={field.name}
+        addLabel={true}
+        resource={props.resource}
+      />
     ));
     displayOverrideCode(resourceSchema, fields);
   }
@@ -44,7 +50,7 @@ export const ShowGuesserComponent = ({
 };
 
 const ShowGuesser = props => (
-  <IntrospectQuery component={ShowGuesserComponent} {...props} />
+  <Introspecter component={ShowGuesserComponent} {...props} />
 );
 
 ShowGuesser.propTypes = {

@@ -7,6 +7,8 @@ import {Layout} from './layout';
 import ResourceGuesser from './ResourceGuesser';
 
 const displayOverrideCode = resources => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one resource, paste this content in the <HydraAdmin> component of your app:\n\n';
 
