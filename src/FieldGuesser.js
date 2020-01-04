@@ -12,7 +12,7 @@ import {
   TextField,
   UrlField,
 } from 'react-admin';
-import {getReferenceNameField} from './docsUtils';
+import {getReferenceNameField} from './hydra/docsUtils';
 import Introspecter from './Introspecter';
 
 const isFieldSortable = (field, resourceSchema) => {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Filter} from 'react-admin';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
-import {getFiltersParametersFromResourceSchema} from './docsUtils';
+import {getFiltersParametersFromResourceSchema} from './hydra/docsUtils';
 
 export const FilterGuesserComponent = ({
   resourceSchema,

@@ -38,9 +38,9 @@ To install the source version of API Platform Admin in your project and contribu
     # Replace src/App.js by this one
     ```
     import React from 'react';
-    import { HydraAdmin } from '@api-platform/admin';
+    import { AdminGuesser } from '@api-platform/admin';
 
-    export default () => <HydraAdmin entrypoint="https://demo.api-platform.com"/>; // Replace with your own API entrypoint
+    export default () => <AdminGuesser entrypoint="https://demo.api-platform.com"/>; // Replace with your own API entrypoint
     ```
 
     # Install your own version of `@api-platform/admin`

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Datagrid, List, EditButton, ShowButton} from 'react-admin';
-import {getOrderParametersFromResourceSchema} from './docsUtils';
+import {getOrderParametersFromResourceSchema} from './hydra/docsUtils';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import Introspecter from './Introspecter';

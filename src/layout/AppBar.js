@@ -1,7 +1,6 @@
-import {AppBar} from 'react-admin';
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import {withStyles} from '@material-ui/core/styles';
+import {AppBar} from 'react-admin';
+import {Typography, withStyles} from '@material-ui/core';
 
 import Logo from './Logo';
 

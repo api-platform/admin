@@ -9,8 +9,8 @@ import {
   UPDATE,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
+import {parseHydraDocumentation} from '@api-platform/api-doc-parser';
 import fetchHydra from './fetchHydra';
-import parseHydraDocumentation from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
 
 class ReactAdminDocument {
   constructor(obj) {

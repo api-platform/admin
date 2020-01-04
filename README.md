@@ -27,9 +27,9 @@ You can also customize all screens by using React-admin components and even raw 
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HydraAdmin } from '@api-platform/admin';
+import { AdminGuesser } from '@api-platform/admin';
 
-const Admin = () => <HydraAdmin entrypoint="https://demo.api-platform.com"/> // Replace with your own API entrypoint
+const Admin = () => <AdminGuesser entrypoint="https://demo.api-platform.com"/> // Replace with your own API entrypoint
 
 ReactDOM.render(<Admin />, document.getElementById('root'));
 ```

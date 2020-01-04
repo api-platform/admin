@@ -1,7 +1,7 @@
+import {GET_LIST} from 'react-admin';
 import dataProvider, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
-import {GET_LIST} from 'react-admin';
 
 describe('Transform a JSON-LD document to a React Admin compatible document', () => {
   const JSON_LD_DOCUMENT = {

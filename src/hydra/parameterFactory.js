@@ -1,10 +1,10 @@
+import React from 'react';
 import {
   DateInput,
   NullableBooleanInput,
   NumberInput,
   TextInput,
 } from 'react-admin';
-import React from 'react';
 
 function guessType(parameter, apiPlatform) {
   let type = guessTypeForApiPlatform(parameter, apiPlatform);

@@ -2,8 +2,8 @@ import React from 'react';
 import ShallowRenderer from 'react-test-renderer/shallow';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
-import {AdminGuesser} from './HydraAdmin';
-import {resources} from '../__fixtures__';
+import {AdminGuesserComponent} from './AdminGuesser';
+import resources from './__fixtures__/resources';
 
 describe('<AdminGuesser />', () => {
   const renderer = new ShallowRenderer();
@@ -12,7 +12,7 @@ describe('<AdminGuesser />', () => {
   test('renders errors', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesser({
+        {AdminGuesserComponent({
           error: 'Failed to fetch documentation',
           resources: resources,
           fetching: false,
@@ -25,7 +25,9 @@ describe('<AdminGuesser />', () => {
 
   test('renders loading', () => {
     const tree = renderer.render(
-      <Provider store={store}>{AdminGuesser({fetching: true})}</Provider>,
+      <Provider store={store}>
+        {AdminGuesserComponent({fetching: true})}
+      </Provider>,
     );
 
     expect(tree).toMatchSnapshot();
@@ -34,7 +36,7 @@ describe('<AdminGuesser />', () => {
   test('renders without custom resources', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesser({resources: resources, fetching: false})}
+        {AdminGuesserComponent({resources: resources, fetching: false})}
       </Provider>,
     );
 
@@ -43,7 +45,9 @@ describe('<AdminGuesser />', () => {
 
   test('renders without data', () => {
     const tree = renderer.render(
-      <Provider store={store}>{AdminGuesser({fetching: false})}</Provider>,
+      <Provider store={store}>
+        {AdminGuesserComponent({fetching: false})}
+      </Provider>,
     );
 
     expect(tree).toMatchSnapshot();
@@ -52,7 +56,7 @@ describe('<AdminGuesser />', () => {
   test('renders errors without data', () => {
     const tree = renderer.render(
       <Provider store={store}>
-        {AdminGuesser({
+        {AdminGuesserComponent({
           error: 'Failed to fetch documentation',
           fetching: false,
         })}

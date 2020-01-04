@@ -2,17 +2,17 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {AdminContext, AdminUI, Error as ErrorUI, Loading} from 'react-admin';
 import {createHashHistory} from 'history';
-import {createMuiTheme} from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core';
 
-import dataProviderFactory from './dataProvider';
-import ResourceGuesser from '../ResourceGuesser';
-import {Layout} from '../layout';
+import dataProviderFactory from './hydra/dataProvider';
+import ResourceGuesser from './ResourceGuesser';
+import {Layout} from './layout';
 
 const displayOverrideCode = resources => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
-    'If you want to override at least one resource, paste this content in the <HydraAdmin> component of your app:\n\n';
+    'If you want to override at least one resource, paste this content in the <AdminGuesser> component of your app:\n\n';
 
   resources.forEach(r => {
     code += `<ResourceGuesser name={"${r.name}"} />\n`;
@@ -21,11 +21,11 @@ const displayOverrideCode = resources => {
 };
 
 /**
- * AdminGuesser automatically renders an `<AdminUI>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
+ * AdminGuesserComponent automatically renders an `<AdminUI>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
  * If child components are passed (usually `<ResourceGuesser>` or `<Resource>` components, but it can be any other React component), they are rendered in the given order.
  * If no children are passed, a `<ResourceGuesser>` component is created for each resource type exposed by the API, in the order they are specified in the API documentation.
  */
-export const AdminGuesser = ({
+export const AdminGuesserComponent = ({
   children,
   includeDeprecated,
 
@@ -65,7 +65,7 @@ export const AdminGuesser = ({
   return <AdminUI {...rest}>{children}</AdminUI>;
 };
 
-const HydraAdmin = ({
+const AdminGuesser = ({
   entrypoint,
   dataProvider = dataProviderFactory(entrypoint),
   authProvider,
@@ -75,12 +75,23 @@ const HydraAdmin = ({
   customSagas,
   initialState,
 
-  includeDeprecated,
+  includeDeprecated = false,
 
   appLayout,
-  layout,
+  layout = Layout,
   loginPage,
   locale,
+  theme = createMuiTheme({
+    palette: {
+      primary: {
+        contrastText: '#ffffff',
+        main: '#38a9b4',
+      },
+      secondary: {
+        main: '#288690',
+      },
+    },
+  }),
 
   children,
   ...rest
@@ -126,40 +137,25 @@ const HydraAdmin = ({
       customReducers={customReducers}
       customSagas={customSagas}
       initialState={initialState}>
-      <AdminGuesser
+      <AdminGuesserComponent
         includeDeprecated={includeDeprecated}
         resources={resources}
         fetching={fetching}
         error={error}
         layout={appLayout || layout}
         loginPage={loginPage}
+        theme={theme}
         {...rest}>
         {children}
-      </AdminGuesser>
+      </AdminGuesserComponent>
     </AdminContext>
   );
 };
 
-HydraAdmin.defaultProps = {
-  includeDeprecated: false,
-  theme: createMuiTheme({
-    palette: {
-      primary: {
-        contrastText: '#ffffff',
-        main: '#38a9b4',
-      },
-      secondary: {
-        main: '#288690',
-      },
-    },
-  }),
-  layout: Layout,
-};
-
-HydraAdmin.propTypes = {
+AdminGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
   includeDeprecated: PropTypes.bool,
 };
 
-export default HydraAdmin;
+export default AdminGuesser;

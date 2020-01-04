@@ -13,7 +13,7 @@ import {
   SimpleFormIterator,
   TextInput,
 } from 'react-admin';
-import {getReferenceNameField} from './docsUtils';
+import {getReferenceNameField} from './hydra/docsUtils';
 import Introspecter from './Introspecter';
 
 export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
