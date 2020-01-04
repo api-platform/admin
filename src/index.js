@@ -6,5 +6,6 @@ export InputGuesser from './InputGuesser';
 export Introspecter from './Introspecter';
 export ListGuesser from './ListGuesser';
 export ResourceGuesser from './ResourceGuesser';
+export ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
 export ShowGuesser from './ShowGuesser';
 export * from './hydra';

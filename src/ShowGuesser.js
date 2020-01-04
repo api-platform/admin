@@ -32,12 +32,7 @@ export const ShowGuesserComponent = ({
 }) => {
   if (!children) {
     children = fields.map(field => (
-      <FieldGuesser
-        key={field.name}
-        source={field.name}
-        addLabel={true}
-        resource={props.resource}
-      />
+      <FieldGuesser key={field.name} source={field.name} addLabel={true} />
     ));
     displayOverrideCode(resourceSchema, fields);
   }

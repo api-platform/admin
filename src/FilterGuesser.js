@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Filter} from 'react-admin';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
-import {getFiltersParametersFromResourceSchema} from './hydra/docsUtils';
 
 export const FilterGuesserComponent = ({
   resourceSchema,
   fields,
+  resourceSchemaAnalyzer,
   hasShow,
   hasEdit,
   ...rest
@@ -15,7 +15,7 @@ export const FilterGuesserComponent = ({
 
   useEffect(() => {
     if (resourceSchema) {
-      const resolvedFiltersParameters = getFiltersParametersFromResourceSchema(
+      const resolvedFiltersParameters = resourceSchemaAnalyzer.getFiltersParametersFromResourceSchema(
         resourceSchema,
       );
 
@@ -26,7 +26,9 @@ export const FilterGuesserComponent = ({
           .getParameters()
           .then(() =>
             setFiltersParameters(
-              getFiltersParametersFromResourceSchema(resourceSchema),
+              resourceSchemaAnalyzer.getFiltersParametersFromResourceSchema(
+                resourceSchema,
+              ),
             ),
           );
       }

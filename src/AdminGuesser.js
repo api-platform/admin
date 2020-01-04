@@ -4,8 +4,12 @@ import {AdminContext, AdminUI, Error as ErrorUI, Loading} from 'react-admin';
 import {createHashHistory} from 'history';
 import {createMuiTheme} from '@material-ui/core';
 
-import dataProviderFactory from './hydra/dataProvider';
+import {
+  dataProvider as dataProviderFactory,
+  resourceSchemaAnalyzer as resourceSchemaAnalyzerFactory,
+} from './hydra';
 import ResourceGuesser from './ResourceGuesser';
+import ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
 import {Layout} from './layout';
 
 const displayOverrideCode = resources => {
@@ -93,6 +97,8 @@ const AdminGuesser = ({
     },
   }),
 
+  resourceSchemaAnalyzer = resourceSchemaAnalyzerFactory(),
+
   children,
   ...rest
 }) => {
@@ -117,7 +123,8 @@ const AdminGuesser = ({
   }
 
   useEffect(() => {
-    dataProvider('INTROSPECT')
+    dataProvider
+      .introspect()
       .then(({data}) => {
         setResources(data.resources);
         setFetching(false);
@@ -129,26 +136,28 @@ const AdminGuesser = ({
   }, []);
 
   return (
-    <AdminContext
-      authProvider={authProvider}
-      dataProvider={dataProvider}
-      i18nProvider={i18nProvider}
-      history={history}
-      customReducers={customReducers}
-      customSagas={customSagas}
-      initialState={initialState}>
-      <AdminGuesserComponent
-        includeDeprecated={includeDeprecated}
-        resources={resources}
-        fetching={fetching}
-        error={error}
-        layout={appLayout || layout}
-        loginPage={loginPage}
-        theme={theme}
-        {...rest}>
-        {children}
-      </AdminGuesserComponent>
-    </AdminContext>
+    <ResourceSchemaAnalyzerContext.Provider value={resourceSchemaAnalyzer}>
+      <AdminContext
+        authProvider={authProvider}
+        dataProvider={dataProvider}
+        i18nProvider={i18nProvider}
+        history={history}
+        customReducers={customReducers}
+        customSagas={customSagas}
+        initialState={initialState}>
+        <AdminGuesserComponent
+          includeDeprecated={includeDeprecated}
+          resources={resources}
+          fetching={fetching}
+          error={error}
+          layout={appLayout || layout}
+          loginPage={loginPage}
+          theme={theme}
+          {...rest}>
+          {children}
+        </AdminGuesserComponent>
+      </AdminContext>
+    </ResourceSchemaAnalyzerContext.Provider>
   );
 };
 

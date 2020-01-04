@@ -1,9 +1,7 @@
 import {
   CREATE,
   DELETE,
-  DELETE_MANY,
   GET_LIST,
-  GET_MANY,
   GET_MANY_REFERENCE,
   GET_ONE,
   UPDATE,
@@ -41,6 +39,7 @@ const reactAdminDocumentsCache = new Map();
  *
  * @param {Object} document
  * @param {bool} clone
+ * @param {bool} addToCache
  *
  * @return {ReactAdminDocument}
  */
@@ -360,38 +359,44 @@ export default (
    *
    * @returns {Promise}
    */
-  const fetchApi = (type, resource, params) => {
-    switch (type) {
-      case 'INTROSPECT':
-        if (apiSchema) return Promise.resolve({data: apiSchema});
-        return apiDocumentationParser(entrypoint).then(({api}) => {
-          apiSchema = api;
-          return {data: api};
-        });
+  const fetchApi = (type, resource, params) =>
+    convertReactAdminRequestToHydraRequest(type, resource, params)
+      .then(({url, options}) => httpClient(url, options))
+      .then(response =>
+        convertHydraResponseToReactAdminResponse(type, resource, response),
+      );
 
-      // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
-      case GET_MANY:
-        return Promise.all(
-          params.ids.map(id =>
-            reactAdminDocumentsCache[id]
-              ? Promise.resolve({data: reactAdminDocumentsCache[id]})
-              : fetchApi(GET_ONE, resource, {id}),
-          ),
-        ).then(responses => ({data: responses.map(({data}) => data)}));
-
-      case DELETE_MANY:
-        return Promise.all(
-          params.ids.map(id => fetchApi(DELETE, resource, {id})),
-        ).then(responses => ({data: []}));
-
-      default:
-        return convertReactAdminRequestToHydraRequest(type, resource, params)
-          .then(({url, options}) => httpClient(url, options))
-          .then(response =>
-            convertHydraResponseToReactAdminResponse(type, resource, response),
-          );
-    }
+  return {
+    getList: (resource, params) => fetchApi(GET_LIST, resource, params),
+    getOne: (resource, params) => fetchApi(GET_ONE, resource, params),
+    // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
+    getMany: (resource, params) =>
+      Promise.all(
+        params.ids.map(id =>
+          reactAdminDocumentsCache[id]
+            ? Promise.resolve({data: reactAdminDocumentsCache[id]})
+            : fetchApi(GET_ONE, resource, {id}),
+        ),
+      ).then(responses => ({data: responses.map(({data}) => data)})),
+    getManyReference: (resource, params) =>
+      fetchApi(GET_MANY_REFERENCE, resource, params),
+    update: (resource, params) => fetchApi(UPDATE, resource, params),
+    updateMany: (resource, params) =>
+      Promise.all(
+        params.ids.map(id => fetchApi(UPDATE, resource, {id})),
+      ).then(() => ({data: []})),
+    create: (resource, params) => fetchApi(CREATE, resource, params),
+    delete: (resource, params) => fetchApi(DELETE, resource, params),
+    deleteMany: (resource, params) =>
+      Promise.all(
+        params.ids.map(id => fetchApi(DELETE, resource, {id})),
+      ).then(() => ({data: []})),
+    introspect: () =>
+      apiSchema
+        ? Promise.resolve({data: apiSchema})
+        : apiDocumentationParser(entrypoint).then(({api}) => {
+            apiSchema = api;
+            return {data: api};
+          }),
   };
-
-  return fetchApi;
 };

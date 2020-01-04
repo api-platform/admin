@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Datagrid, List, EditButton, ShowButton} from 'react-admin';
-import {getOrderParametersFromResourceSchema} from './hydra/docsUtils';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import Introspecter from './Introspecter';
@@ -30,13 +29,14 @@ export const ListGuesserComponent = ({
   children,
   resourceSchema,
   fields,
+  resourceSchemaAnalyzer,
   ...props
 }) => {
   const [orderParameters, setOrderParameters] = useState([]);
 
   useEffect(() => {
     if (resourceSchema) {
-      const resolvedOrderParameters = getOrderParametersFromResourceSchema(
+      const resolvedOrderParameters = resourceSchemaAnalyzer.getOrderParametersFromResourceSchema(
         resourceSchema,
       );
 
@@ -47,7 +47,9 @@ export const ListGuesserComponent = ({
           .getParameters()
           .then(() =>
             setOrderParameters(
-              getOrderParametersFromResourceSchema(resourceSchema),
+              resourceSchemaAnalyzer.getOrderParametersFromResourceSchema(
+                resourceSchema,
+              ),
             ),
           );
       }

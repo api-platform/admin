@@ -1,5 +1,4 @@
-import {GET_LIST} from 'react-admin';
-import dataProvider, {
+import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
 
@@ -78,36 +77,38 @@ describe('Transform a React Admin request to an Hydra request', () => {
   mockFetchHydra.mockReturnValue({
     json: {'hydra:member': [], 'hydra:totalItems': 3},
   });
-  const fetchApi = dataProvider('entrypoint', mockFetchHydra);
+  const dataProvider = dataProviderFactory('entrypoint', mockFetchHydra);
 
   test('React Admin get list with filter parameters', () => {
-    return fetchApi(GET_LIST, 'resource', {
-      pagination: {},
-      sort: {},
-      filter: {
-        simple: 'foo',
-        nested: {param: 'bar'},
-        sub_nested: {sub: {param: true}},
-        array: ['/iri/1', '/iri/2'],
-        nested_array: {nested: ['/nested_iri/1', '/nested_iri/2']},
-      },
-    }).then(() => {
-      const searchParams = Array.from(
-        mockFetchHydra.mock.calls[0][0].searchParams.entries(),
-      );
-      expect(searchParams[0]).toEqual(['simple', 'foo']);
-      expect(searchParams[1]).toEqual(['nested.param', 'bar']);
-      expect(searchParams[2]).toEqual(['sub_nested.sub.param', 'true']);
-      expect(searchParams[3]).toEqual(['array[0]', '/iri/1']);
-      expect(searchParams[4]).toEqual(['array[1]', '/iri/2']);
-      expect(searchParams[5]).toEqual([
-        'nested_array.nested[0]',
-        '/nested_iri/1',
-      ]);
-      expect(searchParams[6]).toEqual([
-        'nested_array.nested[1]',
-        '/nested_iri/2',
-      ]);
-    });
+    return dataProvider
+      .getList('resource', {
+        pagination: {},
+        sort: {},
+        filter: {
+          simple: 'foo',
+          nested: {param: 'bar'},
+          sub_nested: {sub: {param: true}},
+          array: ['/iri/1', '/iri/2'],
+          nested_array: {nested: ['/nested_iri/1', '/nested_iri/2']},
+        },
+      })
+      .then(() => {
+        const searchParams = Array.from(
+          mockFetchHydra.mock.calls[0][0].searchParams.entries(),
+        );
+        expect(searchParams[0]).toEqual(['simple', 'foo']);
+        expect(searchParams[1]).toEqual(['nested.param', 'bar']);
+        expect(searchParams[2]).toEqual(['sub_nested.sub.param', 'true']);
+        expect(searchParams[3]).toEqual(['array[0]', '/iri/1']);
+        expect(searchParams[4]).toEqual(['array[1]', '/iri/2']);
+        expect(searchParams[5]).toEqual([
+          'nested_array.nested[0]',
+          '/nested_iri/1',
+        ]);
+        expect(searchParams[6]).toEqual([
+          'nested_array.nested[1]',
+          '/nested_iri/2',
+        ]);
+      });
   });
 });

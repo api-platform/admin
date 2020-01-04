@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Loading, useDataProvider} from 'react-admin';
+import ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
 
 const IntrospecterComponent = ({
   component: Component,
+  resourceSchemaAnalyzer,
   includeDeprecated,
 
   resource,
@@ -45,6 +47,7 @@ const IntrospecterComponent = ({
 
   return (
     <Component
+      resourceSchemaAnalyzer={resourceSchemaAnalyzer}
       resource={resource}
       resourceSchema={resourceSchema}
       fields={fields}
@@ -53,14 +56,21 @@ const IntrospecterComponent = ({
   );
 };
 
-const Introspecter = ({component, includeDeprecated, resource, ...rest}) => {
+const Introspecter = ({
+  component,
+  includeDeprecated = false,
+  resource,
+  ...rest
+}) => {
   const dataProvider = useDataProvider();
+  const resourceSchemaAnalyzer = useContext(ResourceSchemaAnalyzerContext);
   const [resources, setResources] = useState();
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState();
 
   useEffect(() => {
-    dataProvider('INTROSPECT')
+    dataProvider
+      .introspect()
       .then(({data}) => {
         setResources(data.resources);
         setFetching(false);
@@ -74,6 +84,7 @@ const Introspecter = ({component, includeDeprecated, resource, ...rest}) => {
   return (
     <IntrospecterComponent
       component={component}
+      resourceSchemaAnalyzer={resourceSchemaAnalyzer}
       includeDeprecated={includeDeprecated}
       resource={resource}
       resources={resources}
@@ -82,10 +93,6 @@ const Introspecter = ({component, includeDeprecated, resource, ...rest}) => {
       {...rest}
     />
   );
-};
-
-Introspecter.defaultProps = {
-  includeDeprecated: false,
 };
 
 Introspecter.propTypes = {

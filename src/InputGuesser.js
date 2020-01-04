@@ -4,6 +4,7 @@ import {
   ArrayInput,
   BooleanInput,
   DateInput,
+  DateTimeInput,
   NumberInput,
   ReferenceArrayInput,
   ReferenceInput,
@@ -13,14 +14,18 @@ import {
   SimpleFormIterator,
   TextInput,
 } from 'react-admin';
-import {getReferenceNameField} from './hydra/docsUtils';
 import Introspecter from './Introspecter';
 
-export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
+export const InputGuesserComponent = ({
+  fields,
+  resourceSchema,
+  resourceSchemaAnalyzer,
+  ...props
+}) => {
   const field = fields.find(({name}) => name === props.source);
   if (!field) {
     console.error(
-      `Field ${props.source} not present inside the api description for the resource ${props.resource}`,
+      `Field ${props.source} not present inside API description for the resource ${props.resource}`,
     );
 
     return <Fragment />;
@@ -40,7 +45,11 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
           validate={validate}
           {...props}
           allowEmpty>
-          <SelectInput optionText={getReferenceNameField(field.reference)} />
+          <SelectInput
+            optionText={resourceSchemaAnalyzer.getReferenceNameField(
+              field.reference,
+            )}
+          />
         </ReferenceInput>
       );
     }
@@ -54,12 +63,18 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
         validate={validate}
         {...props}
         allowEmpty>
-        <SelectArrayInput optionText={getReferenceNameField(field.reference)} />
+        <SelectArrayInput
+          optionText={resourceSchemaAnalyzer.getReferenceNameField(
+            field.reference,
+          )}
+        />
       </ReferenceArrayInput>
     );
   }
 
-  if ('http://schema.org/identifier' === field.id) {
+  const fieldType = resourceSchemaAnalyzer.getFieldType(field);
+
+  if (fieldType === 'id') {
     const prefix = `/${props.resource}/`;
 
     props.format = value => {
@@ -73,8 +88,8 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
     };
   }
 
-  switch (field.range) {
-    case 'http://www.w3.org/2001/XMLSchema#array':
+  switch (fieldType) {
+    case 'array':
       return (
         <ArrayInput
           key={field.name}
@@ -87,7 +102,7 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
         </ArrayInput>
       );
 
-    case 'http://www.w3.org/2001/XMLSchema#integer':
+    case 'integer':
       return (
         <NumberInput
           key={field.name}
@@ -97,7 +112,7 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
         />
       );
 
-    case 'http://www.w3.org/2001/XMLSchema#decimal':
+    case 'float':
       return (
         <NumberInput
           key={field.name}
@@ -108,7 +123,7 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
         />
       );
 
-    case 'http://www.w3.org/2001/XMLSchema#boolean':
+    case 'boolean':
       return (
         <BooleanInput
           key={field.name}
@@ -118,10 +133,19 @@ export const InputGuesserComponent = ({fields, resourceSchema, ...props}) => {
         />
       );
 
-    case 'http://www.w3.org/2001/XMLSchema#date':
-    case 'http://www.w3.org/2001/XMLSchema#dateTime':
+    case 'date':
       return (
         <DateInput
+          key={field.name}
+          source={field.name}
+          validate={validate}
+          {...props}
+        />
+      );
+
+    case 'dateTime':
+      return (
+        <DateTimeInput
           key={field.name}
           source={field.name}
           validate={validate}

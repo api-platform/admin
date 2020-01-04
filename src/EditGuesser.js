@@ -27,6 +27,7 @@ const displayOverrideCode = (resourceSchema, fields) => {
 export const EditGuesserComponent = ({
   children,
   fields,
+  resourceSchemaAnalyzer,
   resourceSchema,
   ...props
 }) => {

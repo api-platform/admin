@@ -12,7 +12,6 @@ import {
   TextField,
   UrlField,
 } from 'react-admin';
-import {getReferenceNameField} from './hydra/docsUtils';
 import Introspecter from './Introspecter';
 
 const isFieldSortable = (field, resourceSchema) => {
@@ -26,17 +25,23 @@ const isFieldSortable = (field, resourceSchema) => {
   );
 };
 
-const renderField = (field, props) => {
+const renderField = (field, resourceSchemaAnalyzer, props) => {
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
       return (
         <ReferenceField reference={field.reference.name} {...props} allowEmpty>
-          <ChipField source={getReferenceNameField(field.reference)} />
+          <ChipField
+            source={resourceSchemaAnalyzer.getReferenceNameField(
+              field.reference,
+            )}
+          />
         </ReferenceField>
       );
     }
 
-    const referenceNameField = getReferenceNameField(field.reference);
+    const referenceNameField = resourceSchemaAnalyzer.getReferenceNameField(
+      field.reference,
+    );
     return (
       <ReferenceArrayField reference={field.reference.name} {...props}>
         <SingleFieldList>
@@ -46,46 +51,48 @@ const renderField = (field, props) => {
     );
   }
 
-  switch (field.id) {
-    case 'http://schema.org/email':
+  const fieldType = resourceSchemaAnalyzer.getFieldType(field);
+
+  switch (fieldType) {
+    case 'email':
       return <EmailField {...props} />;
 
-    case 'http://schema.org/url':
+    case 'url':
       return <UrlField {...props} />;
 
-    default:
-    // Do nothing
-  }
-
-  switch (field.range) {
-    case 'http://www.w3.org/2001/XMLSchema#integer':
-    case 'http://www.w3.org/2001/XMLSchema#float':
+    case 'integer':
+    case 'float':
       return <NumberField {...props} />;
 
-    case 'http://www.w3.org/2001/XMLSchema#date':
-    case 'http://www.w3.org/2001/XMLSchema#dateTime':
-      return <DateField {...props} />;
-
-    case 'http://www.w3.org/2001/XMLSchema#boolean':
+    case 'boolean':
       return <BooleanField {...props} />;
+
+    case 'date':
+    case 'dateTime':
+      return <DateField {...props} />;
 
     default:
       return <TextField {...props} />;
   }
 };
 
-export const FieldGuesserComponent = ({fields, resourceSchema, ...props}) => {
+export const FieldGuesserComponent = ({
+  fields,
+  resourceSchema,
+  resourceSchemaAnalyzer,
+  ...props
+}) => {
   const field = fields.find(f => f.name === props.source);
 
   if (!field) {
     console.error(
-      `Field "${props.source}" not present inside the api description for the resource "${props.resource}"`,
+      `Field "${props.source}" not present inside API description for the resource "${props.resource}"`,
     );
 
     return <Fragment />;
   }
 
-  return renderField(field, {
+  return renderField(field, resourceSchemaAnalyzer, {
     sortable: isFieldSortable(field, resourceSchema),
     ...props,
   });
@@ -101,7 +108,6 @@ const FieldGuesser = props => (
 
 FieldGuesser.propTypes = {
   source: PropTypes.string.isRequired,
-  resource: PropTypes.string.isRequired,
 };
 
 export default FieldGuesser;
