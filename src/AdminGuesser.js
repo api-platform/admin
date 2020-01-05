@@ -4,10 +4,6 @@ import {AdminContext, AdminUI, Error as ErrorUI, Loading} from 'react-admin';
 import {createHashHistory} from 'history';
 import {createMuiTheme} from '@material-ui/core';
 
-import {
-  dataProvider as dataProviderFactory,
-  resourceSchemaAnalyzer as resourceSchemaAnalyzerFactory,
-} from './hydra';
 import ResourceGuesser from './ResourceGuesser';
 import ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
 import {Layout} from './layout';
@@ -70,8 +66,7 @@ export const AdminGuesserComponent = ({
 };
 
 const AdminGuesser = ({
-  entrypoint,
-  dataProvider = dataProviderFactory(entrypoint),
+  dataProvider,
   authProvider,
   i18nProvider,
   history = createHashHistory(),
@@ -97,7 +92,7 @@ const AdminGuesser = ({
     },
   }),
 
-  resourceSchemaAnalyzer = resourceSchemaAnalyzerFactory(),
+  resourceSchemaAnalyzer,
 
   children,
   ...rest
@@ -162,7 +157,10 @@ const AdminGuesser = ({
 };
 
 AdminGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  dataProvider: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
+    .isRequired,
+  resourceSchemaAnalyzer: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
   theme: PropTypes.object,
   includeDeprecated: PropTypes.bool,
 };

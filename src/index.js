@@ -8,4 +8,6 @@ export ListGuesser from './ListGuesser';
 export ResourceGuesser from './ResourceGuesser';
 export ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
 export ShowGuesser from './ShowGuesser';
-export * from './hydra';
+export {HydraAdmin} from './hydra';
+import * as hydra from './hydra';
+export {hydra};
