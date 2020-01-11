@@ -1,222 +1,72 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<AdminGuesser /> renders errors 1`] = `
-<Context.Provider
-  value={
+<Error
+  error={[Error: API schema is not readable: Failed to fetch documentation]}
+  errorInfo={
     Object {
-      "store": Object {
-        "dispatch": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-        Symbol(observable): [Function],
-      },
-      "subscription": Subscription {
-        "handleChangeWrapper": [Function],
-        "listeners": Object {
-          "notify": [Function],
-        },
-        "onStateChange": [Function],
-        "parentSub": undefined,
-        "store": Object {
-          "dispatch": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-          Symbol(observable): [Function],
-        },
-        "unsubscribe": null,
-      },
+      "componentStack": null,
     }
   }
->
-  <Error
-    error={[Error: API schema is not readable]}
-    errorInfo={
-      Object {
-        "componentStack": null,
-      }
-    }
-  />
-</Context.Provider>
+/>
 `;
 
 exports[`<AdminGuesser /> renders errors without data 1`] = `
-<Context.Provider
-  value={
+<Error
+  error={[Error: API schema is not readable: Failed to fetch documentation]}
+  errorInfo={
     Object {
-      "store": Object {
-        "dispatch": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-        Symbol(observable): [Function],
-      },
-      "subscription": Subscription {
-        "handleChangeWrapper": [Function],
-        "listeners": Object {
-          "notify": [Function],
-        },
-        "onStateChange": [Function],
-        "parentSub": undefined,
-        "store": Object {
-          "dispatch": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-          Symbol(observable): [Function],
-        },
-        "unsubscribe": null,
-      },
+      "componentStack": null,
     }
   }
->
-  <Error
-    error={[Error: API schema is not readable]}
-    errorInfo={
-      Object {
-        "componentStack": null,
-      }
-    }
-  />
-</Context.Provider>
+/>
 `;
 
 exports[`<AdminGuesser /> renders loading 1`] = `
-<Context.Provider
-  value={
-    Object {
-      "store": Object {
-        "dispatch": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-        Symbol(observable): [Function],
-      },
-      "subscription": Subscription {
-        "handleChangeWrapper": [Function],
-        "listeners": Object {
-          "notify": [Function],
-        },
-        "onStateChange": [Function],
-        "parentSub": undefined,
-        "store": Object {
-          "dispatch": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-          Symbol(observable): [Function],
-        },
-        "unsubscribe": null,
-      },
-    }
-  }
->
-  <Loading
-    loadingPrimary="ra.page.loading"
-    loadingSecondary="ra.message.loading"
-  />
-</Context.Provider>
+<Loading
+  loadingPrimary="ra.page.loading"
+  loadingSecondary="ra.message.loading"
+/>
 `;
 
 exports[`<AdminGuesser /> renders without custom resources 1`] = `
-<Context.Provider
-  value={
+<AdminUI
+  catchAll={[Function]}
+  layout={[Function]}
+  loading={[Function]}
+  loginPage={[Function]}
+  logout={
     Object {
-      "store": Object {
-        "dispatch": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-        Symbol(observable): [Function],
+      "$$typeof": Symbol(react.forward_ref),
+      "propTypes": Object {
+        "className": [Function],
+        "redirectTo": [Function],
       },
-      "subscription": Subscription {
-        "handleChangeWrapper": [Function],
-        "listeners": Object {
-          "notify": [Function],
-        },
-        "onStateChange": [Function],
-        "parentSub": undefined,
-        "store": Object {
-          "dispatch": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-          Symbol(observable): [Function],
-        },
-        "unsubscribe": null,
-      },
+      "render": [Function],
     }
   }
 >
-  <AdminUI
-    catchAll={[Function]}
-    layout={[Function]}
-    loading={[Function]}
-    loginPage={[Function]}
-    logout={
-      Object {
-        "$$typeof": Symbol(react.forward_ref),
-        "propTypes": Object {
-          "className": [Function],
-          "redirectTo": [Function],
-        },
-        "render": [Function],
-      }
-    }
-  >
-    <ResourceGuesser
-      name="books"
-    />
-  </AdminUI>
-</Context.Provider>
+  <ResourceGuesser
+    name="books"
+  />
+</AdminUI>
 `;
 
 exports[`<AdminGuesser /> renders without data 1`] = `
-<Context.Provider
-  value={
+<AdminUI
+  catchAll={[Function]}
+  layout={[Function]}
+  loading={[Function]}
+  loginPage={[Function]}
+  logout={
     Object {
-      "store": Object {
-        "dispatch": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-        Symbol(observable): [Function],
+      "$$typeof": Symbol(react.forward_ref),
+      "propTypes": Object {
+        "className": [Function],
+        "redirectTo": [Function],
       },
-      "subscription": Subscription {
-        "handleChangeWrapper": [Function],
-        "listeners": Object {
-          "notify": [Function],
-        },
-        "onStateChange": [Function],
-        "parentSub": undefined,
-        "store": Object {
-          "dispatch": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-          Symbol(observable): [Function],
-        },
-        "unsubscribe": null,
-      },
+      "render": [Function],
     }
   }
->
-  <AdminUI
-    catchAll={[Function]}
-    layout={[Function]}
-    loading={[Function]}
-    loginPage={[Function]}
-    logout={
-      Object {
-        "$$typeof": Symbol(react.forward_ref),
-        "propTypes": Object {
-          "className": [Function],
-          "redirectTo": [Function],
-        },
-        "render": [Function],
-      }
-    }
-  />
-</Context.Provider>
+/>
 `;

@@ -75,7 +75,7 @@ describe('Transform a JSON-LD document to a React Admin compatible document', ()
 describe('Transform a React Admin request to an Hydra request', () => {
   const mockFetchHydra = jest.fn();
   mockFetchHydra.mockReturnValue({
-    json: {'hydra:member': [], 'hydra:totalItems': 3},
+    json: { 'hydra:member': [], 'hydra:totalItems': 3 },
   });
   const dataProvider = dataProviderFactory('entrypoint', mockFetchHydra);
 
@@ -86,10 +86,10 @@ describe('Transform a React Admin request to an Hydra request', () => {
         sort: {},
         filter: {
           simple: 'foo',
-          nested: {param: 'bar'},
-          sub_nested: {sub: {param: true}},
+          nested: { param: 'bar' },
+          sub_nested: { sub: { param: true } },
           array: ['/iri/1', '/iri/2'],
-          nested_array: {nested: ['/nested_iri/1', '/nested_iri/2']},
+          nested_array: { nested: ['/nested_iri/1', '/nested_iri/2'] },
         },
       })
       .then(() => {

@@ -23,7 +23,7 @@ module.exports = {
 
   parser: 'babel-eslint',
 
-  plugins: ['import', 'jsx-a11y', 'react', 'prettier'],
+  plugins: ['markdown', 'import', 'jsx-a11y', 'react', 'prettier'],
 
   extends: ['prettier', 'prettier/react'],
 
@@ -228,7 +228,6 @@ module.exports = {
       {
         singleQuote: true,
         trailingComma: 'all',
-        bracketSpacing: false,
         jsxBracketSameLine: true,
       },
     ],

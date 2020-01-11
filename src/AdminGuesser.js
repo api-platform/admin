@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {AdminContext, AdminUI, Error as ErrorUI, Loading} from 'react-admin';
-import {createHashHistory} from 'history';
-import {createMuiTheme} from '@material-ui/core';
+import { AdminContext, AdminUI, Error as ErrorUI, Loading } from 'react-admin';
+import { createHashHistory } from 'history';
+import { createMuiTheme } from '@material-ui/core';
 
 import ResourceGuesser from './ResourceGuesser';
-import ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
-import {Layout} from './layout';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext';
+import { Layout } from './layout';
+import introspectReducer from './introspectReducer';
 
 const displayOverrideCode = resources => {
   if (process.env.NODE_ENV === 'production') return;
@@ -21,87 +22,92 @@ const displayOverrideCode = resources => {
 };
 
 /**
- * AdminGuesserComponent automatically renders an `<AdminUI>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
+ * AdminResourcesGuesser automatically renders an `<AdminUI>` component for resources exposed by a web API documented with Hydra, OpenAPI or any other format supported by `@api-platform/api-doc-parser`.
  * If child components are passed (usually `<ResourceGuesser>` or `<Resource>` components, but it can be any other React component), they are rendered in the given order.
  * If no children are passed, a `<ResourceGuesser>` component is created for each resource type exposed by the API, in the order they are specified in the API documentation.
  */
-export const AdminGuesserComponent = ({
+export const AdminResourcesGuesser = ({
   children,
   includeDeprecated,
-
   resources,
-  fetching,
+  loading,
   error,
-
   ...rest
 }) => {
-  if (fetching) {
+  if (loading) {
     return <Loading />;
   }
 
   if (error) {
+    const errorMessage = `API schema is not readable: ${error.message}`;
+
     if ('production' === process.env.NODE_ENV) {
-      console.error(error);
+      console.error(errorMessage);
     }
 
     return (
       <ErrorUI
-        error={new Error('API schema is not readable')}
-        errorInfo={{componentStack: null}}
+        error={new Error(errorMessage)}
+        errorInfo={{ componentStack: null }}
       />
     );
   }
 
-  if (!children && resources) {
+  let resourceChildren = children;
+  if (!resourceChildren && resources) {
     const guessResources = includeDeprecated
       ? resources
       : resources.filter(r => !r.deprecated);
-    children = guessResources.map(r => (
+    resourceChildren = guessResources.map(r => (
       <ResourceGuesser name={r.name} key={r.name} />
     ));
     displayOverrideCode(guessResources);
   }
 
-  return <AdminUI {...rest}>{children}</AdminUI>;
+  return <AdminUI {...rest}>{resourceChildren}</AdminUI>;
 };
 
+const defaultHistory = createHashHistory();
+const defaultTheme = createMuiTheme({
+  palette: {
+    primary: {
+      contrastText: '#ffffff',
+      main: '#38a9b4',
+    },
+    secondary: {
+      main: '#288690',
+    },
+  },
+});
+
 const AdminGuesser = ({
+  // Props for SchemaAnalyzerContext
+  schemaAnalyzer,
+  // Props for AdminContext
   dataProvider,
   authProvider,
   i18nProvider,
-  history = createHashHistory(),
-  customReducers,
+  history = defaultHistory,
+  customReducers = {},
   customSagas,
   initialState,
-
+  // Props for AdminResourcesGuesser
   includeDeprecated = false,
-
+  // Props for AdminUI
   appLayout,
   layout = Layout,
   loginPage,
   locale,
-  theme = createMuiTheme({
-    palette: {
-      primary: {
-        contrastText: '#ffffff',
-        main: '#38a9b4',
-      },
-      secondary: {
-        main: '#288690',
-      },
-    },
-  }),
-
-  resourceSchemaAnalyzer,
-
+  theme = defaultTheme,
+  // Other props
   children,
   ...rest
 }) => {
   const [resources, setResources] = useState();
-  const [fetching, setFetching] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
-  if (appLayout) {
+  if (appLayout && process.env.NODE_ENV !== 'production') {
     console.warn(
       'You are using deprecated prop "appLayout", it was replaced by "layout", see https://github.com/marmelab/react-admin/issues/2918',
     );
@@ -111,56 +117,67 @@ const AdminGuesser = ({
       'You passed true to the loginPage prop. You must either pass false to disable it or a component class to customize it',
     );
   }
-  if (locale) {
+  if (locale && process.env.NODE_ENV !== 'production') {
     console.warn(
       'You are using deprecated prop "locale". You must now pass the initial locale to your i18nProvider',
     );
   }
 
   useEffect(() => {
+    if (typeof dataProvider.introspect !== 'function') {
+      setError(
+        new Error(
+          'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser',
+        ),
+      );
+      setLoading(false);
+
+      return;
+    }
+
     dataProvider
       .introspect()
-      .then(({data}) => {
+      .then(({ data }) => {
         setResources(data.resources);
-        setFetching(false);
+        setLoading(false);
       })
       .catch(error => {
         setError(error);
-        setFetching(false);
+        setLoading(false);
       });
   }, []);
 
   return (
-    <ResourceSchemaAnalyzerContext.Provider value={resourceSchemaAnalyzer}>
+    <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
       <AdminContext
         authProvider={authProvider}
         dataProvider={dataProvider}
         i18nProvider={i18nProvider}
         history={history}
-        customReducers={customReducers}
+        customReducers={{ introspect: introspectReducer, ...customReducers }}
         customSagas={customSagas}
         initialState={initialState}>
-        <AdminGuesserComponent
+        <AdminResourcesGuesser
           includeDeprecated={includeDeprecated}
           resources={resources}
-          fetching={fetching}
+          loading={loading}
           error={error}
           layout={appLayout || layout}
           loginPage={loginPage}
           theme={theme}
           {...rest}>
           {children}
-        </AdminGuesserComponent>
+        </AdminResourcesGuesser>
       </AdminContext>
-    </ResourceSchemaAnalyzerContext.Provider>
+    </SchemaAnalyzerContext.Provider>
   );
 };
 
 AdminGuesser.propTypes = {
   dataProvider: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
     .isRequired,
-  resourceSchemaAnalyzer: PropTypes.object.isRequired,
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+  schemaAnalyzer: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
   includeDeprecated: PropTypes.bool,
 };

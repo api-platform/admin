@@ -1,3 +1,7 @@
+/**
+ * @param {Resource} reference A reference resource field
+ * @returns {string} The name of the reference field
+ */
 const getReferenceNameField = reference => {
   const field = reference.fields.find(
     field => 'http://schema.org/name' === field.id,
@@ -8,18 +12,26 @@ const getReferenceNameField = reference => {
 
 const ORDER_MARKER = 'order[';
 
-const getOrderParametersFromResourceSchema = resourceSchema => {
-  const authorizedFields = resourceSchema.fields.map(field => field.name);
-  return resourceSchema.parameters
+/**
+ * @param {Resource} schema The schema of a resource
+ * @returns {Parameter[]} The order filter parameters
+ */
+const getOrderParametersFromSchema = schema => {
+  const authorizedFields = schema.fields.map(field => field.name);
+  return schema.parameters
     .map(filter => filter.variable)
     .filter(filter => filter.includes(ORDER_MARKER))
     .map(orderFilter => orderFilter.replace(ORDER_MARKER, '').replace(']', ''))
     .filter(filter => authorizedFields.includes(filter));
 };
 
-const getFiltersParametersFromResourceSchema = resourceSchema => {
-  const authorizedFields = resourceSchema.fields.map(field => field.name);
-  return resourceSchema.parameters
+/**
+ * @param {Resource} schema The schema of a resource
+ * @returns {Parameter[]} The filter parameters without the order ones
+ */
+const getFiltersParametersFromSchema = schema => {
+  const authorizedFields = schema.fields.map(field => field.name);
+  return schema.parameters
     .map(filter => ({
       name: filter.variable,
       isRequired: filter.required,
@@ -28,6 +40,10 @@ const getFiltersParametersFromResourceSchema = resourceSchema => {
     .filter(filter => authorizedFields.includes(filter.name));
 };
 
+/**
+ * @param {Field} field
+ * @returns {string} The type of the field
+ */
 const getFieldType = field => {
   switch (field.id) {
     case 'http://schema.org/identifier':
@@ -61,8 +77,8 @@ const getFieldType = field => {
 export default () => {
   return {
     getReferenceNameField,
-    getOrderParametersFromResourceSchema,
-    getFiltersParametersFromResourceSchema,
+    getOrderParametersFromSchema,
+    getFiltersParametersFromSchema,
     getFieldType,
   };
 };

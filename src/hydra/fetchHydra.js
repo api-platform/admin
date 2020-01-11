@@ -1,9 +1,9 @@
-import {HttpError} from 'react-admin';
+import { HttpError } from 'react-admin';
 import {
   fetchJsonLd,
   getDocumentationUrlFromHeaders,
 } from '@api-platform/api-doc-parser';
-import {promises} from 'jsonld';
+import { promises } from 'jsonld';
 
 /**
  * Sends HTTP requests to a Hydra API.

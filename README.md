@@ -29,7 +29,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HydraAdmin } from '@api-platform/admin';
 
-const Admin = () => <HydraAdmin entrypoint="https://demo.api-platform.com"/> // Replace with your own API entrypoint
+const Admin = () => <HydraAdmin entrypoint="https://demo.api-platform.com" />; // Replace with your own API entrypoint
 
 ReactDOM.render(<Admin />, document.getElementById('root'));
 ```
@@ -39,9 +39,19 @@ Or alternatively:
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AdminGuesser, hydra } from '@api-platform/admin';
+import {
+  AdminGuesser,
+  hydraDataProvider,
+  hydraSchemaAnalyzer,
+} from '@api-platform/admin';
 
-const Admin = () => <AdminGuesser dataProvider={hydra.dataProvider("https://demo.api-platform.com")} resourceSchemaAnalyzer={hydra.resourceSchemaAnalyzer()} /> // Use your custom data provider or resource schema analyzer
+const Admin = () => (
+  <AdminGuesser
+    // Use your custom data provider or resource schema analyzer
+    dataProvider={hydraDataProvider('https://demo.api-platform.com')}
+    schemaAnalyzer={hydraSchemaAnalyzer()}
+  />
+);
 
 ReactDOM.render(<Admin />, document.getElementById('root'));
 ```

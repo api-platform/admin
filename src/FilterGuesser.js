@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {Filter} from 'react-admin';
+import React, { useEffect, useState } from 'react';
+import { Filter } from 'react-admin';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
 
-export const FilterGuesserComponent = ({
-  resourceSchema,
+export const IntrospectedFilterGuesser = ({
+  schema,
   fields,
-  resourceSchemaAnalyzer,
+  schemaAnalyzer,
   hasShow,
   hasEdit,
   ...rest
@@ -14,21 +14,19 @@ export const FilterGuesserComponent = ({
   const [filtersParameters, setFiltersParameters] = useState([]);
 
   useEffect(() => {
-    if (resourceSchema) {
-      const resolvedFiltersParameters = resourceSchemaAnalyzer.getFiltersParametersFromResourceSchema(
-        resourceSchema,
+    if (schema) {
+      const resolvedFiltersParameters = schemaAnalyzer.getFiltersParametersFromSchema(
+        schema,
       );
 
       setFiltersParameters(resolvedFiltersParameters);
 
       if (!resolvedFiltersParameters.length) {
-        resourceSchema
+        schema
           .getParameters()
           .then(() =>
             setFiltersParameters(
-              resourceSchemaAnalyzer.getFiltersParametersFromResourceSchema(
-                resourceSchema,
-              ),
+              schemaAnalyzer.getFiltersParametersFromSchema(schema),
             ),
           );
       }
@@ -53,7 +51,7 @@ export const FilterGuesserComponent = ({
 };
 
 const FilterGuesser = props => (
-  <Introspecter component={FilterGuesserComponent} {...props} />
+  <Introspecter component={IntrospectedFilterGuesser} {...props} />
 );
 
 export default FilterGuesser;

@@ -24,10 +24,11 @@
     "babel-jest": "^24.8.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
-    "eslint": "^6.4.0",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-markdown": "^1.0.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.1",
     "jest": "^24.8.0",
@@ -46,8 +47,8 @@
   "scripts": {
     "build": "babel src -d lib --ignore '*.test.js'",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
-    "fix": "eslint --fix src",
-    "lint": "eslint src",
+    "fix": "eslint --ignore-pattern 'lib/*' --ext .js,.md --fix .",
+    "lint": "eslint --ignore-pattern 'lib/*' --ext .js,.md .",
     "test": "jest src",
     "test:watch": "jest --watch src",
     "watch": "babel src -d lib --ignore '*.test.js' --watch"

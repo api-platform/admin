@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
   ArrayInput,
@@ -16,13 +16,13 @@ import {
 } from 'react-admin';
 import Introspecter from './Introspecter';
 
-export const InputGuesserComponent = ({
+export const IntrospectedInputGuesser = ({
   fields,
-  resourceSchema,
-  resourceSchemaAnalyzer,
+  schema,
+  schemaAnalyzer,
   ...props
 }) => {
-  const field = fields.find(({name}) => name === props.source);
+  const field = fields.find(({ name }) => name === props.source);
   if (!field) {
     console.error(
       `Field ${props.source} not present inside API description for the resource ${props.resource}`,
@@ -46,9 +46,7 @@ export const InputGuesserComponent = ({
           {...props}
           allowEmpty>
           <SelectInput
-            optionText={resourceSchemaAnalyzer.getReferenceNameField(
-              field.reference,
-            )}
+            optionText={schemaAnalyzer.getReferenceNameField(field.reference)}
           />
         </ReferenceInput>
       );
@@ -64,15 +62,13 @@ export const InputGuesserComponent = ({
         {...props}
         allowEmpty>
         <SelectArrayInput
-          optionText={resourceSchemaAnalyzer.getReferenceNameField(
-            field.reference,
-          )}
+          optionText={schemaAnalyzer.getReferenceNameField(field.reference)}
         />
       </ReferenceArrayInput>
     );
   }
 
-  const fieldType = resourceSchemaAnalyzer.getFieldType(field);
+  const fieldType = schemaAnalyzer.getFieldType(field);
 
   if (fieldType === 'id') {
     const prefix = `/${props.resource}/`;
@@ -167,7 +163,7 @@ export const InputGuesserComponent = ({
 
 const InputGuesser = props => (
   <Introspecter
-    component={InputGuesserComponent}
+    component={IntrospectedInputGuesser}
     includeDeprecated={true}
     {...props}
   />

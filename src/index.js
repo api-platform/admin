@@ -6,8 +6,11 @@ export InputGuesser from './InputGuesser';
 export Introspecter from './Introspecter';
 export ListGuesser from './ListGuesser';
 export ResourceGuesser from './ResourceGuesser';
-export ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
+export SchemaAnalyzerContext from './SchemaAnalyzerContext';
 export ShowGuesser from './ShowGuesser';
-export {HydraAdmin} from './hydra';
-import * as hydra from './hydra';
-export {hydra};
+export {
+  HydraAdmin,
+  dataProvider as hydraDataProvider,
+  schemaAnalyzer as hydraSchemaAnalyzer,
+  fetchHydra,
+} from './hydra';

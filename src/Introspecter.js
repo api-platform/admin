@@ -1,22 +1,20 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {Loading, useDataProvider} from 'react-admin';
-import ResourceSchemaAnalyzerContext from './ResourceSchemaAnalyzerContext';
+import { useQueryWithStore } from 'react-admin';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 
-const IntrospecterComponent = ({
+const ResourcesIntrospecter = ({
   component: Component,
-  resourceSchemaAnalyzer,
+  schemaAnalyzer,
   includeDeprecated,
-
   resource,
   resources,
-  fetching,
+  loading,
   error,
-
   ...rest
 }) => {
-  if (fetching) {
-    return <Loading />;
+  if (loading) {
+    return null;
   }
 
   if (error) {
@@ -31,9 +29,9 @@ const IntrospecterComponent = ({
     return null;
   }
 
-  const resourceSchema = resources.find(r => r.name === resource);
+  const schema = resources.find(r => r.name === resource);
 
-  if (!resourceSchema || !resourceSchema.fields) {
+  if (!schema || !schema.fields) {
     if ('production' === process.env.NODE_ENV) {
       console.error(`Resource ${resource} not present inside API description`);
     }
@@ -42,14 +40,14 @@ const IntrospecterComponent = ({
   }
 
   const fields = includeDeprecated
-    ? resourceSchema.fields
-    : resourceSchema.fields.filter(({deprecated}) => !deprecated);
+    ? schema.fields
+    : schema.fields.filter(({ deprecated }) => !deprecated);
 
   return (
     <Component
-      resourceSchemaAnalyzer={resourceSchemaAnalyzer}
+      schemaAnalyzer={schemaAnalyzer}
       resource={resource}
-      resourceSchema={resourceSchema}
+      schema={schema}
       fields={fields}
       {...rest}
     />
@@ -62,33 +60,34 @@ const Introspecter = ({
   resource,
   ...rest
 }) => {
-  const dataProvider = useDataProvider();
-  const resourceSchemaAnalyzer = useContext(ResourceSchemaAnalyzerContext);
+  const schemaAnalyzer = useContext(SchemaAnalyzerContext);
   const [resources, setResources] = useState();
-  const [fetching, setFetching] = useState(true);
-  const [error, setError] = useState();
+
+  const { data, loading, error } = useQueryWithStore(
+    {
+      type: 'introspect',
+    },
+    { action: 'INTROSPECT' },
+    state =>
+      state.introspect['introspect']
+        ? state.introspect['introspect'].data
+        : undefined,
+  );
 
   useEffect(() => {
-    dataProvider
-      .introspect()
-      .then(({data}) => {
-        setResources(data.resources);
-        setFetching(false);
-      })
-      .catch(error => {
-        setError(error);
-        setFetching(false);
-      });
-  }, []);
+    if (data) {
+      setResources(data.resources);
+    }
+  }, [data]);
 
   return (
-    <IntrospecterComponent
+    <ResourcesIntrospecter
       component={component}
-      resourceSchemaAnalyzer={resourceSchemaAnalyzer}
+      schemaAnalyzer={schemaAnalyzer}
       includeDeprecated={includeDeprecated}
       resource={resource}
       resources={resources}
-      fetching={fetching}
+      loading={loading}
       error={error}
       {...rest}
     />

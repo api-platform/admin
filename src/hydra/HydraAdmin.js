@@ -2,18 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import dataProviderFactory from './dataProvider';
-import resourceSchemaAnalyzerFactory from './resourceSchemaAnalyzer';
+import schemaAnalyzer from './schemaAnalyzer';
 import AdminGuesser from '../AdminGuesser';
+
+const hydraSchemaAnalyzer = schemaAnalyzer();
 
 const HydraAdmin = ({
   entrypoint,
   dataProvider = dataProviderFactory(entrypoint),
-  resourceSchemaAnalyzer = resourceSchemaAnalyzerFactory(),
+  schemaAnalyzer = hydraSchemaAnalyzer,
   ...props
 }) => (
   <AdminGuesser
     dataProvider={dataProvider}
-    resourceSchemaAnalyzer={resourceSchemaAnalyzer}
+    schemaAnalyzer={schemaAnalyzer}
     {...props}
   />
 );

@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
   BooleanField,
@@ -14,32 +14,29 @@ import {
 } from 'react-admin';
 import Introspecter from './Introspecter';
 
-const isFieldSortable = (field, resourceSchema) => {
+const isFieldSortable = (field, schema) => {
   return (
-    resourceSchema.parameters.filter(
-      parameter => parameter.variable === field.name,
-    ).length > 0 &&
-    resourceSchema.parameters.filter(
+    schema.parameters.filter(parameter => parameter.variable === field.name)
+      .length > 0 &&
+    schema.parameters.filter(
       parameter => parameter.variable === `order[${field.name}]`,
     ).length > 0
   );
 };
 
-const renderField = (field, resourceSchemaAnalyzer, props) => {
+const renderField = (field, schemaAnalyzer, props) => {
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
       return (
         <ReferenceField reference={field.reference.name} {...props} allowEmpty>
           <ChipField
-            source={resourceSchemaAnalyzer.getReferenceNameField(
-              field.reference,
-            )}
+            source={schemaAnalyzer.getReferenceNameField(field.reference)}
           />
         </ReferenceField>
       );
     }
 
-    const referenceNameField = resourceSchemaAnalyzer.getReferenceNameField(
+    const referenceNameField = schemaAnalyzer.getReferenceNameField(
       field.reference,
     );
     return (
@@ -51,7 +48,7 @@ const renderField = (field, resourceSchemaAnalyzer, props) => {
     );
   }
 
-  const fieldType = resourceSchemaAnalyzer.getFieldType(field);
+  const fieldType = schemaAnalyzer.getFieldType(field);
 
   switch (fieldType) {
     case 'email':
@@ -76,10 +73,10 @@ const renderField = (field, resourceSchemaAnalyzer, props) => {
   }
 };
 
-export const FieldGuesserComponent = ({
+export const IntrospectedFieldGuesser = ({
   fields,
-  resourceSchema,
-  resourceSchemaAnalyzer,
+  schema,
+  schemaAnalyzer,
   ...props
 }) => {
   const field = fields.find(f => f.name === props.source);
@@ -92,15 +89,15 @@ export const FieldGuesserComponent = ({
     return <Fragment />;
   }
 
-  return renderField(field, resourceSchemaAnalyzer, {
-    sortable: isFieldSortable(field, resourceSchema),
+  return renderField(field, schemaAnalyzer, {
+    sortable: isFieldSortable(field, schema),
     ...props,
   });
 };
 
 const FieldGuesser = props => (
   <Introspecter
-    component={FieldGuesserComponent}
+    component={IntrospectedFieldGuesser}
     includeDeprecated={true}
     {...props}
   />
