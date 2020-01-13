@@ -1,4 +1,4 @@
-import Field from '@api-platform/api-doc-parser/lib/Field';
+import { Field } from '@api-platform/api-doc-parser';
 
 export const ENTRYPOINT = 'http://entrypoint';
 

@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {Datagrid, List, EditButton, ShowButton} from 'react-admin';
-import {getOrderParametersFromResourceSchema} from './docsUtils';
+import { Datagrid, List, EditButton, ShowButton } from 'react-admin';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
-const displayOverrideCode = (resourceSchema, fields) => {
+const displayOverrideCode = (schema, fields) => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one field, paste this content in the <ListGuesser> component of your resource:\n\n';
 
-  code += `const ${resourceSchema.title}List = props => (\n`;
+  code += `const ${schema.title}List = props => (\n`;
   code += `    <ListGuesser {...props}>\n`;
 
   fields.forEach(field => {
@@ -20,63 +21,65 @@ const displayOverrideCode = (resourceSchema, fields) => {
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${resourceSchema.name}"} list={${resourceSchema.title}List} />`;
+  code += `<ResourceGuesser name={"${schema.name}"} list={${schema.title}List} />`;
   console.info(code);
 };
 
-export class ListGuesserComponent extends React.Component {
-  constructor(props) {
-    super(props);
+export const IntrospectedListGuesser = ({
+  children,
+  schema,
+  fields,
+  schemaAnalyzer,
+  ...props
+}) => {
+  const [orderParameters, setOrderParameters] = useState([]);
 
-    this.state = {
-      orderParameters: this.props.resourceSchema
-        ? getOrderParametersFromResourceSchema(this.props.resourceSchema)
-        : [],
-    };
-  }
+  useEffect(() => {
+    if (schema) {
+      const resolvedOrderParameters = schemaAnalyzer.getOrderParametersFromSchema(
+        schema,
+      );
 
-  componentDidMount() {
-    if (this.state.orderParameters.length) {
-      return;
+      setOrderParameters(resolvedOrderParameters);
+
+      if (!resolvedOrderParameters.length) {
+        schema
+          .getParameters()
+          .then(() =>
+            setOrderParameters(
+              schemaAnalyzer.getOrderParametersFromSchema(schema),
+            ),
+          );
+      }
     }
+  }, []);
 
-    this.props.resourceSchema.getParameters().then(() => {
-      this.setState({
-        orderParameters: getOrderParametersFromResourceSchema(
-          this.props.resourceSchema,
-        ),
-      });
-    });
+  let fieldChildren = children;
+  if (!fieldChildren) {
+    fieldChildren = fields.map(field => (
+      <FieldGuesser
+        key={field.name}
+        source={field.name}
+        sortable={orderParameters.includes(field.name)}
+        resource={props.resource}
+      />
+    ));
+    displayOverrideCode(schema, fields);
   }
 
-  render() {
-    const {resourceSchema, fields, ...props} = this.props;
-
-    if (!props.children) {
-      props.children = fields.map(field => (
-        <FieldGuesser
-          key={field.name}
-          source={field.name}
-          sortable={this.state.orderParameters.includes(field.name)}
-        />
-      ));
-      displayOverrideCode(resourceSchema, fields);
-    }
-
-    return (
-      <List {...props}>
-        <Datagrid>
-          {props.children}
-          {props.hasShow && <ShowButton />}
-          {props.hasEdit && <EditButton />}
-        </Datagrid>
-      </List>
-    );
-  }
-}
+  return (
+    <List {...props}>
+      <Datagrid>
+        {fieldChildren}
+        {props.hasShow && <ShowButton />}
+        {props.hasEdit && <EditButton />}
+      </Datagrid>
+    </List>
+  );
+};
 
 const ListGuesser = props => (
-  <IntrospectQuery component={ListGuesserComponent} {...props} />
+  <Introspecter component={IntrospectedListGuesser} {...props} />
 );
 
 ListGuesser.propTypes = {

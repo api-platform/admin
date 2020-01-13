@@ -1,16 +1,14 @@
 import {
   CREATE,
   DELETE,
-  DELETE_MANY,
   GET_LIST,
-  GET_MANY,
   GET_MANY_REFERENCE,
   GET_ONE,
   UPDATE,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
+import { parseHydraDocumentation } from '@api-platform/api-doc-parser';
 import fetchHydra from './fetchHydra';
-import parseHydraDocumentation from '@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation';
 
 class ReactAdminDocument {
   constructor(obj) {
@@ -41,6 +39,7 @@ const reactAdminDocumentsCache = new Map();
  *
  * @param {Object} document
  * @param {bool} clone
+ * @param {bool} addToCache
  *
  * @return {ReactAdminDocument}
  */
@@ -127,7 +126,7 @@ export default (
    */
   const convertReactAdminDataToHydraData = (resource, data = {}) => {
     const fieldData = [];
-    resource.fields.forEach(({name, reference, normalizeData}) => {
+    resource.fields.forEach(({ name, reference, normalizeData }) => {
       if (!(name in data)) {
         return;
       }
@@ -153,7 +152,7 @@ export default (
         object[fieldDataKeys[i]] = fieldData[i];
       }
 
-      return {...data, ...object};
+      return { ...data, ...object };
     });
   };
 
@@ -164,7 +163,7 @@ export default (
    * @returns {Promise}
    */
   const transformReactAdminDataToRequestBody = (resource, data = {}) => {
-    resource = apiSchema.resources.find(({name}) => resource === name);
+    resource = apiSchema.resources.find(({ name }) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
     }
@@ -209,8 +208,8 @@ export default (
       case GET_LIST:
       case GET_MANY_REFERENCE: {
         const {
-          pagination: {page, perPage},
-          sort: {field, order},
+          pagination: { page, perPage },
+          sort: { field, order },
         } = params;
 
         if (order) collectionUrl.searchParams.set(`order[${field}]`, order);
@@ -284,13 +283,13 @@ export default (
    * @returns {Promise}
    */
   const convertHydraDataToReactAdminData = (resource, data = {}) => {
-    resource = apiSchema.resources.find(({name}) => resource === name);
+    resource = apiSchema.resources.find(({ name }) => resource === name);
     if (undefined === resource) {
       return Promise.resolve(data);
     }
 
     const fieldData = {};
-    resource.fields.forEach(({name, denormalizeData}) => {
+    resource.fields.forEach(({ name, denormalizeData }) => {
       if (!(name in data) || undefined === denormalizeData) {
         return;
       }
@@ -307,7 +306,7 @@ export default (
         object[fieldDataKeys[i]] = fieldData[i];
       }
 
-      return {...data, ...object};
+      return { ...data, ...object };
     });
   };
 
@@ -339,17 +338,17 @@ export default (
               ),
             ),
           )
-          .then(data => ({data, total: response.json['hydra:totalItems']}));
+          .then(data => ({ data, total: response.json['hydra:totalItems'] }));
 
       case DELETE:
-        return Promise.resolve({data: {id: null}});
+        return Promise.resolve({ data: { id: null } });
 
       default:
         return Promise.resolve(
           transformJsonLdDocumentToReactAdminDocument(response.json),
         )
           .then(data => convertHydraDataToReactAdminData(resource, data))
-          .then(data => ({data}));
+          .then(data => ({ data }));
     }
   };
 
@@ -360,38 +359,44 @@ export default (
    *
    * @returns {Promise}
    */
-  const fetchApi = (type, resource, params) => {
+  const fetchApi = (type, resource, params) =>
+    convertReactAdminRequestToHydraRequest(type, resource, params)
+      .then(({ url, options }) => httpClient(url, options))
+      .then(response =>
+        convertHydraResponseToReactAdminResponse(type, resource, response),
+      );
+
+  return {
+    getList: (resource, params) => fetchApi(GET_LIST, resource, params),
+    getOne: (resource, params) => fetchApi(GET_ONE, resource, params),
     // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
-    switch (type) {
-      case 'INTROSPECT':
-        if (apiSchema) return Promise.resolve({data: apiSchema});
-        return apiDocumentationParser(entrypoint).then(({api}) => {
-          apiSchema = api;
-          return {data: api};
-        });
-
-      case GET_MANY:
-        return Promise.all(
-          params.ids.map(id =>
-            reactAdminDocumentsCache[id]
-              ? Promise.resolve({data: reactAdminDocumentsCache[id]})
-              : fetchApi(GET_ONE, resource, {id}),
-          ),
-        ).then(responses => ({data: responses.map(({data}) => data)}));
-
-      case DELETE_MANY:
-        return Promise.all(
-          params.ids.map(id => fetchApi(DELETE, resource, {id})),
-        ).then(responses => ({data: []}));
-
-      default:
-        return convertReactAdminRequestToHydraRequest(type, resource, params)
-          .then(({url, options}) => httpClient(url, options))
-          .then(response =>
-            convertHydraResponseToReactAdminResponse(type, resource, response),
-          );
-    }
+    getMany: (resource, params) =>
+      Promise.all(
+        params.ids.map(id =>
+          reactAdminDocumentsCache[id]
+            ? Promise.resolve({ data: reactAdminDocumentsCache[id] })
+            : fetchApi(GET_ONE, resource, { id }),
+        ),
+      ).then(responses => ({ data: responses.map(({ data }) => data) })),
+    getManyReference: (resource, params) =>
+      fetchApi(GET_MANY_REFERENCE, resource, params),
+    update: (resource, params) => fetchApi(UPDATE, resource, params),
+    updateMany: (resource, params) =>
+      Promise.all(
+        params.ids.map(id => fetchApi(UPDATE, resource, { id })),
+      ).then(() => ({ data: [] })),
+    create: (resource, params) => fetchApi(CREATE, resource, params),
+    delete: (resource, params) => fetchApi(DELETE, resource, params),
+    deleteMany: (resource, params) =>
+      Promise.all(
+        params.ids.map(id => fetchApi(DELETE, resource, { id })),
+      ).then(() => ({ data: [] })),
+    introspect: () =>
+      apiSchema
+        ? Promise.resolve({ data: apiSchema })
+        : apiDocumentationParser(entrypoint).then(({ api }) => {
+            apiSchema = api;
+            return { data: api };
+          }),
   };
-
-  return fetchApi;
 };

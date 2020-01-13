@@ -1,47 +1,72 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<AdminGuesser /> renders errors 1`] = `
-<div>
-  Error while reading the API schema
-</div>
+<Error
+  error={[Error: API schema is not readable: Failed to fetch documentation]}
+  errorInfo={
+    Object {
+      "componentStack": null,
+    }
+  }
+/>
 `;
 
 exports[`<AdminGuesser /> renders errors without data 1`] = `
-<withContext(CoreAdminBase)
-  appLayout={[Function]}
-  catchAll={[Function]}
-  loading={[Function]}
-  loginPage={[Function]}
-  logoutButton={[Function]}
+<Error
+  error={[Error: API schema is not readable: Failed to fetch documentation]}
+  errorInfo={
+    Object {
+      "componentStack": null,
+    }
+  }
 />
 `;
 
 exports[`<AdminGuesser /> renders loading 1`] = `
-<Connect(TranslationProviderView)>
-  <WithStyles(translate(Loading)) />
-</Connect(TranslationProviderView)>
+<Loading
+  loadingPrimary="ra.page.loading"
+  loadingSecondary="ra.message.loading"
+/>
 `;
 
 exports[`<AdminGuesser /> renders without custom resources 1`] = `
-<withContext(CoreAdminBase)
-  appLayout={[Function]}
+<AdminUI
   catchAll={[Function]}
+  layout={[Function]}
   loading={[Function]}
   loginPage={[Function]}
-  logoutButton={[Function]}
+  logout={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "propTypes": Object {
+        "className": [Function],
+        "redirectTo": [Function],
+      },
+      "render": [Function],
+    }
+  }
 >
   <ResourceGuesser
     name="books"
   />
-</withContext(CoreAdminBase)>
+</AdminUI>
 `;
 
 exports[`<AdminGuesser /> renders without data 1`] = `
-<withContext(CoreAdminBase)
-  appLayout={[Function]}
+<AdminUI
   catchAll={[Function]}
+  layout={[Function]}
   loading={[Function]}
   loginPage={[Function]}
-  logoutButton={[Function]}
+  logout={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "propTypes": Object {
+        "className": [Function],
+        "redirectTo": [Function],
+      },
+      "render": [Function],
+    }
+  }
 />
 `;

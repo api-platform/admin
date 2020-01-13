@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Edit, SimpleForm} from 'react-admin';
+import { Edit, SimpleForm } from 'react-admin';
 import InputGuesser from './InputGuesser';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
-const displayOverrideCode = (resourceSchema, fields) => {
+const displayOverrideCode = (schema, fields) => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one input, paste this content in the <EditGuesser> component of your resource:\n\n';
 
-  code += `const ${resourceSchema.title}Edit = props => (\n`;
+  code += `const ${schema.title}Edit = props => (\n`;
   code += `    <EditGuesser {...props}>\n`;
 
   fields.forEach(field => {
@@ -18,35 +20,34 @@ const displayOverrideCode = (resourceSchema, fields) => {
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${resourceSchema.name}"} edit={${resourceSchema.title}Edit} />`;
+  code += `<ResourceGuesser name={"${schema.name}"} edit={${schema.title}Edit} />`;
   console.info(code);
 };
 
-// useful for testing (we don't need Query)
-export const EditGuesserComponent = ({
+export const IntrospectedEditGuesser = ({
   children,
   fields,
-  resourceSchema,
+  schemaAnalyzer,
+  schema,
   ...props
 }) => {
-  if (!children) {
-    children = fields.map(field => (
+  let inputChildren = children;
+  if (!inputChildren) {
+    inputChildren = fields.map(field => (
       <InputGuesser key={field.name} source={field.name} />
     ));
-    displayOverrideCode(resourceSchema, fields);
+    displayOverrideCode(schema, fields);
   }
 
   return (
-    // FIXME: enabling the undoable feature breaks API Platform Admin...
-    // see https://github.com/api-platform/admin/pull/217
-    <Edit {...props} undoable={false}>
-      <SimpleForm>{children}</SimpleForm>
+    <Edit {...props}>
+      <SimpleForm>{inputChildren}</SimpleForm>
     </Edit>
   );
 };
 
 const EditGuesser = props => (
-  <IntrospectQuery component={EditGuesserComponent} {...props} />
+  <Introspecter component={IntrospectedEditGuesser} {...props} />
 );
 
 EditGuesser.propTypes = {

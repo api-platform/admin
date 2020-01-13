@@ -1,11 +1,11 @@
 import React from 'react';
-import {Resource} from 'react-admin';
+import { Resource } from 'react-admin';
 import ListGuesser from './ListGuesser';
 import CreateGuesser from './CreateGuesser';
 import EditGuesser from './EditGuesser';
 import ShowGuesser from './ShowGuesser';
 
-const ResourceGuesser = ({list, edit, create, show, ...props}) => (
+const ResourceGuesser = ({ list, edit, create, show, ...props }) => (
   <Resource
     {...props}
     create={create || CreateGuesser}

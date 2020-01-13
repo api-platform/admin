@@ -1,17 +1,14 @@
 language: node_js
 
 node_js:
-- '10'
-- '11'
+  - 'lts/*'
 
-cache:
-  directories:
-  - node_modules
+cache: yarn
 
 script:
-- yarn build
-- yarn test
-- yarn lint
+  - yarn build
+  - yarn test
+  - yarn lint
 
 deploy:
   provider: npm
@@ -19,5 +16,5 @@ deploy:
   api_key: $NPM_AUTH_TOKEN
   on:
     tags: true
-    node_js: '11'
+    node_js: 'lts/*'
   skip_cleanup: true

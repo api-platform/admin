@@ -1,7 +1,6 @@
-import {AppBar} from 'react-admin';
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import {withStyles} from '@material-ui/core/styles';
+import { AppBar } from 'react-admin';
+import { Typography, withStyles } from '@material-ui/core';
 
 import Logo from './Logo';
 
@@ -17,10 +16,10 @@ const styles = {
   },
 };
 
-const CustomAppBar = withStyles(styles)(({classes, ...props}) => (
+const CustomAppBar = withStyles(styles)(({ classes, ...props }) => (
   <AppBar {...props}>
     <Typography
-      variant="title"
+      variant="h6"
       color="inherit"
       className={classes.title}
       id="react-admin-title"

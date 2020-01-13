@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Show, SimpleShowLayout} from 'react-admin';
+import { Show, SimpleShowLayout } from 'react-admin';
 import FieldGuesser from './FieldGuesser';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
-const displayOverrideCode = (resourceSchema, fields) => {
+const displayOverrideCode = (schema, fields) => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one field, paste this content in the <ShowGuesser> component of your resource:\n\n';
 
-  code += `const ${resourceSchema.title}Show = props => (\n`;
+  code += `const ${schema.title}Show = props => (\n`;
   code += `    <ShowGuesser {...props}>\n`;
 
   fields.forEach(field => {
@@ -18,33 +20,33 @@ const displayOverrideCode = (resourceSchema, fields) => {
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${resourceSchema.name}"} show={${resourceSchema.title}Show} />`;
+  code += `<ResourceGuesser name={"${schema.name}"} show={${schema.title}Show} />`;
   console.info(code);
 };
 
-// useful for testing (we don't need Query)
-export const ShowGuesserComponent = ({
+export const IntrospectedShowGuesser = ({
   fields,
   children,
-  resourceSchema,
+  schema,
   ...props
 }) => {
-  if (!children) {
-    children = fields.map(field => (
+  let fieldChildren = children;
+  if (!fieldChildren) {
+    fieldChildren = fields.map(field => (
       <FieldGuesser key={field.name} source={field.name} addLabel={true} />
     ));
-    displayOverrideCode(resourceSchema, fields);
+    displayOverrideCode(schema, fields);
   }
 
   return (
     <Show {...props}>
-      <SimpleShowLayout>{children}</SimpleShowLayout>
+      <SimpleShowLayout>{fieldChildren}</SimpleShowLayout>
     </Show>
   );
 };
 
 const ShowGuesser = props => (
-  <IntrospectQuery component={ShowGuesserComponent} {...props} />
+  <Introspecter component={IntrospectedShowGuesser} {...props} />
 );
 
 ShowGuesser.propTypes = {

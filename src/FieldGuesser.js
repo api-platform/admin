@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
   BooleanField,
@@ -12,31 +12,33 @@ import {
   TextField,
   UrlField,
 } from 'react-admin';
-import {getReferenceNameField} from './docsUtils';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
-const isFieldSortable = (field, resourceSchema) => {
+const isFieldSortable = (field, schema) => {
   return (
-    resourceSchema.parameters.filter(
-      parameter => parameter.variable === field.name,
-    ).length > 0 &&
-    resourceSchema.parameters.filter(
+    schema.parameters.filter(parameter => parameter.variable === field.name)
+      .length > 0 &&
+    schema.parameters.filter(
       parameter => parameter.variable === `order[${field.name}]`,
     ).length > 0
   );
 };
 
-const renderField = (field, props) => {
+const renderField = (field, schemaAnalyzer, props) => {
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
       return (
         <ReferenceField reference={field.reference.name} {...props} allowEmpty>
-          <ChipField source={getReferenceNameField(field.reference)} />
+          <ChipField
+            source={schemaAnalyzer.getReferenceNameField(field.reference)}
+          />
         </ReferenceField>
       );
     }
 
-    const referenceNameField = getReferenceNameField(field.reference);
+    const referenceNameField = schemaAnalyzer.getReferenceNameField(
+      field.reference,
+    );
     return (
       <ReferenceArrayField reference={field.reference.name} {...props}>
         <SingleFieldList>
@@ -46,54 +48,56 @@ const renderField = (field, props) => {
     );
   }
 
-  switch (field.id) {
-    case 'http://schema.org/email':
+  const fieldType = schemaAnalyzer.getFieldType(field);
+
+  switch (fieldType) {
+    case 'email':
       return <EmailField {...props} />;
 
-    case 'http://schema.org/url':
+    case 'url':
       return <UrlField {...props} />;
 
-    default:
-    // Do nothing
-  }
-
-  switch (field.range) {
-    case 'http://www.w3.org/2001/XMLSchema#integer':
-    case 'http://www.w3.org/2001/XMLSchema#float':
+    case 'integer':
+    case 'float':
       return <NumberField {...props} />;
 
-    case 'http://www.w3.org/2001/XMLSchema#date':
-    case 'http://www.w3.org/2001/XMLSchema#dateTime':
-      return <DateField {...props} />;
-
-    case 'http://www.w3.org/2001/XMLSchema#boolean':
+    case 'boolean':
       return <BooleanField {...props} />;
+
+    case 'date':
+    case 'dateTime':
+      return <DateField {...props} />;
 
     default:
       return <TextField {...props} />;
   }
 };
 
-export const FieldGuesserComponent = ({fields, resourceSchema, ...props}) => {
+export const IntrospectedFieldGuesser = ({
+  fields,
+  schema,
+  schemaAnalyzer,
+  ...props
+}) => {
   const field = fields.find(f => f.name === props.source);
 
   if (!field) {
     console.error(
-      `Field "${props.source}" not present inside the api description for the resource "${props.resource}"`,
+      `Field "${props.source}" not present inside API description for the resource "${props.resource}"`,
     );
 
     return <Fragment />;
   }
 
-  return renderField(field, {
-    sortable: isFieldSortable(field, resourceSchema),
+  return renderField(field, schemaAnalyzer, {
+    sortable: isFieldSortable(field, schema),
     ...props,
   });
 };
 
 const FieldGuesser = props => (
-  <IntrospectQuery
-    component={FieldGuesserComponent}
+  <Introspecter
+    component={IntrospectedFieldGuesser}
     includeDeprecated={true}
     {...props}
   />

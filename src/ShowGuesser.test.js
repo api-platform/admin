@@ -1,17 +1,17 @@
 import React from 'react';
-import {TextField} from 'react-admin';
-import {shallow} from 'enzyme';
+import { TextField } from 'react-admin';
+import { shallow } from 'enzyme';
 import FieldGuesser from './FieldGuesser';
 
-import {API_INPUT_DATA, API_FIELDS_DATA} from './common-test/common-data-test';
-import {ShowGuesserComponent} from './ShowGuesser';
+import { API_INPUT_DATA, API_FIELDS_DATA } from './__fixtures__/parsedData';
+import { IntrospectedShowGuesser } from './ShowGuesser';
 
 describe('<ShowGuesser />', () => {
   test('renders with no children', () => {
     const wrapper = shallow(
-      <ShowGuesserComponent
+      <IntrospectedShowGuesser
         resource="user"
-        resourceSchema={{name: 'users', title: 'User'}}
+        schema={{ name: 'users', title: 'User' }}
         data={API_INPUT_DATA}
         fields={API_FIELDS_DATA}
         id="ShowComponentId"
@@ -31,7 +31,7 @@ describe('<ShowGuesser />', () => {
 
   test('renders with custom fields', () => {
     const wrapper = shallow(
-      <ShowGuesserComponent
+      <IntrospectedShowGuesser
         resource="user"
         data={API_INPUT_DATA}
         fields={API_FIELDS_DATA}
@@ -39,7 +39,7 @@ describe('<ShowGuesser />', () => {
         <TextField source="id" label={'label of id'} />
         <TextField source="title" label={'label of title'} />
         <TextField source="body" label={'label of body'} />
-      </ShowGuesserComponent>,
+      </IntrospectedShowGuesser>,
     );
 
     expect(wrapper).toContainReact(

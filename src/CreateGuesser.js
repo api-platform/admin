@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Create, SimpleForm} from 'react-admin';
+import { Create, SimpleForm } from 'react-admin';
 import InputGuesser from './InputGuesser';
-import IntrospectQuery from './IntrospectQuery';
+import Introspecter from './Introspecter';
 
-const displayOverrideCode = (resourceSchema, fields) => {
+const displayOverrideCode = (schema, fields) => {
+  if (process.env.NODE_ENV === 'production') return;
+
   let code =
     'If you want to override at least one input, paste this content in the <CreateGuesser> component of your resource:\n\n';
 
-  code += `const ${resourceSchema.title}Create = props => (\n`;
+  code += `const ${schema.title}Create = props => (\n`;
   code += `    <CreateGuesser {...props}>\n`;
 
   fields.forEach(field => {
@@ -18,32 +20,34 @@ const displayOverrideCode = (resourceSchema, fields) => {
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${resourceSchema.name}"} create={${resourceSchema.title}Create} />`;
+  code += `<ResourceGuesser name={"${schema.name}"} create={${schema.title}Create} />`;
   console.info(code);
 };
 
-export const CreateGuesserComponent = ({
+export const IntrospectedCreateGuesser = ({
   fields,
-  resourceSchema,
+  schema,
+  schemaAnalyzer,
   children,
   ...props
 }) => {
-  if (!children) {
-    children = fields.map(field => (
+  let inputChildren = children;
+  if (!inputChildren) {
+    inputChildren = fields.map(field => (
       <InputGuesser key={field.name} source={field.name} />
     ));
-    displayOverrideCode(resourceSchema, fields);
+    displayOverrideCode(schema, fields);
   }
 
   return (
     <Create {...props}>
-      <SimpleForm>{children}</SimpleForm>
+      <SimpleForm>{inputChildren}</SimpleForm>
     </Create>
   );
 };
 
 const CreateGuesser = props => (
-  <IntrospectQuery component={CreateGuesserComponent} {...props} />
+  <Introspecter component={IntrospectedCreateGuesser} {...props} />
 );
 
 CreateGuesser.propTypes = {
