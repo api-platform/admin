@@ -2,127 +2,131 @@
 
 First of all, thank you for contributing, you're awesome!
 
-To have your code integrated in the API Platform project, there is some rules to follow, but don't panic, it's easy!
+To have your code integrated in the API Platform project, there are some rules to follow, but don't panic, it's easy!
 
-## Reporting bugs
+## Reporting Bugs
 
 If you happen to find a bug, we kindly request you to report it. However, before submitting it, please:
 
-  * Check the [project documentation available online](https://api-platform.com/docs/)
+* Check the [project documentation available online](https://api-platform.com/docs/)
 
-Then, if it appears that it's a real bug, you may report it using Github by following these 3 points:
+Then, if it appears that it's a real bug, you may report it using GitHub by following these 3 points:
 
-  * Check if the bug is not already reported!
-  * A clear title to resume the issue
-  * A description of the workflow needed to reproduce the bug,
+* Check if the bug is not already reported!
+* A clear title to resume the issue
+* A description of the workflow needed to reproduce the bug
 
-> _NOTE:_ Don’t hesitate giving as much information as you can
+> _NOTE:_ Don't hesitate giving as much information as you can (OS, browser, ...)
 
-## Pull requests
+## Pull Requests
 
 ### Writing a Pull Request
 
-First of all, you must decide on what branch your changes will be based. If the changes your are going to make are
-fully backward-compatible, you should base your changes on the latest stable branch.
-Otherwise, you should base your changes on the `master` branch.
+Please base your changes on the `master` branch.
 
-### Installing the source version
+### Installing the Source Version
 
-To install the source version of API Platform Admin in your project and contribute a patch, run the following command:
+To install the source version of API Platform Admin in your project and contribute a patch, follow the instructions below.
 
-    # Create your `CLIENT` that will use `api-platform-admin` (replace <yourproject> by your project's name) :
-    $ yarn create react-app <yourproject>
-    $ cd <yourproject>
-    $ yarn add @api-platform/admin
+Create your client that will use `api-platform-admin` (replace `<yourproject>` by your project's name):
 
-    # Replace src/App.js by this one
-    ```
-    import React from 'react';
-    import { HydraAdmin } from '@api-platform/admin';
+```shell
+yarn create react-app <yourproject>
+cd <yourproject>
+yarn add @api-platform/admin
+```
 
-    export default () => <HydraAdmin entrypoint="https://demo.api-platform.com"/>; // Replace with your own API entrypoint
-    ```
+Replace `src/App.js` by this one:
 
-    # Install your own version of `@api-platform/admin`
-    $ cd ..
-    $ git clone https://github.com/api-platform/admin.git
+```javascript
+import React from 'react';
+import { HydraAdmin } from '@api-platform/admin';
 
-    # Link it
-    $ cd admin
-    $ yarn link
-    $ cd ../<yourproject>
-    $ yarn link "@api-platform/admin"
+export default () => <HydraAdmin entrypoint="https://demo.api-platform.com" />; // Replace with your own API entrypoint
+```
 
-    # Use the React version of your project to build `@api-platform/admin`
-    $ cd node_modules/react/
-    $ yarn link
-    $ cd ../../../admin
-    $ yarn link react
+Install your own version of `@api-platform/admin`:
 
-    # Start your `api-platform-admin` version
-    $ yarn install
-    $ yarn watch
+```shell
+cd ..
+git clone https://github.com/api-platform/admin.git
+```
 
-    (open a new terminal console with the same path)
+Link it:
 
-    # Start your `CLIENT`
-    $ cd ../<yourproject>/
-    $ yarn start
+```shell
+cd admin
+yarn link
+cd ../<yourproject>
+yarn link "@api-platform/admin"
+```
+
+Use the React version of your project to build `@api-platform/admin`:
+
+```shell
+cd node_modules/react/
+yarn link
+cd ../../../admin
+yarn link react
+```
+
+Start your `api-platform-admin` version:
+
+```shell
+yarn install
+yarn watch
+```
+
+Open a new terminal console with the same path.
+
+Start your client:
+
+```shell
+cd ../<yourproject>/
+yarn start
+```
 
 You can now hack in the cloned repository of `api-platform-admin`.
 
-### Testing your changes
+### Testing Your Changes
 
 Before sending a Pull Request, make sure the tests pass correctly:
 
-```bash
+```shell
 yarn test
 ```
 
-### Matching coding standards
+### Matching Coding Standards
 
-The API Platform Admin project is inspired by the [Airbnb JavaScript style guide](https://github.com/airbnb/javascript).
-But don't worry, you can fix CS issues automatically using [ESLint](https://eslint.org/) tool:
+The API Platform Admin project follows coding standards inspired by the [Airbnb JavaScript style guide](https://github.com/airbnb/javascript).
+But don't worry, you can fix CS issues automatically using the [ESLint](https://eslint.org/) tool:
 
-```bash
+```shell
 yarn fix
 ```
 
-And then, add fixed file to your commit before push.
-Be sure to add only **your modified files**. If another files are fixed by cs tools, just revert it before commit.
+And then, add the fixed files to your commit before pushing.
+Be sure to add only **your modified files**. If any other file is fixed by CS tools, just revert it before committing.
 
 ### Sending a Pull Request
 
 When you send a PR, just make sure that:
 
-* You add valid test cases (Behat and PHPUnit).
+* You add valid test cases (Jest).
 * Tests are green.
 * You make a PR on the related documentation in the [api-platform/docs](https://github.com/api-platform/docs) repository.
 * You make the PR on the same branch you based your changes on. If you see commits
 that you did not make in your PR, you're doing it wrong.
-* Also don't forget to add a comment when you update a PR with a ping to [the maintainer](https://github.com/orgs/api-platform/people), so he/she will get a notification.
-* Squash your commits into one commit. (see the next chapter)
+* Also don't forget to add a comment when you update a PR with a ping to [the maintainers](https://github.com/orgs/api-platform/people), so he/she will get a notification.
+* Squash your commits into one commit (see the next chapter).
 
-All Pull Requests must include the following header:
+All Pull Requests must include [this header](.github/PULL_REQUEST_TEMPLATE.md).
 
-```markdown
-| Q             | A
-| ------------- | ---
-| Bug fix?      | yes/no
-| New feature?  | yes/no
-| BC breaks?    | no
-| Deprecations? | no
-| Tests pass?   | yes
-| Fixed tickets | #1234, #5678
-| License       | MIT
-| Doc PR        | api-platform/doc#1234
-```
+## Squash your Commits
 
-## Squash your commits
+If you have 3 commits, start with:
 
-If you have 3 commits. So start with:
-
-```bash
+```shell
 git rebase -i HEAD~3
 ```
 
@@ -132,25 +136,25 @@ Replace all `pick` prefixes by `fixup` (or `f`) **except the first commit** of t
 
 Save and quit the editor.
 
-After that, all your commits where squashed into the first one and the commit message of the first commit.
+After that, all your commits will be squashed into the first one and the commit message will be the first one.
 
-If you would like to rename your commit message type:
+If you would like to rename your commit message, type:
 
-```bash
+```shell
 git commit --amend
 ```
 
 Now force push to update your PR:
 
-```bash
-git push --force
+```shell
+git push --force-with-lease
 ```
 
-# Tag a new version (contributors only)
+# Tag a New Version (Contributors Only)
 
-Always test before releasing a new one:
+Always execute the tests before releasing a new version:
 
-```
+```shell
 yarn build
 yarn test
 yarn lint
@@ -160,15 +164,15 @@ To fix linting errors, you can use `yarn fix`.
 
 To release a new version:
 
-```bash
-yarn version # this creates a tag
+```shell
+yarn version # this creates a tag and a commit
 git push
 git push --tags
 ```
 
 Travis will then publish the version on npm.
 
-# License and copyright attribution
+# License and Copyright Attribution
 
 When you open a Pull Request to the API Platform project, you agree to license your code under the [MIT license](LICENSE)
 and to transfer the copyright on the submitted code to Kévin Dunglas.
