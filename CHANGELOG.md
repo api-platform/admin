@@ -12,6 +12,9 @@
 * Better UI when displaying errors at the first loading
 * Undoable editing has been fixed
 
+Breaking Changes:
+* `dataProvider` imported from `@api-platform/admin` has been renamed to `hydraDataProvider`
+
 ## 1.0.2
 
 * Pass down initial props to `HydraAdmin`
