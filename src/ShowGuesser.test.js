@@ -3,7 +3,7 @@ import { TextField } from 'react-admin';
 import { shallow } from 'enzyme';
 import FieldGuesser from './FieldGuesser';
 
-import { API_INPUT_DATA, API_FIELDS_DATA } from './__fixtures__/parsedData';
+import { API_FIELDS_DATA } from './__fixtures__/parsedData';
 import { IntrospectedShowGuesser } from './ShowGuesser';
 
 describe('<ShowGuesser />', () => {
@@ -12,8 +12,7 @@ describe('<ShowGuesser />', () => {
       <IntrospectedShowGuesser
         resource="user"
         schema={{ name: 'users', title: 'User' }}
-        data={API_INPUT_DATA}
-        fields={API_FIELDS_DATA}
+        readableFields={API_FIELDS_DATA}
         id="ShowComponentId"
       />,
     );
@@ -33,8 +32,7 @@ describe('<ShowGuesser />', () => {
     const wrapper = shallow(
       <IntrospectedShowGuesser
         resource="user"
-        data={API_INPUT_DATA}
-        fields={API_FIELDS_DATA}
+        readableFields={API_FIELDS_DATA}
         id="ShowComponentId">
         <TextField source="id" label={'label of id'} />
         <TextField source="title" label={'label of title'} />

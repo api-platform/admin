@@ -31,7 +31,12 @@ const ResourcesIntrospecter = ({
 
   const schema = resources.find(r => r.name === resource);
 
-  if (!schema || !schema.fields) {
+  if (
+    !schema ||
+    !schema.fields ||
+    !schema.readableFields ||
+    !schema.writableFields
+  ) {
     if ('production' === process.env.NODE_ENV) {
       console.error(`Resource ${resource} not present inside API description`);
     }
@@ -42,6 +47,12 @@ const ResourcesIntrospecter = ({
   const fields = includeDeprecated
     ? schema.fields
     : schema.fields.filter(({ deprecated }) => !deprecated);
+  const readableFields = includeDeprecated
+    ? schema.readableFields
+    : schema.readableFields.filter(({ deprecated }) => !deprecated);
+  const writableFields = includeDeprecated
+    ? schema.writableFields
+    : schema.writableFields.filter(({ deprecated }) => !deprecated);
 
   return (
     <Component
@@ -49,6 +60,8 @@ const ResourcesIntrospecter = ({
       resource={resource}
       schema={schema}
       fields={fields}
+      readableFields={readableFields}
+      writableFields={writableFields}
       {...rest}
     />
   );

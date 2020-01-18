@@ -26,10 +26,12 @@ const displayOverrideCode = (schema, fields) => {
 };
 
 export const IntrospectedListGuesser = ({
-  children,
-  schema,
   fields,
+  readableFields,
+  writableFields,
+  schema,
   schemaAnalyzer,
+  children,
   ...props
 }) => {
   const [orderParameters, setOrderParameters] = useState([]);
@@ -56,7 +58,7 @@ export const IntrospectedListGuesser = ({
 
   let fieldChildren = children;
   if (!fieldChildren) {
-    fieldChildren = fields.map(field => (
+    fieldChildren = readableFields.map(field => (
       <FieldGuesser
         key={field.name}
         source={field.name}
@@ -64,7 +66,7 @@ export const IntrospectedListGuesser = ({
         resource={props.resource}
       />
     ));
-    displayOverrideCode(schema, fields);
+    displayOverrideCode(schema, readableFields);
   }
 
   return (

@@ -4,8 +4,10 @@ import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
 
 export const IntrospectedFilterGuesser = ({
-  schema,
   fields,
+  readableFields,
+  writableFields,
+  schema,
   schemaAnalyzer,
   hasShow,
   hasEdit,
