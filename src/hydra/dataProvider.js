@@ -235,6 +235,26 @@ export default (
             }
 
             Object.keys(filterValue).forEach(subKey => {
+              if (
+                rootKey === 'exists' ||
+                [
+                  'after',
+                  'before',
+                  'strictly_after',
+                  'strictly_before',
+                  'lt',
+                  'gt',
+                  'lte',
+                  'gte',
+                  'between',
+                ].includes(subKey)
+              ) {
+                return buildFilterParams(
+                  subKey,
+                  filterValue,
+                  `${rootKey}[${subKey}]`,
+                );
+              }
               buildFilterParams(subKey, filterValue, `${rootKey}.${subKey}`);
             });
           };
