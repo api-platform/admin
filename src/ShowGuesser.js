@@ -26,16 +26,19 @@ const displayOverrideCode = (schema, fields) => {
 
 export const IntrospectedShowGuesser = ({
   fields,
-  children,
+  readableFields,
+  writableFields,
   schema,
+  schemaAnalyzer,
+  children,
   ...props
 }) => {
   let fieldChildren = children;
   if (!fieldChildren) {
-    fieldChildren = fields.map(field => (
+    fieldChildren = readableFields.map(field => (
       <FieldGuesser key={field.name} source={field.name} addLabel={true} />
     ));
-    displayOverrideCode(schema, fields);
+    displayOverrideCode(schema, readableFields);
   }
 
   return (

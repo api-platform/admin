@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+* Use readable and writable fields instead of fields
+
 ## 2.0.0
 
 * Compatibility with react-admin 3
