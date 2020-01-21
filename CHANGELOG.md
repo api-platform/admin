@@ -3,6 +3,7 @@
 ## 2.0.1
 
 * Use readable and writable fields instead of fields
+* Use array notation for exists, range and date filters
 
 ## 2.0.0
 

@@ -90,6 +90,9 @@ describe('Transform a React Admin request to an Hydra request', () => {
           sub_nested: { sub: { param: true } },
           array: ['/iri/1', '/iri/2'],
           nested_array: { nested: ['/nested_iri/1', '/nested_iri/2'] },
+          exists: { foo: true },
+          nested_date: { date: { before: '2000' } },
+          nested_range: { range: { between: '12.99..15.99' } },
         },
       })
       .then(() => {
@@ -108,6 +111,12 @@ describe('Transform a React Admin request to an Hydra request', () => {
         expect(searchParams[6]).toEqual([
           'nested_array.nested[1]',
           '/nested_iri/2',
+        ]);
+        expect(searchParams[7]).toEqual(['exists[foo]', 'true']);
+        expect(searchParams[8]).toEqual(['nested_date.date[before]', '2000']);
+        expect(searchParams[9]).toEqual([
+          'nested_range.range[between]',
+          '12.99..15.99',
         ]);
       });
   });
