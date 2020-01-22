@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { AdminContext, AdminUI, Error as ErrorUI, Loading } from 'react-admin';
+import {
+  AdminContext,
+  AdminUI,
+  ComponentPropType,
+  Error as DefaultError,
+  Loading,
+  TranslationProvider,
+  defaultI18nProvider,
+} from 'react-admin';
 import { createHashHistory } from 'history';
 import { createMuiTheme } from '@material-ui/core';
 
+import ErrorBoundary from './ErrorBoundary';
 import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Layout } from './layout';
@@ -31,26 +40,10 @@ export const AdminResourcesGuesser = ({
   includeDeprecated,
   resources,
   loading,
-  error,
   ...rest
 }) => {
   if (loading) {
     return <Loading />;
-  }
-
-  if (error) {
-    const errorMessage = `API schema is not readable: ${error.message}`;
-
-    if ('production' === process.env.NODE_ENV) {
-      console.error(errorMessage);
-    }
-
-    return (
-      <ErrorUI
-        error={new Error(errorMessage)}
-        errorInfo={{ componentStack: null }}
-      />
-    );
   }
 
   let resourceChildren = children;
@@ -94,6 +87,7 @@ const AdminGuesser = ({
   // Props for AdminResourcesGuesser
   includeDeprecated = false,
   // Props for AdminUI
+  customRoutes = [],
   appLayout,
   layout = Layout,
   loginPage,
@@ -105,7 +99,8 @@ const AdminGuesser = ({
 }) => {
   const [resources, setResources] = useState();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
+  const [, setError] = useState();
+  const [addedCustomRoutes, setAddedCustomRoutes] = useState([]);
 
   if (appLayout && process.env.NODE_ENV !== 'production') {
     console.warn(
@@ -125,25 +120,23 @@ const AdminGuesser = ({
 
   useEffect(() => {
     if (typeof dataProvider.introspect !== 'function') {
-      setError(
-        new Error(
-          'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser',
-        ),
+      throw new Error(
+        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser',
       );
-      setLoading(false);
-
-      return;
     }
 
     dataProvider
       .introspect()
-      .then(({ data }) => {
+      .then(({ data, customRoutes }) => {
         setResources(data.resources);
+        setAddedCustomRoutes(customRoutes);
         setLoading(false);
       })
       .catch(error => {
-        setError(error);
-        setLoading(false);
+        // Allow error to be caught by the error boundary
+        setError(() => {
+          throw error;
+        });
       });
   }, []);
 
@@ -160,8 +153,8 @@ const AdminGuesser = ({
         <AdminResourcesGuesser
           includeDeprecated={includeDeprecated}
           resources={resources}
+          customRoutes={[...addedCustomRoutes, ...customRoutes]}
           loading={loading}
-          error={error}
           layout={appLayout || layout}
           loginPage={loginPage}
           theme={theme}
@@ -182,4 +175,21 @@ AdminGuesser.propTypes = {
   includeDeprecated: PropTypes.bool,
 };
 
-export default AdminGuesser;
+const AdminGuesserWithError = ({ error, ...props }) => (
+  <TranslationProvider i18nProvider={props.i18nProvider}>
+    <ErrorBoundary error={error}>
+      <AdminGuesser {...props} />
+    </ErrorBoundary>
+  </TranslationProvider>
+);
+
+AdminGuesserWithError.defaultProps = {
+  error: DefaultError,
+  i18nProvider: defaultI18nProvider,
+};
+
+AdminGuesserWithError.propTypes = {
+  error: ComponentPropType,
+};
+
+export default AdminGuesserWithError;
