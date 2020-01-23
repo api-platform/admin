@@ -414,9 +414,16 @@ export default (
     introspect: () =>
       apiSchema
         ? Promise.resolve({ data: apiSchema })
-        : apiDocumentationParser(entrypoint).then(({ api }) => {
-            apiSchema = api;
-            return { data: api };
-          }),
+        : apiDocumentationParser(entrypoint)
+            .then(({ api, customRoutes = [] }) => {
+              apiSchema = api;
+              return { data: api, customRoutes };
+            })
+            .catch(error => {
+              if (error.status) {
+                throw new Error(`Cannot fetch documentation: ${error.status}`);
+              }
+              throw error;
+            }),
   };
 };
