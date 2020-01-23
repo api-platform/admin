@@ -2,6 +2,8 @@
 
 ## 2.0.1
 
+* Fix authentication
+* Better error handling
 * Use readable and writable fields instead of fields
 * Use array notation for exists, range and date filters
 
