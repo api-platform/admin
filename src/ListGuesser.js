@@ -14,7 +14,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}List = props => (\n`;
   code += `    <ListGuesser {...props}>\n`;
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     code += `        <FieldGuesser source={"${field.name}"} />\n`;
   });
   code += `    </ListGuesser>\n`;
@@ -38,27 +38,15 @@ export const IntrospectedListGuesser = ({
 
   useEffect(() => {
     if (schema) {
-      const resolvedOrderParameters = schemaAnalyzer.getOrderParametersFromSchema(
-        schema,
-      );
-
-      setOrderParameters(resolvedOrderParameters);
-
-      if (!resolvedOrderParameters.length) {
-        schema
-          .getParameters()
-          .then(() =>
-            setOrderParameters(
-              schemaAnalyzer.getOrderParametersFromSchema(schema),
-            ),
-          );
-      }
+      schemaAnalyzer
+        .getOrderParametersFromSchema(schema)
+        .then((parameters) => setOrderParameters(parameters));
     }
   }, []);
 
   let fieldChildren = children;
   if (!fieldChildren) {
-    fieldChildren = readableFields.map(field => (
+    fieldChildren = readableFields.map((field) => (
       <FieldGuesser
         key={field.name}
         source={field.name}
@@ -80,7 +68,7 @@ export const IntrospectedListGuesser = ({
   );
 };
 
-const ListGuesser = props => (
+const ListGuesser = (props) => (
   <Introspecter component={IntrospectedListGuesser} {...props} />
 );
 

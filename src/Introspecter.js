@@ -29,7 +29,7 @@ const ResourcesIntrospecter = ({
     return null;
   }
 
-  const schema = resources.find(r => r.name === resource);
+  const schema = resources.find((r) => r.name === resource);
 
   if (
     !schema ||
@@ -81,7 +81,7 @@ const Introspecter = ({
       type: 'introspect',
     },
     { action: 'INTROSPECT' },
-    state =>
+    (state) =>
       state.introspect['introspect']
         ? state.introspect['introspect'].data
         : undefined,

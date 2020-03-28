@@ -1,10 +1,21 @@
 /**
+ * @param {Resource} schema The schema of a resource
+ *
+ * @returns {Promise<Parameter[]>} The filter parameters
+ */
+export const resolveSchemaParameters = (schema) =>
+  !schema.parameters.length
+    ? schema.getParameters()
+    : Promise.resolve(schema.parameters);
+
+/**
  * @param {Resource} reference A reference resource field
+ *
  * @returns {string} The name of the reference field
  */
-const getReferenceNameField = reference => {
+const getReferenceNameField = (reference) => {
   const field = reference.fields.find(
-    field => 'http://schema.org/name' === field.id,
+    (field) => 'http://schema.org/name' === field.id,
   );
 
   return field ? field.name : 'id';
@@ -14,37 +25,46 @@ const ORDER_MARKER = 'order[';
 
 /**
  * @param {Resource} schema The schema of a resource
- * @returns {Parameter[]} The order filter parameters
+ *
+ * @returns {Promise<Parameter[]>} The order filter parameters
  */
-const getOrderParametersFromSchema = schema => {
-  const authorizedFields = schema.fields.map(field => field.name);
-  return schema.parameters
-    .map(filter => filter.variable)
-    .filter(filter => filter.includes(ORDER_MARKER))
-    .map(orderFilter => orderFilter.replace(ORDER_MARKER, '').replace(']', ''))
-    .filter(filter => authorizedFields.includes(filter));
+const getOrderParametersFromSchema = (schema) => {
+  const authorizedFields = schema.fields.map((field) => field.name);
+  return resolveSchemaParameters(schema).then((parameters) =>
+    parameters
+      .map((filter) => filter.variable)
+      .filter((filter) => filter.includes(ORDER_MARKER))
+      .map((orderFilter) =>
+        orderFilter.replace(ORDER_MARKER, '').replace(']', ''),
+      )
+      .filter((filter) => authorizedFields.includes(filter)),
+  );
 };
 
 /**
  * @param {Resource} schema The schema of a resource
- * @returns {Parameter[]} The filter parameters without the order ones
+ *
+ * @returns {Promise<Parameter[]>} The filter parameters without the order ones
  */
-const getFiltersParametersFromSchema = schema => {
-  const authorizedFields = schema.fields.map(field => field.name);
-  return schema.parameters
-    .map(filter => ({
-      name: filter.variable,
-      isRequired: filter.required,
-    }))
-    .filter(filter => !filter.name.includes(ORDER_MARKER))
-    .filter(filter => authorizedFields.includes(filter.name));
+const getFiltersParametersFromSchema = (schema) => {
+  const authorizedFields = schema.fields.map((field) => field.name);
+  return resolveSchemaParameters(schema).then((parameters) =>
+    parameters
+      .map((filter) => ({
+        name: filter.variable,
+        isRequired: filter.required,
+      }))
+      .filter((filter) => !filter.name.includes(ORDER_MARKER))
+      .filter((filter) => authorizedFields.includes(filter.name)),
+  );
 };
 
 /**
  * @param {Field} field
+ *
  * @returns {string} The type of the field
  */
-const getFieldType = field => {
+const getFieldType = (field) => {
   switch (field.id) {
     case 'http://schema.org/identifier':
       return 'id';

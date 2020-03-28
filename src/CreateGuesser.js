@@ -13,7 +13,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}Create = props => (\n`;
   code += `    <CreateGuesser {...props}>\n`;
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     code += `        <InputGuesser source={"${field.name}"} />\n`;
   });
   code += `    </CreateGuesser>\n`;
@@ -35,7 +35,7 @@ export const IntrospectedCreateGuesser = ({
 }) => {
   let inputChildren = children;
   if (!inputChildren) {
-    inputChildren = writableFields.map(field => (
+    inputChildren = writableFields.map((field) => (
       <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, writableFields);
@@ -48,7 +48,7 @@ export const IntrospectedCreateGuesser = ({
   );
 };
 
-const CreateGuesser = props => (
+const CreateGuesser = (props) => (
   <Introspecter component={IntrospectedCreateGuesser} {...props} />
 );
 

@@ -17,21 +17,9 @@ export const IntrospectedFilterGuesser = ({
 
   useEffect(() => {
     if (schema) {
-      const resolvedFiltersParameters = schemaAnalyzer.getFiltersParametersFromSchema(
-        schema,
-      );
-
-      setFiltersParameters(resolvedFiltersParameters);
-
-      if (!resolvedFiltersParameters.length) {
-        schema
-          .getParameters()
-          .then(() =>
-            setFiltersParameters(
-              schemaAnalyzer.getFiltersParametersFromSchema(schema),
-            ),
-          );
-      }
+      schemaAnalyzer
+        .getFiltersParametersFromSchema(schema)
+        .then((parameters) => setFiltersParameters(parameters));
     }
   }, []);
 
@@ -41,7 +29,7 @@ export const IntrospectedFilterGuesser = ({
 
   return (
     <Filter {...rest}>
-      {filtersParameters.map(filter => (
+      {filtersParameters.map((filter) => (
         <InputGuesser
           key={filter.name}
           source={filter.name}
@@ -52,7 +40,7 @@ export const IntrospectedFilterGuesser = ({
   );
 };
 
-const FilterGuesser = props => (
+const FilterGuesser = (props) => (
   <Introspecter component={IntrospectedFilterGuesser} {...props} />
 );
 

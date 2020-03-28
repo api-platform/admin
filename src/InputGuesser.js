@@ -75,13 +75,13 @@ export const IntrospectedInputGuesser = ({
   if (fieldType === 'id') {
     const prefix = `/${props.resource}/`;
 
-    props.format = value => {
+    props.format = (value) => {
       return value && 0 === value.indexOf(prefix)
         ? value.substr(prefix.length)
         : value;
     };
 
-    props.parse = value => {
+    props.parse = (value) => {
       return -1 !== value.indexOf(prefix) ? prefix + value : value;
     };
   }
@@ -163,7 +163,7 @@ export const IntrospectedInputGuesser = ({
   }
 };
 
-const InputGuesser = props => (
+const InputGuesser = (props) => (
   <Introspecter
     component={IntrospectedInputGuesser}
     includeDeprecated={true}

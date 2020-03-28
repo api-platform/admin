@@ -18,6 +18,7 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
       "$$typeof": Symbol(react.forward_ref),
       "propTypes": Object {
         "className": [Function],
+        "icon": [Function],
         "redirectTo": [Function],
       },
       "render": [Function],
@@ -41,6 +42,7 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
       "$$typeof": Symbol(react.forward_ref),
       "propTypes": Object {
         "className": [Function],
+        "icon": [Function],
         "redirectTo": [Function],
       },
       "render": [Function],
@@ -64,6 +66,7 @@ exports[`<AdminGuesser /> renders without data 1`] = `
       "$$typeof": Symbol(react.forward_ref),
       "propTypes": Object {
         "className": [Function],
+        "icon": [Function],
         "redirectTo": [Function],
       },
       "render": [Function],
