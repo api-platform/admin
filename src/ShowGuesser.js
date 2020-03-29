@@ -13,7 +13,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}Show = props => (\n`;
   code += `    <ShowGuesser {...props}>\n`;
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     code += `        <FieldGuesser source={"${field.name}"} addLabel={true} />\n`;
   });
   code += `    </ShowGuesser>\n`;
@@ -35,7 +35,7 @@ export const IntrospectedShowGuesser = ({
 }) => {
   let fieldChildren = children;
   if (!fieldChildren) {
-    fieldChildren = readableFields.map(field => (
+    fieldChildren = readableFields.map((field) => (
       <FieldGuesser key={field.name} source={field.name} addLabel={true} />
     ));
     displayOverrideCode(schema, readableFields);
@@ -48,7 +48,7 @@ export const IntrospectedShowGuesser = ({
   );
 };
 
-const ShowGuesser = props => (
+const ShowGuesser = (props) => (
   <Introspecter component={IntrospectedShowGuesser} {...props} />
 );
 

@@ -16,10 +16,10 @@ import Introspecter from './Introspecter';
 
 const isFieldSortable = (field, schema) => {
   return (
-    schema.parameters.filter(parameter => parameter.variable === field.name)
+    schema.parameters.filter((parameter) => parameter.variable === field.name)
       .length > 0 &&
     schema.parameters.filter(
-      parameter => parameter.variable === `order[${field.name}]`,
+      (parameter) => parameter.variable === `order[${field.name}]`,
     ).length > 0
   );
 };
@@ -81,7 +81,7 @@ export const IntrospectedFieldGuesser = ({
   schemaAnalyzer,
   ...props
 }) => {
-  const field = fields.find(f => f.name === props.source);
+  const field = fields.find((f) => f.name === props.source);
 
   if (!field) {
     console.error(
@@ -97,7 +97,7 @@ export const IntrospectedFieldGuesser = ({
   });
 };
 
-const FieldGuesser = props => (
+const FieldGuesser = (props) => (
   <Introspecter
     component={IntrospectedFieldGuesser}
     includeDeprecated={true}

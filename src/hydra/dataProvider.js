@@ -9,6 +9,7 @@ import {
 import isPlainObject from 'lodash.isplainobject';
 import { parseHydraDocumentation } from '@api-platform/api-doc-parser';
 import fetchHydra from './fetchHydra';
+import { resolveSchemaParameters } from './schemaAnalyzer';
 
 class ReactAdminDocument {
   constructor(obj) {
@@ -59,7 +60,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   }
 
   // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
-  Object.keys(document).forEach(key => {
+  Object.keys(document).forEach((key) => {
     // to-one
     if (isPlainObject(document[key]) && document[key]['@id']) {
       if (addToCache) {
@@ -83,7 +84,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
       isPlainObject(document[key][0]) &&
       document[key][0]['@id']
     ) {
-      document[key] = document[key].map(obj => {
+      document[key] = document[key].map((obj) => {
         if (addToCache) {
           reactAdminDocumentsCache[
             obj['@id']
@@ -116,6 +117,7 @@ export default (
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
 ) => {
+  /** @type {Api} */
   let apiSchema;
 
   /**
@@ -146,7 +148,7 @@ export default (
     const fieldDataKeys = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
-    return Promise.all(fieldDataValues).then(fieldData => {
+    return Promise.all(fieldDataValues).then((fieldData) => {
       const object = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
         object[fieldDataKeys[i]] = fieldData[i];
@@ -168,7 +170,7 @@ export default (
       return Promise.resolve(data);
     }
 
-    return convertReactAdminDataToHydraData(resource, data).then(data =>
+    return convertReactAdminDataToHydraData(resource, data).then((data) =>
       JSON.stringify(data),
     );
   };
@@ -188,7 +190,7 @@ export default (
     switch (type) {
       case CREATE:
         return transformReactAdminDataToRequestBody(resource, params.data).then(
-          body => ({
+          (body) => ({
             options: {
               body,
               method: 'POST',
@@ -234,7 +236,7 @@ export default (
               return;
             }
 
-            Object.keys(filterValue).forEach(subKey => {
+            Object.keys(filterValue).forEach((subKey) => {
               if (
                 rootKey === 'exists' ||
                 [
@@ -259,7 +261,7 @@ export default (
             });
           };
 
-          Object.keys(params.filter).forEach(key => {
+          Object.keys(params.filter).forEach((key) => {
             buildFilterParams(key, params.filter, key);
           });
         }
@@ -282,7 +284,7 @@ export default (
 
       case UPDATE:
         return transformReactAdminDataToRequestBody(resource, params.data).then(
-          body => ({
+          (body) => ({
             options: {
               body,
               method: 'PUT',
@@ -320,7 +322,7 @@ export default (
     const fieldDataKeys = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
-    return Promise.all(fieldDataValues).then(fieldData => {
+    return Promise.all(fieldDataValues).then((fieldData) => {
       const object = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
         object[fieldDataKeys[i]] = fieldData[i];
@@ -351,14 +353,14 @@ export default (
             transformJsonLdDocumentToReactAdminDocument,
           ),
         )
-          .then(data =>
+          .then((data) =>
             Promise.all(
-              data.map(data =>
+              data.map((data) =>
                 convertHydraDataToReactAdminData(resource, data),
               ),
             ),
           )
-          .then(data => ({ data, total: response.json['hydra:totalItems'] }));
+          .then((data) => ({ data, total: response.json['hydra:totalItems'] }));
 
       case DELETE:
         return Promise.resolve({ data: { id: null } });
@@ -367,8 +369,8 @@ export default (
         return Promise.resolve(
           transformJsonLdDocumentToReactAdminDocument(response.json),
         )
-          .then(data => convertHydraDataToReactAdminData(resource, data))
-          .then(data => ({ data }));
+          .then((data) => convertHydraDataToReactAdminData(resource, data))
+          .then((data) => ({ data }));
     }
   };
 
@@ -382,34 +384,58 @@ export default (
   const fetchApi = (type, resource, params) =>
     convertReactAdminRequestToHydraRequest(type, resource, params)
       .then(({ url, options }) => httpClient(url, options))
-      .then(response =>
+      .then((response) =>
         convertHydraResponseToReactAdminResponse(type, resource, response),
       );
+
+  /**
+   * @param {string} resource
+   *
+   * @returns {Promise<boolean>}
+   */
+  const hasIdSearchFilter = (resource) => {
+    const schema = apiSchema.resources.find((r) => r.name === resource);
+    return resolveSchemaParameters(schema).then((parameters) =>
+      parameters.map((filter) => filter.variable).includes('id'),
+    );
+  };
 
   return {
     getList: (resource, params) => fetchApi(GET_LIST, resource, params),
     getOne: (resource, params) => fetchApi(GET_ONE, resource, params),
-    // Hydra doesn't handle MANY requests, so we fallback to calling the ONE request n times instead
-    getMany: (resource, params) =>
-      Promise.all(
-        params.ids.map(id =>
-          reactAdminDocumentsCache[id]
-            ? Promise.resolve({ data: reactAdminDocumentsCache[id] })
-            : fetchApi(GET_ONE, resource, { id }),
-        ),
-      ).then(responses => ({ data: responses.map(({ data }) => data) })),
+    getMany: (resource, params) => {
+      return hasIdSearchFilter(resource).then((result) => {
+        // Hydra doesn't handle MANY requests but if a search filter for the id is available, it is used.
+        if (result) {
+          return fetchApi(GET_LIST, resource, {
+            pagination: {},
+            sort: {},
+            filter: { id: params.ids },
+          });
+        }
+
+        // Else fallback to calling the ONE request n times instead.
+        return Promise.all(
+          params.ids.map((id) =>
+            reactAdminDocumentsCache[id]
+              ? Promise.resolve({ data: reactAdminDocumentsCache[id] })
+              : fetchApi(GET_ONE, resource, { id }),
+          ),
+        ).then((responses) => ({ data: responses.map(({ data }) => data) }));
+      });
+    },
     getManyReference: (resource, params) =>
       fetchApi(GET_MANY_REFERENCE, resource, params),
     update: (resource, params) => fetchApi(UPDATE, resource, params),
     updateMany: (resource, params) =>
       Promise.all(
-        params.ids.map(id => fetchApi(UPDATE, resource, { id })),
+        params.ids.map((id) => fetchApi(UPDATE, resource, { id })),
       ).then(() => ({ data: [] })),
     create: (resource, params) => fetchApi(CREATE, resource, params),
     delete: (resource, params) => fetchApi(DELETE, resource, params),
     deleteMany: (resource, params) =>
       Promise.all(
-        params.ids.map(id => fetchApi(DELETE, resource, { id })),
+        params.ids.map((id) => fetchApi(DELETE, resource, { id })),
       ).then(() => ({ data: [] })),
     introspect: () =>
       apiSchema
@@ -419,7 +445,7 @@ export default (
               apiSchema = api;
               return { data: api, customRoutes };
             })
-            .catch(error => {
+            .catch((error) => {
               if (error.status) {
                 throw new Error(`Cannot fetch documentation: ${error.status}`);
               }

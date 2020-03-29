@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+* If a search filter for the identifier is available, use it for `MANY` requests
+
 ## 2.0.1
 
 * Fix authentication

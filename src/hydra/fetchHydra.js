@@ -26,7 +26,7 @@ export default (url, options = {}) => {
   return fetchJsonLd(url, {
     ...options,
     headers: requestHeaders,
-  }).then(data => {
+  }).then((data) => {
     const status = data.response.status;
 
     if (status < 200 || status >= 300) {
@@ -34,7 +34,7 @@ export default (url, options = {}) => {
         .expand(data.body, {
           base: getDocumentationUrlFromHeaders(data.response.headers),
         })
-        .then(json => {
+        .then((json) => {
           return Promise.reject(
             new HttpError(
               json[0]['http://www.w3.org/ns/hydra/core#description'][0][
@@ -44,7 +44,7 @@ export default (url, options = {}) => {
             ),
           );
         })
-        .catch(e => {
+        .catch((e) => {
           if (e.hasOwnProperty('body')) {
             return Promise.reject(e);
           }
