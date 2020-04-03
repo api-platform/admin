@@ -41,6 +41,7 @@ export default (url, options = {}) => {
                 '@value'
               ],
               status,
+              json,
             ),
           );
         })
