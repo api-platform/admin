@@ -30,8 +30,11 @@ export default (url, options = {}) => {
     const status = data.response.status;
 
     if (status < 200 || status >= 300) {
+      const body = data.body;
+      delete body.trace;
+
       return promises
-        .expand(data.body, {
+        .expand(body, {
           base: getDocumentationUrlFromHeaders(data.response.headers),
         })
         .then((json) => {
