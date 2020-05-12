@@ -360,7 +360,16 @@ export default (
               ),
             ),
           )
-          .then((data) => ({ data, total: response.json['hydra:totalItems'] }));
+          .then((data) => ({
+            data,
+            total:
+              response.json?.['hydra:totalItems'] ||
+              (response.json?.['hydra:view']
+                ? response.json['hydra:view']?.['hydra:next']
+                  ? -2 // there is a next page
+                  : -1 // no next page
+                : -3), // no information
+          }));
 
       case DELETE:
         return Promise.resolve({ data: { id: null } });

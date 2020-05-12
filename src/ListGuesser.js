@@ -4,6 +4,7 @@ import { Datagrid, List, EditButton, ShowButton } from 'react-admin';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import Introspecter from './Introspecter';
+import Pagination from './list/Pagination';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -58,7 +59,7 @@ export const IntrospectedListGuesser = ({
   }
 
   return (
-    <List {...props}>
+    <List pagination={<Pagination />} {...props}>
       <Datagrid>
         {fieldChildren}
         {props.hasShow && <ShowButton />}
