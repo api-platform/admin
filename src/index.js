@@ -14,3 +14,4 @@ export {
   schemaAnalyzer as hydraSchemaAnalyzer,
   fetchHydra,
 } from './hydra';
+export { Pagination } from './list';
