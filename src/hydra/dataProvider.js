@@ -41,6 +41,7 @@ const reactAdminDocumentsCache = new Map();
  * @param {Object} document
  * @param {bool} clone
  * @param {bool} addToCache
+ * @param {bool} useEmbedded
  *
  * @return {ReactAdminDocument}
  */
@@ -48,6 +49,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   document,
   clone = true,
   addToCache = true,
+  useEmbedded = false,
 ) => {
   if (clone) {
     // deep clone documents
@@ -72,7 +74,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
           false,
         );
       }
-      document[key] = document[key]['@id'];
+      document[key] = useEmbedded ? document[key] : document[key]['@id'];
 
       return;
     }
@@ -116,6 +118,7 @@ export default (
   entrypoint,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
+  useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) => {
   /** @type {Api} */
   let apiSchema;
@@ -349,8 +352,13 @@ export default (
       case GET_MANY_REFERENCE:
         // TODO: support other prefixes than "hydra:"
         return Promise.resolve(
-          response.json['hydra:member'].map(
-            transformJsonLdDocumentToReactAdminDocument,
+          response.json['hydra:member'].map((document) =>
+            transformJsonLdDocumentToReactAdminDocument(
+              document,
+              true,
+              true,
+              useEmbedded,
+            ),
           ),
         )
           .then((data) =>
@@ -376,7 +384,12 @@ export default (
 
       default:
         return Promise.resolve(
-          transformJsonLdDocumentToReactAdminDocument(response.json),
+          transformJsonLdDocumentToReactAdminDocument(
+            response.json,
+            true,
+            true,
+            useEmbedded,
+          ),
         )
           .then((data) => convertHydraDataToReactAdminData(resource, data))
           .then((data) => ({ data }));

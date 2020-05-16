@@ -16,6 +16,27 @@ import {
 } from 'react-admin';
 import Introspecter from './Introspecter';
 
+const renderReferenceArrayInput = (
+  field,
+  referenceField,
+  schemaAnalyzer,
+  validate,
+  props,
+) => (
+  <ReferenceArrayInput
+    key={field.name}
+    label={field.name}
+    reference={referenceField.name}
+    source={field.name}
+    validate={validate}
+    {...props}
+    allowEmpty>
+    <SelectArrayInput
+      optionText={schemaAnalyzer.getFieldNameFromSchema(referenceField)}
+    />
+  </ReferenceArrayInput>
+);
+
 export const IntrospectedInputGuesser = ({
   fields,
   readableFields,
@@ -48,25 +69,28 @@ export const IntrospectedInputGuesser = ({
           {...props}
           allowEmpty>
           <SelectInput
-            optionText={schemaAnalyzer.getReferenceNameField(field.reference)}
+            optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
           />
         </ReferenceInput>
       );
     }
 
-    return (
-      <ReferenceArrayInput
-        key={field.name}
-        label={field.name}
-        reference={field.reference.name}
-        source={field.name}
-        validate={validate}
-        {...props}
-        allowEmpty>
-        <SelectArrayInput
-          optionText={schemaAnalyzer.getReferenceNameField(field.reference)}
-        />
-      </ReferenceArrayInput>
+    return renderReferenceArrayInput(
+      field,
+      field.reference,
+      schemaAnalyzer,
+      validate,
+      props,
+    );
+  }
+
+  if (null !== field.embedded && 1 !== field.maxCardinality) {
+    return renderReferenceArrayInput(
+      field,
+      field.embedded,
+      schemaAnalyzer,
+      validate,
+      props,
     );
   }
 
@@ -84,6 +108,10 @@ export const IntrospectedInputGuesser = ({
     props.parse = (value) => {
       return -1 !== value.indexOf(prefix) ? prefix + value : value;
     };
+  }
+
+  if (null !== field.embedded && 1 === field.maxCardinality) {
+    props.format = (value) => JSON.stringify(value);
   }
 
   switch (fieldType) {

@@ -24,28 +24,35 @@ const isFieldSortable = (field, schema) => {
   );
 };
 
+const renderReferenceArrayField = (referenceField, schemaAnalyzer, props) => {
+  const fieldName = schemaAnalyzer.getFieldNameFromSchema(referenceField);
+
+  return (
+    <ReferenceArrayField reference={referenceField.name} {...props}>
+      <SingleFieldList>
+        <ChipField source={fieldName} key={fieldName} />
+      </SingleFieldList>
+    </ReferenceArrayField>
+  );
+};
+
 const renderField = (field, schemaAnalyzer, props) => {
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
       return (
         <ReferenceField reference={field.reference.name} {...props} allowEmpty>
           <ChipField
-            source={schemaAnalyzer.getReferenceNameField(field.reference)}
+            source={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
           />
         </ReferenceField>
       );
     }
 
-    const referenceNameField = schemaAnalyzer.getReferenceNameField(
-      field.reference,
-    );
-    return (
-      <ReferenceArrayField reference={field.reference.name} {...props}>
-        <SingleFieldList>
-          <ChipField source={referenceNameField} key={referenceNameField} />
-        </SingleFieldList>
-      </ReferenceArrayField>
-    );
+    return renderReferenceArrayField(field.reference, schemaAnalyzer, props);
+  }
+
+  if (null !== field.embedded && 1 !== field.maxCardinality) {
+    return renderReferenceArrayField(field.embedded, schemaAnalyzer, props);
   }
 
   const fieldType = schemaAnalyzer.getFieldType(field);

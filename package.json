@@ -63,7 +63,7 @@
     ]
   },
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.8.1",
+    "@api-platform/api-doc-parser": "^0.9.1",
     "history": "^4.7.2",
     "jsonld": "^1.2.1",
     "lodash.isplainobject": "^4.0.6",

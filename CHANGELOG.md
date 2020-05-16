@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.0
+
+* Add embedded support (disabled by default, set `useEmbedded` to `true` in the Hydra data provider)
+* **BC**: If your API uses an embedded, it will not be a reference anymore if you use `ListGuesser`, `InputGuesser` or `ResourceGuesser`. Use the new way of handling embedded instead.
+* **BC**: In the `schemaAnalyser`, `getReferenceNameField` has been renamed to `getFieldNameFromSchema`.
+* Require `@api-platform/api-doc-parser` ^0.9 (embedded)
+* Add partial pagination support
+* Hydra: fix default per page parameter value
+
+## 2.1.1
+
+* Hydra: remove `trace` in error
+* Hydra: add `body` to `HttpError`
+
 ## 2.1.0
 
 * If a search filter for the identifier is available, use it for `MANY` requests
