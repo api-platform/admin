@@ -9,12 +9,12 @@ export const resolveSchemaParameters = (schema) =>
     : Promise.resolve(schema.parameters);
 
 /**
- * @param {Resource} reference A reference resource field
+ * @param {Resource} schema The schema of a resource
  *
  * @returns {string} The name of the reference field
  */
-const getReferenceNameField = (reference) => {
-  const field = reference.fields.find(
+const getFieldNameFromSchema = (schema) => {
+  const field = schema.fields.find(
     (field) => 'http://schema.org/name' === field.id,
   );
 
@@ -96,7 +96,7 @@ const getFieldType = (field) => {
 
 export default () => {
   return {
-    getReferenceNameField,
+    getFieldNameFromSchema,
     getOrderParametersFromSchema,
     getFiltersParametersFromSchema,
     getFieldType,

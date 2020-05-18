@@ -2,46 +2,51 @@ import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
 
-describe('Transform a JSON-LD document to a React Admin compatible document', () => {
-  const JSON_LD_DOCUMENT = {
-    '@id': '/reviews/327',
-    id: 327,
-    '@type': 'http://schema.org/Review',
-    reviewBody:
-      'Accusantium quia ipsam omnis praesentium. Neque quidem omnis perspiciatis sed. Officiis quo dolor esse nisi molestias.',
-    rating: 3,
-    itemReviewed: {
-      '@id': '/books/2',
-      id: 2,
-      '@type': 'http://schema.org/Book',
-      isbn: '9792828761393',
-      name: '000',
-      description: 'string',
-      author: 'string',
-      dateCreated: '2017-04-25T00:00:00+00:00',
-    },
-    comment: [
-      {
-        '@id': '/comments/1',
-        '@type': 'http://schema.org/Comment',
-        text: 'Lorem ipsum dolor sit amet.',
-        dateCreated: '2017-04-26T00:00:00+00:00',
-      },
-      {
-        '@id': '/comments/2',
-        '@type': 'http://schema.org/Comment',
-        text:
-          'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        dateCreated: '2017-04-27T00:00:00+00:00',
-      },
-    ],
-    aNestedObject: {
-      foo: 'bar',
-    },
-  };
+const EMBEDDED_ITEM = {
+  '@id': '/books/2',
+  id: 2,
+  '@type': 'http://schema.org/Book',
+  isbn: '9792828761393',
+  name: '000',
+  description: 'string',
+  author: 'string',
+  dateCreated: '2017-04-25T00:00:00+00:00',
+};
 
+const JSON_LD_DOCUMENT = {
+  '@id': '/reviews/327',
+  id: 327,
+  '@type': 'http://schema.org/Review',
+  reviewBody:
+    'Accusantium quia ipsam omnis praesentium. Neque quidem omnis perspiciatis sed. Officiis quo dolor esse nisi molestias.',
+  rating: 3,
+  itemReviewed: EMBEDDED_ITEM,
+  comment: [
+    {
+      '@id': '/comments/1',
+      '@type': 'http://schema.org/Comment',
+      text: 'Lorem ipsum dolor sit amet.',
+      dateCreated: '2017-04-26T00:00:00+00:00',
+    },
+    {
+      '@id': '/comments/2',
+      '@type': 'http://schema.org/Comment',
+      text:
+        'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      dateCreated: '2017-04-27T00:00:00+00:00',
+    },
+  ],
+  aNestedObject: {
+    foo: 'bar',
+  },
+};
+
+describe('Transform a JSON-LD document to a React Admin compatible document', () => {
   const reactAdminDocument = transformJsonLdDocumentToReactAdminDocument(
     JSON_LD_DOCUMENT,
+    true,
+    true,
+    true,
   );
 
   test('deep clone the original object', () => {
@@ -62,6 +67,22 @@ describe('Transform a JSON-LD document to a React Admin compatible document', ()
   test('an React Admin has a custom toString method', () => {
     expect(reactAdminDocument.toString()).toBe('[object /reviews/327]');
   });
+
+  test('keep embedded documents', () => {
+    expect(JSON.stringify(reactAdminDocument.itemReviewed)).toBe(
+      JSON.stringify(EMBEDDED_ITEM),
+    );
+  });
+
+  test('transform arrays of embedded documents to their IRIs', () => {
+    expect(reactAdminDocument.comment[0]).toBe('/comments/1');
+  });
+});
+
+describe('Transform a JSON-LD document to a React Admin compatible document (transform embeddeds)', () => {
+  const reactAdminDocument = transformJsonLdDocumentToReactAdminDocument(
+    JSON_LD_DOCUMENT,
+  );
 
   test('transform embedded documents to their IRIs', () => {
     expect(reactAdminDocument.itemReviewed).toBe('/books/2');
