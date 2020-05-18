@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.0
+## 2.2.0
 
 * Add embedded support (disabled by default, set `useEmbedded` to `true` in the Hydra data provider)
 * **BC**: If your API uses an embedded, it will not be a reference anymore if you use `ListGuesser`, `InputGuesser` or `ResourceGuesser`. Use the new way of handling embedded instead.
