@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQueryWithStore } from 'react-admin';
+import { useDataProvider } from 'react-admin';
+import { useSelector } from 'react-redux';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 
 const ResourcesIntrospecter = ({
@@ -74,24 +75,26 @@ const Introspecter = ({
   ...rest
 }) => {
   const schemaAnalyzer = useContext(SchemaAnalyzerContext);
-  const [resources, setResources] = useState();
-
-  const { data, loading, error } = useQueryWithStore(
-    {
-      type: 'introspect',
-    },
-    { action: 'INTROSPECT' },
-    (state) =>
-      state.introspect['introspect']
-        ? state.introspect['introspect'].data
-        : undefined,
+  const { resources } = useSelector((state) =>
+    state.introspect['introspect'] ? state.introspect['introspect'].data : {},
   );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const dataProvider = useDataProvider();
 
   useEffect(() => {
-    if (data) {
-      setResources(data.resources);
+    if (resources) {
+      setLoading(false);
+      return;
     }
-  }, [data]);
+
+    dataProvider
+      .introspect(resource, {}, { action: 'INTROSPECT' })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, [dataProvider, resource, resources]);
 
   return (
     <ResourcesIntrospecter
