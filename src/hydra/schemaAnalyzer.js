@@ -75,6 +75,10 @@ const getFieldType = (field) => {
     default:
   }
 
+  if (null !== field.embedded && 1 !== field.maxCardinality) {
+    return 'array';
+  }
+
   switch (field.range) {
     case 'http://www.w3.org/2001/XMLSchema#array':
       return 'array';
