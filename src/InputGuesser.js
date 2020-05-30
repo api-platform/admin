@@ -16,27 +16,6 @@ import {
 } from 'react-admin';
 import Introspecter from './Introspecter';
 
-const renderReferenceArrayInput = (
-  field,
-  referenceField,
-  schemaAnalyzer,
-  validate,
-  props,
-) => (
-  <ReferenceArrayInput
-    key={field.name}
-    label={field.name}
-    reference={referenceField.name}
-    source={field.name}
-    validate={validate}
-    {...props}
-    allowEmpty>
-    <SelectArrayInput
-      optionText={schemaAnalyzer.getFieldNameFromSchema(referenceField)}
-    />
-  </ReferenceArrayInput>
-);
-
 export const IntrospectedInputGuesser = ({
   fields,
   readableFields,
@@ -75,22 +54,19 @@ export const IntrospectedInputGuesser = ({
       );
     }
 
-    return renderReferenceArrayInput(
-      field,
-      field.reference,
-      schemaAnalyzer,
-      validate,
-      props,
-    );
-  }
-
-  if (null !== field.embedded && 1 !== field.maxCardinality) {
-    return renderReferenceArrayInput(
-      field,
-      field.embedded,
-      schemaAnalyzer,
-      validate,
-      props,
+    return (
+      <ReferenceArrayInput
+        key={field.name}
+        label={field.name}
+        reference={field.reference.name}
+        source={field.name}
+        validate={validate}
+        {...props}
+        allowEmpty>
+        <SelectArrayInput
+          optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
+        />
+      </ReferenceArrayInput>
     );
   }
 
@@ -110,12 +86,23 @@ export const IntrospectedInputGuesser = ({
     };
   }
 
+  const formatEmbedded = (value) => JSON.stringify(value);
+  const parseEmbedded = (value) => JSON.parse(value);
+
   if (null !== field.embedded && 1 === field.maxCardinality) {
-    props.format = (value) => JSON.stringify(value);
+    props.format = formatEmbedded;
+    props.parse = parseEmbedded;
   }
 
   switch (fieldType) {
     case 'array':
+      let textInputFormat = (value) => value;
+      let textInputParse = (value) => value;
+      if (null !== field.embedded && 1 !== field.maxCardinality) {
+        textInputFormat = formatEmbedded;
+        textInputParse = parseEmbedded;
+      }
+
       return (
         <ArrayInput
           key={field.name}
@@ -123,7 +110,7 @@ export const IntrospectedInputGuesser = ({
           validate={validate}
           {...props}>
           <SimpleFormIterator>
-            <TextInput />
+            <TextInput format={textInputFormat} parse={textInputParse} />
           </SimpleFormIterator>
         </ArrayInput>
       );

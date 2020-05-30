@@ -93,7 +93,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
           ] = transformJsonLdDocumentToReactAdminDocument(obj, false, false);
         }
 
-        return obj['@id'];
+        return useEmbedded ? obj : obj['@id'];
       });
     }
   });

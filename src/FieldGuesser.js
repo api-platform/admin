@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
+  ArrayField,
   BooleanField,
   ChipField,
   DateField,
@@ -8,6 +9,7 @@ import {
   NumberField,
   ReferenceField,
   ReferenceArrayField,
+  SimpleList,
   SingleFieldList,
   TextField,
   UrlField,
@@ -24,18 +26,6 @@ const isFieldSortable = (field, schema) => {
   );
 };
 
-const renderReferenceArrayField = (referenceField, schemaAnalyzer, props) => {
-  const fieldName = schemaAnalyzer.getFieldNameFromSchema(referenceField);
-
-  return (
-    <ReferenceArrayField reference={referenceField.name} {...props}>
-      <SingleFieldList>
-        <ChipField source={fieldName} key={fieldName} />
-      </SingleFieldList>
-    </ReferenceArrayField>
-  );
-};
-
 const renderField = (field, schemaAnalyzer, props) => {
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
@@ -48,11 +38,27 @@ const renderField = (field, schemaAnalyzer, props) => {
       );
     }
 
-    return renderReferenceArrayField(field.reference, schemaAnalyzer, props);
+    const fieldName = schemaAnalyzer.getFieldNameFromSchema(field.reference);
+    return (
+      <ReferenceArrayField reference={field.reference.name} {...props}>
+        <SingleFieldList>
+          <ChipField source={fieldName} key={fieldName} />
+        </SingleFieldList>
+      </ReferenceArrayField>
+    );
   }
 
   if (null !== field.embedded && 1 !== field.maxCardinality) {
-    return renderReferenceArrayField(field.embedded, schemaAnalyzer, props);
+    return (
+      <ArrayField {...props}>
+        <SimpleList
+          primaryText={(record) => JSON.stringify(record)}
+          linkType={false}
+          // Workaround for forcing the list to display underlying data.
+          total={2}
+        />
+      </ArrayField>
+    );
   }
 
   const fieldType = schemaAnalyzer.getFieldType(field);
