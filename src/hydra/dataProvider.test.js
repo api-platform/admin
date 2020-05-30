@@ -13,6 +13,13 @@ const EMBEDDED_ITEM = {
   dateCreated: '2017-04-25T00:00:00+00:00',
 };
 
+const EMBEDDED_COMMENT = {
+  '@id': '/comments/1',
+  '@type': 'http://schema.org/Comment',
+  text: 'Lorem ipsum dolor sit amet.',
+  dateCreated: '2017-04-26T00:00:00+00:00',
+};
+
 const JSON_LD_DOCUMENT = {
   '@id': '/reviews/327',
   id: 327,
@@ -22,12 +29,7 @@ const JSON_LD_DOCUMENT = {
   rating: 3,
   itemReviewed: EMBEDDED_ITEM,
   comment: [
-    {
-      '@id': '/comments/1',
-      '@type': 'http://schema.org/Comment',
-      text: 'Lorem ipsum dolor sit amet.',
-      dateCreated: '2017-04-26T00:00:00+00:00',
-    },
+    EMBEDDED_COMMENT,
     {
       '@id': '/comments/2',
       '@type': 'http://schema.org/Comment',
@@ -74,8 +76,10 @@ describe('Transform a JSON-LD document to a React Admin compatible document', ()
     );
   });
 
-  test('transform arrays of embedded documents to their IRIs', () => {
-    expect(reactAdminDocument.comment[0]).toBe('/comments/1');
+  test('keep arrays of embedded documents', () => {
+    expect(JSON.stringify(reactAdminDocument.comment[0])).toBe(
+      JSON.stringify(EMBEDDED_COMMENT),
+    );
   });
 });
 
