@@ -188,7 +188,7 @@ export default (
   const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
     const entrypointUrl = new URL(entrypoint, window.location.href);
     const collectionUrl = new URL(`${entrypoint}/${resource}`, entrypointUrl);
-    const itemUrl = new URL(params.id, entrypointUrl);
+    const itemUrl = new URL(`${entrypoint}/${resource}/${params.id}`, entrypointUrl);
 
     switch (type) {
       case CREATE:
