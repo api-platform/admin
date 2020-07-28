@@ -467,7 +467,7 @@ export default (
               apiSchema = api;
               return { data: api, customRoutes };
             })
-            .catch(({ error, status }) => {
+            .catch((error, status) => {
               throw new Error(
                 'Cannot fetch API documentation:\n' +
                   (error
