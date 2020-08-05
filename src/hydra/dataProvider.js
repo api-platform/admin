@@ -467,8 +467,13 @@ export default (
               apiSchema = api;
               return { data: api, customRoutes };
             })
-            .catch((error) => {
-              const { status, message } = error;
+            .catch((err) => {
+              let { status, message, error } = err;
+              // Note that the `api-doc-parser` rejects with a non-standard error object hence the check
+              if (error && error.message) {
+                message = error.message;
+              }
+
               throw new Error(
                 'Cannot fetch API documentation:\n' +
                   (message
