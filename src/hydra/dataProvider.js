@@ -467,11 +467,12 @@ export default (
               apiSchema = api;
               return { data: api, customRoutes };
             })
-            .catch(({ error, status }) => {
+            .catch((error) => {
+              const { status, message } = error;
               throw new Error(
                 'Cannot fetch API documentation:\n' +
-                  (error
-                    ? `${error.message}\nHave you verified that CORS is correctly configured in your API?\n`
+                  (message
+                    ? `${message}\nHave you verified that CORS is correctly configured in your API?\n`
                     : '') +
                   (status ? `Status: ${status}` : ''),
               );
