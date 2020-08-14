@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.3
+
+* Hydra: display empty page when `hydra:totalItems` is 0
+
+## 2.2.2
+
+* Hydra: correctly display all errors
+
+## 2.2.1
+
+* Embedded support for array relation
+* Fix optimistic introspect calls
+* Hydra: better CORS error
+
 ## 2.2.0
 
 * Add embedded support (disabled by default, set `useEmbedded` to `true` in the Hydra data provider)
