@@ -215,6 +215,7 @@ export default (
         const {
           pagination: { page, perPage },
           sort: { field, order },
+          customParam: {customParam},
         } = params;
 
         if (order) collectionUrl.searchParams.set(`order[${field}]`, order);
