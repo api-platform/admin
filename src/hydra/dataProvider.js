@@ -215,13 +215,13 @@ export default (
         const {
           pagination: { page, perPage },
           sort: { field, order },
-          customParam: {customParam},
+          customParam: { value },
         } = params;
 
         if (order) collectionUrl.searchParams.set(`order[${field}]`, order);
         if (page) collectionUrl.searchParams.set('page', page);
         if (perPage) collectionUrl.searchParams.set('itemsPerPage', perPage);
-        if (`${customParam}`) collectionUrl.searchParams.set(`${customParam}`);
+        if (customParam) collectionUrl.searchParams.set(`${customParam}`, value);
         if (params.filter) {
           const buildFilterParams = (key, nestedFilter, rootKey) => {
             const filterValue = nestedFilter[key];
