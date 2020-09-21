@@ -41,7 +41,6 @@ export const IntrospectedInputGuesser = ({
       return (
         <ReferenceInput
           key={field.name}
-          label={field.name}
           reference={field.reference.name}
           source={field.name}
           validate={validate}
@@ -57,7 +56,6 @@ export const IntrospectedInputGuesser = ({
     return (
       <ReferenceArrayInput
         key={field.name}
-        label={field.name}
         reference={field.reference.name}
         source={field.name}
         validate={validate}
