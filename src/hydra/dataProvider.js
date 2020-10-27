@@ -451,7 +451,7 @@ export default (
     update: (resource, params) => fetchApi(UPDATE, resource, params),
     updateMany: (resource, params) =>
       Promise.all(
-        params.ids.map((id) => fetchApi(UPDATE, resource, { id })),
+        params.ids.map((id) => fetchApi(UPDATE, resource, { ...params, id })),
       ).then(() => ({ data: [] })),
     create: (resource, params) => fetchApi(CREATE, resource, params),
     delete: (resource, params) => fetchApi(DELETE, resource, params),

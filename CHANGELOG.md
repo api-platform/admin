@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.4
+
+* Fix updateMany to send parameters into data fetch
+
 ## 2.2.3
 
 * Hydra: display empty page when `hydra:totalItems` is 0
