@@ -36,6 +36,7 @@ export const IntrospectedListGuesser = ({
   ...props
 }) => {
   const [orderParameters, setOrderParameters] = useState([]);
+  console.log("props", props.params);
 
   useEffect(() => {
     if (schema) {
@@ -77,6 +78,7 @@ ListGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
   filters: PropTypes.element,
+  params: PropTypes.object,
 };
 
 ListGuesser.defaultProps = {

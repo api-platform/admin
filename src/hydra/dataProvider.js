@@ -212,16 +212,72 @@ export default (
 
       case GET_LIST:
       case GET_MANY_REFERENCE: {
+        console.group('GET_MANY_REFERENCE');
         const {
           pagination: { page, perPage },
           sort: { field, order },
-          customParam: { value },
         } = params;
+
+        console.log('params => ', params);
+
+        // customParam = [{ key: value }, { pagination: true }]
 
         if (order) collectionUrl.searchParams.set(`order[${field}]`, order);
         if (page) collectionUrl.searchParams.set('page', page);
         if (perPage) collectionUrl.searchParams.set('itemsPerPage', perPage);
-        if (customParam) collectionUrl.searchParams.set(`${customParam}`, value);
+        if (params.customParam) {
+          const buildCustomParams = (key, nestedFilter, rootKey) => {
+            console.group('buildCustomParams');
+
+            const filterValue = nestedFilter[key];
+
+            if (Array.isArray(filterValue)) {
+              filterValue.forEach((arrayFilterValue, index) => {
+                collectionUrl.searchParams.set(
+                  `${rootKey}[${index}]`,
+                    arrayFilterValue,
+                );
+              });
+              return;
+            }
+
+            if (!isPlainObject(filterValue)) {
+              collectionUrl.searchParams.set(rootKey, filterValue);
+              return;
+            }
+
+            Object.keys(filterValue).forEach((subKey) => {
+              if (
+              rootKey === 'exists' ||
+              [
+                  'after',
+                'before',
+                  'strictly_after',
+                  'strictly_before',
+                  'lt',
+                'gt',
+                  'lte',
+                  'gte',
+                  'between',
+                ].includes(subKey)
+              ) {
+                return buildCustomParams(
+                subKey,
+                filterValue,
+                  `${rootKey}[${subKey}]`,
+                );
+              }
+              buildCustomParams(subKey, filterValue, `${rootKey}.${subKey}`);
+            });
+          };
+
+        Object.keys(params.customParam).forEach((key) => {
+            buildCustomParams(key, params.customParam, key);
+        });
+        }
+
+      console.log('collectionUrl.searchParams => ', collectionUrl.searchParams);
+
         if (params.filter) {
           const buildFilterParams = (key, nestedFilter, rootKey) => {
             const filterValue = nestedFilter[key];
@@ -432,6 +488,7 @@ export default (
         // Hydra doesn't handle MANY requests but if a search filter for the id is available, it is used.
         if (result) {
           return fetchApi(GET_LIST, resource, {
+            customParam: {},
             pagination: {},
             sort: {},
             filter: { id: params.ids },
