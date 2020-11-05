@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.5
+
+* Remove unuseful optional chaining
+
 ## 2.2.4
 
 * Fix updateMany to send parameters into data fetch
