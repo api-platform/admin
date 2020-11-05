@@ -372,8 +372,8 @@ export default (
             data,
             total: response.json.hasOwnProperty('hydra:totalItems')
               ? response.json['hydra:totalItems']
-              : response.json?.['hydra:view']
-              ? response.json['hydra:view']?.['hydra:next']
+              : response.json['hydra:view']
+              ? response.json['hydra:view']['hydra:next']
                 ? -2 // there is a next page
                 : -1 // no next page
               : -3, // no information
