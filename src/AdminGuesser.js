@@ -60,7 +60,6 @@ export const AdminResourcesGuesser = ({
   return <AdminUI {...rest}>{resourceChildren}</AdminUI>;
 };
 
-const defaultHistory = createHashHistory();
 const defaultTheme = createMuiTheme({
   palette: {
     primary: {
@@ -80,7 +79,7 @@ const AdminGuesser = ({
   dataProvider,
   authProvider,
   i18nProvider,
-  history = defaultHistory,
+  history,
   customReducers = {},
   customSagas,
   initialState,
@@ -101,6 +100,10 @@ const AdminGuesser = ({
   const [loading, setLoading] = useState(true);
   const [, setError] = useState();
   const [addedCustomRoutes, setAddedCustomRoutes] = useState([]);
+
+  if (!history) {
+    history = typeof window === 'undefined' ? {} : createHashHistory();
+  }
 
   if (appLayout && process.env.NODE_ENV !== 'production') {
     console.warn(
