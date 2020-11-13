@@ -172,10 +172,17 @@ const AdminGuesser = ({
 AdminGuesser.propTypes = {
   dataProvider: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
     .isRequired,
+  authProvider: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  i18nProvider: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  history: PropTypes.object,
+  customReducers: PropTypes.object,
+  customSagas: PropTypes.object,
+  initialState: PropTypes.object,
   schemaAnalyzer: PropTypes.object.isRequired,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
   includeDeprecated: PropTypes.bool,
+  customRoutes: PropTypes.array,
 };
 
 const AdminGuesserWithError = ({ error, ...props }) => (
