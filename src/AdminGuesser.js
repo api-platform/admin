@@ -40,10 +40,11 @@ export const AdminResourcesGuesser = ({
   includeDeprecated,
   resources,
   loading,
+  loadingPage: LoadingPage = Loading,
   ...rest
 }) => {
   if (loading) {
-    return <Loading />;
+    return <LoadingPage />;
   }
 
   let resourceChildren = children;
@@ -57,7 +58,11 @@ export const AdminResourcesGuesser = ({
     displayOverrideCode(guessResources);
   }
 
-  return <AdminUI {...rest}>{resourceChildren}</AdminUI>;
+  return (
+    <AdminUI loading={LoadingPage} {...rest}>
+      {resourceChildren}
+    </AdminUI>
+  );
 };
 
 const defaultTheme = createMuiTheme({
@@ -90,6 +95,7 @@ const AdminGuesser = ({
   appLayout,
   layout = Layout,
   loginPage,
+  loading: loadingPage,
   locale,
   theme = defaultTheme,
   // Other props
@@ -160,6 +166,7 @@ const AdminGuesser = ({
           loading={loading}
           layout={appLayout || layout}
           loginPage={loginPage}
+          loadingPage={loadingPage}
           theme={theme}
           {...rest}>
           {children}
