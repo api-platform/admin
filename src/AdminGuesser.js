@@ -40,11 +40,11 @@ export const AdminResourcesGuesser = ({
   includeDeprecated,
   resources,
   loading,
-  loadingPage,
+  loadingPage: LoadingPage = Loading,
   ...rest
 }) => {
   if (loading) {
-    return <Loading />;
+    return <LoadingPage />;
   }
 
   let resourceChildren = children;
@@ -59,7 +59,7 @@ export const AdminResourcesGuesser = ({
   }
 
   return (
-    <AdminUI loading={loadingPage} {...rest}>
+    <AdminUI loading={LoadingPage} {...rest}>
       {resourceChildren}
     </AdminUI>
   );
