@@ -58,7 +58,11 @@ export const AdminResourcesGuesser = ({
     displayOverrideCode(guessResources);
   }
 
-  return <AdminUI loading={loadingPage} {...rest}>{resourceChildren}</AdminUI>;
+  return (
+    <AdminUI loading={loadingPage} {...rest}>
+      {resourceChildren}
+    </AdminUI>
+  );
 };
 
 const defaultTheme = createMuiTheme({
