@@ -181,7 +181,15 @@ export default (
   /**
    * @param {string} type
    * @param {string} resource
-   * @param {Object} params
+   * @param {{
+   *   id: ?string,
+   *   data: ?Object,
+   *   target: ?string,
+   *   filter: ?Object,
+   *   pagination: ?Object,
+   *   sort: ?Object,
+   *   searchParams: ?Object
+   * }} params
    *
    * @returns {Object}
    */
@@ -189,6 +197,17 @@ export default (
     const entrypointUrl = new URL(entrypoint, window.location.href);
     const collectionUrl = new URL(`${entrypoint}/${resource}`, entrypointUrl);
     const itemUrl = new URL(params.id, entrypointUrl);
+    const searchParams = params.searchParams || {};
+    for (const searchParamKey in searchParams) {
+      if (!searchParams.hasOwnProperty(searchParamKey)) {
+        continue;
+      }
+      collectionUrl.searchParams.set(
+        searchParamKey,
+        searchParams[searchParamKey],
+      );
+      itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
+    }
 
     switch (type) {
       case CREATE:
@@ -399,7 +418,15 @@ export default (
   /**
    * @param {string} type
    * @param {string} resource
-   * @param {Object} params
+   * @param {{
+   *   id: ?string,
+   *   data: ?Object,
+   *   target: ?string,
+   *   filter: ?Object,
+   *   pagination: ?Object,
+   *   sort: ?Object,
+   *   searchParams: ?Object
+   * }} params
    *
    * @returns {Promise}
    */
