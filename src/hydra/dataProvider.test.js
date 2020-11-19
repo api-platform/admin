@@ -104,7 +104,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
   });
   const dataProvider = dataProviderFactory('entrypoint', mockFetchHydra);
 
-  test('React Admin get list with filter parameters', () => {
+  test('React Admin get list with filter parameters and custom search params', () => {
     return dataProvider
       .getList('resource', {
         pagination: {},
@@ -119,27 +119,29 @@ describe('Transform a React Admin request to an Hydra request', () => {
           nested_date: { date: { before: '2000' } },
           nested_range: { range: { between: '12.99..15.99' } },
         },
+        searchParams: { pagination: true },
       })
       .then(() => {
         const searchParams = Array.from(
           mockFetchHydra.mock.calls[0][0].searchParams.entries(),
         );
-        expect(searchParams[0]).toEqual(['simple', 'foo']);
-        expect(searchParams[1]).toEqual(['nested.param', 'bar']);
-        expect(searchParams[2]).toEqual(['sub_nested.sub.param', 'true']);
-        expect(searchParams[3]).toEqual(['array[0]', '/iri/1']);
-        expect(searchParams[4]).toEqual(['array[1]', '/iri/2']);
-        expect(searchParams[5]).toEqual([
+        expect(searchParams[0]).toEqual(['pagination', 'true']);
+        expect(searchParams[1]).toEqual(['simple', 'foo']);
+        expect(searchParams[2]).toEqual(['nested.param', 'bar']);
+        expect(searchParams[3]).toEqual(['sub_nested.sub.param', 'true']);
+        expect(searchParams[4]).toEqual(['array[0]', '/iri/1']);
+        expect(searchParams[5]).toEqual(['array[1]', '/iri/2']);
+        expect(searchParams[6]).toEqual([
           'nested_array.nested[0]',
           '/nested_iri/1',
         ]);
-        expect(searchParams[6]).toEqual([
+        expect(searchParams[7]).toEqual([
           'nested_array.nested[1]',
           '/nested_iri/2',
         ]);
-        expect(searchParams[7]).toEqual(['exists[foo]', 'true']);
-        expect(searchParams[8]).toEqual(['nested_date.date[before]', '2000']);
-        expect(searchParams[9]).toEqual([
+        expect(searchParams[8]).toEqual(['exists[foo]', 'true']);
+        expect(searchParams[9]).toEqual(['nested_date.date[before]', '2000']);
+        expect(searchParams[10]).toEqual([
           'nested_range.range[between]',
           '12.99..15.99',
         ]);
