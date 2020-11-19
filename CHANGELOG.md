@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.0
+
+* Add custom `searchParams` for the Hydra data provider methods
+
+## 2.2.6
+
+* Define history only in a browser context
+* Add missing propTypes
+* Fix `loading` props usage in `AdminUI`
+
 ## 2.2.5
 
 * Remove unuseful optional chaining
