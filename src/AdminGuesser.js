@@ -136,7 +136,7 @@ const AdminGuesser = ({
 
     dataProvider
       .introspect()
-      .then(({ data, customRoutes }) => {
+      .then(({ data, customRoutes = [] }) => {
         setResources(data.resources);
         setAddedCustomRoutes(customRoutes);
         setLoading(false);
