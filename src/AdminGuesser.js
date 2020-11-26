@@ -13,6 +13,7 @@ import { createHashHistory } from 'history';
 import { createMuiTheme } from '@material-ui/core';
 
 import ErrorBoundary from './ErrorBoundary';
+import IntrospectionContext from './IntrospectionContext';
 import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Layout } from './layout';
@@ -106,6 +107,7 @@ const AdminGuesser = ({
   const [loading, setLoading] = useState(true);
   const [, setError] = useState();
   const [addedCustomRoutes, setAddedCustomRoutes] = useState([]);
+  const [introspect, setIntrospect] = useState(true);
 
   if (!history) {
     history = typeof window === 'undefined' ? {} : createHashHistory();
@@ -134,12 +136,17 @@ const AdminGuesser = ({
       );
     }
 
+    if (!introspect) {
+      return;
+    }
+
     dataProvider
       .introspect()
       .then(({ data, customRoutes = [] }) => {
         setResources(data.resources);
         setAddedCustomRoutes(customRoutes);
         setLoading(false);
+        setIntrospect(false);
       })
       .catch((error) => {
         // Allow error to be caught by the error boundary
@@ -147,32 +154,35 @@ const AdminGuesser = ({
           throw error;
         });
       });
-  }, []);
+  }, [introspect]);
 
   return (
-    <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
-      <AdminContext
-        authProvider={authProvider}
-        dataProvider={dataProvider}
-        i18nProvider={i18nProvider}
-        history={history}
-        customReducers={{ introspect: introspectReducer, ...customReducers }}
-        customSagas={customSagas}
-        initialState={initialState}>
-        <AdminResourcesGuesser
-          includeDeprecated={includeDeprecated}
-          resources={resources}
-          customRoutes={[...addedCustomRoutes, ...customRoutes]}
-          loading={loading}
-          layout={appLayout || layout}
-          loginPage={loginPage}
-          loadingPage={loadingPage}
-          theme={theme}
-          {...rest}>
-          {children}
-        </AdminResourcesGuesser>
-      </AdminContext>
-    </SchemaAnalyzerContext.Provider>
+    <IntrospectionContext.Provider
+      value={{ introspect: () => setIntrospect(true) }}>
+      <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
+        <AdminContext
+          authProvider={authProvider}
+          dataProvider={dataProvider}
+          i18nProvider={i18nProvider}
+          history={history}
+          customReducers={{ introspect: introspectReducer, ...customReducers }}
+          customSagas={customSagas}
+          initialState={initialState}>
+          <AdminResourcesGuesser
+            includeDeprecated={includeDeprecated}
+            resources={resources}
+            customRoutes={[...addedCustomRoutes, ...customRoutes]}
+            loading={loading}
+            layout={appLayout || layout}
+            loginPage={loginPage}
+            loadingPage={loadingPage}
+            theme={theme}
+            {...rest}>
+            {children}
+          </AdminResourcesGuesser>
+        </AdminContext>
+      </SchemaAnalyzerContext.Provider>
+    </IntrospectionContext.Provider>
   );
 };
 
