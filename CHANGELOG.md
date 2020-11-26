@@ -3,6 +3,7 @@
 ## 2.4.1
 
 * Set loading when introspecting with `useIntrospection`
+* Add React 17 as peer dependency
 
 ## 2.4.0
 
