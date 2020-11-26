@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1
+
+* Set loading when introspecting with `useIntrospection`
+
 ## 2.4.0
 
 * Add `useIntrospection` hook in order to ask for a new introspection if needed

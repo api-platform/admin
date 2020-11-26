@@ -158,7 +158,12 @@ const AdminGuesser = ({
 
   return (
     <IntrospectionContext.Provider
-      value={{ introspect: () => setIntrospect(true) }}>
+      value={{
+        introspect: () => {
+          setLoading(true);
+          setIntrospect(true);
+        },
+      }}>
       <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
         <AdminContext
           authProvider={authProvider}
