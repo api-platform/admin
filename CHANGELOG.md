@@ -3,6 +3,7 @@
 ## 2.4.0
 
 * Add `useIntrospection` hook in order to ask for a new introspection if needed
+* Hydra: `apiSchema` should not be cached if there are no resources
 
 ## 2.3.0
 

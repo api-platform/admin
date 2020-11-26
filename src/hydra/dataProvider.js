@@ -491,7 +491,9 @@ export default (
         ? Promise.resolve({ data: apiSchema })
         : apiDocumentationParser(entrypoint)
             .then(({ api, customRoutes = [] }) => {
-              apiSchema = api;
+              if (api.resources.length > 0) {
+                apiSchema = api;
+              }
               return { data: api, customRoutes };
             })
             .catch((err) => {
