@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.2
+
+* Introspection should be done before loading
+
 ## 2.4.1
 
 * Set loading when introspecting with `useIntrospection`
