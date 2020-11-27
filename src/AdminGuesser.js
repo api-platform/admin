@@ -145,8 +145,8 @@ const AdminGuesser = ({
       .then(({ data, customRoutes = [] }) => {
         setResources(data.resources);
         setAddedCustomRoutes(customRoutes);
-        setLoading(false);
         setIntrospect(false);
+        setLoading(false);
       })
       .catch((error) => {
         // Allow error to be caught by the error boundary
