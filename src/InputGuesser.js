@@ -5,6 +5,7 @@ import {
   BooleanInput,
   DateInput,
   DateTimeInput,
+  getFieldLabelTranslationArgs,
   NumberInput,
   ReferenceArrayInput,
   ReferenceInput,
@@ -13,6 +14,7 @@ import {
   SelectInput,
   SimpleFormIterator,
   TextInput,
+  useTranslate,
 } from 'react-admin';
 import Introspecter from './Introspecter';
 
@@ -24,6 +26,8 @@ export const IntrospectedInputGuesser = ({
   schemaAnalyzer,
   ...props
 }) => {
+  const translate = useTranslate();
+
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {
     console.error(
@@ -41,7 +45,6 @@ export const IntrospectedInputGuesser = ({
       return (
         <ReferenceInput
           key={field.name}
-          label={field.name}
           reference={field.reference.name}
           source={field.name}
           validate={validate}
@@ -54,10 +57,18 @@ export const IntrospectedInputGuesser = ({
       );
     }
 
+    // Not needed after React-Admin >= 3.10.4 (see https://github.com/marmelab/react-admin/pull/5606).
+    const translatedLabel = translate(
+      ...getFieldLabelTranslationArgs({
+        resource: props.resource,
+        source: field.name,
+      }),
+    );
+
     return (
       <ReferenceArrayInput
         key={field.name}
-        label={field.name}
+        label={translatedLabel}
         reference={field.reference.name}
         source={field.name}
         validate={validate}

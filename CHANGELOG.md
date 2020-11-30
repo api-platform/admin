@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.3
+
+* Humanize `ReferenceInput` and `ReferenceArrayInput` label in `InputGuesser`
+
 ## 2.4.2
 
 * Introspection should be done before loading
