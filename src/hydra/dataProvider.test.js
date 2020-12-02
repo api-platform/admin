@@ -1,3 +1,4 @@
+import { Api, Field, Resource } from '@api-platform/api-doc-parser';
 import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
@@ -102,7 +103,22 @@ describe('Transform a React Admin request to an Hydra request', () => {
   mockFetchHydra.mockReturnValue({
     json: { 'hydra:member': [], 'hydra:totalItems': 3 },
   });
-  const dataProvider = dataProviderFactory('entrypoint', mockFetchHydra);
+  const mockApiDocumentationParser = jest.fn(() =>
+    Promise.resolve({
+      api: new Api('entrypoint', {
+        resources: [
+          new Resource('resource', '/resources', {
+            fields: [new Field('bar')],
+          }),
+        ],
+      }),
+    }),
+  );
+  const dataProvider = dataProviderFactory(
+    'entrypoint',
+    mockFetchHydra,
+    mockApiDocumentationParser,
+  );
 
   test('React Admin get list with filter parameters and custom search params', () => {
     return dataProvider
@@ -144,6 +160,57 @@ describe('Transform a React Admin request to an Hydra request', () => {
         expect(searchParams[10]).toEqual([
           'nested_range.range[between]',
           '12.99..15.99',
+        ]);
+      });
+  });
+
+  test('React Admin create', async () => {
+    await dataProvider.introspect();
+
+    return dataProvider
+      .create('resource', {
+        data: {
+          foo: 'foo',
+          bar: 'baz',
+        },
+      })
+      .then(() => {
+        const url = mockFetchHydra.mock.calls[1][0];
+        expect(url).toBeInstanceOf(URL);
+        expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
+        const options = mockFetchHydra.mock.calls[1][1];
+        expect(options).toHaveProperty('method');
+        expect(options.method).toEqual('POST');
+        expect(options).toHaveProperty('body');
+        expect(options.body).toEqual('{"foo":"foo","bar":"baz"}');
+      });
+  });
+
+  test('React Admin create upload file', async () => {
+    await dataProvider.introspect();
+
+    const file = new File(['foo'], 'foo.txt');
+    return dataProvider
+      .create('resource', {
+        data: {
+          image: {
+            rawFile: file,
+          },
+          bar: 'baz',
+        },
+      })
+      .then(() => {
+        const url = mockFetchHydra.mock.calls[2][0];
+        expect(url).toBeInstanceOf(URL);
+        expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
+        const options = mockFetchHydra.mock.calls[2][1];
+        expect(options).toHaveProperty('method');
+        expect(options.method).toEqual('POST');
+        expect(options).toHaveProperty('body');
+        expect(options.body).toBeInstanceOf(FormData);
+        expect(Array.from(options.body.entries())).toEqual([
+          ['image', file],
+          ['bar', 'baz'],
         ]);
       });
   });

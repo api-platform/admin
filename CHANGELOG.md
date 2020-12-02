@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0
+
+* Hydra: manage file upload (use `FormData` instead of JSON)
+
 ## 2.4.3
 
 * Humanize `ReferenceInput` and `ReferenceArrayInput` label in `InputGuesser`
