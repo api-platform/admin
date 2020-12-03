@@ -124,10 +124,10 @@ export default (
   let apiSchema;
 
   /**
-   * @param {Object} resource
+   * @param {Resource} resource
    * @param {Object} data
    *
-   * @returns {Promise}
+   * @returns {Promise<Object>}
    */
   const convertReactAdminDataToHydraData = (resource, data = {}) => {
     const fieldData = [];
@@ -162,20 +162,45 @@ export default (
   };
 
   /**
-   * @param {Object} resource
+   * @param {string} resource
    * @param {Object} data
    *
    * @returns {Promise}
    */
   const transformReactAdminDataToRequestBody = (resource, data = {}) => {
-    resource = apiSchema.resources.find(({ name }) => resource === name);
-    if (undefined === resource) {
+    /** @type {Resource} */
+    const apiResource = apiSchema.resources.find(
+      ({ name }) => resource === name,
+    );
+    if (undefined === apiResource) {
       return Promise.resolve(data);
     }
 
-    return convertReactAdminDataToHydraData(resource, data).then((data) =>
-      JSON.stringify(data),
-    );
+    return convertReactAdminDataToHydraData(apiResource, data).then((data) => {
+      const values = Object.values(data);
+      const containFile = (element) =>
+        isPlainObject(element) &&
+        Object.values(element).some((value) => value instanceof File);
+
+      if (!values.some((value) => containFile(value))) {
+        return JSON.stringify(data);
+      }
+
+      // If data contains a file, use FormData instead of JSON.
+      const body = new FormData();
+      Object.entries(data).map(([key, value]) => {
+        // React-Admin FileInput format is an object containing a file.
+        if (containFile(value)) {
+          return body.append(
+            key,
+            Object.values(value).find((value) => value instanceof File),
+          );
+        }
+        return body.append(key, value);
+      });
+
+      return body;
+    });
   };
 
   /**
