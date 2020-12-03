@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.2
+
+* Bump dependencies (`@api-platform/api-doc-parser` to 0.11)
+
 ## 2.5.1
 
 * Call `logoutIfAccessDenied` if the `schemaAnalyzer` throws an error (to logout in case of an unauthorized access)
