@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.1
+
+* Call `logoutIfAccessDenied` if the `schemaAnalyzer` throws an error (to logout in case of an unauthorized access)
+
 ## 2.5.0
 
 * Hydra: manage file upload (use `FormData` instead of JSON)
