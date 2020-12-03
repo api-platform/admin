@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useDataProvider } from 'react-admin';
+import { useDataProvider, useLogoutIfAccessDenied } from 'react-admin';
 import { useSelector } from 'react-redux';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 
@@ -74,7 +74,37 @@ const Introspecter = ({
   resource,
   ...rest
 }) => {
+  const logoutIfAccessDenied = useLogoutIfAccessDenied();
   const schemaAnalyzer = useContext(SchemaAnalyzerContext);
+  const schemaAnalyzerProxy = useMemo(
+    () =>
+      new Proxy(schemaAnalyzer, {
+        get: (target, key) => {
+          if (typeof target[key] !== 'function') {
+            return target[key];
+          }
+
+          return (...args) => {
+            const result = target[key].apply(target, args);
+
+            if (result && typeof result.then === 'function') {
+              return result.catch((e) => {
+                logoutIfAccessDenied(e).then((loggedOut) => {
+                  if (loggedOut) {
+                    return;
+                  }
+
+                  throw e;
+                });
+              });
+            }
+
+            return result;
+          };
+        },
+      }),
+    [schemaAnalyzer, logoutIfAccessDenied],
+  );
   const { resources } = useSelector((state) =>
     state.introspect['introspect'] ? state.introspect['introspect'].data : {},
   );
@@ -99,7 +129,7 @@ const Introspecter = ({
   return (
     <ResourcesIntrospecter
       component={component}
-      schemaAnalyzer={schemaAnalyzer}
+      schemaAnalyzer={schemaAnalyzerProxy}
       includeDeprecated={includeDeprecated}
       resource={resource}
       resources={resources}
