@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 // Inspired by https://github.com/airbnb/javascript but less opinionated.
 
 // We use eslint-loader so even warnings are very visible.
@@ -61,7 +59,7 @@ module.exports = {
   rules: {
     // http://eslint.org/docs/rules/
     'array-callback-return': 'warn',
-    'default-case': ['warn', {commentPattern: '^no default$'}],
+    'default-case': ['warn', { commentPattern: '^no default$' }],
     eqeqeq: ['warn', 'allow-null'],
     'no-array-constructor': 'warn',
     'no-caller': 'warn',
@@ -86,7 +84,7 @@ module.exports = {
     'no-invalid-regexp': 'warn',
     'no-iterator': 'warn',
     'no-label-var': 'warn',
-    'no-labels': ['warn', {allowLoop: false, allowSwitch: false}],
+    'no-labels': ['warn', { allowLoop: false, allowSwitch: false }],
     'no-lone-blocks': 'warn',
     'no-loop-func': 'warn',
     'no-multi-str': 'warn',
@@ -199,7 +197,7 @@ module.exports = {
     'import/no-webpack-loader-syntax': 'error',
 
     // https://github.com/yannickcr/eslint-plugin-react/tree/master/docs/rules
-    'react/jsx-no-duplicate-props': ['warn', {ignoreCase: true}],
+    'react/jsx-no-duplicate-props': ['warn', { ignoreCase: true }],
     'react/jsx-no-undef': 'error',
     'react/jsx-pascal-case': [
       'warn',
