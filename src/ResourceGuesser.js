@@ -17,7 +17,7 @@ const ResourceGuesser = ({ list, edit, create, show, ...props }) => (
 );
 
 ResourceGuesser.propTypes = {
-  resource: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default ResourceGuesser;
