@@ -5,6 +5,7 @@ exports[`<ResourceGuesser /> renders with create 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
@@ -14,6 +15,7 @@ exports[`<ResourceGuesser /> renders with edit 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
@@ -23,6 +25,7 @@ exports[`<ResourceGuesser /> renders with list 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
@@ -32,6 +35,7 @@ exports[`<ResourceGuesser /> renders with show 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
@@ -41,6 +45,7 @@ exports[`<ResourceGuesser /> renders without create 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
@@ -50,6 +55,7 @@ exports[`<ResourceGuesser /> renders without edit 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
@@ -59,6 +65,7 @@ exports[`<ResourceGuesser /> renders without list 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
@@ -68,6 +75,7 @@ exports[`<ResourceGuesser /> renders without show 1`] = `
   create={[Function]}
   edit={[Function]}
   list={[Function]}
+  name="dummy"
   show={[Function]}
 />
 `;
