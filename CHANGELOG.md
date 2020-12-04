@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.3
+
+* Fix `ResourceGuesser` propTypes
+
 ## 2.5.2
 
 * Bump dependencies (`@api-platform/api-doc-parser` to 0.11)
