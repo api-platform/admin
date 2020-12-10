@@ -197,6 +197,8 @@ describe('Transform a React Admin request to an Hydra request', () => {
             rawFile: file,
           },
           bar: 'baz',
+          array: ['foo', 'dummy'],
+          object: { foo: 'dummy' },
         },
       })
       .then(() => {
@@ -211,6 +213,8 @@ describe('Transform a React Admin request to an Hydra request', () => {
         expect(Array.from(options.body.entries())).toEqual([
           ['image', file],
           ['bar', 'baz'],
+          ['array', '["foo","dummy"]'],
+          ['object', '{"foo":"dummy"}'],
         ]);
       });
   });

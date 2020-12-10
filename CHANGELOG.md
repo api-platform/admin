@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.4
+
+* Fix sent `FormData` when a value is an object or an array (use JSON)
+
 ## 2.5.3
 
 * Fix `ResourceGuesser` propTypes
