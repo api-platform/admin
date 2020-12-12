@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.5
+
+* Hydra: use `fetchJsonLd` when expanding an error (to use authorization header)
+
 ## 2.5.4
 
 * Fix sent `FormData` when a value is an object or an array (use JSON)

@@ -3,7 +3,7 @@ import {
   fetchJsonLd,
   getDocumentationUrlFromHeaders,
 } from '@api-platform/api-doc-parser';
-import { promises } from 'jsonld';
+import jsonld from 'jsonld';
 
 /**
  * Sends HTTP requests to a Hydra API.
@@ -23,19 +23,19 @@ export default (url, options = {}) => {
     requestHeaders.set('Authorization', options.user.token);
   }
 
-  return fetchJsonLd(url, {
-    ...options,
-    headers: requestHeaders,
-  }).then((data) => {
+  const authOptions = { ...options, headers: requestHeaders };
+
+  return fetchJsonLd(url, authOptions).then((data) => {
     const status = data.response.status;
 
     if (status < 200 || status >= 300) {
       const body = data.body;
       delete body.trace;
 
-      return promises
+      return jsonld
         .expand(body, {
           base: getDocumentationUrlFromHeaders(data.response.headers),
+          documentLoader: (input) => fetchJsonLd(input, authOptions),
         })
         .then((json) => {
           return Promise.reject(
