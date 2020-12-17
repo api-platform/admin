@@ -37,7 +37,11 @@ const getOrderParametersFromSchema = (schema) => {
       .map((orderFilter) =>
         orderFilter.replace(ORDER_MARKER, '').replace(']', ''),
       )
-      .filter((filter) => authorizedFields.includes(filter)),
+      .filter((filter) =>
+        authorizedFields.includes(
+          filter.split('.')[0], // split to manage nested properties
+        ),
+      ),
   );
 };
 

@@ -47,14 +47,21 @@ export const IntrospectedListGuesser = ({
 
   let fieldChildren = children;
   if (!fieldChildren) {
-    fieldChildren = readableFields.map((field) => (
-      <FieldGuesser
-        key={field.name}
-        source={field.name}
-        sortable={orderParameters.includes(field.name)}
-        resource={props.resource}
-      />
-    ));
+    fieldChildren = readableFields.map((field) => {
+      const orderField = orderParameters.find(
+        (orderParameter) => orderParameter.split('.')[0] === field.name,
+      );
+
+      return (
+        <FieldGuesser
+          key={field.name}
+          source={field.name}
+          sortable={!!orderField}
+          sortBy={orderField}
+          resource={props.resource}
+        />
+      );
+    });
     displayOverrideCode(schema, readableFields);
   }
 
