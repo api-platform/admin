@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.6
+
+* Add sort for nested properties in ListGuesser
+
 ## 2.5.5
 
 * Hydra: use `fetchJsonLd` when expanding an error (to use authorization header)
