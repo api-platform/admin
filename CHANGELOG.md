@@ -2,8 +2,9 @@
 
 ## 2.5.7
 
-* Add `rowClick` prop in `ListGuesser`	* Add `rowClick` prop in `ListGuesser`
+* Add `rowClick` prop in `ListGuesser`
 * Add eslint hook rules
+* Do not display user menu if there is no auth provider
 
 ## 2.5.6
 
