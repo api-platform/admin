@@ -1,5 +1,7 @@
 # Changelog
 
+* Add `rowClick` prop in `ListGuesser`
+
 ## 2.5.6
 
 * Add sort for nested properties in ListGuesser

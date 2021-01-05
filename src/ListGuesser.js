@@ -32,6 +32,7 @@ export const IntrospectedListGuesser = ({
   writableFields,
   schema,
   schemaAnalyzer,
+  rowClick,
   children,
   ...props
 }) => {
@@ -67,7 +68,7 @@ export const IntrospectedListGuesser = ({
 
   return (
     <List pagination={<Pagination />} {...props}>
-      <Datagrid>
+      <Datagrid rowClick={rowClick}>
         {fieldChildren}
         {props.hasShow && <ShowButton />}
         {props.hasEdit && <EditButton />}
@@ -84,6 +85,9 @@ ListGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
   filters: PropTypes.element,
+  hasShow: PropTypes.bool,
+  hasEdit: PropTypes.bool,
+  rowClick: PropTypes.string,
 };
 
 ListGuesser.defaultProps = {
