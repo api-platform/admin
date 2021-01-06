@@ -21,7 +21,7 @@ export const IntrospectedFilterGuesser = ({
         .getFiltersParametersFromSchema(schema)
         .then((parameters) => setFiltersParameters(parameters));
     }
-  }, []);
+  }, [schema, schemaAnalyzer]);
 
   if (!filtersParameters.length) {
     return null;

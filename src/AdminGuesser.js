@@ -154,7 +154,7 @@ const AdminGuesser = ({
           throw error;
         });
       });
-  }, [introspect]);
+  }, [introspect, dataProvider]);
 
   return (
     <IntrospectionContext.Provider

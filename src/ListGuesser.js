@@ -44,7 +44,7 @@ export const IntrospectedListGuesser = ({
         .getOrderParametersFromSchema(schema)
         .then((parameters) => setOrderParameters(parameters));
     }
-  }, []);
+  }, [schema, schemaAnalyzer]);
 
   let fieldChildren = children;
   if (!fieldChildren) {
