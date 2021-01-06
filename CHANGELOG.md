@@ -1,6 +1,9 @@
 # Changelog
 
-* Add `rowClick` prop in `ListGuesser`
+## 2.5.7
+
+* Add `rowClick` prop in `ListGuesser`	* Add `rowClick` prop in `ListGuesser`
+* Add eslint hook rules
 
 ## 2.5.6
 
