@@ -3,8 +3,9 @@
 ## 2.5.7
 
 * Add `rowClick` prop in `ListGuesser`
-* Add eslint hook rules
 * Do not display user menu if there is no auth provider
+* Do not use guessers in `ResourceGuesser` if `create`, `edit`, `show`, `list` props have a falsy value
+* Add ESLint hook rules
 
 ## 2.5.6
 

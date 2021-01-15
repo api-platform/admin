@@ -9,10 +9,10 @@ import ShowGuesser from './ShowGuesser';
 const ResourceGuesser = ({ list, edit, create, show, ...props }) => (
   <Resource
     {...props}
-    create={create || CreateGuesser}
-    edit={edit || EditGuesser}
-    list={list || ListGuesser}
-    show={show || ShowGuesser}
+    create={undefined === create ? CreateGuesser : create}
+    edit={undefined === edit ? EditGuesser : edit}
+    list={undefined === list ? ListGuesser : list}
+    show={undefined === show ? ShowGuesser : show}
   />
 );
 
