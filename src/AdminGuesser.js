@@ -198,7 +198,7 @@ AdminGuesser.propTypes = {
   i18nProvider: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   history: PropTypes.object,
   customReducers: PropTypes.object,
-  customSagas: PropTypes.object,
+  customSagas: PropTypes.array,
   initialState: PropTypes.object,
   schemaAnalyzer: PropTypes.object.isRequired,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
