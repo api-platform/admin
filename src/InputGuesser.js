@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   ArrayInput,
@@ -16,6 +16,7 @@ import {
   TextInput,
   useTranslate,
 } from 'react-admin';
+import { useForm } from 'react-final-form';
 import Introspecter from './Introspecter';
 
 export const IntrospectedInputGuesser = ({
@@ -24,9 +25,18 @@ export const IntrospectedInputGuesser = ({
   writableFields,
   schema,
   schemaAnalyzer,
+  validate,
   ...props
 }) => {
   const translate = useTranslate();
+  const form = useForm();
+  // Pause the validation while the Final Form field is registered to prevent a form state desynchronization bug when using async validators.
+  // Since the field is not registered directly because of the introspection, Final Form is using the previous form state (without the field) when notifying after the async validation done during the registration.
+  // See also https://github.com/final-form/react-final-form/issues/780.
+  form.pauseValidation();
+  useEffect(() => {
+    form.resumeValidation();
+  }, [form]);
 
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {
@@ -37,8 +47,7 @@ export const IntrospectedInputGuesser = ({
     return <Fragment />;
   }
 
-  const validate =
-    !props.validate && field.required ? [required()] : props.validate;
+  const guessedValidate = !validate && field.required ? [required()] : validate;
 
   if (null !== field.reference) {
     if (1 === field.maxCardinality) {
@@ -47,7 +56,7 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           reference={field.reference.name}
           source={field.name}
-          validate={validate}
+          validate={guessedValidate}
           {...props}
           allowEmpty>
           <SelectInput
@@ -71,7 +80,7 @@ export const IntrospectedInputGuesser = ({
         label={translatedLabel}
         reference={field.reference.name}
         source={field.name}
-        validate={validate}
+        validate={guessedValidate}
         {...props}
         allowEmpty>
         <SelectArrayInput
@@ -118,7 +127,7 @@ export const IntrospectedInputGuesser = ({
         <ArrayInput
           key={field.name}
           source={field.name}
-          validate={validate}
+          validate={guessedValidate}
           {...props}>
           <SimpleFormIterator>
             <TextInput format={textInputFormat} parse={textInputParse} />
@@ -131,7 +140,7 @@ export const IntrospectedInputGuesser = ({
         <NumberInput
           key={field.name}
           source={field.name}
-          validate={validate}
+          validate={guessedValidate}
           {...props}
         />
       );
@@ -142,7 +151,7 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           source={field.name}
           step="0.1"
-          validate={validate}
+          validate={guessedValidate}
           {...props}
         />
       );
@@ -152,7 +161,7 @@ export const IntrospectedInputGuesser = ({
         <BooleanInput
           key={field.name}
           source={field.name}
-          validate={validate}
+          validate={guessedValidate}
           {...props}
         />
       );
@@ -162,7 +171,7 @@ export const IntrospectedInputGuesser = ({
         <DateInput
           key={field.name}
           source={field.name}
-          validate={validate}
+          validate={guessedValidate}
           {...props}
         />
       );
@@ -172,7 +181,7 @@ export const IntrospectedInputGuesser = ({
         <DateTimeInput
           key={field.name}
           source={field.name}
-          validate={validate}
+          validate={guessedValidate}
           {...props}
         />
       );
@@ -182,7 +191,7 @@ export const IntrospectedInputGuesser = ({
         <TextInput
           key={field.name}
           source={field.name}
-          validate={validate}
+          validate={guessedValidate}
           {...props}
         />
       );

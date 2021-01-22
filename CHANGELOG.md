@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.8
+
+* Fix `customSagas` prop type in `AdminGuesser`
+* Pause validation when the Final Form field is registered in `InputGuesser`
+
 ## 2.5.7
 
 * Add `rowClick` prop in `ListGuesser`
