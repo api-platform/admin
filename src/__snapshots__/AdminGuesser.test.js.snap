@@ -8,69 +8,42 @@ exports[`<AdminGuesser /> renders loading 1`] = `
 `;
 
 exports[`<AdminGuesser /> renders with custom resources 1`] = `
-<AdminUI
-  catchAll={[Function]}
-  layout={[Function]}
-  loading={[Function]}
-  loginPage={[Function]}
-  logout={
+<Admin
+  customReducers={
     Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "propTypes": Object {
-        "className": [Function],
-        "icon": [Function],
-        "redirectTo": [Function],
-      },
-      "render": [Function],
+      "introspect": [Function],
     }
   }
+  loading={[Function]}
 >
   <ResourceGuesser
     name="custom"
   />
-</AdminUI>
+</Admin>
 `;
 
 exports[`<AdminGuesser /> renders without custom resources 1`] = `
-<AdminUI
-  catchAll={[Function]}
-  layout={[Function]}
-  loading={[Function]}
-  loginPage={[Function]}
-  logout={
+<Admin
+  customReducers={
     Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "propTypes": Object {
-        "className": [Function],
-        "icon": [Function],
-        "redirectTo": [Function],
-      },
-      "render": [Function],
+      "introspect": [Function],
     }
   }
+  loading={[Function]}
 >
   <ResourceGuesser
     name="books"
   />
-</AdminUI>
+</Admin>
 `;
 
 exports[`<AdminGuesser /> renders without data 1`] = `
-<AdminUI
-  catchAll={[Function]}
-  layout={[Function]}
-  loading={[Function]}
-  loginPage={[Function]}
-  logout={
+<Admin
+  customReducers={
     Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "propTypes": Object {
-        "className": [Function],
-        "icon": [Function],
-        "redirectTo": [Function],
-      },
-      "render": [Function],
+      "introspect": [Function],
     }
   }
+  loading={[Function]}
 />
 `;
