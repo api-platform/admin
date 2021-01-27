@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  AdminContext,
-  AdminUI,
+  Admin,
   ComponentPropType,
   Error as DefaultError,
   Loading,
@@ -37,11 +36,14 @@ const displayOverrideCode = (resources) => {
  * If no children are passed, a `<ResourceGuesser>` component is created for each resource type exposed by the API, in the order they are specified in the API documentation.
  */
 export const AdminResourcesGuesser = ({
+  // Admin props
+  customReducers = {},
+  loadingPage: LoadingPage = Loading,
+  // Props
   children,
   includeDeprecated,
   resources,
   loading,
-  loadingPage: LoadingPage = Loading,
   ...rest
 }) => {
   if (loading) {
@@ -60,9 +62,12 @@ export const AdminResourcesGuesser = ({
   }
 
   return (
-    <AdminUI loading={LoadingPage} {...rest}>
+    <Admin
+      customReducers={{ introspect: introspectReducer, ...customReducers }}
+      loading={LoadingPage}
+      {...rest}>
       {resourceChildren}
-    </AdminUI>
+    </Admin>
   );
 };
 
@@ -81,23 +86,14 @@ const defaultTheme = createMuiTheme({
 const AdminGuesser = ({
   // Props for SchemaAnalyzerContext
   schemaAnalyzer,
-  // Props for AdminContext
-  dataProvider,
-  authProvider,
-  i18nProvider,
-  history,
-  customReducers = {},
-  customSagas,
-  initialState,
   // Props for AdminResourcesGuesser
   includeDeprecated = false,
-  // Props for AdminUI
+  // Admin props
+  dataProvider,
+  history,
   customRoutes = [],
-  appLayout,
   layout = Layout,
-  loginPage,
   loading: loadingPage,
-  locale,
   theme = defaultTheme,
   // Other props
   children,
@@ -111,22 +107,6 @@ const AdminGuesser = ({
 
   if (!history) {
     history = typeof window === 'undefined' ? {} : createHashHistory();
-  }
-
-  if (appLayout && process.env.NODE_ENV !== 'production') {
-    console.warn(
-      'You are using deprecated prop "appLayout", it was replaced by "layout", see https://github.com/marmelab/react-admin/issues/2918',
-    );
-  }
-  if (loginPage === true && process.env.NODE_ENV !== 'production') {
-    console.warn(
-      'You passed true to the loginPage prop. You must either pass false to disable it or a component class to customize it',
-    );
-  }
-  if (locale && process.env.NODE_ENV !== 'production') {
-    console.warn(
-      'You are using deprecated prop "locale". You must now pass the initial locale to your i18nProvider',
-    );
   }
 
   useEffect(() => {
@@ -165,27 +145,19 @@ const AdminGuesser = ({
         },
       }}>
       <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
-        <AdminContext
-          authProvider={authProvider}
+        <AdminResourcesGuesser
+          includeDeprecated={includeDeprecated}
+          resources={resources}
+          loading={loading}
           dataProvider={dataProvider}
-          i18nProvider={i18nProvider}
           history={history}
-          customReducers={{ introspect: introspectReducer, ...customReducers }}
-          customSagas={customSagas}
-          initialState={initialState}>
-          <AdminResourcesGuesser
-            includeDeprecated={includeDeprecated}
-            resources={resources}
-            customRoutes={[...addedCustomRoutes, ...customRoutes]}
-            loading={loading}
-            layout={appLayout || layout}
-            loginPage={loginPage}
-            loadingPage={loadingPage}
-            theme={theme}
-            {...rest}>
-            {children}
-          </AdminResourcesGuesser>
-        </AdminContext>
+          customRoutes={[...addedCustomRoutes, ...customRoutes]}
+          layout={layout}
+          loadingPage={loadingPage}
+          theme={theme}
+          {...rest}>
+          {children}
+        </AdminResourcesGuesser>
       </SchemaAnalyzerContext.Provider>
     </IntrospectionContext.Provider>
   );

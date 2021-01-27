@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.9
+
+* Improve react-admin compatibility
+
 ## 2.5.8
 
 * Fix `customSagas` prop type in `AdminGuesser`
