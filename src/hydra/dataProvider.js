@@ -383,15 +383,17 @@ export default (
   };
 
   /**
-   * @param {Object} response
-   * @param {string} resource
    * @param {string} type
+   * @param {string} resource
+   * @param {{ id: ?string }} params
+   * @param {Object} response
    *
    * @returns {Promise}
    */
   const convertHydraResponseToReactAdminResponse = (
     type,
     resource,
+    params,
     response,
   ) => {
     switch (type) {
@@ -427,7 +429,7 @@ export default (
           }));
 
       case DELETE:
-        return Promise.resolve({ data: { id: null } });
+        return Promise.resolve({ data: { id: params.id } });
 
       default:
         return Promise.resolve(
@@ -462,7 +464,12 @@ export default (
     convertReactAdminRequestToHydraRequest(type, resource, params)
       .then(({ url, options }) => httpClient(url, options))
       .then((response) =>
-        convertHydraResponseToReactAdminResponse(type, resource, response),
+        convertHydraResponseToReactAdminResponse(
+          type,
+          resource,
+          params,
+          response,
+        ),
       );
 
   /**

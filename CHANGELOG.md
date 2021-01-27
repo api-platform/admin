@@ -3,6 +3,7 @@
 ## 2.5.9
 
 * Improve react-admin compatibility
+* Hydra: return id when deleting in the data provider
 
 ## 2.5.8
 
