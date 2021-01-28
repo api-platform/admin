@@ -33,6 +33,11 @@ export const IntrospectedListGuesser = ({
   schema,
   schemaAnalyzer,
   rowClick,
+  rowStyle,
+  isRowSelectable,
+  body,
+  expand,
+  optimized,
   children,
   ...props
 }) => {
@@ -68,7 +73,13 @@ export const IntrospectedListGuesser = ({
 
   return (
     <List pagination={<Pagination />} {...props}>
-      <Datagrid rowClick={rowClick}>
+      <Datagrid
+        rowClick={rowClick}
+        rowStyle={rowStyle}
+        isRowSelectable={isRowSelectable}
+        body={body}
+        expand={expand}
+        optimized={optimized}>
         {fieldChildren}
         {props.hasShow && <ShowButton />}
         {props.hasEdit && <EditButton />}
