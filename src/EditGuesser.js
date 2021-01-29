@@ -7,6 +7,11 @@ import {
   useNotify,
   useRedirect,
 } from 'react-admin';
+import arrayMutators from 'final-form-arrays';
+import {
+  submitErrorsMutators,
+  SubmitErrorsSpy,
+} from 'final-form-submit-errors';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
 
@@ -139,6 +144,10 @@ export const IntrospectedEditGuesser = ({
       {...props}>
       <SimpleForm
         save={mutationMode !== 'pessimistic' ? undefined : save}
+        mutators={{
+          ...arrayMutators,
+          ...submitErrorsMutators,
+        }}
         initialValues={initialValues}
         validate={validate}
         redirect={redirectTo}
