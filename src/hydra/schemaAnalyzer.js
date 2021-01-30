@@ -102,11 +102,49 @@ const getFieldType = (field) => {
   }
 };
 
+/**
+ * @param {HttpError} error
+ *
+ * @returns {?Object<string, string>}
+ */
+const getSubmissionErrors = (error) => {
+  if (!error.body || !error.body[0]) {
+    return null;
+  }
+
+  const content = error.body[0];
+  const violationKey = Object.keys(content).find((key) =>
+    key.includes('violations'),
+  );
+  if (!violationKey) {
+    return null;
+  }
+  const base = violationKey.substring(0, violationKey.indexOf('#'));
+
+  const violations = content[violationKey].reduce(
+    (violations, violation) =>
+      !violation[`${base}#propertyPath`] || !violation[`${base}#message`]
+        ? violations
+        : {
+            ...violations,
+            [violation[`${base}#propertyPath`][0]['@value']]:
+              violation[`${base}#message`][0]['@value'],
+          },
+    {},
+  );
+  if (Object.keys(violations).length === 0) {
+    return null;
+  }
+
+  return violations;
+};
+
 export default () => {
   return {
     getFieldNameFromSchema,
     getOrderParametersFromSchema,
     getFiltersParametersFromSchema,
     getFieldType,
+    getSubmissionErrors,
   };
 };

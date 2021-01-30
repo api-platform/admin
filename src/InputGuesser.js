@@ -36,7 +36,7 @@ export const IntrospectedInputGuesser = ({
   form.pauseValidation();
   useEffect(() => {
     form.resumeValidation();
-  }, [form]);
+  });
 
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {

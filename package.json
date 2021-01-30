@@ -14,6 +14,15 @@
   "bugs": "https://github.com/api-platform/admin/issues",
   "author": "Kévin Dunglas",
   "license": "MIT",
+  "dependencies": {
+    "@api-platform/api-doc-parser": "^0.12.0",
+    "final-form-submit-errors": "^0.1.0",
+    "history": "^4.7.2",
+    "jsonld": "^3.2.0",
+    "lodash.isplainobject": "^4.0.6",
+    "prop-types": "^15.6.2",
+    "react-admin": "^3.0.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
@@ -62,13 +71,5 @@
       "/node_modules/",
       "/lib/"
     ]
-  },
-  "dependencies": {
-    "@api-platform/api-doc-parser": "^0.12.0",
-    "history": "^4.7.2",
-    "jsonld": "^3.2.0",
-    "lodash.isplainobject": "^4.0.6",
-    "prop-types": "^15.6.2",
-    "react-admin": "^3.0.0"
   }
 }

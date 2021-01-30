@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Create, SimpleForm } from 'react-admin';
+import {
+  Create,
+  SimpleForm,
+  useMutation,
+  useNotify,
+  useRedirect,
+} from 'react-admin';
+import arrayMutators from 'final-form-arrays';
+import {
+  submitErrorsMutators,
+  SubmitErrorsSpy,
+} from 'final-form-submit-errors';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
 
@@ -30,9 +41,87 @@ export const IntrospectedCreateGuesser = ({
   writableFields,
   schema,
   schemaAnalyzer,
+  resource,
+  basePath,
+  onSuccess,
+  successMessage,
+  onFailure,
+  redirect: redirectTo = 'list',
+  initialValues,
+  validate,
+  toolbar,
+  margin,
+  variant,
+  submitOnEnter,
+  warnWhenUnsavedChanges,
+  sanitizeEmptyValues,
+  simpleFormComponent,
   children,
   ...props
 }) => {
+  const [mutate] = useMutation();
+  const notify = useNotify();
+  const redirect = useRedirect();
+  const save = useCallback(
+    async (values) => {
+      try {
+        const response = await mutate(
+          {
+            type: 'create',
+            resource: resource,
+            payload: { data: values },
+          },
+          { returnPromise: true },
+        );
+        const success = onSuccess
+          ? onSuccess
+          : ({ data: newRecord }) => {
+              notify(successMessage || 'ra.notification.created', 'info', {
+                smart_count: 1,
+              });
+              redirect(redirectTo, basePath, newRecord.id, newRecord);
+            };
+        success(response);
+      } catch (error) {
+        const submissionErrors = schemaAnalyzer.getSubmissionErrors(error);
+        const failure = onFailure
+          ? onFailure
+          : (error) => {
+              let message = 'ra.notification.http_error';
+              if (!submissionErrors) {
+                message =
+                  typeof error === 'string' ? error : error.message || message;
+              }
+              notify(message, 'warning', {
+                _:
+                  typeof error === 'string'
+                    ? error
+                    : error && error.message
+                    ? error.message
+                    : undefined,
+              });
+            };
+        failure(error);
+        if (submissionErrors) {
+          return submissionErrors;
+        }
+        return {};
+      }
+    },
+    [
+      mutate,
+      resource,
+      onSuccess,
+      successMessage,
+      onFailure,
+      notify,
+      redirect,
+      redirectTo,
+      basePath,
+      schemaAnalyzer,
+    ],
+  );
+
   let inputChildren = children;
   if (!inputChildren) {
     inputChildren = writableFields.map((field) => (
@@ -42,8 +131,25 @@ export const IntrospectedCreateGuesser = ({
   }
 
   return (
-    <Create {...props}>
-      <SimpleForm>{inputChildren}</SimpleForm>
+    <Create resource={resource} basePath={basePath} {...props}>
+      <SimpleForm
+        save={save}
+        mutators={{
+          ...arrayMutators,
+          ...submitErrorsMutators,
+        }}
+        initialValues={initialValues}
+        validate={validate}
+        toolbar={toolbar}
+        margin={margin}
+        variant={variant}
+        submitOnEnter={submitOnEnter}
+        warnWhenUnsavedChanges={warnWhenUnsavedChanges}
+        sanitizeEmptyValues={sanitizeEmptyValues}
+        component={simpleFormComponent}>
+        <SubmitErrorsSpy />
+        {inputChildren}
+      </SimpleForm>
     </Create>
   );
 };
