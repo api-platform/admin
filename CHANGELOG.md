@@ -1,12 +1,9 @@
 # Changelog
 
-# 2.6.0
+## 2.6.0
 
 * Submission errors per field
 * Add missing props for `SimpleForm` and `Datagrid` in guessers
-
-## 2.5.9
-
 * Improve react-admin compatibility
 * Hydra: return id when deleting in the data provider
 
