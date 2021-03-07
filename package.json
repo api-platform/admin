@@ -21,7 +21,7 @@
     "jsonld": "^3.2.0",
     "lodash.isplainobject": "^4.0.6",
     "prop-types": "^15.6.2",
-    "react-admin": "^3.0.0"
+    "react-admin": "^3.11"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
