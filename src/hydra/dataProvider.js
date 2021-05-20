@@ -66,13 +66,12 @@ export const transformJsonLdDocumentToReactAdminDocument = (
     // to-one
     if (isPlainObject(document[key]) && document[key]['@id']) {
       if (addToCache) {
-        reactAdminDocumentsCache[
-          document[key]['@id']
-        ] = transformJsonLdDocumentToReactAdminDocument(
-          document[key],
-          false,
-          false,
-        );
+        reactAdminDocumentsCache[document[key]['@id']] =
+          transformJsonLdDocumentToReactAdminDocument(
+            document[key],
+            false,
+            false,
+          );
       }
       document[key] = useEmbedded ? document[key] : document[key]['@id'];
 
@@ -88,9 +87,8 @@ export const transformJsonLdDocumentToReactAdminDocument = (
     ) {
       document[key] = document[key].map((obj) => {
         if (addToCache) {
-          reactAdminDocumentsCache[
-            obj['@id']
-          ] = transformJsonLdDocumentToReactAdminDocument(obj, false, false);
+          reactAdminDocumentsCache[obj['@id']] =
+            transformJsonLdDocumentToReactAdminDocument(obj, false, false);
         }
 
         return useEmbedded ? obj : obj['@id'];
