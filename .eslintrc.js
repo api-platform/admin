@@ -23,7 +23,11 @@ module.exports = {
 
   plugins: ['markdown', 'import', 'jsx-a11y', 'react', 'prettier'],
 
-  extends: ['prettier', 'plugin:react-hooks/recommended'],
+  extends: [
+    'prettier',
+    'plugin:react-hooks/recommended',
+    'plugin:markdown/recommended',
+  ],
 
   env: {
     browser: true,

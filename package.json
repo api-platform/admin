@@ -57,8 +57,8 @@
   "scripts": {
     "build": "babel src -d lib --ignore '*.test.js'",
     "eslint-check": "eslint-config-prettier .eslintrc.js",
-    "fix": "eslint --ignore-pattern 'lib/*' --ext .js,.md --fix src",
-    "lint": "eslint --ignore-pattern 'lib/*' --ext .js,.md src",
+    "fix": "eslint --ignore-pattern 'lib/*' --ext .js,.md --fix .",
+    "lint": "eslint --ignore-pattern 'lib/*' --ext .js,.md .",
     "test": "jest src",
     "test:watch": "jest --watch src",
     "watch": "babel src -d lib --ignore '*.test.js' --watch"
