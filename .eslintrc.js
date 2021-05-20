@@ -19,11 +19,11 @@
 module.exports = {
   root: true,
 
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
 
   plugins: ['markdown', 'import', 'jsx-a11y', 'react', 'prettier'],
 
-  extends: ['prettier', 'prettier/react', 'plugin:react-hooks/recommended'],
+  extends: ['prettier', 'plugin:react-hooks/recommended'],
 
   env: {
     browser: true,

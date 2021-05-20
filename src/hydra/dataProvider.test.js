@@ -34,8 +34,7 @@ const JSON_LD_DOCUMENT = {
     {
       '@id': '/comments/2',
       '@type': 'http://schema.org/Comment',
-      text:
-        'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      text: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       dateCreated: '2017-04-27T00:00:00+00:00',
     },
   ],
@@ -85,9 +84,8 @@ describe('Transform a JSON-LD document to a React Admin compatible document', ()
 });
 
 describe('Transform a JSON-LD document to a React Admin compatible document (transform embeddeds)', () => {
-  const reactAdminDocument = transformJsonLdDocumentToReactAdminDocument(
-    JSON_LD_DOCUMENT,
-  );
+  const reactAdminDocument =
+    transformJsonLdDocumentToReactAdminDocument(JSON_LD_DOCUMENT);
 
   test('transform embedded documents to their IRIs', () => {
     expect(reactAdminDocument.itemReviewed).toBe('/books/2');

@@ -119,8 +119,7 @@ export default [
             },
             {
               name: 'publicationDate',
-              id:
-                'https://demo.api-platform.com/docs.jsonld#Review/publicationDate',
+              id: 'https://demo.api-platform.com/docs.jsonld#Review/publicationDate',
               range: 'http://www.w3.org/2001/XMLSchema#dateTime',
               reference: null,
               required: false,
@@ -317,8 +316,7 @@ export default [
             },
             {
               name: 'publicationDate',
-              id:
-                'https://demo.api-platform.com/docs.jsonld#Review/publicationDate',
+              id: 'https://demo.api-platform.com/docs.jsonld#Review/publicationDate',
               range: 'http://www.w3.org/2001/XMLSchema#dateTime',
               reference: null,
               required: false,
@@ -515,8 +513,7 @@ export default [
             },
             {
               name: 'publicationDate',
-              id:
-                'https://demo.api-platform.com/docs.jsonld#Review/publicationDate',
+              id: 'https://demo.api-platform.com/docs.jsonld#Review/publicationDate',
               range: 'http://www.w3.org/2001/XMLSchema#dateTime',
               reference: null,
               required: false,
