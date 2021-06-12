@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.6.2
+
+* Downgrade history
+* Remove final-form-submit-errors
+
+## 2.6.1
+
+* Bump dependencies (history, jsonld)
+
 ## 2.6.0
 
 * Submission errors per field
