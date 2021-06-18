@@ -194,7 +194,7 @@ export default (
             Object.values(value).find((value) => value instanceof File),
           );
         }
-        if (isPlainObject(value) || Array.isArray(value)) {
+        if (value.toJSON || isPlainObject(value) || Array.isArray(value)) {
           return body.append(key, JSON.stringify(value));
         }
         return body.append(key, value);

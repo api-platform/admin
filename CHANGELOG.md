@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.3
+
+* Use `JSON.stringify` when there is a `toJSON` property in a form data value
+
 ## 2.6.2
 
 * Downgrade history
