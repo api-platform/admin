@@ -194,7 +194,10 @@ export default (
             Object.values(value).find((value) => value instanceof File),
           );
         }
-        if (value.toJSON || isPlainObject(value) || Array.isArray(value)) {
+        if ('function' === typeof value.toJSON) {
+          return body.append(key, value.toJSON());
+        }
+        if (isPlainObject(value) || Array.isArray(value)) {
           return body.append(key, JSON.stringify(value));
         }
         return body.append(key, value);
