@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.4
+
+* Call `toJSON` instead of `JSON.stringify` when there is a `toJSON` property in a form data value
+
 ## 2.6.3
 
 * Use `JSON.stringify` when there is a `toJSON` property in a form data value
