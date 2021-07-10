@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.5
+
+* Accept 'formEnctype: multipart' in data passed to data provider to force multipart encoding.
+
 ## 2.6.4
 
 * Call `toJSON` instead of `JSON.stringify` when there is a `toJSON` property in a form data value
