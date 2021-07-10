@@ -218,4 +218,31 @@ describe('Transform a React Admin request to an Hydra request', () => {
         ]);
       });
   });
+
+  test('React Admin create multipart override', async () => {
+    await dataProvider.introspect();
+
+    return dataProvider
+      .create('resource', {
+        data: {
+          bar: 'baz',
+          foo: 'foo',
+          formEnctype: 'multipart',
+        },
+      })
+      .then(() => {
+        const url = mockFetchHydra.mock.calls[3][0];
+        expect(url).toBeInstanceOf(URL);
+        expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
+        const options = mockFetchHydra.mock.calls[3][1];
+        expect(options).toHaveProperty('method');
+        expect(options.method).toEqual('POST');
+        expect(options).toHaveProperty('body');
+        expect(options.body).toBeInstanceOf(FormData);
+        expect(Array.from(options.body.entries())).toEqual([
+          ['bar', 'baz'],
+          ['foo', 'foo'],
+        ]);
+      });
+  });
 });
