@@ -346,12 +346,16 @@ export default (
 
       case UPDATE:
         const getUpdateHttpVerb = (params) => {
-          if (params.data && params.data.formMethod && params.data.formMethod === 'POST') {
+          if (
+            params.data &&
+            params.data.formMethod &&
+            params.data.formMethod === 'POST'
+          ) {
             delete params.data.formMethod;
             return 'POST';
           }
           return 'PUT';
-        }
+        };
         const updateHttpVerb = getUpdateHttpVerb(params);
         return transformReactAdminDataToRequestBody(resource, params.data).then(
           (body) => ({

@@ -260,7 +260,9 @@ describe('Transform a React Admin request to an Hydra request', () => {
       .then(() => {
         const url = mockFetchHydra.mock.calls[4][0];
         expect(url).toBeInstanceOf(URL);
-        expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+        expect(url.toString()).toEqual(
+          'http://localhost/entrypoint/resource/1',
+        );
         const options = mockFetchHydra.mock.calls[4][1];
         expect(options).toHaveProperty('method');
         expect(options.method).toEqual('PUT');
@@ -284,7 +286,9 @@ describe('Transform a React Admin request to an Hydra request', () => {
       .then(() => {
         const url = mockFetchHydra.mock.calls[5][0];
         expect(url).toBeInstanceOf(URL);
-        expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+        expect(url.toString()).toEqual(
+          'http://localhost/entrypoint/resource/1',
+        );
         const options = mockFetchHydra.mock.calls[5][1];
         expect(options).toHaveProperty('method');
         expect(options.method).toEqual('PUT');
@@ -313,7 +317,9 @@ describe('Transform a React Admin request to an Hydra request', () => {
       .then(() => {
         const url = mockFetchHydra.mock.calls[6][0];
         expect(url).toBeInstanceOf(URL);
-        expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+        expect(url.toString()).toEqual(
+          'http://localhost/entrypoint/resource/1',
+        );
         const options = mockFetchHydra.mock.calls[6][1];
         expect(options).toHaveProperty('method');
         expect(options.method).toEqual('POST');
