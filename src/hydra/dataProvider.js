@@ -179,8 +179,19 @@ export default (
       const containFile = (element) =>
         isPlainObject(element) &&
         Object.values(element).some((value) => value instanceof File);
+      const containsMultipartOverride = (data) => {
+        if (data.formEnctype && data.formEnctype === 'multipart') {
+          delete data.formEnctype;
+          return true;
+        } else {
+          return false;
+        }
+      };
 
-      if (!values.some((value) => containFile(value))) {
+      if (
+        !values.some((value) => containFile(value)) &&
+        !containsMultipartOverride(data)
+      ) {
         return JSON.stringify(data);
       }
 
@@ -334,11 +345,23 @@ export default (
         });
 
       case UPDATE:
+        const getUpdateHttpVerb = (params) => {
+          if (
+            params.data &&
+            params.data.formMethod &&
+            params.data.formMethod === 'POST'
+          ) {
+            delete params.data.formMethod;
+            return 'POST';
+          }
+          return 'PUT';
+        };
+        const updateHttpVerb = getUpdateHttpVerb(params);
         return transformReactAdminDataToRequestBody(resource, params.data).then(
           (body) => ({
             options: {
               body,
-              method: 'PUT',
+              method: updateHttpVerb,
             },
             url: itemUrl,
           }),
