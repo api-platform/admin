@@ -1,4 +1,6 @@
 import { Api, Field, Resource } from '@api-platform/api-doc-parser';
+import { string } from 'prop-types';
+import { number } from 'prop-types';
 import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
@@ -242,6 +244,86 @@ describe('Transform a React Admin request to an Hydra request', () => {
         expect(Array.from(options.body.entries())).toEqual([
           ['bar', 'baz'],
           ['foo', 'foo'],
+        ]);
+      });
+  });
+
+  test('React Admin update', async () => {
+    await dataProvider.introspect();
+
+    return dataProvider
+      .update('resource', {
+        id: '/entrypoint/resource/1',
+        data: {
+          foo: 'foo',
+          bar: 'baz',
+        },
+      })
+      .then(() => {
+        const url = mockFetchHydra.mock.calls[4][0];
+        expect(url).toBeInstanceOf(URL);
+        expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+        const options = mockFetchHydra.mock.calls[4][1];
+        expect(options).toHaveProperty('method');
+        expect(options.method).toEqual('PUT');
+        expect(options).toHaveProperty('body');
+        expect(options.body).toEqual('{"foo":"foo","bar":"baz"}');
+      });
+  });
+
+  test('React Admin update enctype override', async () => {
+    await dataProvider.introspect();
+
+    return dataProvider
+      .update('resource', {
+        id: '/entrypoint/resource/1',
+        data: {
+          foo: 'foo',
+          bar: 'baz',
+          formEnctype: 'multipart',
+        },
+      })
+      .then(() => {
+        const url = mockFetchHydra.mock.calls[5][0];
+        expect(url).toBeInstanceOf(URL);
+        expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+        const options = mockFetchHydra.mock.calls[5][1];
+        expect(options).toHaveProperty('method');
+        expect(options.method).toEqual('PUT');
+        expect(options).toHaveProperty('body');
+        expect(options.body).toBeInstanceOf(FormData);
+        expect(Array.from(options.body.entries())).toEqual([
+          ['foo', 'foo'],
+          ['bar', 'baz'],
+        ]);
+      });
+  });
+
+  test('React Admin update enctype and method override', async () => {
+    await dataProvider.introspect();
+
+    return dataProvider
+      .update('resource', {
+        id: '/entrypoint/resource/1',
+        data: {
+          foo: 'foo',
+          bar: 'baz',
+          formEnctype: 'multipart',
+          formMethod: 'POST',
+        },
+      })
+      .then(() => {
+        const url = mockFetchHydra.mock.calls[6][0];
+        expect(url).toBeInstanceOf(URL);
+        expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+        const options = mockFetchHydra.mock.calls[6][1];
+        expect(options).toHaveProperty('method');
+        expect(options.method).toEqual('POST');
+        expect(options).toHaveProperty('body');
+        expect(options.body).toBeInstanceOf(FormData);
+        expect(Array.from(options.body.entries())).toEqual([
+          ['foo', 'foo'],
+          ['bar', 'baz'],
         ]);
       });
   });
