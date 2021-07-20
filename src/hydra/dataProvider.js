@@ -180,12 +180,7 @@ export default (
         isPlainObject(element) &&
         Object.values(element).some((value) => value instanceof File);
       const containsMultipartOverride = (data) => {
-        if (data.formEnctype && data.formEnctype === 'multipart/form-data') {
-          delete data.formEnctype;
-          return true;
-        } else {
-          return false;
-        }
+        return data.formEnctype === 'multipart/form-data' ? true : false;
       };
 
       if (
@@ -193,6 +188,10 @@ export default (
         !containsMultipartOverride(data)
       ) {
         return JSON.stringify(data);
+      }
+
+      if(containsMultipartOverride(data)){
+        delete data.formEnctype;
       }
 
       // If data contains a file, use FormData instead of JSON.
@@ -345,7 +344,8 @@ export default (
         });
 
       case UPDATE:
-        const updateHttpVerb = (params.data?.formMethod === 'POST') ? 'POST' : 'PUT';
+        const updateHttpVerb =
+          params.data?.formMethod === 'POST' ? 'POST' : 'PUT';
         delete params?.data?.formMethod;
         return transformReactAdminDataToRequestBody(resource, params.data).then(
           (body) => ({
