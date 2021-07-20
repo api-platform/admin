@@ -227,7 +227,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         data: {
           bar: 'baz',
           foo: 'foo',
-          formEnctype: 'multipart',
+          formEnctype: 'multipart/form-data',
         },
       })
       .then(() => {
@@ -280,7 +280,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         data: {
           foo: 'foo',
           bar: 'baz',
-          formEnctype: 'multipart',
+          formEnctype: 'multipart/form-data',
         },
       })
       .then(() => {
@@ -310,7 +310,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         data: {
           foo: 'foo',
           bar: 'baz',
-          formEnctype: 'multipart',
+          formEnctype: 'multipart/form-data',
           formMethod: 'POST',
         },
       })

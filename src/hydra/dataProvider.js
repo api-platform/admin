@@ -180,7 +180,7 @@ export default (
         isPlainObject(element) &&
         Object.values(element).some((value) => value instanceof File);
       const containsMultipartOverride = (data) => {
-        if (data.formEnctype && data.formEnctype === 'multipart') {
+        if (data.formEnctype && data.formEnctype === 'multipart/form-data') {
           delete data.formEnctype;
           return true;
         } else {
