@@ -190,7 +190,7 @@ export default (
         return JSON.stringify(data);
       }
 
-      if(containsMultipartOverride(data)){
+      if (containsMultipartOverride(data)) {
         delete data.formEnctype;
       }
 
