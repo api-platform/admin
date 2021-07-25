@@ -342,8 +342,8 @@ export default (
         });
 
       case UPDATE:
-        const updateHttpVerb =
-          params.data?.formMethod === 'POST' ? 'POST' : 'PUT';
+        const updateHttpMethod =
+          params.data?.formMethod ?? 'PUT';
         delete params?.data?.formMethod;
         return transformReactAdminDataToRequestBody(resource, params.data).then(
           (body) => ({
