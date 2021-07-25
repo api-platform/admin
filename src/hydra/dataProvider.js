@@ -179,9 +179,7 @@ export default (
       const containFile = (element) =>
         isPlainObject(element) &&
         Object.values(element).some((value) => value instanceof File);
-      const containsMultipartOverride = (data) => {
-        return data.formEnctype === 'multipart/form-data' ? true : false;
-      };
+      const containsMultipartOverride = (data) => data.formEnctype === 'multipart/form-data';
 
       if (
         !values.some((value) => containFile(value)) &&
