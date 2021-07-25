@@ -2,7 +2,7 @@
 
 ## 2.6.5
 
-* Accept 'formEnctype: multipart' in data passed to data provider to force multipart encoding.
+* Accept 'formEnctype: multipart/form-data' in data passed to data provider to force multipart encoding.
 
 ## 2.6.4
 
