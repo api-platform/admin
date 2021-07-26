@@ -177,13 +177,12 @@ export default (
     return convertReactAdminDataToHydraData(apiResource, data).then((data) => {
       const values = Object.values(data);
       const containFile = (element) =>
-        isPlainObject(element) &&
-        Object.values(element).some((value) => value instanceof File);
-      const containFileField = (data) => data.extraInformation?.hasFileField;
+        (isPlainObject(element) &&
+        Object.values(element).some((value) => value instanceof File)) || 
+        element.hasFileField;
       
       if (
-        !values.some((value) => containFile(value)) &&
-        !containFileField(data)
+        !values.some((value) => containFile(value))
       ) {
         delete data.extraInformation;
         return JSON.stringify(data);
