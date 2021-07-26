@@ -179,22 +179,23 @@ export default (
       const containFile = (element) =>
         isPlainObject(element) &&
         Object.values(element).some((value) => value instanceof File);
-      const containsMultipartOverride = (data) => data.formEnctype === 'multipart/form-data';
-
+      const containFileField = (data) => data.extraInformation?.hasFileField;
+      
       if (
         !values.some((value) => containFile(value)) &&
-        !containsMultipartOverride(data)
+        !containFileField(data)
       ) {
+        delete data.extraInformation;
         return JSON.stringify(data);
-      }
-
-      if (containsMultipartOverride(data)) {
-        delete data.formEnctype;
       }
 
       // If data contains a file, use FormData instead of JSON.
       const body = new FormData();
       Object.entries(data).map(([key, value]) => {
+        // Don´t consider the extraInformation field on response.
+        if(key === 'extraInformation'){
+          return body;
+        }
         // React-Admin FileInput format is an object containing a file.
         if (containFile(value)) {
           return body.append(
@@ -343,13 +344,12 @@ export default (
 
       case UPDATE:
         const updateHttpMethod =
-          params.data?.formMethod ?? 'PUT';
-        delete params?.data?.formMethod;
+          params.data?.extraInformation?.hasFileField ? 'POST' : 'PUT';
         return transformReactAdminDataToRequestBody(resource, params.data).then(
           (body) => ({
             options: {
               body,
-              method: updateHttpVerb,
+              method: updateHttpMethod,
             },
             url: itemUrl,
           }),
