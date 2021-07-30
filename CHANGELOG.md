@@ -2,7 +2,7 @@
 
 ## 2.6.5
 
-* Accept 'formEnctype: multipart/form-data' in data passed to data provider to force multipart encoding.
+* Accept `extraInformation` in data passed to data provider. Use a `hasFileField` field to force multipart encoding.
 
 ## 2.6.4
 

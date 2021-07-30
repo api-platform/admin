@@ -217,7 +217,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         foo: 'foo',
         extraInformation: {
           hasFileField: true,
-        }
+        },
       },
     });
     const url = mockFetchHydra.mock.calls[3][0];
@@ -241,9 +241,6 @@ describe('Transform a React Admin request to an Hydra request', () => {
       data: {
         foo: 'foo',
         bar: 'baz',
-        extraInformation: {
-          hasFileField: false
-        },
       },
     });
     const url = mockFetchHydra.mock.calls[4][0];
@@ -264,7 +261,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         foo: 'foo',
         bar: 'baz',
         extraInformation: {
-          hasFileField: true
+          hasFileField: true,
         },
       },
     });
@@ -281,49 +278,4 @@ describe('Transform a React Admin request to an Hydra request', () => {
       ['bar', 'baz'],
     ]);
   });
-
-  test('React Admin update - ignore extraInformation even when not using file field', async () => {
-    await dataProvider.introspect();
-    await dataProvider.update('resource', {
-      id: '/entrypoint/resource/1',
-      data: {
-        foo: 'foo',
-        bar: 'baz',
-        extraInformation: {
-          hasFileField: false
-        },
-      },
-    });
-    const url = mockFetchHydra.mock.calls[6][0];
-    expect(url).toBeInstanceOf(URL);
-    expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
-    const options = mockFetchHydra.mock.calls[6][1];
-    expect(options).toHaveProperty('method');
-    expect(options.method).toEqual('PUT');
-    expect(options).toHaveProperty('body');
-    expect(options.body).toEqual('{"foo":"foo","bar":"baz"}');
-  });
-
-  test('React Admin create - ignore extraInformation even when not using file field', async () => {
-    await dataProvider.introspect();
-    await dataProvider.create('resource', {
-      data: {
-        foo: 'foo',
-        bar: 'baz',
-        extraInformation: {
-          hasFileField: false,
-          anything: true,
-        },
-      },
-    });
-    const url = mockFetchHydra.mock.calls[7][0];
-    expect(url).toBeInstanceOf(URL);
-    expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
-    const options = mockFetchHydra.mock.calls[7][1];
-    expect(options).toHaveProperty('method');
-    expect(options.method).toEqual('POST');
-    expect(options).toHaveProperty('body');
-    expect(options.body).toEqual('{"foo":"foo","bar":"baz"}');
-  });
-  
 });
