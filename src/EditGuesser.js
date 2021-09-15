@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Edit,
+  FileInput,
   SimpleForm,
   useMutation,
   useNotify,
@@ -61,6 +62,17 @@ export const IntrospectedEditGuesser = ({
   const [mutate] = useMutation();
   const notify = useNotify();
   const redirect = useRedirect();
+
+  let inputChildren = children;
+  if (!inputChildren) {
+    inputChildren = writableFields.map((field) => (
+      <InputGuesser key={field.name} source={field.name} />
+    ));
+    displayOverrideCode(schema, writableFields);
+  }
+
+  const hasFileField = inputChildren.some((child) => child.type === FileInput);
+
   const save = useCallback(
     async (values) => {
       try {
@@ -68,7 +80,10 @@ export const IntrospectedEditGuesser = ({
           {
             type: 'update',
             resource: resource,
-            payload: { id, data: values },
+            payload: {
+              id,
+              data: { ...values, extraInformation: { hasFileField } },
+            },
           },
           { returnPromise: true },
         );
@@ -109,6 +124,7 @@ export const IntrospectedEditGuesser = ({
     },
     [
       mutate,
+      hasFileField,
       resource,
       id,
       onSuccess,
@@ -122,20 +138,13 @@ export const IntrospectedEditGuesser = ({
     ],
   );
 
-  let inputChildren = children;
-  if (!inputChildren) {
-    inputChildren = writableFields.map((field) => (
-      <InputGuesser key={field.name} source={field.name} />
-    ));
-    displayOverrideCode(schema, writableFields);
-  }
-
   return (
     <Edit
       resource={resource}
       id={id}
       basePath={basePath}
       mutationMode={mutationMode}
+      transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
       {...props}>
       <SimpleForm
         save={mutationMode !== 'pessimistic' ? undefined : save}
