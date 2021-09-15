@@ -118,104 +118,164 @@ describe('Transform a React Admin request to an Hydra request', () => {
     mockApiDocumentationParser,
   );
 
-  test('React Admin get list with filter parameters and custom search params', () => {
-    return dataProvider
-      .getList('resource', {
-        pagination: {},
-        sort: {},
-        filter: {
-          simple: 'foo',
-          nested: { param: 'bar' },
-          sub_nested: { sub: { param: true } },
-          array: ['/iri/1', '/iri/2'],
-          nested_array: { nested: ['/nested_iri/1', '/nested_iri/2'] },
-          exists: { foo: true },
-          nested_date: { date: { before: '2000' } },
-          nested_range: { range: { between: '12.99..15.99' } },
-        },
-        searchParams: { pagination: true },
-      })
-      .then(() => {
-        const searchParams = Array.from(
-          mockFetchHydra.mock.calls[0][0].searchParams.entries(),
-        );
-        expect(searchParams[0]).toEqual(['pagination', 'true']);
-        expect(searchParams[1]).toEqual(['simple', 'foo']);
-        expect(searchParams[2]).toEqual(['nested.param', 'bar']);
-        expect(searchParams[3]).toEqual(['sub_nested.sub.param', 'true']);
-        expect(searchParams[4]).toEqual(['array[0]', '/iri/1']);
-        expect(searchParams[5]).toEqual(['array[1]', '/iri/2']);
-        expect(searchParams[6]).toEqual([
-          'nested_array.nested[0]',
-          '/nested_iri/1',
-        ]);
-        expect(searchParams[7]).toEqual([
-          'nested_array.nested[1]',
-          '/nested_iri/2',
-        ]);
-        expect(searchParams[8]).toEqual(['exists[foo]', 'true']);
-        expect(searchParams[9]).toEqual(['nested_date.date[before]', '2000']);
-        expect(searchParams[10]).toEqual([
-          'nested_range.range[between]',
-          '12.99..15.99',
-        ]);
-      });
+  test('React Admin get list with filter parameters and custom search params', async () => {
+    await dataProvider.getList('resource', {
+      pagination: {},
+      sort: {},
+      filter: {
+        simple: 'foo',
+        nested: { param: 'bar' },
+        sub_nested: { sub: { param: true } },
+        array: ['/iri/1', '/iri/2'],
+        nested_array: { nested: ['/nested_iri/1', '/nested_iri/2'] },
+        exists: { foo: true },
+        nested_date: { date: { before: '2000' } },
+        nested_range: { range: { between: '12.99..15.99' } },
+      },
+      searchParams: { pagination: true },
+    });
+    const searchParams = Array.from(
+      mockFetchHydra.mock.calls[0][0].searchParams.entries(),
+    );
+    expect(searchParams[0]).toEqual(['pagination', 'true']);
+    expect(searchParams[1]).toEqual(['simple', 'foo']);
+    expect(searchParams[2]).toEqual(['nested.param', 'bar']);
+    expect(searchParams[3]).toEqual(['sub_nested.sub.param', 'true']);
+    expect(searchParams[4]).toEqual(['array[0]', '/iri/1']);
+    expect(searchParams[5]).toEqual(['array[1]', '/iri/2']);
+    expect(searchParams[6]).toEqual([
+      'nested_array.nested[0]',
+      '/nested_iri/1',
+    ]);
+    expect(searchParams[7]).toEqual([
+      'nested_array.nested[1]',
+      '/nested_iri/2',
+    ]);
+    expect(searchParams[8]).toEqual(['exists[foo]', 'true']);
+    expect(searchParams[9]).toEqual(['nested_date.date[before]', '2000']);
+    expect(searchParams[10]).toEqual([
+      'nested_range.range[between]',
+      '12.99..15.99',
+    ]);
   });
 
   test('React Admin create', async () => {
     await dataProvider.introspect();
-
-    return dataProvider
-      .create('resource', {
-        data: {
-          foo: 'foo',
-          bar: 'baz',
-        },
-      })
-      .then(() => {
-        const url = mockFetchHydra.mock.calls[1][0];
-        expect(url).toBeInstanceOf(URL);
-        expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
-        const options = mockFetchHydra.mock.calls[1][1];
-        expect(options).toHaveProperty('method');
-        expect(options.method).toEqual('POST');
-        expect(options).toHaveProperty('body');
-        expect(options.body).toEqual('{"foo":"foo","bar":"baz"}');
-      });
+    await dataProvider.create('resource', {
+      data: {
+        foo: 'foo',
+        bar: 'baz',
+      },
+    });
+    const url = mockFetchHydra.mock.calls[1][0];
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
+    const options = mockFetchHydra.mock.calls[1][1];
+    expect(options).toHaveProperty('method');
+    expect(options.method).toEqual('POST');
+    expect(options).toHaveProperty('body');
+    expect(options.body).toEqual('{"foo":"foo","bar":"baz"}');
   });
 
   test('React Admin create upload file', async () => {
     await dataProvider.introspect();
 
     const file = new File(['foo'], 'foo.txt');
-    return dataProvider
-      .create('resource', {
-        data: {
-          image: {
-            rawFile: file,
-          },
-          bar: 'baz',
-          array: ['foo', 'dummy'],
-          object: { foo: 'dummy' },
-          date: new Date(Date.UTC(2020, 6, 6, 12)),
+    await dataProvider.create('resource', {
+      data: {
+        image: {
+          rawFile: file,
         },
-      })
-      .then(() => {
-        const url = mockFetchHydra.mock.calls[2][0];
-        expect(url).toBeInstanceOf(URL);
-        expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
-        const options = mockFetchHydra.mock.calls[2][1];
-        expect(options).toHaveProperty('method');
-        expect(options.method).toEqual('POST');
-        expect(options).toHaveProperty('body');
-        expect(options.body).toBeInstanceOf(FormData);
-        expect(Array.from(options.body.entries())).toEqual([
-          ['image', file],
-          ['bar', 'baz'],
-          ['array', '["foo","dummy"]'],
-          ['object', '{"foo":"dummy"}'],
-          ['date', '2020-07-06T12:00:00.000Z'],
-        ]);
-      });
+        bar: 'baz',
+        array: ['foo', 'dummy'],
+        object: { foo: 'dummy' },
+        date: new Date(Date.UTC(2020, 6, 6, 12)),
+      },
+    });
+    const url = mockFetchHydra.mock.calls[2][0];
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
+    const options = mockFetchHydra.mock.calls[2][1];
+    expect(options).toHaveProperty('method');
+    expect(options.method).toEqual('POST');
+    expect(options).toHaveProperty('body');
+    expect(options.body).toBeInstanceOf(FormData);
+    expect(Array.from(options.body.entries())).toEqual([
+      ['image', file],
+      ['bar', 'baz'],
+      ['array', '["foo","dummy"]'],
+      ['object', '{"foo":"dummy"}'],
+      ['date', '2020-07-06T12:00:00.000Z'],
+    ]);
+  });
+
+  test('React Admin create with file field', async () => {
+    await dataProvider.introspect();
+    await dataProvider.create('resource', {
+      data: {
+        bar: 'baz',
+        foo: 'foo',
+        extraInformation: {
+          hasFileField: true,
+        },
+      },
+    });
+    const url = mockFetchHydra.mock.calls[3][0];
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
+    const options = mockFetchHydra.mock.calls[3][1];
+    expect(options).toHaveProperty('method');
+    expect(options.method).toEqual('POST');
+    expect(options).toHaveProperty('body');
+    expect(options.body).toBeInstanceOf(FormData);
+    expect(Array.from(options.body.entries())).toEqual([
+      ['bar', 'baz'],
+      ['foo', 'foo'],
+    ]);
+  });
+
+  test('React Admin update', async () => {
+    await dataProvider.introspect();
+    await dataProvider.update('resource', {
+      id: '/entrypoint/resource/1',
+      data: {
+        foo: 'foo',
+        bar: 'baz',
+      },
+    });
+    const url = mockFetchHydra.mock.calls[4][0];
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+    const options = mockFetchHydra.mock.calls[4][1];
+    expect(options).toHaveProperty('method');
+    expect(options.method).toEqual('PUT');
+    expect(options).toHaveProperty('body');
+    expect(options.body).toEqual('{"foo":"foo","bar":"baz"}');
+  });
+
+  test('React Admin update with file field', async () => {
+    await dataProvider.introspect();
+    await dataProvider.update('resource', {
+      id: '/entrypoint/resource/1',
+      data: {
+        foo: 'foo',
+        bar: 'baz',
+        extraInformation: {
+          hasFileField: true,
+        },
+      },
+    });
+    const url = mockFetchHydra.mock.calls[5][0];
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
+    const options = mockFetchHydra.mock.calls[5][1];
+    expect(options).toHaveProperty('method');
+    expect(options.method).toEqual('POST');
+    expect(options).toHaveProperty('body');
+    expect(options.body).toBeInstanceOf(FormData);
+    expect(Array.from(options.body.entries())).toEqual([
+      ['foo', 'foo'],
+      ['bar', 'baz'],
+    ]);
   });
 });

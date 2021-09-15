@@ -162,10 +162,15 @@ export default (
   /**
    * @param {string} resource
    * @param {Object} data
+   * @param {Object} extraInformation
    *
    * @returns {Promise}
    */
-  const transformReactAdminDataToRequestBody = (resource, data = {}) => {
+  const transformReactAdminDataToRequestBody = (
+    resource,
+    data,
+    extraInformation,
+  ) => {
     /** @type {Resource} */
     const apiResource = apiSchema.resources.find(
       ({ name }) => resource === name,
@@ -180,11 +185,13 @@ export default (
         isPlainObject(element) &&
         Object.values(element).some((value) => value instanceof File);
 
-      if (!values.some((value) => containFile(value))) {
+      if (
+        !extraInformation.hasFileField &&
+        !values.some((value) => containFile(value))
+      ) {
         return JSON.stringify(data);
       }
 
-      // If data contains a file, use FormData instead of JSON.
       const body = new FormData();
       Object.entries(data).map(([key, value]) => {
         // React-Admin FileInput format is an object containing a file.
@@ -237,18 +244,22 @@ export default (
       );
       itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
     }
+    const extraInformation = params.data?.extraInformation ?? {};
+    delete params.data?.extraInformation;
 
     switch (type) {
       case CREATE:
-        return transformReactAdminDataToRequestBody(resource, params.data).then(
-          (body) => ({
-            options: {
-              body,
-              method: 'POST',
-            },
-            url: collectionUrl,
-          }),
-        );
+        return transformReactAdminDataToRequestBody(
+          resource,
+          params.data,
+          extraInformation,
+        ).then((body) => ({
+          options: {
+            body,
+            method: 'POST',
+          },
+          url: collectionUrl,
+        }));
 
       case DELETE:
         return Promise.resolve({
@@ -334,15 +345,18 @@ export default (
         });
 
       case UPDATE:
-        return transformReactAdminDataToRequestBody(resource, params.data).then(
-          (body) => ({
-            options: {
-              body,
-              method: 'PUT',
-            },
-            url: itemUrl,
-          }),
-        );
+        const updateHttpMethod = extraInformation.hasFileField ? 'POST' : 'PUT';
+        return transformReactAdminDataToRequestBody(
+          resource,
+          params.data,
+          extraInformation,
+        ).then((body) => ({
+          options: {
+            body,
+            method: updateHttpMethod,
+          },
+          url: itemUrl,
+        }));
 
       default:
         throw new Error(`Unsupported fetch action type ${type}`);
