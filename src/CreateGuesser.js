@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Create,
+  FileInput,
   SimpleForm,
   useMutation,
   useNotify,
@@ -57,6 +58,17 @@ export const IntrospectedCreateGuesser = ({
   const [mutate] = useMutation();
   const notify = useNotify();
   const redirect = useRedirect();
+
+  let inputChildren = children;
+  if (!inputChildren) {
+    inputChildren = writableFields.map((field) => (
+      <InputGuesser key={field.name} source={field.name} />
+    ));
+    displayOverrideCode(schema, writableFields);
+  }
+
+  const hasFileField = inputChildren.some((child) => child.type === FileInput);
+
   const save = useCallback(
     async (values) => {
       try {
@@ -64,7 +76,9 @@ export const IntrospectedCreateGuesser = ({
           {
             type: 'create',
             resource: resource,
-            payload: { data: values },
+            payload: {
+              data: { ...values, extraInformation: { hasFileField } },
+            },
           },
           { returnPromise: true },
         );
@@ -105,6 +119,7 @@ export const IntrospectedCreateGuesser = ({
     },
     [
       mutate,
+      hasFileField,
       resource,
       onSuccess,
       successMessage,
@@ -116,14 +131,6 @@ export const IntrospectedCreateGuesser = ({
       schemaAnalyzer,
     ],
   );
-
-  let inputChildren = children;
-  if (!inputChildren) {
-    inputChildren = writableFields.map((field) => (
-      <InputGuesser key={field.name} source={field.name} />
-    ));
-    displayOverrideCode(schema, writableFields);
-  }
 
   return (
     <Create resource={resource} basePath={basePath} {...props}>
