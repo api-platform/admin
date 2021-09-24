@@ -244,8 +244,11 @@ export default (
       );
       itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
     }
-    const extraInformation = params.data?.extraInformation ?? {};
-    delete params.data?.extraInformation;
+    let extraInformation = {};
+    if (params.data && params.data.extraInformation) {
+      extraInformation = params.data.extraInformation;
+      delete params.data.extraInformation;
+    }
 
     switch (type) {
       case CREATE:
