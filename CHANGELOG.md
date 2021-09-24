@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.7
+
+* Always use an array for `inputChildren` in guessers
+
 ## 2.6.6
 
 * Do not use modern operators
