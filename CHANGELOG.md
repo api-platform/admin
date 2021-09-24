@@ -1,9 +1,13 @@
 # Changelog
 
+## 2.6.6
+
+* Do not use modern operators
+
 ## 2.6.5
 
 * Accept `extraInformation` in data passed to data provider. Use a `hasFileField` field to force multipart encoding.
-* `CreateGuesser` and `EditGuesser` add the `hasFileField` field to `extraInformation` if a child is a `File`.
+* `CreateGuesser` and `EditGuesser` add the `hasFileField` field to `extraInformation` if a child is a `File`
 
 ## 2.6.4
 
