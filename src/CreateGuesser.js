@@ -67,6 +67,10 @@ export const IntrospectedCreateGuesser = ({
     displayOverrideCode(schema, writableFields);
   }
 
+  if (!Array.isArray(inputChildren)) {
+    inputChildren = [inputChildren];
+  }
+
   const hasFileField = inputChildren.some((child) => child.type === FileInput);
 
   const save = useCallback(
