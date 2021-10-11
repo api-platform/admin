@@ -9,7 +9,7 @@ import {
   defaultI18nProvider,
 } from 'react-admin';
 import { createHashHistory } from 'history';
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme as createMuiTheme } from '@material-ui/core';
 
 import ErrorBoundary from './ErrorBoundary';
 import IntrospectionContext from './IntrospectionContext';
