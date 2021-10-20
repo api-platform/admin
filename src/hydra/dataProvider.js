@@ -201,7 +201,7 @@ export default (
             Object.values(value).find((value) => value instanceof File),
           );
         }
-        if ('function' === typeof value.toJSON) {
+        if (value && 'function' === typeof value.toJSON) {
           return body.append(key, value.toJSON());
         }
         if (isPlainObject(value) || Array.isArray(value)) {
