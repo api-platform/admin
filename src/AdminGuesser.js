@@ -39,6 +39,7 @@ export const AdminResourcesGuesser = ({
   // Admin props
   customReducers = {},
   loadingPage: LoadingPage = Loading,
+  admin: AdminEl = Admin,
   // Props
   children,
   includeDeprecated,
@@ -62,12 +63,12 @@ export const AdminResourcesGuesser = ({
   }
 
   return (
-    <Admin
+    <AdminEl
       customReducers={{ introspect: introspectReducer, ...customReducers }}
       loading={LoadingPage}
       {...rest}>
       {resourceChildren}
-    </Admin>
+    </AdminEl>
   );
 };
 
