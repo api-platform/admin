@@ -117,6 +117,7 @@ export default (
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
+  disableCache = false,
 ) => {
   /** @type {Api} */
   let apiSchema;
@@ -423,7 +424,7 @@ export default (
             transformJsonLdDocumentToReactAdminDocument(
               document,
               true,
-              true,
+              !disableCache,
               useEmbedded,
             ),
           ),
@@ -454,7 +455,7 @@ export default (
           transformJsonLdDocumentToReactAdminDocument(
             response.json,
             true,
-            true,
+            !disableCache,
             useEmbedded,
           ),
         )
