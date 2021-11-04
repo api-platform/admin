@@ -187,6 +187,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
           rawFile: file,
         },
         bar: 'baz',
+        qux: null,
         array: ['foo', 'dummy'],
         object: { foo: 'dummy' },
         date: new Date(Date.UTC(2020, 6, 6, 12)),
@@ -203,6 +204,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
     expect(Array.from(options.body.entries())).toEqual([
       ['image', file],
       ['bar', 'baz'],
+      ['qux', 'null'],
       ['array', '["foo","dummy"]'],
       ['object', '{"foo":"dummy"}'],
       ['date', '2020-07-06T12:00:00.000Z'],
@@ -260,6 +262,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
       data: {
         foo: 'foo',
         bar: 'baz',
+        qux: null,
         extraInformation: {
           hasFileField: true,
         },
@@ -276,6 +279,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
     expect(Array.from(options.body.entries())).toEqual([
       ['foo', 'foo'],
       ['bar', 'baz'],
+      ['qux', 'null'],
     ]);
   });
 });
