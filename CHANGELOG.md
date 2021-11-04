@@ -2,7 +2,7 @@
 
 ## 2.6.8
 
-* Make sure a property's value is not null before check if there is a `toJSON` property in a form data value
+* Make sure a property's value is not null before checking if there is a `toJSON` property in a form data value
 
 ## 2.6.7
 
