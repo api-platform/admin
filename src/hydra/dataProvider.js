@@ -114,12 +114,16 @@ export const transformJsonLdDocumentToReactAdminDocument = (
  */
 export default (
   entrypoint,
+  mercureHub = `${entrypoint}/.well-known/mercure`,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) => {
   /** @type {Api} */
   let apiSchema;
+
+  // store mercure subscriptions
+  const subscriptions = [];
 
   /**
    * @param {Resource} resource
@@ -564,5 +568,30 @@ export default (
                   (status ? `Status: ${status}` : ''),
               );
             }),
+    subscribe: (resourceID, callback) => {
+      if (!subscriptions.find((sub) => sub.id === resourceID)) {
+        const url = new URL(mercureHub, window.origin);
+        url.searchParams.append(
+          'topic',
+          new URL(resourceID, entrypoint).toString(),
+        );
+        const eventSource = new EventSource(url.toString());
+        eventSource.addEventListener('message', (event) => {
+          const document = transformJsonLdDocumentToReactAdminDocument(
+            JSON.parse(event.data),
+          );
+          // we need redux's `dispatch` from the react tree
+          callback(document);
+        });
+
+        subscriptions.push({ id: resourceID, eventSource });
+      }
+
+      return Promise.resolve({ data: null });
+    },
+    unsubscribe: (resource, resourceID) => {
+      subscriptions.filter((sub) => sub.id !== resourceID);
+      return Promise.resolve({ data: null });
+    },
   };
 };

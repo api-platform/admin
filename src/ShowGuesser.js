@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Show, SimpleShowLayout } from 'react-admin';
 import FieldGuesser from './FieldGuesser';
 import Introspecter from './Introspecter';
+import useMercureSubscription from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -40,6 +41,8 @@ export const IntrospectedShowGuesser = ({
     ));
     displayOverrideCode(schema, readableFields);
   }
+
+  useMercureSubscription(props.resource, props.id);
 
   return (
     <Show {...props}>
