@@ -6,6 +6,8 @@ import FieldGuesser from './FieldGuesser';
 import { API_FIELDS_DATA } from './__fixtures__/parsedData';
 import { IntrospectedShowGuesser } from './ShowGuesser';
 
+jest.mock('./useMercureSubscription');
+
 describe('<ShowGuesser />', () => {
   test('renders with no children', () => {
     const wrapper = shallow(
