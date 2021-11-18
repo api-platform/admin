@@ -7,12 +7,13 @@ import {
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-export default function useMercureSubscription(resource, id) {
+export default function useMercureSubscription(resource, idOrIds) {
   const dataProvider = useDataProvider();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dataProvider.subscribe(id, (document) => {
+    const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
+    dataProvider.subscribe(ids, (document) => {
       dispatch({
         type: CRUD_GET_ONE_SUCCESS,
         payload: {
@@ -27,7 +28,7 @@ export default function useMercureSubscription(resource, id) {
     });
 
     return () => {
-      dataProvider.unsubscribe(resource, id);
+      dataProvider.unsubscribe(resource, ids);
     };
-  }, [id, resource, dataProvider, dispatch]);
+  }, [idOrIds, resource, dataProvider, dispatch]);
 }
