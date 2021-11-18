@@ -568,9 +568,9 @@ export default (
                   (status ? `Status: ${status}` : ''),
               );
             }),
-    subscribe: (resourceIDs, callback) => {
-      resourceIDs.forEach((resourceID) => {
-        const sub = subscriptions.find((sub) => sub.id === resourceID);
+    subscribe: (resourceIds, callback) => {
+      resourceIds.forEach((resourceId) => {
+        const sub = subscriptions.find((sub) => sub.id === resourceId);
         if (sub != null) {
           sub.count++;
           return;
@@ -579,7 +579,7 @@ export default (
         const url = new URL(mercureHub, window.origin);
         url.searchParams.append(
           'topic',
-          new URL(resourceID, entrypoint).toString(),
+          new URL(resourceId, entrypoint).toString(),
         );
         const eventSource = new EventSource(url.toString());
         const eventListener = (event) => {
@@ -592,7 +592,7 @@ export default (
         eventSource.addEventListener('message', eventListener);
 
         subscriptions.push({
-          id: resourceID,
+          id: resourceId,
           eventSource,
           eventListener,
           count: 1,
@@ -601,9 +601,9 @@ export default (
 
       return Promise.resolve({ data: null });
     },
-    unsubscribe: (resource, resourceIDs) => {
+    unsubscribe: (resource, resourceIds) => {
       subscriptions.filter((sub) => {
-        if (resourceIDs.includes(sub.id)) {
+        if (resourceIds.includes(sub.id)) {
           sub.count--;
           if (sub.count <= 0) {
             sub.eventSource.removeEventListener('message', sub.eventListener);

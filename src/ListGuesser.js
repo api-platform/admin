@@ -33,7 +33,7 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
-export const DatagridBodyWithMercureSubs = (props) => {
+export const DatagridBodyWithMercure = (props) => {
   useMercureSubscription(props.resource, props.ids);
 
   return <DatagridBody {...props} />;
@@ -48,7 +48,7 @@ export const IntrospectedListGuesser = ({
   rowClick,
   rowStyle,
   isRowSelectable,
-  body = DatagridBodyWithMercureSubs,
+  body = DatagridBodyWithMercure,
   expand,
   optimized,
   children,
