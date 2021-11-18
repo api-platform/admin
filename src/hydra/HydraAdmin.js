@@ -9,8 +9,11 @@ const hydraSchemaAnalyzer = schemaAnalyzer();
 
 const HydraAdmin = ({
   entrypoint,
-  mercureHub,
-  dataProvider = dataProviderFactory({ entrypoint, mercureHub }),
+  mercure,
+  dataProvider = dataProviderFactory({
+    entrypoint,
+    mercure,
+  }),
   schemaAnalyzer = hydraSchemaAnalyzer,
   ...props
 }) => (

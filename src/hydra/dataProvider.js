@@ -124,7 +124,7 @@ export default (
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) => {
-  let mercureHub;
+  let mercure;
   let entrypoint = entrypointOrParams;
   if (typeof entrypointOrParams === 'object') {
     const params = Object.assign({}, defaultParams, entrypointOrParams);
@@ -132,9 +132,15 @@ export default (
     httpClient = params.httpClient;
     apiDocumentationParser = params.apiDocumentationParser;
     useEmbedded = params.useEmbedded;
-    mercureHub =
-      entrypointOrParams.mercureHub ||
-      `${entrypointOrParams.entrypoint}/.well-known/mercure`;
+    mercure = Object.assign(
+      {},
+      {
+        hub: `${params.entrypoint}/.well-known/mercure`,
+        jwt: null,
+        topicUrl: window.origin,
+      },
+      params.mercure,
+    );
   }
 
   /** @type {Api} */
@@ -587,35 +593,44 @@ export default (
               );
             }),
     subscribe: (resourceIds, callback) => {
-      resourceIds.forEach((resourceId) => {
-        const sub = subscriptions.find((sub) => sub.id === resourceId);
-        if (sub != null) {
-          sub.count++;
-          return;
-        }
+      if (mercure !== undefined) {
+        resourceIds.forEach((resourceId) => {
+          const sub = subscriptions.find((sub) => sub.id === resourceId);
+          if (sub !== undefined) {
+            sub.count++;
+            return;
+          }
 
-        const url = new URL(mercureHub, window.origin);
-        url.searchParams.append(
-          'topic',
-          new URL(resourceId, entrypoint).toString(),
-        );
-        const eventSource = new EventSource(url.toString());
-        const eventListener = (event) => {
-          const document = transformJsonLdDocumentToReactAdminDocument(
-            JSON.parse(event.data),
+          const url = new URL(mercure.hub, window.origin);
+          url.searchParams.append(
+            'topic',
+            new URL(resourceId, mercure.topicUrl).toString(),
           );
-          // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
-          callback(document);
-        };
-        eventSource.addEventListener('message', eventListener);
 
-        subscriptions.push({
-          id: resourceId,
-          eventSource,
-          eventListener,
-          count: 1,
+          if (mercure.jwt !== null) {
+            document.cookie = `mercureAuthorization=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
+          }
+
+          const eventSource = new EventSource(url.toString(), {
+            withCredentials: mercure.jwt !== null,
+          });
+          const eventListener = (event) => {
+            const document = transformJsonLdDocumentToReactAdminDocument(
+              JSON.parse(event.data),
+            );
+            // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
+            callback(document);
+          };
+          eventSource.addEventListener('message', eventListener);
+
+          subscriptions.push({
+            id: resourceId,
+            eventSource,
+            eventListener,
+            count: 1,
+          });
         });
-      });
+      }
 
       return Promise.resolve({ data: null });
     },
