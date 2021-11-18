@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Datagrid, List, EditButton, ShowButton, DatagridBody } from 'react-admin';
+import {
+  Datagrid,
+  List,
+  EditButton,
+  ShowButton,
+  DatagridBody,
+} from 'react-admin';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import Introspecter from './Introspecter';

@@ -570,29 +570,50 @@ export default (
             }),
     subscribe: (resourceIDs, callback) => {
       resourceIDs.forEach((resourceID) => {
-        if (!subscriptions.find((sub) => sub.id === resourceID)) {
-          const url = new URL(mercureHub, window.origin);
-          url.searchParams.append(
-            'topic',
-            new URL(resourceID, entrypoint).toString(),
-          );
-          const eventSource = new EventSource(url.toString());
-          eventSource.addEventListener('message', (event) => {
-            const document = transformJsonLdDocumentToReactAdminDocument(
-              JSON.parse(event.data),
-            );
-            // we need redux's `dispatch` from the react tree
-            callback(document);
-          });
-
-          subscriptions.push({ id: resourceID, eventSource });
+        const sub = subscriptions.find((sub) => sub.id === resourceID);
+        if (sub != null) {
+          sub.count++;
+          return;
         }
+
+        const url = new URL(mercureHub, window.origin);
+        url.searchParams.append(
+          'topic',
+          new URL(resourceID, entrypoint).toString(),
+        );
+        const eventSource = new EventSource(url.toString());
+        const eventListener = (event) => {
+          const document = transformJsonLdDocumentToReactAdminDocument(
+            JSON.parse(event.data),
+          );
+          // we need redux's `dispatch` from the react tree
+          callback(document);
+        };
+        eventSource.addEventListener('message', eventListener);
+
+        subscriptions.push({
+          id: resourceID,
+          eventSource,
+          eventListener,
+          count: 1,
+        });
       });
 
       return Promise.resolve({ data: null });
     },
     unsubscribe: (resource, resourceIDs) => {
-      subscriptions.filter((sub) => !resourceIDs.includes(sub.id));
+      subscriptions.filter((sub) => {
+        if (resourceIDs.includes(sub.id)) {
+          sub.count--;
+          if (sub.count <= 0) {
+            sub.eventSource.removeEventListener('message', sub.eventListener);
+            return false;
+          }
+        }
+
+        return true;
+      });
+
       return Promise.resolve({ data: null });
     },
   };
