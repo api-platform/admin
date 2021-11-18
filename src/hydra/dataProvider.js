@@ -586,7 +586,7 @@ export default (
           const document = transformJsonLdDocumentToReactAdminDocument(
             JSON.parse(event.data),
           );
-          // we need redux's `dispatch` from the react tree
+          // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
           callback(document);
         };
         eventSource.addEventListener('message', eventListener);
