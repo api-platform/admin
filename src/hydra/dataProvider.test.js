@@ -112,12 +112,12 @@ describe('Transform a React Admin request to an Hydra request', () => {
       }),
     }),
   );
-  const dataProvider = dataProviderFactory(
-    'entrypoint',
-    'entrypoint',
-    mockFetchHydra,
-    mockApiDocumentationParser,
-  );
+  const dataProvider = dataProviderFactory({
+    entrypoint: 'entrypoint',
+    mercureHub: 'entrypoint',
+    httpClient: mockFetchHydra,
+    apiDocumentationParser: mockApiDocumentationParser,
+  });
 
   test('React Admin get list with filter parameters and custom search params', async () => {
     await dataProvider.getList('resource', {

@@ -99,6 +99,12 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   return document;
 };
 
+const defaultParams = {
+  httpClient: fetchHydra,
+  apiDocumentationParser: parseHydraDocumentation,
+  useEmbedded: false,
+};
+
 /**
  * Maps react-admin queries to a Hydra powered REST API
  *
@@ -113,12 +119,24 @@ export const transformJsonLdDocumentToReactAdminDocument = (
  * UPDATE   => PUT http://my.api.url/posts/123
  */
 export default (
-  entrypoint,
-  mercureHub = `${entrypoint}/.well-known/mercure`,
+  entrypointOrParams,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) => {
+  let mercureHub;
+  let entrypoint = entrypointOrParams;
+  if (typeof entrypointOrParams === 'object') {
+    const params = Object.assign({}, defaultParams, entrypointOrParams);
+    entrypoint = params.entrypoint;
+    httpClient = params.httpClient;
+    apiDocumentationParser = params.apiDocumentationParser;
+    useEmbedded = params.useEmbedded;
+    mercureHub =
+      entrypointOrParams.mercureHub ||
+      `${entrypointOrParams.entrypoint}/.well-known/mercure`;
+  }
+
   /** @type {Api} */
   let apiSchema;
 

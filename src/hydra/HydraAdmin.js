@@ -10,7 +10,7 @@ const hydraSchemaAnalyzer = schemaAnalyzer();
 const HydraAdmin = ({
   entrypoint,
   mercureHub,
-  dataProvider = dataProviderFactory(entrypoint, mercureHub),
+  dataProvider = dataProviderFactory({ entrypoint, mercureHub }),
   schemaAnalyzer = hydraSchemaAnalyzer,
   ...props
 }) => (
