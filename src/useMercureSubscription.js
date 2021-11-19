@@ -4,23 +4,27 @@ import {
   GET_ONE,
   useDataProvider,
 } from 'ra-core';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 export default function useMercureSubscription(resource, idOrIds) {
   const dataProvider = useDataProvider();
   const dispatch = useDispatch();
 
+  const didShowNoSubscribeMethodWarning = useRef(false);
+
   useEffect(() => {
     const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
 
     if (
-      dataProvider.subscribe === undefined ||
+      (!didShowNoSubscribeMethodWarning.current &&
+        dataProvider.subscribe === undefined) ||
       dataProvider.unsubscribe === undefined
     ) {
       console.warn(
         'subscribe and/or unsubscribe methods were not set in the data provider, Mercure realtime update functionalities will not work. Please use a compatible data provider.',
       );
+      didShowNoSubscribeMethodWarning.current = true;
       return;
     }
 
