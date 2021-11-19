@@ -13,6 +13,17 @@ export default function useMercureSubscription(resource, idOrIds) {
 
   useEffect(() => {
     const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
+
+    if (
+      dataProvider.subscribe === undefined ||
+      dataProvider.unsubscribe === undefined
+    ) {
+      console.warn(
+        '`subscribe` and/or `unsubcribe` methods were not set in the `dataProvider`, mercure realtime update functionnalities will not work',
+      );
+      return;
+    }
+
     dataProvider.subscribe(ids, (document) => {
       dispatch({
         type: CRUD_GET_ONE_SUCCESS,
