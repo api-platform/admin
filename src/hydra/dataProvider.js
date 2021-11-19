@@ -640,13 +640,15 @@ export default (
     unsubscribe: (resource, resourceIds) => {
       resourceIds.forEach((resourceId) => {
         const sub = subscriptions[resourceId];
-        if (sub !== undefined) {
-          sub.count--;
+        if (sub === undefined) {
+          return;
+        }
 
-          if (sub.count <= 0) {
-            sub.eventSource.removeEventListener('message', sub.eventListener);
-            delete subscriptions[resourceId];
-          }
+        sub.count--;
+
+        if (sub.count <= 0) {
+          sub.eventSource.removeEventListener('message', sub.eventListener);
+          delete subscriptions[resourceId];
         }
       });
 
