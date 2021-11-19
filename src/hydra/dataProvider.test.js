@@ -114,7 +114,9 @@ describe('Transform a React Admin request to an Hydra request', () => {
   );
   const dataProvider = dataProviderFactory({
     entrypoint: 'entrypoint',
-    mercureHub: 'entrypoint',
+    mercure: {
+      hub: 'entrypoint',
+    },
     httpClient: mockFetchHydra,
     apiDocumentationParser: mockApiDocumentationParser,
   });
