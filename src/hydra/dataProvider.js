@@ -599,7 +599,7 @@ export default (
     subscribe: (resourceIds, callback) => {
       if (!mercure || !mercure.hub) {
         throw new Error(
-          'Mercure URL not set, did you forget to pass a `mercure` configuration to `HydraAdmin`?',
+          'Mercure hub URL not set, did you forget to pass a mercure configuration to the Hydra data provider?',
         );
       }
 
