@@ -597,39 +597,43 @@ export default (
               );
             }),
     subscribe: (resourceIds, callback) => {
-      if (mercure !== undefined) {
-        resourceIds.forEach((resourceId) => {
-          const sub = subscriptions[resourceId];
-          if (sub !== undefined) {
-            sub.count++;
-            return;
-          }
-
-          const url = new URL(mercure.hub, window.origin);
-          url.searchParams.append(
-            'topic',
-            new URL(resourceId, mercure.topicUrl).toString(),
-          );
-
-          if (mercure.jwt !== null) {
-            document.cookie = `mercureAuthorization=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
-          }
-
-          const eventSource = new EventSource(url.toString(), {
-            withCredentials: mercure.jwt !== null,
-          });
-          const eventListener = (event) => {
-            const document = transformJsonLdDocumentToReactAdminDocument(
-              JSON.parse(event.data),
-            );
-            // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
-            callback(document);
-          };
-          eventSource.addEventListener('message', eventListener);
-
-          subscriptions[resourceId] = sub;
-        });
+      if (!mercure || !mercure.hub) {
+        throw new Error(
+          'Mercure URL not set, did you forget to pass a `mercure` configuration to `HydraAdmin`?',
+        );
       }
+
+      resourceIds.forEach((resourceId) => {
+        const sub = subscriptions[resourceId];
+        if (sub !== undefined) {
+          sub.count++;
+          return;
+        }
+
+        const url = new URL(mercure.hub, window.origin);
+        url.searchParams.append(
+          'topic',
+          new URL(resourceId, mercure.topicUrl).toString(),
+        );
+
+        if (mercure.jwt !== null) {
+          document.cookie = `mercureAuthorization=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
+        }
+
+        const eventSource = new EventSource(url.toString(), {
+          withCredentials: mercure.jwt !== null,
+        });
+        const eventListener = (event) => {
+          const document = transformJsonLdDocumentToReactAdminDocument(
+            JSON.parse(event.data),
+          );
+          // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
+          callback(document);
+        };
+        eventSource.addEventListener('message', eventListener);
+
+        subscriptions[resourceId] = sub;
+      });
 
       return Promise.resolve({ data: null });
     },
