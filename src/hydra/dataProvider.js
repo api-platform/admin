@@ -143,7 +143,7 @@ export default (
     };
   } else {
     console.warn(
-      'Passing a list of arguments is deprecated! Use an object instead.',
+      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
     );
   }
 
