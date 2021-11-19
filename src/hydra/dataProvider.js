@@ -141,6 +141,10 @@ export default (
       },
       params.mercure,
     );
+  } else {
+    console.warn(
+      'Passing a list of arguments is deprecated! Use an object instead.',
+    );
   }
 
   /** @type {Api} */
