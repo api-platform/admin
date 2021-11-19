@@ -19,7 +19,7 @@ export default function useMercureSubscription(resource, idOrIds) {
       dataProvider.unsubscribe === undefined
     ) {
       console.warn(
-        '`subscribe` and/or `unsubcribe` methods were not set in the `dataProvider`, mercure realtime update functionnalities will not work',
+        'subscribe and/or unsubscribe methods were not set in the data provider, Mercure realtime update functionalities will not work. Please use a compatible data provider.',
       );
       return;
     }
