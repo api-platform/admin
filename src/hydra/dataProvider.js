@@ -127,20 +127,20 @@ export default (
   let mercure;
   let entrypoint = entrypointOrParams;
   if (typeof entrypointOrParams === 'object') {
-    const params = Object.assign({}, defaultParams, entrypointOrParams);
+    const params = {
+      ...defaultParams,
+      ...entrypointOrParams,
+    };
     entrypoint = params.entrypoint;
     httpClient = params.httpClient;
     apiDocumentationParser = params.apiDocumentationParser;
     useEmbedded = params.useEmbedded;
-    mercure = Object.assign(
-      {},
-      {
-        hub: `${params.entrypoint}/.well-known/mercure`,
-        jwt: null,
-        topicUrl: window.origin,
-      },
-      params.mercure,
-    );
+    mercure = {
+      hub: `${params.entrypoint}/.well-known/mercure`,
+      jwt: null,
+      topicUrl: window.origin,
+      ...params.mercure,
+    };
   } else {
     console.warn(
       'Passing a list of arguments is deprecated! Use an object instead.',
