@@ -151,7 +151,7 @@ export default (
   let apiSchema;
 
   // store mercure subscriptions
-  const subscriptions = [];
+  const subscriptions = {};
 
   /**
    * @param {Resource} resource
@@ -599,7 +599,7 @@ export default (
     subscribe: (resourceIds, callback) => {
       if (mercure !== undefined) {
         resourceIds.forEach((resourceId) => {
-          const sub = subscriptions.find((sub) => sub.id === resourceId);
+          const sub = subscriptions[resourceId];
           if (sub !== undefined) {
             sub.count++;
             return;
@@ -627,28 +627,23 @@ export default (
           };
           eventSource.addEventListener('message', eventListener);
 
-          subscriptions.push({
-            id: resourceId,
-            eventSource,
-            eventListener,
-            count: 1,
-          });
+          subscriptions[resourceId] = sub;
         });
       }
 
       return Promise.resolve({ data: null });
     },
     unsubscribe: (resource, resourceIds) => {
-      subscriptions.filter((sub) => {
-        if (resourceIds.includes(sub.id)) {
+      resourceIds.forEach((resourceId) => {
+        const sub = subscriptions[resourceId];
+        if (sub !== undefined) {
           sub.count--;
+
           if (sub.count <= 0) {
             sub.eventSource.removeEventListener('message', sub.eventListener);
-            return false;
+            delete subscriptions[resourceId];
           }
         }
-
-        return true;
       });
 
       return Promise.resolve({ data: null });
