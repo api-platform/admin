@@ -39,9 +39,9 @@ const reactAdminDocumentsCache = new Map();
  * Transforms a JSON-LD document to a react-admin compatible document.
  *
  * @param {Object} document
- * @param {bool} clone
- * @param {bool} addToCache
- * @param {bool} useEmbedded
+ * @param {boolean} clone
+ * @param {boolean} addToCache
+ * @param {boolean} useEmbedded
  *
  * @return {ReactAdminDocument}
  */
@@ -103,6 +103,7 @@ const defaultParams = {
   httpClient: fetchHydra,
   apiDocumentationParser: parseHydraDocumentation,
   useEmbedded: false,
+  disableCache: false,
 };
 
 /**
@@ -126,6 +127,7 @@ export default (
 ) => {
   let entrypoint = entrypointOrParams;
   let mercure;
+  let disableCache = false;
   if (typeof entrypointOrParams === 'object') {
     const params = {
       ...defaultParams,
@@ -134,7 +136,6 @@ export default (
     entrypoint = params.entrypoint;
     httpClient = params.httpClient;
     apiDocumentationParser = params.apiDocumentationParser;
-    useEmbedded = params.useEmbedded;
     mercure = params.mercure;
     if (params.mercure) {
       const mercureParams =
@@ -147,6 +148,8 @@ export default (
         ...mercureParams,
       };
     }
+    disableCache = params.disableCache;
+    useEmbedded = params.useEmbedded;
   } else {
     console.warn(
       'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
@@ -461,7 +464,7 @@ export default (
             transformJsonLdDocumentToReactAdminDocument(
               document,
               true,
-              true,
+              !disableCache,
               useEmbedded,
             ),
           ),
@@ -492,7 +495,7 @@ export default (
           transformJsonLdDocumentToReactAdminDocument(
             response.json,
             true,
-            true,
+            !disableCache,
             useEmbedded,
           ),
         )
