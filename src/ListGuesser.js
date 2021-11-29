@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Datagrid, List, EditButton, ShowButton } from 'react-admin';
+import {
+  Datagrid,
+  List,
+  EditButton,
+  ShowButton,
+  DatagridBody,
+} from 'react-admin';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import Introspecter from './Introspecter';
 import Pagination from './list/Pagination';
+import useMercureSubscription from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -26,6 +33,12 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
+export const DatagridBodyWithMercure = (props) => {
+  useMercureSubscription(props.resource, props.ids);
+
+  return <DatagridBody {...props} />;
+};
+
 export const IntrospectedListGuesser = ({
   fields,
   readableFields,
@@ -35,7 +48,7 @@ export const IntrospectedListGuesser = ({
   rowClick,
   rowStyle,
   isRowSelectable,
-  body,
+  body = DatagridBodyWithMercure,
   expand,
   optimized,
   children,

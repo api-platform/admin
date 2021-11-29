@@ -10,6 +10,7 @@ import {
 } from 'react-admin';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
+import useMercureSubscription from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -59,6 +60,8 @@ export const IntrospectedEditGuesser = ({
   children,
   ...props
 }) => {
+  useMercureSubscription(resource, id);
+
   const [mutate] = useMutation();
   const notify = useNotify();
   const redirect = useRedirect();

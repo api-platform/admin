@@ -99,6 +99,12 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   return document;
 };
 
+const defaultParams = {
+  httpClient: fetchHydra,
+  apiDocumentationParser: parseHydraDocumentation,
+  useEmbedded: false,
+};
+
 /**
  * Maps react-admin queries to a Hydra powered REST API
  *
@@ -113,13 +119,45 @@ export const transformJsonLdDocumentToReactAdminDocument = (
  * UPDATE   => PUT http://my.api.url/posts/123
  */
 export default (
-  entrypoint,
+  entrypointOrParams,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) => {
+  let entrypoint = entrypointOrParams;
+  let mercure;
+  if (typeof entrypointOrParams === 'object') {
+    const params = {
+      ...defaultParams,
+      ...entrypointOrParams,
+    };
+    entrypoint = params.entrypoint;
+    httpClient = params.httpClient;
+    apiDocumentationParser = params.apiDocumentationParser;
+    useEmbedded = params.useEmbedded;
+    mercure = params.mercure;
+    if (params.mercure) {
+      const mercureParams =
+        typeof params.mercure === 'object' ? params.mercure : {};
+
+      mercure = {
+        hub: `${params.entrypoint}/.well-known/mercure`,
+        jwt: null,
+        topicUrl: params.entrypoint,
+        ...mercureParams,
+      };
+    }
+  } else {
+    console.warn(
+      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
+    );
+  }
+
   /** @type {Api} */
   let apiSchema;
+
+  // store mercure subscriptions
+  const subscriptions = {};
 
   /**
    * @param {Resource} resource
@@ -564,5 +602,71 @@ export default (
                   (status ? `Status: ${status}` : ''),
               );
             }),
+    subscribe: (resourceIds, callback) => {
+      if (false === mercure) {
+        return Promise.resolve({ data: null });
+      }
+
+      if (!mercure) {
+        return Promise.reject(
+          'Mercure configuration not set, did you forget to pass a mercure configuration to the Hydra data provider?',
+        );
+      }
+
+      resourceIds.forEach((resourceId) => {
+        const sub = subscriptions[resourceId];
+        if (sub !== undefined) {
+          sub.count++;
+          return;
+        }
+
+        const url = new URL(mercure.hub, window.origin);
+        url.searchParams.append(
+          'topic',
+          new URL(resourceId, mercure.topicUrl).toString(),
+        );
+
+        if (mercure.jwt !== null) {
+          document.cookie = `mercureAuthorization=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
+        }
+
+        const eventSource = new EventSource(url.toString(), {
+          withCredentials: mercure.jwt !== null,
+        });
+        const eventListener = (event) => {
+          const document = transformJsonLdDocumentToReactAdminDocument(
+            JSON.parse(event.data),
+          );
+          // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
+          callback(document);
+        };
+        eventSource.addEventListener('message', eventListener);
+
+        subscriptions[resourceId] = sub;
+      });
+
+      return Promise.resolve({ data: null });
+    },
+    unsubscribe: (resource, resourceIds) => {
+      if (false === mercure) {
+        return Promise.resolve({ data: null });
+      }
+
+      resourceIds.forEach((resourceId) => {
+        const sub = subscriptions[resourceId];
+        if (sub === undefined) {
+          return;
+        }
+
+        sub.count--;
+
+        if (sub.count <= 0) {
+          sub.eventSource.removeEventListener('message', sub.eventListener);
+          delete subscriptions[resourceId];
+        }
+      });
+
+      return Promise.resolve({ data: null });
+    },
   };
 };
