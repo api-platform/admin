@@ -1,7 +1,9 @@
 # Changelog
 
-## 2.6.8
+## 2.7.0
 
+* Mercure support
+* Hydra: add possibility to disable caching
 * Make sure a property's value is not null before checking if there is a `toJSON` property in a form data value
 
 ## 2.6.7

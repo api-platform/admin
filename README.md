@@ -48,7 +48,7 @@ import {
 const Admin = () => (
   <AdminGuesser
     // Use your custom data provider or resource schema analyzer
-    dataProvider={hydraDataProvider('https://demo.api-platform.com')}
+    dataProvider={hydraDataProvider({ entrypoint: 'https://demo.api-platform.com' })}
     schemaAnalyzer={hydraSchemaAnalyzer()}
   />
 );
@@ -58,15 +58,17 @@ ReactDOM.render(<Admin />, document.getElementById('root'));
 
 ## Features
 
-* Automatically generate an admin interface for all the resources of the API thanks to hypermedia features of Hydra
-* Generate list, create, show, edit screens as well as a delete button
-* Generate suitable inputs and fields according to the API doc (e.g. number HTML input for numbers, checkbox for booleans, selectbox for relationships...)
-* Generate suitable inputs and fields according to Schema.org types if available (e.g. email field for http://schema.org/email)
-* Handle relationships
-* Pagination support
-* Automatically validate if a field is mandatory client-side according to the API description
-* Send proper HTTP requests to the API and decode them using Hydra and JSON-LD formats
-* Nicely display server-side errors (e.g. advanced validation)
+* Automatically generates an admin interface for all the resources of the API thanks to hypermedia features of Hydra
+* Generates 'list', 'create', 'show', and 'edit' screens, as well as a delete button
+* Generates suitable inputs and fields according to the API doc (e.g. number HTML input for numbers, checkbox for booleans, selectbox for relationships...)
+* Generates suitable inputs and fields according to Schema.org types if available (e.g. email field for `http://schema.org/email`)
+* Handles relationships
+* Supports pagination
+* Supports filters and ordering
+* Automatically validates whether a field is mandatory client-side according to the API description
+* Sends proper HTTP requests to the API and decodes them using Hydra and JSON-LD formats
+* Nicely displays server-side errors (e.g. advanced validation)
+* Supports real-time updates with [Mercure](https://mercure.rocks)
 * **100% customizable**
 
 ## Documentation
