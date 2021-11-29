@@ -18,8 +18,8 @@ export default function useMercureSubscription(resource, idOrIds) {
 
     if (
       !didShowNoSubscribeMethodWarning.current &&
-        (dataProvider.subscribe === undefined ||
-      dataProvider.unsubscribe === undefined)
+      (dataProvider.subscribe === undefined ||
+        dataProvider.unsubscribe === undefined)
     ) {
       console.warn(
         'subscribe and/or unsubscribe methods were not set in the data provider, Mercure realtime update functionalities will not work. Please use a compatible data provider.',
