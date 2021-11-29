@@ -11,20 +11,20 @@ export default function useMercureSubscription(resource, idOrIds) {
   const dataProvider = useDataProvider();
   const dispatch = useDispatch();
 
-  const didShowNoSubscribeMethodWarning = useRef(false);
+  const hasShownNoSubscribeWarning = useRef(false);
 
   useEffect(() => {
     const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
 
     if (
-      !didShowNoSubscribeMethodWarning.current &&
+      !hasShownNoSubscribeWarning.current &&
       (dataProvider.subscribe === undefined ||
         dataProvider.unsubscribe === undefined)
     ) {
       console.warn(
         'subscribe and/or unsubscribe methods were not set in the data provider, Mercure realtime update functionalities will not work. Please use a compatible data provider.',
       );
-      didShowNoSubscribeMethodWarning.current = true;
+      hasShownNoSubscribeWarning.current = true;
       return;
     }
 

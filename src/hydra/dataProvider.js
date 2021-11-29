@@ -124,8 +124,8 @@ export default (
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) => {
-  let mercure;
   let entrypoint = entrypointOrParams;
+  let mercure;
   if (typeof entrypointOrParams === 'object') {
     const params = {
       ...defaultParams,
@@ -135,12 +135,18 @@ export default (
     httpClient = params.httpClient;
     apiDocumentationParser = params.apiDocumentationParser;
     useEmbedded = params.useEmbedded;
-    mercure = {
-      hub: `${params.entrypoint}/.well-known/mercure`,
-      jwt: null,
-      topicUrl: window.origin,
-      ...params.mercure,
-    };
+    mercure = params.mercure;
+    if (params.mercure) {
+      const mercureParams =
+        typeof params.mercure === 'object' ? params.mercure : {};
+
+      mercure = {
+        hub: `${params.entrypoint}/.well-known/mercure`,
+        jwt: null,
+        topicUrl: params.entrypoint,
+        ...mercureParams,
+      };
+    }
   } else {
     console.warn(
       'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
@@ -597,9 +603,13 @@ export default (
               );
             }),
     subscribe: (resourceIds, callback) => {
-      if (!mercure || !mercure.hub) {
-        throw new Error(
-          'Mercure hub URL not set, did you forget to pass a mercure configuration to the Hydra data provider?',
+      if (false === mercure) {
+        return Promise.resolve({ data: null });
+      }
+
+      if (!mercure) {
+        return Promise.reject(
+          'Mercure configuration not set, did you forget to pass a mercure configuration to the Hydra data provider?',
         );
       }
 
@@ -638,6 +648,10 @@ export default (
       return Promise.resolve({ data: null });
     },
     unsubscribe: (resource, resourceIds) => {
+      if (false === mercure) {
+        return Promise.resolve({ data: null });
+      }
+
       resourceIds.forEach((resourceId) => {
         const sub = subscriptions[resourceId];
         if (sub === undefined) {
