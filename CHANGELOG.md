@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.7.1
+
+* Extract the Mercure hub from response headers
+
 ## 2.7.0
 
 * Mercure support

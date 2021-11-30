@@ -9,6 +9,7 @@ export ResourceGuesser from './ResourceGuesser';
 export SchemaAnalyzerContext from './SchemaAnalyzerContext';
 export ShowGuesser from './ShowGuesser';
 export useIntrospection from './useIntrospection';
+export useMercureSubscription from './useMercureSubscription';
 export {
   HydraAdmin,
   dataProvider as hydraDataProvider,

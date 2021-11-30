@@ -1,10 +1,10 @@
+import { useEffect, useRef } from 'react';
 import {
   CRUD_GET_ONE_SUCCESS,
   FETCH_END,
   GET_ONE,
   useDataProvider,
-} from 'ra-core';
-import { useEffect, useRef } from 'react';
+} from 'react-admin';
 import { useDispatch } from 'react-redux';
 
 export default function useMercureSubscription(resource, idOrIds) {
