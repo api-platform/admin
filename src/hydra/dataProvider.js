@@ -703,14 +703,16 @@ export default (
     unsubscribe: (resource, resourceIds) => {
       resourceIds.forEach((resourceId) => {
         const sub = subscriptions[resourceId];
-        if (sub === undefined || !sub.subscribed) {
+        if (sub === undefined) {
           return;
         }
 
         sub.count--;
 
         if (sub.count <= 0) {
-          sub.eventSource.removeEventListener('message', sub.eventListener);
+          if (sub.subscribed) {
+            sub.eventSource.removeEventListener('message', sub.eventListener);
+          }
           delete subscriptions[resourceId];
         }
       });
