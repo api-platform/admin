@@ -452,12 +452,14 @@ export default (
       case UPDATE:
         const updateHttpMethod = extraInformation.hasFileField ? 'POST' : 'PUT';
 
-        // fixes https://github.com/api-platform/admin/issues/259
-        params.data.id = params.originId;
+        const updateData = {
+          ...params.data,
+          id: params.originId,
+        };
 
         return transformReactAdminDataToRequestBody(
           resource,
-          params.data,
+          updateData,
           extraInformation,
         ).then((body) => ({
           options: {
