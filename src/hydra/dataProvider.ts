@@ -8,10 +8,12 @@ import {
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
 import { parseHydraDocumentation } from '@api-platform/api-doc-parser';
-import fetchHydra from './fetchHydra';
+import { fetchHydra } from './fetchHydra';
 import { resolveSchemaParameters } from './schemaAnalyzer';
 
 class ReactAdminDocument {
+  id: any;
+
   constructor(obj) {
     Object.assign(this, obj, {
       originId: obj.id,
@@ -49,7 +51,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   document,
   clone = true,
   addToCache = true,
-  useEmbedded = false,
+  useEmbedded = false
 ) => {
   if (clone) {
     // deep clone documents
@@ -62,7 +64,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   }
 
   // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
-  Object.keys(document).forEach((key) => {
+  Object.keys(document).forEach(key => {
     // to-one
     if (isPlainObject(document[key]) && document[key]['@id']) {
       if (addToCache) {
@@ -70,7 +72,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
           transformJsonLdDocumentToReactAdminDocument(
             document[key],
             false,
-            false,
+            false
           );
       }
       document[key] = useEmbedded ? document[key] : document[key]['@id'];
@@ -85,7 +87,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
       isPlainObject(document[key][0]) &&
       document[key][0]['@id']
     ) {
-      document[key] = document[key].map((obj) => {
+      document[key] = document[key].map(obj => {
         if (addToCache) {
           reactAdminDocumentsCache[obj['@id']] =
             transformJsonLdDocumentToReactAdminDocument(obj, false, false);
@@ -103,14 +105,14 @@ export const transformJsonLdDocumentToReactAdminDocument = (
  * @param {Response} response
  * @returns {string|null}
  */
-const extractHubUrl = (response) => {
+const extractHubUrl = response => {
   const linkHeader = response.headers.get('Link');
   if (!linkHeader) {
     return null;
   }
 
   const matches = linkHeader.match(
-    /<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/,
+    /<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/
   );
 
   return matches && matches[1] ? matches[1] : null;
@@ -142,9 +144,9 @@ const createSubscription = (mercure, topic, callback) => {
   const eventSource = new EventSource(url.toString(), {
     withCredentials: mercure.jwt !== null,
   });
-  const eventListener = (event) => {
+  const eventListener = event => {
     const document = transformJsonLdDocumentToReactAdminDocument(
-      JSON.parse(event.data),
+      JSON.parse(event.data)
     );
     // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
     callback(document);
@@ -182,12 +184,12 @@ const defaultParams = {
  * GET_ONE  => GET http://my.api.url/posts/123
  * UPDATE   => PUT http://my.api.url/posts/123
  */
-export default (
+export function dataProvider(
   entrypointOrParams,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
-  useEmbedded = false, // remove this parameter for 3.0 (as true)
-) => {
+  useEmbedded = false // remove this parameter for 3.0 (as true)
+) {
   let entrypoint = entrypointOrParams;
   let mercure = {
     hub: null,
@@ -213,7 +215,7 @@ export default (
     useEmbedded = params.useEmbedded;
   } else {
     console.warn(
-      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
+      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.'
     );
   }
 
@@ -230,7 +232,7 @@ export default (
    * @returns {Promise<Object>}
    */
   const convertReactAdminDataToHydraData = (resource, data = {}) => {
-    const fieldData = [];
+    const fieldData: any[] = [];
     resource.fields.forEach(({ name, reference, normalizeData }) => {
       if (!(name in data)) {
         return;
@@ -248,10 +250,10 @@ export default (
       fieldData[name] = normalizeData(data[name]);
     });
 
-    const fieldDataKeys = Object.keys(fieldData);
+    const fieldDataKeys: any = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
-    return Promise.all(fieldDataValues).then((fieldData) => {
+    return Promise.all(fieldDataValues).then(fieldData => {
       const object = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
         object[fieldDataKeys[i]] = fieldData[i];
@@ -261,46 +263,39 @@ export default (
     });
   };
 
-  /**
-   * @param {string} resource
-   * @param {Object} data
-   * @param {Object} extraInformation
-   *
-   * @returns {Promise}
-   */
   const transformReactAdminDataToRequestBody = (
-    resource,
-    data,
-    extraInformation,
-  ) => {
+    resource: string,
+    data: object,
+    extraInformation: { hasFileField?: any }
+  ): Promise<any> => {
     /** @type {Resource} */
     const apiResource = apiSchema.resources.find(
-      ({ name }) => resource === name,
+      ({ name }) => resource === name
     );
     if (undefined === apiResource) {
       return Promise.resolve(data);
     }
 
-    return convertReactAdminDataToHydraData(apiResource, data).then((data) => {
+    return convertReactAdminDataToHydraData(apiResource, data).then(data => {
       const values = Object.values(data);
-      const containFile = (element) =>
+      const containFile = element =>
         isPlainObject(element) &&
-        Object.values(element).some((value) => value instanceof File);
+        Object.values(element).some(value => value instanceof File);
 
       if (
         !extraInformation.hasFileField &&
-        !values.some((value) => containFile(value))
+        !values.some(value => containFile(value))
       ) {
         return JSON.stringify(data);
       }
 
       const body = new FormData();
-      Object.entries(data).map(([key, value]) => {
+      Object.entries(data).map(([key, value]: [key: string, value: any]) => {
         // React-Admin FileInput format is an object containing a file.
         if (containFile(value)) {
           return body.append(
             key,
-            Object.values(value).find((value) => value instanceof File),
+            Object.values(value).find(value => value instanceof File) as any
           );
         }
         if (value && 'function' === typeof value.toJSON) {
@@ -342,11 +337,11 @@ export default (
       }
       collectionUrl.searchParams.set(
         searchParamKey,
-        searchParams[searchParamKey],
+        searchParams[searchParamKey]
       );
       itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
     }
-    let extraInformation = {};
+    let extraInformation: { hasFileField?: any } = {};
     if (params.data && params.data.extraInformation) {
       extraInformation = params.data.extraInformation;
       delete params.data.extraInformation;
@@ -357,8 +352,8 @@ export default (
         return transformReactAdminDataToRequestBody(
           resource,
           params.data,
-          extraInformation,
-        ).then((body) => ({
+          extraInformation
+        ).then(body => ({
           options: {
             body,
             method: 'POST',
@@ -392,7 +387,7 @@ export default (
               filterValue.forEach((arrayFilterValue, index) => {
                 collectionUrl.searchParams.set(
                   `${rootKey}[${index}]`,
-                  arrayFilterValue,
+                  arrayFilterValue
                 );
               });
               return;
@@ -403,7 +398,7 @@ export default (
               return;
             }
 
-            Object.keys(filterValue).forEach((subKey) => {
+            Object.keys(filterValue).forEach(subKey => {
               if (
                 rootKey === 'exists' ||
                 [
@@ -421,14 +416,14 @@ export default (
                 return buildFilterParams(
                   subKey,
                   filterValue,
-                  `${rootKey}[${subKey}]`,
+                  `${rootKey}[${subKey}]`
                 );
               }
               buildFilterParams(subKey, filterValue, `${rootKey}.${subKey}`);
             });
           };
 
-          Object.keys(params.filter).forEach((key) => {
+          Object.keys(params.filter).forEach(key => {
             buildFilterParams(key, params.filter, key);
           });
         }
@@ -454,8 +449,8 @@ export default (
         return transformReactAdminDataToRequestBody(
           resource,
           params.data,
-          extraInformation,
-        ).then((body) => ({
+          extraInformation
+        ).then(body => ({
           options: {
             body,
             method: updateHttpMethod,
@@ -489,10 +484,10 @@ export default (
       fieldData[name] = denormalizeData(data[name]);
     });
 
-    const fieldDataKeys = Object.keys(fieldData);
+    const fieldDataKeys: any = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
-    return Promise.all(fieldDataValues).then((fieldData) => {
+    return Promise.all(fieldDataValues).then(fieldData => {
       const object = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
         object[fieldDataKeys[i]] = fieldData[i];
@@ -514,19 +509,19 @@ export default (
     type,
     resource,
     params,
-    response,
+    response
   ) => {
     if (mercure.hub === null) {
       const hubUrl = extractHubUrl(response);
       if (hubUrl) {
         mercure.hub = hubUrl;
-        for (let subKey in subscriptions) {
+        for (const subKey in subscriptions) {
           const sub = subscriptions[subKey];
           if (!sub.subscribed) {
             subscriptions[subKey] = createSubscription(
               mercure,
               sub.topic,
-              sub.callback,
+              sub.callback
             );
           }
         }
@@ -538,23 +533,21 @@ export default (
       case GET_MANY_REFERENCE:
         // TODO: support other prefixes than "hydra:"
         return Promise.resolve(
-          response.json['hydra:member'].map((document) =>
+          response.json['hydra:member'].map(document =>
             transformJsonLdDocumentToReactAdminDocument(
               document,
               true,
               !disableCache,
-              useEmbedded,
-            ),
-          ),
-        )
-          .then((data) =>
-            Promise.all(
-              data.map((data) =>
-                convertHydraDataToReactAdminData(resource, data),
-              ),
-            ),
+              useEmbedded
+            )
           )
-          .then((data) => ({
+        )
+          .then(data =>
+            Promise.all(
+              data.map(data => convertHydraDataToReactAdminData(resource, data))
+            )
+          )
+          .then(data => ({
             data,
             total: response.json.hasOwnProperty('hydra:totalItems')
               ? response.json['hydra:totalItems']
@@ -574,11 +567,11 @@ export default (
             response.json,
             true,
             !disableCache,
-            useEmbedded,
-          ),
+            useEmbedded
+          )
         )
-          .then((data) => convertHydraDataToReactAdminData(resource, data))
-          .then((data) => ({ data }));
+          .then(data => convertHydraDataToReactAdminData(resource, data))
+          .then(data => ({ data }));
     }
   };
 
@@ -600,13 +593,13 @@ export default (
   const fetchApi = (type, resource, params) =>
     convertReactAdminRequestToHydraRequest(type, resource, params)
       .then(({ url, options }) => httpClient(url, options))
-      .then((response) =>
+      .then(response =>
         convertHydraResponseToReactAdminResponse(
           type,
           resource,
           params,
-          response,
-        ),
+          response
+        )
       );
 
   /**
@@ -614,10 +607,10 @@ export default (
    *
    * @returns {Promise<boolean>}
    */
-  const hasIdSearchFilter = (resource) => {
-    const schema = apiSchema.resources.find((r) => r.name === resource);
-    return resolveSchemaParameters(schema).then((parameters) =>
-      parameters.map((filter) => filter.variable).includes('id'),
+  const hasIdSearchFilter = resource => {
+    const schema = apiSchema.resources.find(r => r.name === resource);
+    return resolveSchemaParameters(schema).then(parameters =>
+      parameters.map(filter => filter.variable).includes('id')
     );
   };
 
@@ -625,7 +618,7 @@ export default (
     getList: (resource, params) => fetchApi(GET_LIST, resource, params),
     getOne: (resource, params) => fetchApi(GET_ONE, resource, params),
     getMany: (resource, params) => {
-      return hasIdSearchFilter(resource).then((result) => {
+      return hasIdSearchFilter(resource).then(result => {
         // Hydra doesn't handle MANY requests but if a search filter for the id is available, it is used.
         if (result) {
           return fetchApi(GET_LIST, resource, {
@@ -637,12 +630,12 @@ export default (
 
         // Else fallback to calling the ONE request n times instead.
         return Promise.all(
-          params.ids.map((id) =>
+          params.ids.map(id =>
             reactAdminDocumentsCache[id]
               ? Promise.resolve({ data: reactAdminDocumentsCache[id] })
-              : fetchApi(GET_ONE, resource, { id }),
-          ),
-        ).then((responses) => ({ data: responses.map(({ data }) => data) }));
+              : fetchApi(GET_ONE, resource, { id })
+          )
+        ).then(responses => ({ data: responses.map(({ data }) => data) }));
       });
     },
     getManyReference: (resource, params) =>
@@ -650,26 +643,27 @@ export default (
     update: (resource, params) => fetchApi(UPDATE, resource, params),
     updateMany: (resource, params) =>
       Promise.all(
-        params.ids.map((id) => fetchApi(UPDATE, resource, { ...params, id })),
+        params.ids.map(id => fetchApi(UPDATE, resource, { ...params, id }))
       ).then(() => ({ data: [] })),
     create: (resource, params) => fetchApi(CREATE, resource, params),
     delete: (resource, params) => fetchApi(DELETE, resource, params),
     deleteMany: (resource, params) =>
       Promise.all(
-        params.ids.map((id) => fetchApi(DELETE, resource, { id })),
+        params.ids.map(id => fetchApi(DELETE, resource, { id }))
       ).then(() => ({ data: [] })),
     introspect: () =>
       apiSchema
         ? Promise.resolve({ data: apiSchema })
         : apiDocumentationParser(entrypoint)
-            .then(({ api, customRoutes = [] }) => {
+            .then(({ api }: any) => {
               if (api.resources.length > 0) {
                 apiSchema = api;
               }
-              return { data: api, customRoutes };
+              return { data: api, customRoutes: [] };
             })
-            .catch((err) => {
-              let { status, message, error } = err;
+            .catch(err => {
+              const { status, error } = err;
+              let { message } = err;
               // Note that the `api-doc-parser` rejects with a non-standard error object hence the check
               if (error && error.message) {
                 message = error.message;
@@ -680,11 +674,11 @@ export default (
                   (message
                     ? `${message}\nHave you verified that CORS is correctly configured in your API?\n`
                     : '') +
-                  (status ? `Status: ${status}` : ''),
+                  (status ? `Status: ${status}` : '')
               );
             }),
     subscribe: (resourceIds, callback) => {
-      resourceIds.forEach((resourceId) => {
+      resourceIds.forEach(resourceId => {
         const sub = subscriptions[resourceId];
         if (sub !== undefined) {
           sub.count++;
@@ -694,14 +688,14 @@ export default (
         subscriptions[resourceId] = createSubscription(
           mercure,
           resourceId,
-          callback,
+          callback
         );
       });
 
       return Promise.resolve({ data: null });
     },
-    unsubscribe: (resource, resourceIds) => {
-      resourceIds.forEach((resourceId) => {
+    unsubscribe: (_resource, resourceIds) => {
+      resourceIds.forEach(resourceId => {
         const sub = subscriptions[resourceId];
         if (sub === undefined) {
           return;
@@ -720,4 +714,4 @@ export default (
       return Promise.resolve({ data: null });
     },
   };
-};
+}

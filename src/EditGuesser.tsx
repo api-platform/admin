@@ -2,15 +2,16 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Edit,
+  EditProps,
   FileInput,
   SimpleForm,
   useMutation,
   useNotify,
   useRedirect,
 } from 'react-admin';
-import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
-import useMercureSubscription from './useMercureSubscription';
+import { InputGuesser } from './InputGuesser';
+import { Introspecter } from './Introspecter';
+import { useMercureSubscription } from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -21,7 +22,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}Edit = props => (\n`;
   code += `    <EditGuesser {...props}>\n`;
 
-  fields.forEach((field) => {
+  fields.forEach(field => {
     code += `        <InputGuesser source={"${field.name}"} />\n`;
   });
   code += `    </EditGuesser>\n`;
@@ -32,9 +33,25 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
+interface IntrospectedEditGuesserProps extends EditProps {
+  children: any;
+  initialValues: any;
+  margin: any;
+  redirect: string;
+  sanitizeEmptyValues: any;
+  schema: any;
+  schemaAnalyzer: any;
+  simpleFormComponent: any;
+  submitOnEnter: any;
+  successMessage: any;
+  toolbar: any;
+  validate: any;
+  variant: any;
+  warnWhenUnsavedChanges: any;
+  writableFields: any;
+}
+
 export const IntrospectedEditGuesser = ({
-  fields,
-  readableFields,
   writableFields,
   schema,
   schemaAnalyzer,
@@ -59,7 +76,7 @@ export const IntrospectedEditGuesser = ({
   simpleFormComponent,
   children,
   ...props
-}) => {
+}: IntrospectedEditGuesserProps) => {
   useMercureSubscription(resource, id);
 
   const [mutate] = useMutation();
@@ -68,7 +85,7 @@ export const IntrospectedEditGuesser = ({
 
   let inputChildren = children;
   if (!inputChildren) {
-    inputChildren = writableFields.map((field) => (
+    inputChildren = writableFields.map(field => (
       <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, writableFields);
@@ -78,10 +95,10 @@ export const IntrospectedEditGuesser = ({
     inputChildren = [inputChildren];
   }
 
-  const hasFileField = inputChildren.some((child) => child.type === FileInput);
+  const hasFileField = inputChildren.some(child => child.type === FileInput);
 
   const save = useCallback(
-    async (values) => {
+    async values => {
       try {
         const response = await mutate(
           {
@@ -92,7 +109,7 @@ export const IntrospectedEditGuesser = ({
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
-          { returnPromise: true },
+          { returnPromise: true }
         );
         const success = onSuccess
           ? onSuccess
@@ -107,7 +124,7 @@ export const IntrospectedEditGuesser = ({
         const submissionErrors = schemaAnalyzer.getSubmissionErrors(error);
         const failure = onFailure
           ? onFailure
-          : (error) => {
+          : error => {
               let message = 'ra.notification.http_error';
               if (!submissionErrors) {
                 message =
@@ -142,7 +159,7 @@ export const IntrospectedEditGuesser = ({
       redirectTo,
       basePath,
       schemaAnalyzer,
-    ],
+    ]
   );
 
   return (
@@ -151,8 +168,9 @@ export const IntrospectedEditGuesser = ({
       id={id}
       basePath={basePath}
       mutationMode={mutationMode}
-      transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
-      {...props}>
+      transform={data => ({ ...data, extraInformation: { hasFileField } })}
+      {...props}
+    >
       <SimpleForm
         save={mutationMode !== 'pessimistic' ? undefined : save}
         initialValues={initialValues}
@@ -164,14 +182,15 @@ export const IntrospectedEditGuesser = ({
         submitOnEnter={submitOnEnter}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
         sanitizeEmptyValues={sanitizeEmptyValues}
-        component={simpleFormComponent}>
+        component={simpleFormComponent}
+      >
         {inputChildren}
       </SimpleForm>
     </Edit>
   );
 };
 
-const EditGuesser = (props) => (
+export const EditGuesser = props => (
   <Introspecter component={IntrospectedEditGuesser} {...props} />
 );
 
@@ -179,5 +198,3 @@ EditGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
 };
-
-export default EditGuesser;

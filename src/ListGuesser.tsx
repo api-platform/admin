@@ -7,11 +7,11 @@ import {
   ShowButton,
   DatagridBody,
 } from 'react-admin';
-import FieldGuesser from './FieldGuesser';
-import FilterGuesser from './FilterGuesser';
-import Introspecter from './Introspecter';
-import Pagination from './list/Pagination';
-import useMercureSubscription from './useMercureSubscription';
+import { FieldGuesser } from './FieldGuesser';
+import { FilterGuesser } from './FilterGuesser';
+import { Introspecter } from './Introspecter';
+import { Pagination } from './list/Pagination';
+import { useMercureSubscription } from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -22,7 +22,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}List = props => (\n`;
   code += `    <ListGuesser {...props}>\n`;
 
-  fields.forEach((field) => {
+  fields.forEach(field => {
     code += `        <FieldGuesser source={"${field.name}"} />\n`;
   });
   code += `    </ListGuesser>\n`;
@@ -33,16 +33,14 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
-export const DatagridBodyWithMercure = (props) => {
+export const DatagridBodyWithMercure = props => {
   useMercureSubscription(props.resource, props.ids);
 
   return <DatagridBody {...props} />;
 };
 
 export const IntrospectedListGuesser = ({
-  fields,
   readableFields,
-  writableFields,
   schema,
   schemaAnalyzer,
   rowClick,
@@ -54,21 +52,21 @@ export const IntrospectedListGuesser = ({
   children,
   ...props
 }) => {
-  const [orderParameters, setOrderParameters] = useState([]);
+  const [orderParameters, setOrderParameters] = useState<any[]>([]);
 
   useEffect(() => {
     if (schema) {
       schemaAnalyzer
         .getOrderParametersFromSchema(schema)
-        .then((parameters) => setOrderParameters(parameters));
+        .then(parameters => setOrderParameters(parameters));
     }
   }, [schema, schemaAnalyzer]);
 
   let fieldChildren = children;
   if (!fieldChildren) {
-    fieldChildren = readableFields.map((field) => {
+    fieldChildren = readableFields.map(field => {
       const orderField = orderParameters.find(
-        (orderParameter) => orderParameter.split('.')[0] === field.name,
+        orderParameter => orderParameter.split('.')[0] === field.name
       );
 
       return (
@@ -92,7 +90,8 @@ export const IntrospectedListGuesser = ({
         isRowSelectable={isRowSelectable}
         body={body}
         expand={expand}
-        optimized={optimized}>
+        optimized={optimized}
+      >
         {fieldChildren}
         {props.hasShow && <ShowButton />}
         {props.hasEdit && <EditButton />}
@@ -101,7 +100,7 @@ export const IntrospectedListGuesser = ({
   );
 };
 
-const ListGuesser = (props) => (
+export const ListGuesser = props => (
   <Introspecter component={IntrospectedListGuesser} {...props} />
 );
 
@@ -117,5 +116,3 @@ ListGuesser.propTypes = {
 ListGuesser.defaultProps = {
   filters: <FilterGuesser />,
 };
-
-export default ListGuesser;

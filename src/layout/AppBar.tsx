@@ -1,8 +1,12 @@
 import React from 'react';
 import { AppBar, useAuthProvider } from 'react-admin';
-import { Typography, withStyles } from '@material-ui/core';
+import { Typography, withStyles, WithStyles } from '@material-ui/core';
 
 import Logo from './Logo';
+
+interface CustomAppBarProps extends WithStyles {
+  userMenu?: boolean | JSX.Element;
+}
 
 const styles = {
   title: {
@@ -14,9 +18,9 @@ const styles = {
   spacer: {
     flex: 1,
   },
-};
+} as const;
 
-const CustomAppBar = withStyles(styles)(({ classes, userMenu, ...props }) => {
+const CustomAppBar = ({ classes, userMenu, ...props }: CustomAppBarProps) => {
   const authProvider = useAuthProvider();
 
   return (
@@ -31,6 +35,6 @@ const CustomAppBar = withStyles(styles)(({ classes, userMenu, ...props }) => {
       <span className={classes.spacer} />
     </AppBar>
   );
-});
+};
 
-export default CustomAppBar;
+export default withStyles(styles)(CustomAppBar);

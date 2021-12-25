@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Show, SimpleShowLayout } from 'react-admin';
-import FieldGuesser from './FieldGuesser';
-import Introspecter from './Introspecter';
-import useMercureSubscription from './useMercureSubscription';
+import { FieldGuesser } from './FieldGuesser';
+import { Introspecter } from './Introspecter';
+import { useMercureSubscription } from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -14,7 +14,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}Show = props => (\n`;
   code += `    <ShowGuesser {...props}>\n`;
 
-  fields.forEach((field) => {
+  fields.forEach(field => {
     code += `        <FieldGuesser source={"${field.name}"} addLabel={true} />\n`;
   });
   code += `    </ShowGuesser>\n`;
@@ -26,17 +26,14 @@ const displayOverrideCode = (schema, fields) => {
 };
 
 export const IntrospectedShowGuesser = ({
-  fields,
   readableFields,
-  writableFields,
   schema,
-  schemaAnalyzer,
   children,
   ...props
 }) => {
   let fieldChildren = children;
   if (!fieldChildren) {
-    fieldChildren = readableFields.map((field) => (
+    fieldChildren = readableFields.map(field => (
       <FieldGuesser key={field.name} source={field.name} addLabel={true} />
     ));
     displayOverrideCode(schema, readableFields);
@@ -51,7 +48,7 @@ export const IntrospectedShowGuesser = ({
   );
 };
 
-const ShowGuesser = (props) => (
+export const ShowGuesser = props => (
   <Introspecter component={IntrospectedShowGuesser} {...props} />
 );
 
@@ -59,5 +56,3 @@ ShowGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
 };
-
-export default ShowGuesser;

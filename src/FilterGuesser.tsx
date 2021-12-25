@@ -1,25 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { Filter } from 'react-admin';
-import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
+import { InputGuesser } from './InputGuesser';
+import { Introspecter } from './Introspecter';
+
+type FilterParameter = {
+  name: string;
+  isRequired: boolean;
+};
+
+interface IntrospectedFilterGuesserProps {
+  schema: any;
+  schemaAnalyzer: any;
+}
 
 export const IntrospectedFilterGuesser = ({
-  fields,
-  readableFields,
-  writableFields,
   schema,
   schemaAnalyzer,
-  hasShow,
-  hasEdit,
   ...rest
-}) => {
-  const [filtersParameters, setFiltersParameters] = useState([]);
+}: IntrospectedFilterGuesserProps) => {
+  const [filtersParameters, setFiltersParameters] = useState<FilterParameter[]>(
+    []
+  );
 
   useEffect(() => {
     if (schema) {
       schemaAnalyzer
         .getFiltersParametersFromSchema(schema)
-        .then((parameters) => setFiltersParameters(parameters));
+        .then(parameters => setFiltersParameters(parameters));
     }
   }, [schema, schemaAnalyzer]);
 
@@ -29,7 +36,7 @@ export const IntrospectedFilterGuesser = ({
 
   return (
     <Filter {...rest}>
-      {filtersParameters.map((filter) => (
+      {filtersParameters.map(filter => (
         <InputGuesser
           key={filter.name}
           source={filter.name}
@@ -40,8 +47,6 @@ export const IntrospectedFilterGuesser = ({
   );
 };
 
-const FilterGuesser = (props) => (
+export const FilterGuesser = props => (
   <Introspecter component={IntrospectedFilterGuesser} {...props} />
 );
-
-export default FilterGuesser;

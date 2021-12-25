@@ -1,5 +1,6 @@
 import { Api, Field, Resource } from '@api-platform/api-doc-parser';
-import dataProviderFactory, {
+import {
+  dataProvider as dataProviderFactory,
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
 
@@ -48,13 +49,13 @@ describe('Transform a JSON-LD document to a React Admin compatible document', ()
     JSON_LD_DOCUMENT,
     true,
     true,
-    true,
+    true
   );
 
   test('deep clone the original object', () => {
     expect(reactAdminDocument).not.toBe(JSON_LD_DOCUMENT);
     expect(reactAdminDocument.aNestedObject).not.toBe(
-      JSON_LD_DOCUMENT.aNestedObject,
+      JSON_LD_DOCUMENT.aNestedObject
     );
   });
 
@@ -72,13 +73,13 @@ describe('Transform a JSON-LD document to a React Admin compatible document', ()
 
   test('keep embedded documents', () => {
     expect(JSON.stringify(reactAdminDocument.itemReviewed)).toBe(
-      JSON.stringify(EMBEDDED_ITEM),
+      JSON.stringify(EMBEDDED_ITEM)
     );
   });
 
   test('keep arrays of embedded documents', () => {
     expect(JSON.stringify(reactAdminDocument.comment[0])).toBe(
-      JSON.stringify(EMBEDDED_COMMENT),
+      JSON.stringify(EMBEDDED_COMMENT)
     );
   });
 });
@@ -110,7 +111,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
           }),
         ],
       }),
-    }),
+    })
   );
   const dataProvider = dataProviderFactory({
     entrypoint: 'entrypoint',
@@ -138,7 +139,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
       searchParams: { pagination: true },
     });
     const searchParams = Array.from(
-      mockFetchHydra.mock.calls[0][0].searchParams.entries(),
+      mockFetchHydra.mock.calls[0][0].searchParams.entries()
     );
     expect(searchParams[0]).toEqual(['pagination', 'true']);
     expect(searchParams[1]).toEqual(['simple', 'foo']);

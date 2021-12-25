@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Admin,
+  AdminProps,
   ComponentPropType,
+  CustomRoutes,
   Error as DefaultError,
   Loading,
   TranslationProvider,
@@ -12,19 +14,38 @@ import { createHashHistory } from 'history';
 import { createTheme as createMuiTheme } from '@material-ui/core';
 
 import ErrorBoundary from './ErrorBoundary';
-import IntrospectionContext from './IntrospectionContext';
-import ResourceGuesser from './ResourceGuesser';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext';
+import { IntrospectionContext } from './IntrospectionContext';
+import { ResourceGuesser } from './ResourceGuesser';
+import { SchemaAnalyzerContext } from './SchemaAnalyzerContext';
 import { Layout } from './layout';
-import introspectReducer from './introspectReducer';
+import { introspectReducer } from './introspectReducer';
+import { CustomDataProvider } from './types';
 
-const displayOverrideCode = (resources) => {
+export interface AdminGuesserProps extends AdminProps {
+  dataProvider: CustomDataProvider;
+  schemaAnalyzer: any;
+  includeDeprecated: boolean;
+}
+
+interface AdminGuesserWithErrorProps extends AdminGuesserProps {
+  error: string;
+}
+
+interface AdminRessourcesGuessProps extends Omit<AdminProps, 'loading'> {
+  admin?: any;
+  includeDeprecated: boolean;
+  loading: boolean;
+  loadingPage: any;
+  resources: any;
+}
+
+const displayOverrideCode = resources => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
     'If you want to override at least one resource, paste this content in the <AdminGuesser> component of your app:\n\n';
 
-  resources.forEach((r) => {
+  resources.forEach(r => {
     code += `<ResourceGuesser name={"${r.name}"} />\n`;
   });
   console.info(code);
@@ -46,7 +67,7 @@ export const AdminResourcesGuesser = ({
   resources,
   loading,
   ...rest
-}) => {
+}: AdminRessourcesGuessProps) => {
   if (loading) {
     return <LoadingPage />;
   }
@@ -55,8 +76,8 @@ export const AdminResourcesGuesser = ({
   if (!resourceChildren && resources) {
     const guessResources = includeDeprecated
       ? resources
-      : resources.filter((r) => !r.deprecated);
-    resourceChildren = guessResources.map((r) => (
+      : resources.filter(r => !r.deprecated);
+    resourceChildren = guessResources.map(r => (
       <ResourceGuesser name={r.name} key={r.name} />
     ));
     displayOverrideCode(guessResources);
@@ -66,7 +87,8 @@ export const AdminResourcesGuesser = ({
     <AdminEl
       customReducers={{ introspect: introspectReducer, ...customReducers }}
       loading={LoadingPage}
-      {...rest}>
+      {...rest}
+    >
       {resourceChildren}
     </AdminEl>
   );
@@ -99,11 +121,11 @@ const AdminGuesser = ({
   // Other props
   children,
   ...rest
-}) => {
-  const [resources, setResources] = useState();
+}: AdminGuesserProps) => {
+  const [resources, setResources] = useState<unknown>();
   const [loading, setLoading] = useState(true);
   const [, setError] = useState();
-  const [addedCustomRoutes, setAddedCustomRoutes] = useState([]);
+  const [addedCustomRoutes, setAddedCustomRoutes] = useState<CustomRoutes>([]);
   const [introspect, setIntrospect] = useState(true);
 
   if (!history) {
@@ -113,7 +135,7 @@ const AdminGuesser = ({
   useEffect(() => {
     if (typeof dataProvider.introspect !== 'function') {
       throw new Error(
-        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser',
+        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser'
       );
     }
 
@@ -129,7 +151,7 @@ const AdminGuesser = ({
         setIntrospect(false);
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(error => {
         // Allow error to be caught by the error boundary
         setError(() => {
           throw error;
@@ -144,7 +166,8 @@ const AdminGuesser = ({
           setLoading(true);
           setIntrospect(true);
         },
-      }}>
+      }}
+    >
       <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
         <AdminResourcesGuesser
           includeDeprecated={includeDeprecated}
@@ -156,7 +179,8 @@ const AdminGuesser = ({
           layout={layout}
           loadingPage={loadingPage}
           theme={theme}
-          {...rest}>
+          {...rest}
+        >
           {children}
         </AdminResourcesGuesser>
       </SchemaAnalyzerContext.Provider>
@@ -180,13 +204,23 @@ AdminGuesser.propTypes = {
   customRoutes: PropTypes.array,
 };
 
-const AdminGuesserWithError = ({ error, ...props }) => (
-  <TranslationProvider i18nProvider={props.i18nProvider}>
-    <ErrorBoundary error={error}>
-      <AdminGuesser {...props} />
-    </ErrorBoundary>
-  </TranslationProvider>
-);
+const AdminGuesserWithError = ({
+  error,
+  i18nProvider,
+  ...props
+}: AdminGuesserWithErrorProps) => {
+  if (!i18nProvider) {
+    throw new Error('Missing i18nProvider');
+  }
+
+  return (
+    <TranslationProvider i18nProvider={i18nProvider}>
+      <ErrorBoundary error={error}>
+        <AdminGuesser {...props} />
+      </ErrorBoundary>
+    </TranslationProvider>
+  );
+};
 
 AdminGuesserWithError.defaultProps = {
   error: DefaultError,
@@ -197,4 +231,4 @@ AdminGuesserWithError.propTypes = {
   error: ComponentPropType,
 };
 
-export default AdminGuesserWithError;
+export { AdminGuesserWithError as AdminGuesser };

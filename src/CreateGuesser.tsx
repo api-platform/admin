@@ -2,14 +2,15 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Create,
+  CreateProps,
   FileInput,
   SimpleForm,
   useMutation,
   useNotify,
   useRedirect,
 } from 'react-admin';
-import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
+import { InputGuesser } from './InputGuesser';
+import { Introspecter } from './Introspecter';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -20,7 +21,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}Create = props => (\n`;
   code += `    <CreateGuesser {...props}>\n`;
 
-  fields.forEach((field) => {
+  fields.forEach(field => {
     code += `        <InputGuesser source={"${field.name}"} />\n`;
   });
   code += `    </CreateGuesser>\n`;
@@ -31,9 +32,27 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
+interface IntrospectedCreateGuesserProps extends CreateProps {
+  children: any;
+  fields: any;
+  initialValues: any;
+  margin: any;
+  readableFields: any;
+  redirect: string;
+  sanitizeEmptyValues: any;
+  schema: any;
+  schemaAnalyzer: any;
+  simpleFormComponent: any;
+  submitOnEnter: any;
+  successMessage: any;
+  toolbar: any;
+  validate: any;
+  variant: any;
+  warnWhenUnsavedChanges: any;
+  writableFields: any;
+}
+
 export const IntrospectedCreateGuesser = ({
-  fields,
-  readableFields,
   writableFields,
   schema,
   schemaAnalyzer,
@@ -54,14 +73,14 @@ export const IntrospectedCreateGuesser = ({
   simpleFormComponent,
   children,
   ...props
-}) => {
+}: IntrospectedCreateGuesserProps) => {
   const [mutate] = useMutation();
   const notify = useNotify();
   const redirect = useRedirect();
 
   let inputChildren = children;
   if (!inputChildren) {
-    inputChildren = writableFields.map((field) => (
+    inputChildren = writableFields.map(field => (
       <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, writableFields);
@@ -71,10 +90,10 @@ export const IntrospectedCreateGuesser = ({
     inputChildren = [inputChildren];
   }
 
-  const hasFileField = inputChildren.some((child) => child.type === FileInput);
+  const hasFileField = inputChildren.some(child => child.type === FileInput);
 
   const save = useCallback(
-    async (values) => {
+    async values => {
       try {
         const response = await mutate(
           {
@@ -84,7 +103,7 @@ export const IntrospectedCreateGuesser = ({
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
-          { returnPromise: true },
+          { returnPromise: true }
         );
         const success = onSuccess
           ? onSuccess
@@ -99,7 +118,7 @@ export const IntrospectedCreateGuesser = ({
         const submissionErrors = schemaAnalyzer.getSubmissionErrors(error);
         const failure = onFailure
           ? onFailure
-          : (error) => {
+          : error => {
               let message = 'ra.notification.http_error';
               if (!submissionErrors) {
                 message =
@@ -133,7 +152,7 @@ export const IntrospectedCreateGuesser = ({
       redirectTo,
       basePath,
       schemaAnalyzer,
-    ],
+    ]
   );
 
   return (
@@ -148,14 +167,15 @@ export const IntrospectedCreateGuesser = ({
         submitOnEnter={submitOnEnter}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
         sanitizeEmptyValues={sanitizeEmptyValues}
-        component={simpleFormComponent}>
+        component={simpleFormComponent}
+      >
         {inputChildren}
       </SimpleForm>
     </Create>
   );
 };
 
-const CreateGuesser = (props) => (
+export const CreateGuesser = props => (
   <Introspecter component={IntrospectedCreateGuesser} {...props} />
 );
 
@@ -163,5 +183,3 @@ CreateGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
 };
-
-export default CreateGuesser;

@@ -3,7 +3,7 @@
  *
  * @returns {Promise<Parameter[]>} The filter parameters
  */
-export const resolveSchemaParameters = (schema) =>
+export const resolveSchemaParameters = schema =>
   !schema.parameters.length
     ? schema.getParameters()
     : Promise.resolve(schema.parameters);
@@ -13,9 +13,9 @@ export const resolveSchemaParameters = (schema) =>
  *
  * @returns {string} The name of the reference field
  */
-const getFieldNameFromSchema = (schema) => {
+const getFieldNameFromSchema = schema => {
   const field = schema.fields.find(
-    (field) => 'http://schema.org/name' === field.id,
+    field => 'http://schema.org/name' === field.id
   );
 
   return field ? field.name : 'id';
@@ -28,20 +28,20 @@ const ORDER_MARKER = 'order[';
  *
  * @returns {Promise<Parameter[]>} The order filter parameters
  */
-const getOrderParametersFromSchema = (schema) => {
-  const authorizedFields = schema.fields.map((field) => field.name);
-  return resolveSchemaParameters(schema).then((parameters) =>
+const getOrderParametersFromSchema = schema => {
+  const authorizedFields = schema.fields.map(field => field.name);
+  return resolveSchemaParameters(schema).then(parameters =>
     parameters
-      .map((filter) => filter.variable)
-      .filter((filter) => filter.includes(ORDER_MARKER))
-      .map((orderFilter) =>
-        orderFilter.replace(ORDER_MARKER, '').replace(']', ''),
+      .map(filter => filter.variable)
+      .filter(filter => filter.includes(ORDER_MARKER))
+      .map(orderFilter =>
+        orderFilter.replace(ORDER_MARKER, '').replace(']', '')
       )
-      .filter((filter) =>
+      .filter(filter =>
         authorizedFields.includes(
-          filter.split('.')[0], // split to manage nested properties
-        ),
-      ),
+          filter.split('.')[0] // split to manage nested properties
+        )
+      )
   );
 };
 
@@ -50,16 +50,16 @@ const getOrderParametersFromSchema = (schema) => {
  *
  * @returns {Promise<Parameter[]>} The filter parameters without the order ones
  */
-const getFiltersParametersFromSchema = (schema) => {
-  const authorizedFields = schema.fields.map((field) => field.name);
-  return resolveSchemaParameters(schema).then((parameters) =>
+const getFiltersParametersFromSchema = schema => {
+  const authorizedFields = schema.fields.map(field => field.name);
+  return resolveSchemaParameters(schema).then(parameters =>
     parameters
-      .map((filter) => ({
+      .map(filter => ({
         name: filter.variable,
         isRequired: filter.required,
       }))
-      .filter((filter) => !filter.name.includes(ORDER_MARKER))
-      .filter((filter) => authorizedFields.includes(filter.name)),
+      .filter(filter => !filter.name.includes(ORDER_MARKER))
+      .filter(filter => authorizedFields.includes(filter.name))
   );
 };
 
@@ -68,7 +68,7 @@ const getFiltersParametersFromSchema = (schema) => {
  *
  * @returns {string} The type of the field
  */
-const getFieldType = (field) => {
+const getFieldType = field => {
   switch (field.id) {
     case 'http://schema.org/identifier':
       return 'id';
@@ -107,14 +107,14 @@ const getFieldType = (field) => {
  *
  * @returns {?Object<string, string>}
  */
-const getSubmissionErrors = (error) => {
+const getSubmissionErrors = error => {
   if (!error.body || !error.body[0]) {
     return null;
   }
 
   const content = error.body[0];
-  const violationKey = Object.keys(content).find((key) =>
-    key.includes('violations'),
+  const violationKey = Object.keys(content).find(key =>
+    key.includes('violations')
   );
   if (!violationKey) {
     return null;
@@ -130,7 +130,7 @@ const getSubmissionErrors = (error) => {
             [violation[`${base}#propertyPath`][0]['@value']]:
               violation[`${base}#message`][0]['@value'],
           },
-    {},
+    {}
   );
   if (Object.keys(violations).length === 0) {
     return null;
@@ -139,7 +139,7 @@ const getSubmissionErrors = (error) => {
   return violations;
 };
 
-export default () => {
+export function schemaAnalyzer() {
   return {
     getFieldNameFromSchema,
     getOrderParametersFromSchema,
@@ -147,4 +147,4 @@ export default () => {
     getFieldType,
     getSubmissionErrors,
   };
-};
+}

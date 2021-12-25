@@ -1,4 +1,4 @@
-export default (previousState = {}, { type, payload }) => {
+export const introspectReducer = (previousState = {}, { type, payload }) => {
   if (type !== 'INTROSPECT_SUCCESS') {
     return previousState;
   }
