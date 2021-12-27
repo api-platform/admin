@@ -1,6 +1,5 @@
 import { Api, Field, Resource } from '@api-platform/api-doc-parser';
-import {
-  dataProvider as dataProviderFactory,
+import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
 
