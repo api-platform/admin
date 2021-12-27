@@ -169,8 +169,7 @@ export const IntrospectedEditGuesser = ({
       basePath={basePath}
       mutationMode={mutationMode}
       transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
-      {...props}
-    >
+      {...props}>
       <SimpleForm
         save={mutationMode !== 'pessimistic' ? undefined : save}
         initialValues={initialValues}
@@ -182,8 +181,7 @@ export const IntrospectedEditGuesser = ({
         submitOnEnter={submitOnEnter}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
         sanitizeEmptyValues={sanitizeEmptyValues}
-        component={simpleFormComponent}
-      >
+        component={simpleFormComponent}>
         {inputChildren}
       </SimpleForm>
     </Edit>

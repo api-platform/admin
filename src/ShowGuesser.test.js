@@ -35,8 +35,7 @@ describe('<ShowGuesser />', () => {
       <IntrospectedShowGuesser
         resource="user"
         readableFields={API_FIELDS_DATA}
-        id="ShowComponentId"
-      >
+        id="ShowComponentId">
         <TextField source="id" label={'label of id'} />
         <TextField source="title" label={'label of title'} />
         <TextField source="body" label={'label of body'} />

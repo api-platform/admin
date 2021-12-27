@@ -90,8 +90,7 @@ export const IntrospectedListGuesser = ({
         isRowSelectable={isRowSelectable}
         body={body}
         expand={expand}
-        optimized={optimized}
-      >
+        optimized={optimized}>
         {fieldChildren}
         {props.hasShow && <ShowButton />}
         {props.hasEdit && <EditButton />}

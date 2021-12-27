@@ -87,8 +87,7 @@ export const AdminResourcesGuesser = ({
     <AdminEl
       customReducers={{ introspect: introspectReducer, ...customReducers }}
       loading={LoadingPage}
-      {...rest}
-    >
+      {...rest}>
       {resourceChildren}
     </AdminEl>
   );
@@ -166,8 +165,7 @@ const AdminGuesser = ({
           setLoading(true);
           setIntrospect(true);
         },
-      }}
-    >
+      }}>
       <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
         <AdminResourcesGuesser
           includeDeprecated={includeDeprecated}
@@ -179,8 +177,7 @@ const AdminGuesser = ({
           layout={layout}
           loadingPage={loadingPage}
           theme={theme}
-          {...rest}
-        >
+          {...rest}>
           {children}
         </AdminResourcesGuesser>
       </SchemaAnalyzerContext.Provider>

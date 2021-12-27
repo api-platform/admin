@@ -55,8 +55,7 @@ export const IntrospectedInputGuesser = ({
           source={field.name}
           validate={guessedValidate}
           {...props}
-          allowEmpty
-        >
+          allowEmpty>
           <SelectInput
             optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
           />
@@ -80,8 +79,7 @@ export const IntrospectedInputGuesser = ({
         source={field.name}
         validate={guessedValidate}
         {...props}
-        allowEmpty
-      >
+        allowEmpty>
         <SelectArrayInput
           optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
         />
@@ -127,8 +125,7 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           source={field.name}
           validate={guessedValidate}
-          {...props}
-        >
+          {...props}>
           <SimpleFormIterator>
             <TextInput
               source=""

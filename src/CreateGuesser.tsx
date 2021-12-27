@@ -167,8 +167,7 @@ export const IntrospectedCreateGuesser = ({
         submitOnEnter={submitOnEnter}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
         sanitizeEmptyValues={sanitizeEmptyValues}
-        component={simpleFormComponent}
-      >
+        component={simpleFormComponent}>
         {inputChildren}
       </SimpleForm>
     </Create>
