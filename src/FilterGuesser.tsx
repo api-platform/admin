@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Filter } from 'react-admin';
-import { InputGuesser } from './InputGuesser';
-import { Introspecter } from './Introspecter';
+import InputGuesser from './InputGuesser';
+import Introspecter from './Introspecter';
 
 type FilterParameter = {
   name: string;
@@ -19,7 +19,7 @@ export const IntrospectedFilterGuesser = ({
   ...rest
 }: IntrospectedFilterGuesserProps) => {
   const [filtersParameters, setFiltersParameters] = useState<FilterParameter[]>(
-    [],
+    []
   );
 
   useEffect(() => {
@@ -47,6 +47,8 @@ export const IntrospectedFilterGuesser = ({
   );
 };
 
-export const FilterGuesser = (props) => (
+const FilterGuesser = (props) => (
   <Introspecter component={IntrospectedFilterGuesser} {...props} />
 );
+
+export default FilterGuesser;

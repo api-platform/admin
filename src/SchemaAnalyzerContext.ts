@@ -1,3 +1,5 @@
 import { createContext } from 'react';
 
-export const SchemaAnalyzerContext = createContext(null);
+const SchemaAnalyzerContext = createContext(null);
+
+export default SchemaAnalyzerContext;

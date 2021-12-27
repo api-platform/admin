@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useDataProvider, useLogoutIfAccessDenied } from 'react-admin';
 import { useSelector } from 'react-redux';
-import { SchemaAnalyzerContext } from './SchemaAnalyzerContext';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { CustomDataProvider } from './types';
 
 interface Resource {
@@ -91,7 +91,7 @@ const ResourcesIntrospecter = ({
   );
 };
 
-export const Introspecter = ({
+const Introspecter = ({
   component,
   includeDeprecated = false,
   resource,
@@ -127,10 +127,10 @@ export const Introspecter = ({
           };
         },
       }),
-    [schemaAnalyzer, logoutIfAccessDenied],
+    [schemaAnalyzer, logoutIfAccessDenied]
   );
   const { resources } = useSelector<any, any>((state) =>
-    state.introspect['introspect'] ? state.introspect['introspect'].data : {},
+    state.introspect['introspect'] ? state.introspect['introspect'].data : {}
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -168,3 +168,5 @@ Introspecter.propTypes = {
   component: PropTypes.elementType.isRequired,
   includeDeprecated: PropTypes.bool,
 };
+
+export default Introspecter;

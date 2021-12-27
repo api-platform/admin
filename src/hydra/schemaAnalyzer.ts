@@ -15,7 +15,7 @@ export const resolveSchemaParameters = (schema) =>
  */
 const getFieldNameFromSchema = (schema) => {
   const field = schema.fields.find(
-    (field) => 'http://schema.org/name' === field.id,
+    (field) => 'http://schema.org/name' === field.id
   );
 
   return field ? field.name : 'id';
@@ -35,13 +35,13 @@ const getOrderParametersFromSchema = (schema) => {
       .map((filter) => filter.variable)
       .filter((filter) => filter.includes(ORDER_MARKER))
       .map((orderFilter) =>
-        orderFilter.replace(ORDER_MARKER, '').replace(']', ''),
+        orderFilter.replace(ORDER_MARKER, '').replace(']', '')
       )
       .filter((filter) =>
         authorizedFields.includes(
-          filter.split('.')[0], // split to manage nested properties
-        ),
-      ),
+          filter.split('.')[0] // split to manage nested properties
+        )
+      )
   );
 };
 
@@ -59,7 +59,7 @@ const getFiltersParametersFromSchema = (schema) => {
         isRequired: filter.required,
       }))
       .filter((filter) => !filter.name.includes(ORDER_MARKER))
-      .filter((filter) => authorizedFields.includes(filter.name)),
+      .filter((filter) => authorizedFields.includes(filter.name))
   );
 };
 
@@ -114,7 +114,7 @@ const getSubmissionErrors = (error) => {
 
   const content = error.body[0];
   const violationKey = Object.keys(content).find((key) =>
-    key.includes('violations'),
+    key.includes('violations')
   );
   if (!violationKey) {
     return null;
@@ -130,7 +130,7 @@ const getSubmissionErrors = (error) => {
             [violation[`${base}#propertyPath`][0]['@value']]:
               violation[`${base}#message`][0]['@value'],
           },
-    {},
+    {}
   );
   if (Object.keys(violations).length === 0) {
     return null;
@@ -139,7 +139,7 @@ const getSubmissionErrors = (error) => {
   return violations;
 };
 
-export function schemaAnalyzer() {
+export default function schemaAnalyzer() {
   return {
     getFieldNameFromSchema,
     getOrderParametersFromSchema,

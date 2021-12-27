@@ -8,7 +8,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { CustomDataProvider } from './types';
 
-export function useMercureSubscription(resource, idOrIds) {
+export default function useMercureSubscription(resource, idOrIds) {
   const dataProvider: CustomDataProvider = useDataProvider();
   const dispatch = useDispatch();
 
@@ -23,7 +23,7 @@ export function useMercureSubscription(resource, idOrIds) {
         dataProvider.unsubscribe === undefined)
     ) {
       console.warn(
-        'subscribe and/or unsubscribe methods were not set in the data provider, Mercure realtime update functionalities will not work. Please use a compatible data provider.',
+        'subscribe and/or unsubscribe methods were not set in the data provider, Mercure realtime update functionalities will not work. Please use a compatible data provider.'
       );
       hasShownNoSubscribeWarning.current = true;
       return;

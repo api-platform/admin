@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { IntrospectionContext } from './IntrospectionContext';
+import IntrospectionContext from './IntrospectionContext';
 
-export const useIntrospection = () =>
-  useContext(IntrospectionContext).introspect;
+const useIntrospection = () => useContext(IntrospectionContext).introspect;
+
+export default useIntrospection;

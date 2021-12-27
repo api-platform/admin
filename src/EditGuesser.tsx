@@ -9,9 +9,9 @@ import {
   useNotify,
   useRedirect,
 } from 'react-admin';
-import { InputGuesser } from './InputGuesser';
-import { Introspecter } from './Introspecter';
-import { useMercureSubscription } from './useMercureSubscription';
+import InputGuesser from './InputGuesser';
+import Introspecter from './Introspecter';
+import useMercureSubscription from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -109,7 +109,7 @@ export const IntrospectedEditGuesser = ({
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
-          { returnPromise: true },
+          { returnPromise: true }
         );
         const success = onSuccess
           ? onSuccess
@@ -159,7 +159,7 @@ export const IntrospectedEditGuesser = ({
       redirectTo,
       basePath,
       schemaAnalyzer,
-    ],
+    ]
   );
 
   return (
@@ -190,7 +190,7 @@ export const IntrospectedEditGuesser = ({
   );
 };
 
-export const EditGuesser = (props) => (
+const EditGuesser = (props) => (
   <Introspecter component={IntrospectedEditGuesser} {...props} />
 );
 
@@ -198,3 +198,5 @@ EditGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
 };
+
+export default EditGuesser;

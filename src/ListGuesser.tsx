@@ -7,11 +7,11 @@ import {
   ShowButton,
   DatagridBody,
 } from 'react-admin';
-import { FieldGuesser } from './FieldGuesser';
-import { FilterGuesser } from './FilterGuesser';
-import { Introspecter } from './Introspecter';
-import { Pagination } from './list/Pagination';
-import { useMercureSubscription } from './useMercureSubscription';
+import FieldGuesser from './FieldGuesser';
+import FilterGuesser from './FilterGuesser';
+import Introspecter from './Introspecter';
+import Pagination from './list/Pagination';
+import useMercureSubscription from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -66,7 +66,7 @@ export const IntrospectedListGuesser = ({
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => {
       const orderField = orderParameters.find(
-        (orderParameter) => orderParameter.split('.')[0] === field.name,
+        (orderParameter) => orderParameter.split('.')[0] === field.name
       );
 
       return (
@@ -100,7 +100,7 @@ export const IntrospectedListGuesser = ({
   );
 };
 
-export const ListGuesser = (props) => (
+const ListGuesser = (props) => (
   <Introspecter component={IntrospectedListGuesser} {...props} />
 );
 
@@ -116,3 +116,5 @@ ListGuesser.propTypes = {
 ListGuesser.defaultProps = {
   filters: <FilterGuesser />,
 };
+
+export default ListGuesser;

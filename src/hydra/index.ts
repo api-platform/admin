@@ -1,4 +1,6 @@
-export { dataProvider } from './dataProvider';
-export { fetchHydra } from './fetchHydra';
-export { HydraAdmin } from './HydraAdmin';
-export { schemaAnalyzer } from './schemaAnalyzer';
+import dataProvider from './dataProvider';
+import fetchHydra from './fetchHydra';
+import HydraAdmin from './HydraAdmin';
+import schemaAnalyzer from './schemaAnalyzer';
+
+export { dataProvider, fetchHydra, HydraAdmin, schemaAnalyzer };

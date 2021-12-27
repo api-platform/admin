@@ -17,7 +17,7 @@ import {
   useTranslate,
 } from 'react-admin';
 import { useForm } from 'react-final-form';
-import { Introspecter } from './Introspecter';
+import Introspecter from './Introspecter';
 
 export const IntrospectedInputGuesser = ({
   fields,
@@ -38,7 +38,7 @@ export const IntrospectedInputGuesser = ({
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {
     console.error(
-      `Field ${props.source} not present inside API description for the resource ${props.resource}`,
+      `Field ${props.source} not present inside API description for the resource ${props.resource}`
     );
 
     return <Fragment />;
@@ -69,7 +69,7 @@ export const IntrospectedInputGuesser = ({
       ...getFieldLabelTranslationArgs({
         resource: props.resource,
         source: field.name,
-      }),
+      })
     );
 
     return (
@@ -202,7 +202,7 @@ export const IntrospectedInputGuesser = ({
   }
 };
 
-export const InputGuesser = (props: any) => (
+const InputGuesser = (props: any) => (
   <Introspecter
     component={IntrospectedInputGuesser}
     includeDeprecated={true}
@@ -214,3 +214,5 @@ InputGuesser.propTypes = {
   source: PropTypes.string.isRequired,
   alwaysOn: PropTypes.bool,
 };
+
+export default InputGuesser;

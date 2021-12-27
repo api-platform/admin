@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { dataProvider as dataProviderFactory } from './dataProvider';
-import { schemaAnalyzer } from './schemaAnalyzer';
-import { AdminGuesser, AdminGuesserProps } from '../AdminGuesser';
+import dataProviderFactory from './dataProvider';
+import schemaAnalyzer from './schemaAnalyzer';
+import AdminGuesser, { AdminGuesserProps } from '../AdminGuesser';
 
 interface HydraAdminProps extends AdminGuesserProps {
   entrypoint: string;
@@ -34,4 +34,4 @@ HydraAdmin.propTypes = {
   entrypoint: PropTypes.string.isRequired,
 };
 
-export { HydraAdmin };
+export default HydraAdmin;

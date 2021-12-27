@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField } from 'react-admin';
 import { shallow } from 'enzyme';
-import { FieldGuesser } from './FieldGuesser';
+import FieldGuesser from './FieldGuesser';
 
 import { API_FIELDS_DATA } from './__fixtures__/parsedData';
 import { IntrospectedShowGuesser } from './ShowGuesser';

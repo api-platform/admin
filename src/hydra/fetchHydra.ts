@@ -24,7 +24,7 @@ interface FetchHydraOptions {
  * @param {object} options
  * @return {object}
  */
-export function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
+function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
   const requestHeaders = options.headers || new Headers();
 
   if (options.user && options.user.authenticated && options.user.token) {
@@ -58,8 +58,8 @@ export function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
                   '@value'
                 ],
                 status,
-                json,
-              ),
+                json
+              )
             );
           })
           .catch((e) => {
@@ -68,7 +68,7 @@ export function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
             }
 
             return Promise.reject(
-              new HttpError(data.response.statusText, status),
+              new HttpError(data.response.statusText, status)
             );
           })
       );
@@ -81,3 +81,5 @@ export function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
     };
   });
 }
+
+export default fetchHydra;

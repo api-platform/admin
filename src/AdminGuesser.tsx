@@ -14,11 +14,11 @@ import { createHashHistory } from 'history';
 import { createTheme as createMuiTheme } from '@material-ui/core';
 
 import ErrorBoundary from './ErrorBoundary';
-import { IntrospectionContext } from './IntrospectionContext';
-import { ResourceGuesser } from './ResourceGuesser';
-import { SchemaAnalyzerContext } from './SchemaAnalyzerContext';
+import IntrospectionContext from './IntrospectionContext';
+import ResourceGuesser from './ResourceGuesser';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Layout } from './layout';
-import { introspectReducer } from './introspectReducer';
+import introspectReducer from './introspectReducer';
 import { CustomDataProvider } from './types';
 
 export interface AdminGuesserProps extends AdminProps {
@@ -135,7 +135,7 @@ const AdminGuesser = ({
   useEffect(() => {
     if (typeof dataProvider.introspect !== 'function') {
       throw new Error(
-        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser',
+        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser'
       );
     }
 
@@ -231,4 +231,4 @@ AdminGuesserWithError.propTypes = {
   error: ComponentPropType,
 };
 
-export { AdminGuesserWithError as AdminGuesser };
+export default AdminGuesserWithError;

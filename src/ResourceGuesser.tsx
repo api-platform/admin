@@ -1,12 +1,12 @@
 import React from 'react';
 import { Resource, ResourceProps } from 'react-admin';
 import PropTypes from 'prop-types';
-import { ListGuesser } from './ListGuesser';
-import { CreateGuesser } from './CreateGuesser';
-import { EditGuesser } from './EditGuesser';
-import { ShowGuesser } from './ShowGuesser';
+import ListGuesser from './ListGuesser';
+import CreateGuesser from './CreateGuesser';
+import EditGuesser from './EditGuesser';
+import ShowGuesser from './ShowGuesser';
 
-export const ResourceGuesser = ({
+const ResourceGuesser = ({
   list,
   edit,
   create,
@@ -25,3 +25,5 @@ export const ResourceGuesser = ({
 ResourceGuesser.propTypes = {
   name: PropTypes.string.isRequired,
 };
+
+export default ResourceGuesser;

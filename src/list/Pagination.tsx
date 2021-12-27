@@ -39,4 +39,4 @@ const CustomPagination = (props) => {
   );
 };
 
-export { CustomPagination as Pagination };
+export default CustomPagination;

@@ -9,8 +9,8 @@ import {
   useNotify,
   useRedirect,
 } from 'react-admin';
-import { InputGuesser } from './InputGuesser';
-import { Introspecter } from './Introspecter';
+import InputGuesser from './InputGuesser';
+import Introspecter from './Introspecter';
 
 const displayOverrideCode = (schema, fields) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -103,7 +103,7 @@ export const IntrospectedCreateGuesser = ({
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
-          { returnPromise: true },
+          { returnPromise: true }
         );
         const success = onSuccess
           ? onSuccess
@@ -152,7 +152,7 @@ export const IntrospectedCreateGuesser = ({
       redirectTo,
       basePath,
       schemaAnalyzer,
-    ],
+    ]
   );
 
   return (
@@ -175,7 +175,7 @@ export const IntrospectedCreateGuesser = ({
   );
 };
 
-export const CreateGuesser = (props) => (
+const CreateGuesser = (props) => (
   <Introspecter component={IntrospectedCreateGuesser} {...props} />
 );
 
@@ -183,3 +183,5 @@ CreateGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
 };
+
+export default CreateGuesser;

@@ -1,3 +1,5 @@
 import { createContext } from 'react';
 
-export const IntrospectionContext = createContext({ introspect: () => {} });
+const IntrospectionContext = createContext({ introspect: () => {} });
+
+export default IntrospectionContext;

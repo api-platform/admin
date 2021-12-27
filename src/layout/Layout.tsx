@@ -4,4 +4,4 @@ import AppBar from './AppBar';
 
 const CustomLayout = (props) => <Layout appBar={AppBar} {...props} />;
 
-export { CustomLayout };
+export default CustomLayout;
