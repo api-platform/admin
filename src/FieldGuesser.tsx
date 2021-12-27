@@ -21,7 +21,7 @@ const isFieldSortable = (field, schema) => {
     schema.parameters.filter((parameter) => parameter.variable === field.name)
       .length > 0 &&
     schema.parameters.filter(
-      (parameter) => parameter.variable === `order[${field.name}]`
+      (parameter) => parameter.variable === `order[${field.name}]`,
     ).length > 0
   );
 };
@@ -96,7 +96,7 @@ export const IntrospectedFieldGuesser = ({
 
   if (!field) {
     console.error(
-      `Field "${props.source}" not present inside API description for the resource "${props.resource}"`
+      `Field "${props.source}" not present inside API description for the resource "${props.resource}"`,
     );
 
     return <Fragment />;

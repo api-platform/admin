@@ -38,7 +38,7 @@ export const IntrospectedInputGuesser = ({
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {
     console.error(
-      `Field ${props.source} not present inside API description for the resource ${props.resource}`
+      `Field ${props.source} not present inside API description for the resource ${props.resource}`,
     );
 
     return <Fragment />;
@@ -69,7 +69,7 @@ export const IntrospectedInputGuesser = ({
       ...getFieldLabelTranslationArgs({
         resource: props.resource,
         source: field.name,
-      })
+      }),
     );
 
     return (

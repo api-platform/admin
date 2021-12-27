@@ -19,7 +19,7 @@ export const IntrospectedFilterGuesser = ({
   ...rest
 }: IntrospectedFilterGuesserProps) => {
   const [filtersParameters, setFiltersParameters] = useState<FilterParameter[]>(
-    []
+    [],
   );
 
   useEffect(() => {

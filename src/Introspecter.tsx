@@ -127,10 +127,10 @@ const Introspecter = ({
           };
         },
       }),
-    [schemaAnalyzer, logoutIfAccessDenied]
+    [schemaAnalyzer, logoutIfAccessDenied],
   );
   const { resources } = useSelector<any, any>((state) =>
-    state.introspect['introspect'] ? state.introspect['introspect'].data : {}
+    state.introspect['introspect'] ? state.introspect['introspect'].data : {},
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

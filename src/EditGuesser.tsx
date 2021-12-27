@@ -109,7 +109,7 @@ export const IntrospectedEditGuesser = ({
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
-          { returnPromise: true }
+          { returnPromise: true },
         );
         const success = onSuccess
           ? onSuccess
@@ -159,7 +159,7 @@ export const IntrospectedEditGuesser = ({
       redirectTo,
       basePath,
       schemaAnalyzer,
-    ]
+    ],
   );
 
   return (

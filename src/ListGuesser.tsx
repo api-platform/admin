@@ -66,7 +66,7 @@ export const IntrospectedListGuesser = ({
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => {
       const orderField = orderParameters.find(
-        (orderParameter) => orderParameter.split('.')[0] === field.name
+        (orderParameter) => orderParameter.split('.')[0] === field.name,
       );
 
       return (

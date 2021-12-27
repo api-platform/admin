@@ -135,7 +135,7 @@ const AdminGuesser = ({
   useEffect(() => {
     if (typeof dataProvider.introspect !== 'function') {
       throw new Error(
-        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser'
+        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser',
       );
     }
 

@@ -51,7 +51,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   document,
   clone = true,
   addToCache = true,
-  useEmbedded = false
+  useEmbedded = false,
 ) => {
   if (clone) {
     // deep clone documents
@@ -72,7 +72,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
           transformJsonLdDocumentToReactAdminDocument(
             document[key],
             false,
-            false
+            false,
           );
       }
       document[key] = useEmbedded ? document[key] : document[key]['@id'];
@@ -112,7 +112,7 @@ const extractHubUrl = (response) => {
   }
 
   const matches = linkHeader.match(
-    /<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/
+    /<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/,
   );
 
   return matches && matches[1] ? matches[1] : null;
@@ -146,7 +146,7 @@ const createSubscription = (mercure, topic, callback) => {
   });
   const eventListener = (event) => {
     const document = transformJsonLdDocumentToReactAdminDocument(
-      JSON.parse(event.data)
+      JSON.parse(event.data),
     );
     // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
     callback(document);
@@ -188,7 +188,7 @@ function dataProvider(
   entrypointOrParams,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
-  useEmbedded = false // remove this parameter for 3.0 (as true)
+  useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) {
   let entrypoint = entrypointOrParams;
   let mercure = {
@@ -215,7 +215,7 @@ function dataProvider(
     useEmbedded = params.useEmbedded;
   } else {
     console.warn(
-      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.'
+      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
     );
   }
 
@@ -266,11 +266,11 @@ function dataProvider(
   const transformReactAdminDataToRequestBody = (
     resource: string,
     data: object,
-    extraInformation: { hasFileField?: any }
+    extraInformation: { hasFileField?: any },
   ): Promise<any> => {
     /** @type {Resource} */
     const apiResource = apiSchema.resources.find(
-      ({ name }) => resource === name
+      ({ name }) => resource === name,
     );
     if (undefined === apiResource) {
       return Promise.resolve(data);
@@ -295,7 +295,7 @@ function dataProvider(
         if (containFile(value)) {
           return body.append(
             key,
-            Object.values(value).find((value) => value instanceof File) as any
+            Object.values(value).find((value) => value instanceof File) as any,
           );
         }
         if (value && 'function' === typeof value.toJSON) {
@@ -337,7 +337,7 @@ function dataProvider(
       }
       collectionUrl.searchParams.set(
         searchParamKey,
-        searchParams[searchParamKey]
+        searchParams[searchParamKey],
       );
       itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
     }
@@ -352,7 +352,7 @@ function dataProvider(
         return transformReactAdminDataToRequestBody(
           resource,
           params.data,
-          extraInformation
+          extraInformation,
         ).then((body) => ({
           options: {
             body,
@@ -387,7 +387,7 @@ function dataProvider(
               filterValue.forEach((arrayFilterValue, index) => {
                 collectionUrl.searchParams.set(
                   `${rootKey}[${index}]`,
-                  arrayFilterValue
+                  arrayFilterValue,
                 );
               });
               return;
@@ -416,7 +416,7 @@ function dataProvider(
                 return buildFilterParams(
                   subKey,
                   filterValue,
-                  `${rootKey}[${subKey}]`
+                  `${rootKey}[${subKey}]`,
                 );
               }
               buildFilterParams(subKey, filterValue, `${rootKey}.${subKey}`);
@@ -449,7 +449,7 @@ function dataProvider(
         return transformReactAdminDataToRequestBody(
           resource,
           params.data,
-          extraInformation
+          extraInformation,
         ).then((body) => ({
           options: {
             body,
@@ -509,7 +509,7 @@ function dataProvider(
     type,
     resource,
     params,
-    response
+    response,
   ) => {
     if (mercure.hub === null) {
       const hubUrl = extractHubUrl(response);
@@ -521,7 +521,7 @@ function dataProvider(
             subscriptions[subKey] = createSubscription(
               mercure,
               sub.topic,
-              sub.callback
+              sub.callback,
             );
           }
         }
@@ -538,16 +538,16 @@ function dataProvider(
               document,
               true,
               !disableCache,
-              useEmbedded
-            )
-          )
+              useEmbedded,
+            ),
+          ),
         )
           .then((data) =>
             Promise.all(
               data.map((data) =>
-                convertHydraDataToReactAdminData(resource, data)
-              )
-            )
+                convertHydraDataToReactAdminData(resource, data),
+              ),
+            ),
           )
           .then((data) => ({
             data,
@@ -569,8 +569,8 @@ function dataProvider(
             response.json,
             true,
             !disableCache,
-            useEmbedded
-          )
+            useEmbedded,
+          ),
         )
           .then((data) => convertHydraDataToReactAdminData(resource, data))
           .then((data) => ({ data }));
@@ -600,8 +600,8 @@ function dataProvider(
           type,
           resource,
           params,
-          response
-        )
+          response,
+        ),
       );
 
   /**
@@ -612,7 +612,7 @@ function dataProvider(
   const hasIdSearchFilter = (resource) => {
     const schema = apiSchema.resources.find((r) => r.name === resource);
     return resolveSchemaParameters(schema).then((parameters) =>
-      parameters.map((filter) => filter.variable).includes('id')
+      parameters.map((filter) => filter.variable).includes('id'),
     );
   };
 
@@ -635,8 +635,8 @@ function dataProvider(
           params.ids.map((id) =>
             reactAdminDocumentsCache[id]
               ? Promise.resolve({ data: reactAdminDocumentsCache[id] })
-              : fetchApi(GET_ONE, resource, { id })
-          )
+              : fetchApi(GET_ONE, resource, { id }),
+          ),
         ).then((responses) => ({ data: responses.map(({ data }) => data) }));
       });
     },
@@ -645,13 +645,13 @@ function dataProvider(
     update: (resource, params) => fetchApi(UPDATE, resource, params),
     updateMany: (resource, params) =>
       Promise.all(
-        params.ids.map((id) => fetchApi(UPDATE, resource, { ...params, id }))
+        params.ids.map((id) => fetchApi(UPDATE, resource, { ...params, id })),
       ).then(() => ({ data: [] })),
     create: (resource, params) => fetchApi(CREATE, resource, params),
     delete: (resource, params) => fetchApi(DELETE, resource, params),
     deleteMany: (resource, params) =>
       Promise.all(
-        params.ids.map((id) => fetchApi(DELETE, resource, { id }))
+        params.ids.map((id) => fetchApi(DELETE, resource, { id })),
       ).then(() => ({ data: [] })),
     introspect: () =>
       apiSchema
@@ -676,7 +676,7 @@ function dataProvider(
                   (message
                     ? `${message}\nHave you verified that CORS is correctly configured in your API?\n`
                     : '') +
-                  (status ? `Status: ${status}` : '')
+                  (status ? `Status: ${status}` : ''),
               );
             }),
     subscribe: (resourceIds, callback) => {
@@ -690,7 +690,7 @@ function dataProvider(
         subscriptions[resourceId] = createSubscription(
           mercure,
           resourceId,
-          callback
+          callback,
         );
       });
 

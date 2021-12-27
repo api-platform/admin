@@ -58,8 +58,8 @@ function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
                   '@value'
                 ],
                 status,
-                json
-              )
+                json,
+              ),
             );
           })
           .catch((e) => {
@@ -68,7 +68,7 @@ function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
             }
 
             return Promise.reject(
-              new HttpError(data.response.statusText, status)
+              new HttpError(data.response.statusText, status),
             );
           })
       );
