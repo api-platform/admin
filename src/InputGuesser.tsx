@@ -38,7 +38,7 @@ export const IntrospectedInputGuesser = ({
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {
     console.error(
-      `Field ${props.source} not present inside API description for the resource ${props.resource}`
+      `Field ${props.source} not present inside API description for the resource ${props.resource}`,
     );
 
     return <Fragment />;
@@ -69,7 +69,7 @@ export const IntrospectedInputGuesser = ({
       ...getFieldLabelTranslationArgs({
         resource: props.resource,
         source: field.name,
-      })
+      }),
     );
 
     return (
@@ -94,19 +94,19 @@ export const IntrospectedInputGuesser = ({
   if (fieldType === 'id') {
     const prefix = `/${props.resource}/`;
 
-    props.format = value => {
+    props.format = (value) => {
       return value && 0 === value.indexOf(prefix)
         ? value.substr(prefix.length)
         : value;
     };
 
-    props.parse = value => {
+    props.parse = (value) => {
       return -1 !== value.indexOf(prefix) ? prefix + value : value;
     };
   }
 
-  const formatEmbedded = value => JSON.stringify(value);
-  const parseEmbedded = value => JSON.parse(value);
+  const formatEmbedded = (value) => JSON.stringify(value);
+  const parseEmbedded = (value) => JSON.parse(value);
 
   if (null !== field.embedded && 1 === field.maxCardinality) {
     props.format = formatEmbedded;
@@ -115,8 +115,8 @@ export const IntrospectedInputGuesser = ({
 
   switch (fieldType) {
     case 'array':
-      let textInputFormat = value => value;
-      let textInputParse = value => value;
+      let textInputFormat = (value) => value;
+      let textInputParse = (value) => value;
       if (null !== field.embedded && 1 !== field.maxCardinality) {
         textInputFormat = formatEmbedded;
         textInputParse = parseEmbedded;

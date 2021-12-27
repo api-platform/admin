@@ -16,17 +16,17 @@ describe('<ShowGuesser />', () => {
         schema={{ name: 'users', title: 'User' }}
         readableFields={API_FIELDS_DATA}
         id="ShowComponentId"
-      />
+      />,
     );
 
     expect(wrapper).toContainReact(
-      <FieldGuesser source="fieldA" addLabel={true} />
+      <FieldGuesser source="fieldA" addLabel={true} />,
     );
     expect(wrapper).toContainReact(
-      <FieldGuesser source="fieldB" addLabel={true} />
+      <FieldGuesser source="fieldB" addLabel={true} />,
     );
     expect(wrapper).toContainReact(
-      <FieldGuesser source="deprecatedField" addLabel={true} />
+      <FieldGuesser source="deprecatedField" addLabel={true} />,
     );
   });
 
@@ -40,17 +40,17 @@ describe('<ShowGuesser />', () => {
         <TextField source="id" label={'label of id'} />
         <TextField source="title" label={'label of title'} />
         <TextField source="body" label={'label of body'} />
-      </IntrospectedShowGuesser>
+      </IntrospectedShowGuesser>,
     );
 
     expect(wrapper).toContainReact(
-      <TextField source="id" label={'label of id'} />
+      <TextField source="id" label={'label of id'} />,
     );
     expect(wrapper).toContainReact(
-      <TextField source="title" label={'label of title'} />
+      <TextField source="title" label={'label of title'} />,
     );
     expect(wrapper).toContainReact(
-      <TextField source="body" label={'label of body'} />
+      <TextField source="body" label={'label of body'} />,
     );
   });
 });

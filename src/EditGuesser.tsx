@@ -22,7 +22,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}Edit = props => (\n`;
   code += `    <EditGuesser {...props}>\n`;
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     code += `        <InputGuesser source={"${field.name}"} />\n`;
   });
   code += `    </EditGuesser>\n`;
@@ -85,7 +85,7 @@ export const IntrospectedEditGuesser = ({
 
   let inputChildren = children;
   if (!inputChildren) {
-    inputChildren = writableFields.map(field => (
+    inputChildren = writableFields.map((field) => (
       <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, writableFields);
@@ -95,10 +95,10 @@ export const IntrospectedEditGuesser = ({
     inputChildren = [inputChildren];
   }
 
-  const hasFileField = inputChildren.some(child => child.type === FileInput);
+  const hasFileField = inputChildren.some((child) => child.type === FileInput);
 
   const save = useCallback(
-    async values => {
+    async (values) => {
       try {
         const response = await mutate(
           {
@@ -109,7 +109,7 @@ export const IntrospectedEditGuesser = ({
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
-          { returnPromise: true }
+          { returnPromise: true },
         );
         const success = onSuccess
           ? onSuccess
@@ -124,7 +124,7 @@ export const IntrospectedEditGuesser = ({
         const submissionErrors = schemaAnalyzer.getSubmissionErrors(error);
         const failure = onFailure
           ? onFailure
-          : error => {
+          : (error) => {
               let message = 'ra.notification.http_error';
               if (!submissionErrors) {
                 message =
@@ -159,7 +159,7 @@ export const IntrospectedEditGuesser = ({
       redirectTo,
       basePath,
       schemaAnalyzer,
-    ]
+    ],
   );
 
   return (
@@ -168,7 +168,7 @@ export const IntrospectedEditGuesser = ({
       id={id}
       basePath={basePath}
       mutationMode={mutationMode}
-      transform={data => ({ ...data, extraInformation: { hasFileField } })}
+      transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
       {...props}
     >
       <SimpleForm
@@ -190,7 +190,7 @@ export const IntrospectedEditGuesser = ({
   );
 };
 
-export const EditGuesser = props => (
+export const EditGuesser = (props) => (
   <Introspecter component={IntrospectedEditGuesser} {...props} />
 );
 

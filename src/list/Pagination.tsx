@@ -10,7 +10,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CustomPagination = props => {
+const CustomPagination = (props) => {
   const { page, total, setPage, ...rest } = props;
   const classes = useStyles(props);
   const theme = useTheme();

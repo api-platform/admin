@@ -51,7 +51,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   document,
   clone = true,
   addToCache = true,
-  useEmbedded = false
+  useEmbedded = false,
 ) => {
   if (clone) {
     // deep clone documents
@@ -64,7 +64,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   }
 
   // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
-  Object.keys(document).forEach(key => {
+  Object.keys(document).forEach((key) => {
     // to-one
     if (isPlainObject(document[key]) && document[key]['@id']) {
       if (addToCache) {
@@ -72,7 +72,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
           transformJsonLdDocumentToReactAdminDocument(
             document[key],
             false,
-            false
+            false,
           );
       }
       document[key] = useEmbedded ? document[key] : document[key]['@id'];
@@ -87,7 +87,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
       isPlainObject(document[key][0]) &&
       document[key][0]['@id']
     ) {
-      document[key] = document[key].map(obj => {
+      document[key] = document[key].map((obj) => {
         if (addToCache) {
           reactAdminDocumentsCache[obj['@id']] =
             transformJsonLdDocumentToReactAdminDocument(obj, false, false);
@@ -105,14 +105,14 @@ export const transformJsonLdDocumentToReactAdminDocument = (
  * @param {Response} response
  * @returns {string|null}
  */
-const extractHubUrl = response => {
+const extractHubUrl = (response) => {
   const linkHeader = response.headers.get('Link');
   if (!linkHeader) {
     return null;
   }
 
   const matches = linkHeader.match(
-    /<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/
+    /<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/,
   );
 
   return matches && matches[1] ? matches[1] : null;
@@ -144,9 +144,9 @@ const createSubscription = (mercure, topic, callback) => {
   const eventSource = new EventSource(url.toString(), {
     withCredentials: mercure.jwt !== null,
   });
-  const eventListener = event => {
+  const eventListener = (event) => {
     const document = transformJsonLdDocumentToReactAdminDocument(
-      JSON.parse(event.data)
+      JSON.parse(event.data),
     );
     // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
     callback(document);
@@ -188,7 +188,7 @@ export function dataProvider(
   entrypointOrParams,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
-  useEmbedded = false // remove this parameter for 3.0 (as true)
+  useEmbedded = false, // remove this parameter for 3.0 (as true)
 ) {
   let entrypoint = entrypointOrParams;
   let mercure = {
@@ -215,7 +215,7 @@ export function dataProvider(
     useEmbedded = params.useEmbedded;
   } else {
     console.warn(
-      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.'
+      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
     );
   }
 
@@ -253,7 +253,7 @@ export function dataProvider(
     const fieldDataKeys: any = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
-    return Promise.all(fieldDataValues).then(fieldData => {
+    return Promise.all(fieldDataValues).then((fieldData) => {
       const object = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
         object[fieldDataKeys[i]] = fieldData[i];
@@ -266,25 +266,25 @@ export function dataProvider(
   const transformReactAdminDataToRequestBody = (
     resource: string,
     data: object,
-    extraInformation: { hasFileField?: any }
+    extraInformation: { hasFileField?: any },
   ): Promise<any> => {
     /** @type {Resource} */
     const apiResource = apiSchema.resources.find(
-      ({ name }) => resource === name
+      ({ name }) => resource === name,
     );
     if (undefined === apiResource) {
       return Promise.resolve(data);
     }
 
-    return convertReactAdminDataToHydraData(apiResource, data).then(data => {
+    return convertReactAdminDataToHydraData(apiResource, data).then((data) => {
       const values = Object.values(data);
-      const containFile = element =>
+      const containFile = (element) =>
         isPlainObject(element) &&
-        Object.values(element).some(value => value instanceof File);
+        Object.values(element).some((value) => value instanceof File);
 
       if (
         !extraInformation.hasFileField &&
-        !values.some(value => containFile(value))
+        !values.some((value) => containFile(value))
       ) {
         return JSON.stringify(data);
       }
@@ -295,7 +295,7 @@ export function dataProvider(
         if (containFile(value)) {
           return body.append(
             key,
-            Object.values(value).find(value => value instanceof File) as any
+            Object.values(value).find((value) => value instanceof File) as any,
           );
         }
         if (value && 'function' === typeof value.toJSON) {
@@ -337,7 +337,7 @@ export function dataProvider(
       }
       collectionUrl.searchParams.set(
         searchParamKey,
-        searchParams[searchParamKey]
+        searchParams[searchParamKey],
       );
       itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
     }
@@ -352,8 +352,8 @@ export function dataProvider(
         return transformReactAdminDataToRequestBody(
           resource,
           params.data,
-          extraInformation
-        ).then(body => ({
+          extraInformation,
+        ).then((body) => ({
           options: {
             body,
             method: 'POST',
@@ -387,7 +387,7 @@ export function dataProvider(
               filterValue.forEach((arrayFilterValue, index) => {
                 collectionUrl.searchParams.set(
                   `${rootKey}[${index}]`,
-                  arrayFilterValue
+                  arrayFilterValue,
                 );
               });
               return;
@@ -398,7 +398,7 @@ export function dataProvider(
               return;
             }
 
-            Object.keys(filterValue).forEach(subKey => {
+            Object.keys(filterValue).forEach((subKey) => {
               if (
                 rootKey === 'exists' ||
                 [
@@ -416,14 +416,14 @@ export function dataProvider(
                 return buildFilterParams(
                   subKey,
                   filterValue,
-                  `${rootKey}[${subKey}]`
+                  `${rootKey}[${subKey}]`,
                 );
               }
               buildFilterParams(subKey, filterValue, `${rootKey}.${subKey}`);
             });
           };
 
-          Object.keys(params.filter).forEach(key => {
+          Object.keys(params.filter).forEach((key) => {
             buildFilterParams(key, params.filter, key);
           });
         }
@@ -449,8 +449,8 @@ export function dataProvider(
         return transformReactAdminDataToRequestBody(
           resource,
           params.data,
-          extraInformation
-        ).then(body => ({
+          extraInformation,
+        ).then((body) => ({
           options: {
             body,
             method: updateHttpMethod,
@@ -487,7 +487,7 @@ export function dataProvider(
     const fieldDataKeys: any = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
-    return Promise.all(fieldDataValues).then(fieldData => {
+    return Promise.all(fieldDataValues).then((fieldData) => {
       const object = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
         object[fieldDataKeys[i]] = fieldData[i];
@@ -509,7 +509,7 @@ export function dataProvider(
     type,
     resource,
     params,
-    response
+    response,
   ) => {
     if (mercure.hub === null) {
       const hubUrl = extractHubUrl(response);
@@ -521,7 +521,7 @@ export function dataProvider(
             subscriptions[subKey] = createSubscription(
               mercure,
               sub.topic,
-              sub.callback
+              sub.callback,
             );
           }
         }
@@ -533,21 +533,23 @@ export function dataProvider(
       case GET_MANY_REFERENCE:
         // TODO: support other prefixes than "hydra:"
         return Promise.resolve(
-          response.json['hydra:member'].map(document =>
+          response.json['hydra:member'].map((document) =>
             transformJsonLdDocumentToReactAdminDocument(
               document,
               true,
               !disableCache,
-              useEmbedded
-            )
-          )
+              useEmbedded,
+            ),
+          ),
         )
-          .then(data =>
+          .then((data) =>
             Promise.all(
-              data.map(data => convertHydraDataToReactAdminData(resource, data))
-            )
+              data.map((data) =>
+                convertHydraDataToReactAdminData(resource, data),
+              ),
+            ),
           )
-          .then(data => ({
+          .then((data) => ({
             data,
             total: response.json.hasOwnProperty('hydra:totalItems')
               ? response.json['hydra:totalItems']
@@ -567,11 +569,11 @@ export function dataProvider(
             response.json,
             true,
             !disableCache,
-            useEmbedded
-          )
+            useEmbedded,
+          ),
         )
-          .then(data => convertHydraDataToReactAdminData(resource, data))
-          .then(data => ({ data }));
+          .then((data) => convertHydraDataToReactAdminData(resource, data))
+          .then((data) => ({ data }));
     }
   };
 
@@ -593,13 +595,13 @@ export function dataProvider(
   const fetchApi = (type, resource, params) =>
     convertReactAdminRequestToHydraRequest(type, resource, params)
       .then(({ url, options }) => httpClient(url, options))
-      .then(response =>
+      .then((response) =>
         convertHydraResponseToReactAdminResponse(
           type,
           resource,
           params,
-          response
-        )
+          response,
+        ),
       );
 
   /**
@@ -607,10 +609,10 @@ export function dataProvider(
    *
    * @returns {Promise<boolean>}
    */
-  const hasIdSearchFilter = resource => {
-    const schema = apiSchema.resources.find(r => r.name === resource);
-    return resolveSchemaParameters(schema).then(parameters =>
-      parameters.map(filter => filter.variable).includes('id')
+  const hasIdSearchFilter = (resource) => {
+    const schema = apiSchema.resources.find((r) => r.name === resource);
+    return resolveSchemaParameters(schema).then((parameters) =>
+      parameters.map((filter) => filter.variable).includes('id'),
     );
   };
 
@@ -618,7 +620,7 @@ export function dataProvider(
     getList: (resource, params) => fetchApi(GET_LIST, resource, params),
     getOne: (resource, params) => fetchApi(GET_ONE, resource, params),
     getMany: (resource, params) => {
-      return hasIdSearchFilter(resource).then(result => {
+      return hasIdSearchFilter(resource).then((result) => {
         // Hydra doesn't handle MANY requests but if a search filter for the id is available, it is used.
         if (result) {
           return fetchApi(GET_LIST, resource, {
@@ -630,12 +632,12 @@ export function dataProvider(
 
         // Else fallback to calling the ONE request n times instead.
         return Promise.all(
-          params.ids.map(id =>
+          params.ids.map((id) =>
             reactAdminDocumentsCache[id]
               ? Promise.resolve({ data: reactAdminDocumentsCache[id] })
-              : fetchApi(GET_ONE, resource, { id })
-          )
-        ).then(responses => ({ data: responses.map(({ data }) => data) }));
+              : fetchApi(GET_ONE, resource, { id }),
+          ),
+        ).then((responses) => ({ data: responses.map(({ data }) => data) }));
       });
     },
     getManyReference: (resource, params) =>
@@ -643,13 +645,13 @@ export function dataProvider(
     update: (resource, params) => fetchApi(UPDATE, resource, params),
     updateMany: (resource, params) =>
       Promise.all(
-        params.ids.map(id => fetchApi(UPDATE, resource, { ...params, id }))
+        params.ids.map((id) => fetchApi(UPDATE, resource, { ...params, id })),
       ).then(() => ({ data: [] })),
     create: (resource, params) => fetchApi(CREATE, resource, params),
     delete: (resource, params) => fetchApi(DELETE, resource, params),
     deleteMany: (resource, params) =>
       Promise.all(
-        params.ids.map(id => fetchApi(DELETE, resource, { id }))
+        params.ids.map((id) => fetchApi(DELETE, resource, { id })),
       ).then(() => ({ data: [] })),
     introspect: () =>
       apiSchema
@@ -661,7 +663,7 @@ export function dataProvider(
               }
               return { data: api, customRoutes: [] };
             })
-            .catch(err => {
+            .catch((err) => {
               const { status, error } = err;
               let { message } = err;
               // Note that the `api-doc-parser` rejects with a non-standard error object hence the check
@@ -674,11 +676,11 @@ export function dataProvider(
                   (message
                     ? `${message}\nHave you verified that CORS is correctly configured in your API?\n`
                     : '') +
-                  (status ? `Status: ${status}` : '')
+                  (status ? `Status: ${status}` : ''),
               );
             }),
     subscribe: (resourceIds, callback) => {
-      resourceIds.forEach(resourceId => {
+      resourceIds.forEach((resourceId) => {
         const sub = subscriptions[resourceId];
         if (sub !== undefined) {
           sub.count++;
@@ -688,14 +690,14 @@ export function dataProvider(
         subscriptions[resourceId] = createSubscription(
           mercure,
           resourceId,
-          callback
+          callback,
         );
       });
 
       return Promise.resolve({ data: null });
     },
     unsubscribe: (_resource, resourceIds) => {
-      resourceIds.forEach(resourceId => {
+      resourceIds.forEach((resourceId) => {
         const sub = subscriptions[resourceId];
         if (sub === undefined) {
           return;

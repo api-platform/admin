@@ -39,13 +39,13 @@ interface AdminRessourcesGuessProps extends Omit<AdminProps, 'loading'> {
   resources: any;
 }
 
-const displayOverrideCode = resources => {
+const displayOverrideCode = (resources) => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
     'If you want to override at least one resource, paste this content in the <AdminGuesser> component of your app:\n\n';
 
-  resources.forEach(r => {
+  resources.forEach((r) => {
     code += `<ResourceGuesser name={"${r.name}"} />\n`;
   });
   console.info(code);
@@ -76,8 +76,8 @@ export const AdminResourcesGuesser = ({
   if (!resourceChildren && resources) {
     const guessResources = includeDeprecated
       ? resources
-      : resources.filter(r => !r.deprecated);
-    resourceChildren = guessResources.map(r => (
+      : resources.filter((r) => !r.deprecated);
+    resourceChildren = guessResources.map((r) => (
       <ResourceGuesser name={r.name} key={r.name} />
     ));
     displayOverrideCode(guessResources);
@@ -135,7 +135,7 @@ const AdminGuesser = ({
   useEffect(() => {
     if (typeof dataProvider.introspect !== 'function') {
       throw new Error(
-        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser'
+        'The given dataProvider needs to expose an "introspect" function returning a parsed API documentation from api-doc-parser',
       );
     }
 
@@ -151,7 +151,7 @@ const AdminGuesser = ({
         setIntrospect(false);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         // Allow error to be caught by the error boundary
         setError(() => {
           throw error;

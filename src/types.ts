@@ -6,7 +6,7 @@ export interface CustomDataProvider extends DataProvider {
     options?: any,
     reducer?: {
       action: 'INTROSPECT';
-    }
+    },
   ) => Promise<{
     customRoutes: CustomRoutes;
     data: { resources: unknown };

@@ -18,10 +18,10 @@ import { Introspecter } from './Introspecter';
 
 const isFieldSortable = (field, schema) => {
   return (
-    schema.parameters.filter(parameter => parameter.variable === field.name)
+    schema.parameters.filter((parameter) => parameter.variable === field.name)
       .length > 0 &&
     schema.parameters.filter(
-      parameter => parameter.variable === `order[${field.name}]`
+      (parameter) => parameter.variable === `order[${field.name}]`,
     ).length > 0
   );
 };
@@ -52,7 +52,7 @@ const renderField = (field, schemaAnalyzer, props) => {
     return (
       <ArrayField {...props}>
         <SimpleList
-          primaryText={record => JSON.stringify(record)}
+          primaryText={(record) => JSON.stringify(record)}
           linkType={false}
           // Workaround for forcing the list to display underlying data.
           total={2}
@@ -92,11 +92,11 @@ export const IntrospectedFieldGuesser = ({
   schemaAnalyzer,
   ...props
 }) => {
-  const field = fields.find(f => f.name === props.source);
+  const field = fields.find((f) => f.name === props.source);
 
   if (!field) {
     console.error(
-      `Field "${props.source}" not present inside API description for the resource "${props.resource}"`
+      `Field "${props.source}" not present inside API description for the resource "${props.resource}"`,
     );
 
     return <Fragment />;
@@ -108,7 +108,7 @@ export const IntrospectedFieldGuesser = ({
   });
 };
 
-export const FieldGuesser = props => (
+export const FieldGuesser = (props) => (
   <Introspecter
     component={IntrospectedFieldGuesser}
     includeDeprecated={true}

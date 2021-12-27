@@ -53,7 +53,7 @@ const ResourcesIntrospecter = ({
     return null;
   }
 
-  const schema = resources.find(r => r.name === resource);
+  const schema = resources.find((r) => r.name === resource);
 
   if (
     !schema ||
@@ -112,8 +112,8 @@ export const Introspecter = ({
             const result = target[key].apply(target, args);
 
             if (result && typeof result.then === 'function') {
-              return result.catch(e => {
-                logoutIfAccessDenied(e).then(loggedOut => {
+              return result.catch((e) => {
+                logoutIfAccessDenied(e).then((loggedOut) => {
                   if (loggedOut) {
                     return;
                   }
@@ -127,10 +127,10 @@ export const Introspecter = ({
           };
         },
       }),
-    [schemaAnalyzer, logoutIfAccessDenied]
+    [schemaAnalyzer, logoutIfAccessDenied],
   );
-  const { resources } = useSelector<any, any>(state =>
-    state.introspect['introspect'] ? state.introspect['introspect'].data : {}
+  const { resources } = useSelector<any, any>((state) =>
+    state.introspect['introspect'] ? state.introspect['introspect'].data : {},
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -144,7 +144,7 @@ export const Introspecter = ({
 
     dataProvider
       .introspect(resource, {}, { action: 'INTROSPECT' })
-      .catch(error => {
+      .catch((error) => {
         setError(error);
         setLoading(false);
       });

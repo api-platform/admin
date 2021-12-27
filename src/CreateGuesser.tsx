@@ -21,7 +21,7 @@ const displayOverrideCode = (schema, fields) => {
   code += `const ${schema.title}Create = props => (\n`;
   code += `    <CreateGuesser {...props}>\n`;
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     code += `        <InputGuesser source={"${field.name}"} />\n`;
   });
   code += `    </CreateGuesser>\n`;
@@ -80,7 +80,7 @@ export const IntrospectedCreateGuesser = ({
 
   let inputChildren = children;
   if (!inputChildren) {
-    inputChildren = writableFields.map(field => (
+    inputChildren = writableFields.map((field) => (
       <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, writableFields);
@@ -90,10 +90,10 @@ export const IntrospectedCreateGuesser = ({
     inputChildren = [inputChildren];
   }
 
-  const hasFileField = inputChildren.some(child => child.type === FileInput);
+  const hasFileField = inputChildren.some((child) => child.type === FileInput);
 
   const save = useCallback(
-    async values => {
+    async (values) => {
       try {
         const response = await mutate(
           {
@@ -103,7 +103,7 @@ export const IntrospectedCreateGuesser = ({
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
-          { returnPromise: true }
+          { returnPromise: true },
         );
         const success = onSuccess
           ? onSuccess
@@ -118,7 +118,7 @@ export const IntrospectedCreateGuesser = ({
         const submissionErrors = schemaAnalyzer.getSubmissionErrors(error);
         const failure = onFailure
           ? onFailure
-          : error => {
+          : (error) => {
               let message = 'ra.notification.http_error';
               if (!submissionErrors) {
                 message =
@@ -152,7 +152,7 @@ export const IntrospectedCreateGuesser = ({
       redirectTo,
       basePath,
       schemaAnalyzer,
-    ]
+    ],
   );
 
   return (
@@ -175,7 +175,7 @@ export const IntrospectedCreateGuesser = ({
   );
 };
 
-export const CreateGuesser = props => (
+export const CreateGuesser = (props) => (
   <Introspecter component={IntrospectedCreateGuesser} {...props} />
 );
 

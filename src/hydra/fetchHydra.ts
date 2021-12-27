@@ -33,7 +33,7 @@ export function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
 
   const authOptions = { ...options, headers: requestHeaders };
 
-  return fetchJsonLd(url.href, authOptions).then(data => {
+  return fetchJsonLd(url.href, authOptions).then((data) => {
     const status = data.response.status;
 
     if (status < 200 || status >= 300) {
@@ -49,26 +49,26 @@ export function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
           // @ts-ignore
           .expand(body, {
             base: getDocumentationUrlFromHeaders(data.response.headers),
-            documentLoader: input => fetchJsonLd(input, authOptions),
+            documentLoader: (input) => fetchJsonLd(input, authOptions),
           })
-          .then(json => {
+          .then((json) => {
             return Promise.reject(
               new HttpError(
                 json[0]['http://www.w3.org/ns/hydra/core#description']?.[0][
                   '@value'
                 ],
                 status,
-                json
-              )
+                json,
+              ),
             );
           })
-          .catch(e => {
+          .catch((e) => {
             if (e.hasOwnProperty('body')) {
               return Promise.reject(e);
             }
 
             return Promise.reject(
-              new HttpError(data.response.statusText, status)
+              new HttpError(data.response.statusText, status),
             );
           })
       );

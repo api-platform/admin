@@ -9,7 +9,7 @@ describe('<ResourceGuesser />', () => {
     const CustomCreate = () => {};
 
     const tree = renderer.render(
-      <ResourceGuesser name="dummy" create={CustomCreate} />
+      <ResourceGuesser name="dummy" create={CustomCreate} />,
     );
 
     expect(tree).toMatchSnapshot();
@@ -25,7 +25,7 @@ describe('<ResourceGuesser />', () => {
     const CustomEdit = () => {};
 
     const tree = renderer.render(
-      <ResourceGuesser name="dummy" edit={CustomEdit} />
+      <ResourceGuesser name="dummy" edit={CustomEdit} />,
     );
 
     expect(tree).toMatchSnapshot();
@@ -41,7 +41,7 @@ describe('<ResourceGuesser />', () => {
     const CustomList = () => {};
 
     const tree = renderer.render(
-      <ResourceGuesser name="dummy" list={CustomList} />
+      <ResourceGuesser name="dummy" list={CustomList} />,
     );
 
     expect(tree).toMatchSnapshot();
@@ -57,7 +57,7 @@ describe('<ResourceGuesser />', () => {
     const CustomShow = () => {};
 
     const tree = renderer.render(
-      <ResourceGuesser name="dummy" show={CustomShow} />
+      <ResourceGuesser name="dummy" show={CustomShow} />,
     );
 
     expect(tree).toMatchSnapshot();
