@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDataProvider, useLogoutIfAccessDenied } from 'react-admin';
 import { useSelector } from 'react-redux';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import { CustomDataProvider } from './types';
+import { ApiPlatformAdminDataProvider } from './types';
 
 interface Resource {
   name: string;
@@ -134,7 +134,7 @@ const Introspecter = ({
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const dataProvider: CustomDataProvider = useDataProvider();
+  const dataProvider: ApiPlatformAdminDataProvider = useDataProvider();
 
   useEffect(() => {
     if (resources) {

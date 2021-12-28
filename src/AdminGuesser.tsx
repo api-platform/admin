@@ -19,10 +19,10 @@ import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Layout } from './layout';
 import introspectReducer from './introspectReducer';
-import { CustomDataProvider } from './types';
+import { ApiPlatformAdminDataProvider } from './types';
 
 export interface AdminGuesserProps extends AdminProps {
-  dataProvider: CustomDataProvider;
+  dataProvider: ApiPlatformAdminDataProvider;
   schemaAnalyzer: any;
   includeDeprecated: boolean;
 }
@@ -31,7 +31,7 @@ interface AdminGuesserWithErrorProps extends AdminGuesserProps {
   error: string;
 }
 
-interface AdminRessourcesGuessProps extends Omit<AdminProps, 'loading'> {
+interface AdminRessourcesGuesserProps extends Omit<AdminProps, 'loading'> {
   admin?: any;
   includeDeprecated: boolean;
   loading: boolean;
@@ -67,7 +67,7 @@ export const AdminResourcesGuesser = ({
   resources,
   loading,
   ...rest
-}: AdminRessourcesGuessProps) => {
+}: AdminRessourcesGuesserProps) => {
   if (loading) {
     return <LoadingPage />;
   }

@@ -1,6 +1,6 @@
 import { DataProvider, CustomRoutes } from 'react-admin';
 
-export interface CustomDataProvider extends DataProvider {
+export interface ApiPlatformAdminDataProvider extends DataProvider {
   introspect: (
     resource?: any,
     options?: any,

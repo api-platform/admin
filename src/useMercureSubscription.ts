@@ -6,10 +6,10 @@ import {
   useDataProvider,
 } from 'react-admin';
 import { useDispatch } from 'react-redux';
-import { CustomDataProvider } from './types';
+import { ApiPlatformAdminDataProvider } from './types';
 
 export default function useMercureSubscription(resource, idOrIds) {
-  const dataProvider: CustomDataProvider = useDataProvider();
+  const dataProvider: ApiPlatformAdminDataProvider = useDataProvider();
   const dispatch = useDispatch();
 
   const hasShownNoSubscribeWarning = useRef(false);

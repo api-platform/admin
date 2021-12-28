@@ -657,11 +657,11 @@ function dataProvider(
       apiSchema
         ? Promise.resolve({ data: apiSchema })
         : apiDocumentationParser(entrypoint)
-            .then(({ api }: any) => {
+            .then(({ api, customRoutes = [] }: any) => {
               if (api.resources.length > 0) {
                 apiSchema = api;
               }
-              return { data: api, customRoutes: [] };
+              return { data: api, customRoutes };
             })
             .catch((err) => {
               const { status, error } = err;
