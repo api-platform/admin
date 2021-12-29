@@ -8,16 +8,16 @@ type FilterParameter = {
   isRequired: boolean;
 };
 
-interface IntrospectedFilterGuesserProps {
-  schema: any;
-  schemaAnalyzer: any;
-}
-
 export const IntrospectedFilterGuesser = ({
+  fields,
+  readableFields,
+  writableFields,
   schema,
   schemaAnalyzer,
+  hasShow,
+  hasEdit,
   ...rest
-}: IntrospectedFilterGuesserProps) => {
+}) => {
   const [filtersParameters, setFiltersParameters] = useState<FilterParameter[]>(
     [],
   );
