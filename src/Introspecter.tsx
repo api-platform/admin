@@ -167,7 +167,7 @@ const Introspecter = ({
 Introspecter.propTypes = {
   component: PropTypes.elementType.isRequired,
   includeDeprecated: PropTypes.bool,
-  resource: PropTypes.string,
+  resource: PropTypes.string.isRequired,
 };
 
 export default Introspecter;
