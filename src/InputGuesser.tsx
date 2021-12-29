@@ -21,6 +21,9 @@ import Introspecter from './Introspecter';
 
 export const IntrospectedInputGuesser = ({
   fields,
+  readableFields,
+  writableFields,
+  schema,
   schemaAnalyzer,
   validate,
   ...props
