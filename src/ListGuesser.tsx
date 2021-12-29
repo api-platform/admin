@@ -40,7 +40,9 @@ export const DatagridBodyWithMercure = (props) => {
 };
 
 export const IntrospectedListGuesser = ({
+  fields,
   readableFields,
+  writableFields,
   schema,
   schemaAnalyzer,
   rowClick,
