@@ -35,8 +35,10 @@ const displayOverrideCode = (schema, fields) => {
 
 interface IntrospectedEditGuesserProps extends EditProps {
   children: any;
+  fields: any;
   initialValues: any;
   margin: any;
+  readableFields: any;
   redirect: string;
   sanitizeEmptyValues: any;
   schema: any;
@@ -52,6 +54,8 @@ interface IntrospectedEditGuesserProps extends EditProps {
 }
 
 export const IntrospectedEditGuesser = ({
+  fields,
+  readableFields,
   writableFields,
   schema,
   schemaAnalyzer,

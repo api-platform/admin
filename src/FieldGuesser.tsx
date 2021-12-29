@@ -88,6 +88,8 @@ const renderField = (field, schemaAnalyzer, props) => {
 
 export const IntrospectedFieldGuesser = ({
   fields,
+  readableFields,
+  writableFields,
   schema,
   schemaAnalyzer,
   ...props

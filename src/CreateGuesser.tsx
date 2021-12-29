@@ -53,6 +53,8 @@ interface IntrospectedCreateGuesserProps extends CreateProps {
 }
 
 export const IntrospectedCreateGuesser = ({
+  fields,
+  readableFields,
   writableFields,
   schema,
   schemaAnalyzer,
