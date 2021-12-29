@@ -31,7 +31,7 @@ interface AdminGuesserWithErrorProps extends AdminGuesserProps {
   error: string;
 }
 
-interface AdminRessourcesGuesserProps extends Omit<AdminProps, 'loading'> {
+interface AdminResourcesGuesserProps extends Omit<AdminProps, 'loading'> {
   admin?: any;
   includeDeprecated: boolean;
   loading: boolean;
@@ -67,7 +67,7 @@ export const AdminResourcesGuesser = ({
   resources,
   loading,
   ...rest
-}: AdminRessourcesGuesserProps) => {
+}: AdminResourcesGuesserProps) => {
   if (loading) {
     return <LoadingPage />;
   }
