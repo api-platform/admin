@@ -26,8 +26,11 @@ const displayOverrideCode = (schema, fields) => {
 };
 
 export const IntrospectedShowGuesser = ({
+  fields,
   readableFields,
+  writableFields,
   schema,
+  schemaAnalyzer,
   children,
   ...props
 }) => {
