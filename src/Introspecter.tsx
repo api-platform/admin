@@ -22,10 +22,11 @@ interface ResourcesIntrospecterProps {
   error: any;
 }
 
-type IntrospecterProps = Pick<
+export type IntrospecterProps = Pick<
   ResourcesIntrospecterProps,
-  'component' | 'includeDeprecated' | 'resource'
->;
+  'component' | 'resource'
+> &
+  Partial<Pick<ResourcesIntrospecterProps, 'includeDeprecated'>>;
 
 const ResourcesIntrospecter = ({
   component: Component,

@@ -6,7 +6,7 @@ describe('<ResourceGuesser />', () => {
   const renderer = new ShallowRenderer();
 
   test('renders with create', () => {
-    const CustomCreate = () => {};
+    const CustomCreate = () => null;
 
     const tree = renderer.render(
       <ResourceGuesser name="dummy" create={CustomCreate} />,
@@ -22,7 +22,7 @@ describe('<ResourceGuesser />', () => {
   });
 
   test('renders with edit', () => {
-    const CustomEdit = () => {};
+    const CustomEdit = () => null;
 
     const tree = renderer.render(
       <ResourceGuesser name="dummy" edit={CustomEdit} />,
@@ -38,7 +38,7 @@ describe('<ResourceGuesser />', () => {
   });
 
   test('renders with list', () => {
-    const CustomList = () => {};
+    const CustomList = () => null;
 
     const tree = renderer.render(
       <ResourceGuesser name="dummy" list={CustomList} />,
@@ -54,7 +54,7 @@ describe('<ResourceGuesser />', () => {
   });
 
   test('renders with show', () => {
-    const CustomShow = () => {};
+    const CustomShow = () => null;
 
     const tree = renderer.render(
       <ResourceGuesser name="dummy" show={CustomShow} />,

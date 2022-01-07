@@ -8,11 +8,20 @@ import ShowGuesser from './ShowGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import introspectReducer from './introspectReducer';
 import schemaAnalyzer from './hydra/schemaAnalyzer';
+import { ApiPlatformAdminDataProvider } from './types';
 
 import { API_FIELDS_DATA } from './__fixtures__/parsedData';
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
 const dataProvider = {
+  getList: () => Promise.resolve({ data: [], total: 0 }),
+  getMany: () => Promise.resolve({ data: [] }),
+  getManyReference: () => Promise.resolve({ data: [], total: 0 }),
+  update: () => Promise.resolve({ data: {} }),
+  updateMany: () => Promise.resolve({ data: [] }),
+  create: () => Promise.resolve({ data: null }),
+  delete: () => Promise.resolve({ data: { id: 'id' } }),
+  deleteMany: () => Promise.resolve({ data: [] }),
   getOne: () =>
     Promise.resolve({
       data: {
@@ -36,16 +45,17 @@ const dataProvider = {
           }),
         ],
       },
+      customRoutes: [],
     }),
   subscribe: () => Promise.resolve({ data: null }),
   unsubscribe: () => Promise.resolve({ data: null }),
-};
+} as ApiPlatformAdminDataProvider;
 
 describe('<ShowGuesser />', () => {
   test('renders with no children', async () => {
     const { queryAllByText } = renderWithRedux(
       <DataProviderContext.Provider value={dataProvider}>
-        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
+        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer as any}>
           <ShowGuesser basePath="/users" resource="user" id="/users/123" />
         </SchemaAnalyzerContext.Provider>
       </DataProviderContext.Provider>,
@@ -77,7 +87,7 @@ describe('<ShowGuesser />', () => {
   test('renders with custom fields', async () => {
     const { queryAllByText } = renderWithRedux(
       <DataProviderContext.Provider value={dataProvider}>
-        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
+        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer as any}>
           <ShowGuesser basePath="/users" resource="user" id="/users/123">
             <TextField source="id" label={'label of id'} />
             <TextField source="title" label={'label of title'} />

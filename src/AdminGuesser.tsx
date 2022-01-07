@@ -35,7 +35,7 @@ interface AdminResourcesGuesserProps extends Omit<AdminProps, 'loading'> {
   admin?: any;
   includeDeprecated: boolean;
   loading: boolean;
-  loadingPage: any;
+  loadingPage?: any;
   resources: any;
 }
 
