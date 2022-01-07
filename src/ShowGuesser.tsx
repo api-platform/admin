@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Show, SimpleShowLayout } from 'react-admin';
+import {
+  Show,
+  ShowProps,
+  SimpleShowLayout,
+  useCheckMinimumRequiredProps,
+} from 'react-admin';
 import FieldGuesser from './FieldGuesser';
-import Introspecter from './Introspecter';
+import Introspecter, { IntrospecterProps } from './Introspecter';
 import useMercureSubscription from './useMercureSubscription';
 
 const displayOverrideCode = (schema, fields) => {
@@ -51,9 +56,23 @@ export const IntrospectedShowGuesser = ({
   );
 };
 
-const ShowGuesser = (props) => (
-  <Introspecter component={IntrospectedShowGuesser} {...props} />
-);
+const ShowGuesser = (
+  props: Omit<IntrospecterProps, 'component' | 'resource'> &
+    Omit<ShowProps, 'component'>,
+) => {
+  useCheckMinimumRequiredProps('ShowGuesser', ['resource'], props);
+  if (!props.resource) {
+    return null;
+  }
+
+  return (
+    <Introspecter
+      component={IntrospectedShowGuesser}
+      resource={props.resource}
+      {...props}
+    />
+  );
+};
 
 ShowGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
