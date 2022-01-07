@@ -3,6 +3,29 @@ import PropTypes from 'prop-types';
 import { useDataProvider, useLogoutIfAccessDenied } from 'react-admin';
 import { useSelector } from 'react-redux';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
+import { ApiPlatformAdminDataProvider } from './types';
+
+interface Resource {
+  name: string;
+  fields: any[];
+  readableFields: any[];
+  writableFields: any[];
+}
+
+interface ResourcesIntrospecterProps {
+  component: React.ComponentType<any>;
+  schemaAnalyzer: any;
+  includeDeprecated: boolean;
+  resource: string;
+  resources: Resource[];
+  loading: boolean;
+  error: any;
+}
+
+type IntrospecterProps = Pick<
+  ResourcesIntrospecterProps,
+  'component' | 'includeDeprecated' | 'resource'
+>;
 
 const ResourcesIntrospecter = ({
   component: Component,
@@ -13,7 +36,7 @@ const ResourcesIntrospecter = ({
   loading,
   error,
   ...rest
-}) => {
+}: ResourcesIntrospecterProps) => {
   if (loading) {
     return null;
   }
@@ -73,9 +96,9 @@ const Introspecter = ({
   includeDeprecated = false,
   resource,
   ...rest
-}) => {
+}: IntrospecterProps) => {
   const logoutIfAccessDenied = useLogoutIfAccessDenied();
-  const schemaAnalyzer = useContext(SchemaAnalyzerContext);
+  const schemaAnalyzer = useContext<any>(SchemaAnalyzerContext);
   const schemaAnalyzerProxy = useMemo(
     () =>
       new Proxy(schemaAnalyzer, {
@@ -85,6 +108,7 @@ const Introspecter = ({
           }
 
           return (...args) => {
+            // eslint-disable-next-line prefer-spread
             const result = target[key].apply(target, args);
 
             if (result && typeof result.then === 'function') {
@@ -105,12 +129,12 @@ const Introspecter = ({
       }),
     [schemaAnalyzer, logoutIfAccessDenied],
   );
-  const { resources } = useSelector((state) =>
+  const { resources } = useSelector<any, any>((state) =>
     state.introspect['introspect'] ? state.introspect['introspect'].data : {},
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const dataProvider = useDataProvider();
+  const dataProvider: ApiPlatformAdminDataProvider = useDataProvider();
 
   useEffect(() => {
     if (resources) {
@@ -142,8 +166,8 @@ const Introspecter = ({
 
 Introspecter.propTypes = {
   component: PropTypes.elementType.isRequired,
-  resource: PropTypes.string.isRequired,
   includeDeprecated: PropTypes.bool,
+  resource: PropTypes.string.isRequired,
 };
 
 export default Introspecter;

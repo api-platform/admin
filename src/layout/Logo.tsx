@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Logo = (props) => (
-  <svg height={50} viewBox="0 0 1200 322.6" xmlSpace="preserve" {...props}>
+const Logo = () => (
+  <svg height={50} viewBox="0 0 1200 322.6" xmlSpace="preserve">
     <style>
       {'.st0{fill: #85ccd3}' +
         '.st1{fill: #1b939e}' +

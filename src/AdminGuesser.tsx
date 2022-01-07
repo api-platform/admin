@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Admin,
+  AdminProps,
   ComponentPropType,
+  CustomRoutes,
   Error as DefaultError,
   Loading,
   TranslationProvider,
@@ -17,6 +19,25 @@ import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Layout } from './layout';
 import introspectReducer from './introspectReducer';
+import { ApiPlatformAdminDataProvider } from './types';
+
+export interface AdminGuesserProps extends AdminProps {
+  dataProvider: ApiPlatformAdminDataProvider;
+  schemaAnalyzer: any;
+  includeDeprecated: boolean;
+}
+
+interface AdminGuesserWithErrorProps extends AdminGuesserProps {
+  error: string;
+}
+
+interface AdminResourcesGuesserProps extends Omit<AdminProps, 'loading'> {
+  admin?: any;
+  includeDeprecated: boolean;
+  loading: boolean;
+  loadingPage: any;
+  resources: any;
+}
 
 const displayOverrideCode = (resources) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -46,7 +67,7 @@ export const AdminResourcesGuesser = ({
   resources,
   loading,
   ...rest
-}) => {
+}: AdminResourcesGuesserProps) => {
   if (loading) {
     return <LoadingPage />;
   }
@@ -99,11 +120,11 @@ const AdminGuesser = ({
   // Other props
   children,
   ...rest
-}) => {
-  const [resources, setResources] = useState();
+}: AdminGuesserProps) => {
+  const [resources, setResources] = useState<unknown>();
   const [loading, setLoading] = useState(true);
   const [, setError] = useState();
-  const [addedCustomRoutes, setAddedCustomRoutes] = useState([]);
+  const [addedCustomRoutes, setAddedCustomRoutes] = useState<CustomRoutes>([]);
   const [introspect, setIntrospect] = useState(true);
 
   if (!history) {
@@ -180,13 +201,23 @@ AdminGuesser.propTypes = {
   customRoutes: PropTypes.array,
 };
 
-const AdminGuesserWithError = ({ error, ...props }) => (
-  <TranslationProvider i18nProvider={props.i18nProvider}>
-    <ErrorBoundary error={error}>
-      <AdminGuesser {...props} />
-    </ErrorBoundary>
-  </TranslationProvider>
-);
+const AdminGuesserWithError = ({
+  error,
+  i18nProvider,
+  ...props
+}: AdminGuesserWithErrorProps) => {
+  if (!i18nProvider) {
+    throw new Error('Missing i18nProvider');
+  }
+
+  return (
+    <TranslationProvider i18nProvider={i18nProvider}>
+      <ErrorBoundary error={error}>
+        <AdminGuesser {...props} />
+      </ErrorBoundary>
+    </TranslationProvider>
+  );
+};
 
 AdminGuesserWithError.defaultProps = {
   error: DefaultError,

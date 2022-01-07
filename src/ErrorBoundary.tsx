@@ -2,8 +2,20 @@ import { Component, createElement } from 'react';
 import PropTypes from 'prop-types';
 import { ComponentPropType } from 'react-admin';
 
-class ErrorBoundary extends Component {
-  constructor(props) {
+type ErrorBoundaryProps = {
+  error: string;
+};
+
+type ErrorBoundaryState = {
+  hasError: boolean;
+  errorMessage: string | null;
+  errorInfo: string | null;
+};
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  static propTypes: any;
+
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, errorMessage: null, errorInfo: null };
   }

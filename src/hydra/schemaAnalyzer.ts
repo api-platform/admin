@@ -139,7 +139,7 @@ const getSubmissionErrors = (error) => {
   return violations;
 };
 
-export default () => {
+export default function schemaAnalyzer() {
   return {
     getFieldNameFromSchema,
     getOrderParametersFromSchema,
@@ -147,4 +147,4 @@ export default () => {
     getFieldType,
     getSubmissionErrors,
   };
-};
+}

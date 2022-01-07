@@ -12,6 +12,8 @@ import fetchHydra from './fetchHydra';
 import { resolveSchemaParameters } from './schemaAnalyzer';
 
 class ReactAdminDocument {
+  id: any;
+
   constructor(obj) {
     Object.assign(this, obj, {
       originId: obj.id,
@@ -182,12 +184,12 @@ const defaultParams = {
  * GET_ONE  => GET http://my.api.url/posts/123
  * UPDATE   => PUT http://my.api.url/posts/123
  */
-export default (
+function dataProvider(
   entrypointOrParams,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
-) => {
+) {
   let entrypoint = entrypointOrParams;
   let mercure = {
     hub: null,
@@ -230,7 +232,7 @@ export default (
    * @returns {Promise<Object>}
    */
   const convertReactAdminDataToHydraData = (resource, data = {}) => {
-    const fieldData = [];
+    const fieldData: any[] = [];
     resource.fields.forEach(({ name, reference, normalizeData }) => {
       if (!(name in data)) {
         return;
@@ -248,7 +250,7 @@ export default (
       fieldData[name] = normalizeData(data[name]);
     });
 
-    const fieldDataKeys = Object.keys(fieldData);
+    const fieldDataKeys: any = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
     return Promise.all(fieldDataValues).then((fieldData) => {
@@ -261,18 +263,11 @@ export default (
     });
   };
 
-  /**
-   * @param {string} resource
-   * @param {Object} data
-   * @param {Object} extraInformation
-   *
-   * @returns {Promise}
-   */
   const transformReactAdminDataToRequestBody = (
-    resource,
-    data,
-    extraInformation,
-  ) => {
+    resource: string,
+    data: object,
+    extraInformation: { hasFileField?: any },
+  ): Promise<any> => {
     /** @type {Resource} */
     const apiResource = apiSchema.resources.find(
       ({ name }) => resource === name,
@@ -295,12 +290,12 @@ export default (
       }
 
       const body = new FormData();
-      Object.entries(data).map(([key, value]) => {
+      Object.entries(data).map(([key, value]: [key: string, value: any]) => {
         // React-Admin FileInput format is an object containing a file.
         if (containFile(value)) {
           return body.append(
             key,
-            Object.values(value).find((value) => value instanceof File),
+            Object.values(value).find((value) => value instanceof File) as any,
           );
         }
         if (value && 'function' === typeof value.toJSON) {
@@ -346,7 +341,7 @@ export default (
       );
       itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
     }
-    let extraInformation = {};
+    let extraInformation: { hasFileField?: any } = {};
     if (params.data && params.data.extraInformation) {
       extraInformation = params.data.extraInformation;
       delete params.data.extraInformation;
@@ -489,7 +484,7 @@ export default (
       fieldData[name] = denormalizeData(data[name]);
     });
 
-    const fieldDataKeys = Object.keys(fieldData);
+    const fieldDataKeys: any = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
     return Promise.all(fieldDataValues).then((fieldData) => {
@@ -520,7 +515,7 @@ export default (
       const hubUrl = extractHubUrl(response);
       if (hubUrl) {
         mercure.hub = hubUrl;
-        for (let subKey in subscriptions) {
+        for (const subKey in subscriptions) {
           const sub = subscriptions[subKey];
           if (!sub.subscribed) {
             subscriptions[subKey] = createSubscription(
@@ -662,14 +657,15 @@ export default (
       apiSchema
         ? Promise.resolve({ data: apiSchema })
         : apiDocumentationParser(entrypoint)
-            .then(({ api, customRoutes = [] }) => {
+            .then(({ api, customRoutes = [] }: any) => {
               if (api.resources.length > 0) {
                 apiSchema = api;
               }
               return { data: api, customRoutes };
             })
             .catch((err) => {
-              let { status, message, error } = err;
+              const { status, error } = err;
+              let { message } = err;
               // Note that the `api-doc-parser` rejects with a non-standard error object hence the check
               if (error && error.message) {
                 message = error.message;
@@ -700,7 +696,7 @@ export default (
 
       return Promise.resolve({ data: null });
     },
-    unsubscribe: (resource, resourceIds) => {
+    unsubscribe: (_resource, resourceIds) => {
       resourceIds.forEach((resourceId) => {
         const sub = subscriptions[resourceId];
         if (sub === undefined) {
@@ -720,4 +716,6 @@ export default (
       return Promise.resolve({ data: null });
     },
   };
-};
+}
+
+export default dataProvider;

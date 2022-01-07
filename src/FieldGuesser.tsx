@@ -120,6 +120,10 @@ const FieldGuesser = (props) => (
 
 FieldGuesser.propTypes = {
   source: PropTypes.string.isRequired,
+  addLabel: PropTypes.bool,
+  resource: PropTypes.string,
+  sortable: PropTypes.bool,
+  sortBy: PropTypes.string,
 };
 
 export default FieldGuesser;

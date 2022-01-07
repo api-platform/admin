@@ -3,6 +3,11 @@ import { Filter } from 'react-admin';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
 
+type FilterParameter = {
+  name: string;
+  isRequired: boolean;
+};
+
 export const IntrospectedFilterGuesser = ({
   fields,
   readableFields,
@@ -13,7 +18,9 @@ export const IntrospectedFilterGuesser = ({
   hasEdit,
   ...rest
 }) => {
-  const [filtersParameters, setFiltersParameters] = useState([]);
+  const [filtersParameters, setFiltersParameters] = useState<FilterParameter[]>(
+    [],
+  );
 
   useEffect(() => {
     if (schema) {

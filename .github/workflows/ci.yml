@@ -14,11 +14,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: "15"
+          node-version: '16'
       - name: Install dependencies
         run: yarn install
       - name: Check build
         run: yarn build
+      - name: Check TypeScript
+        run: yarn test:types
       - name: Check coding standards
         run: yarn lint
       - name: Run tests

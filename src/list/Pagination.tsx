@@ -10,16 +10,15 @@ const useStyles = makeStyles({
   },
 });
 
-export default (props) => {
+const CustomPagination = (props) => {
   const { page, total, setPage, ...rest } = props;
+  const classes = useStyles(props);
+  const theme = useTheme();
+  const translate = useTranslate();
 
   if (total >= 0) {
     return <Pagination page={page} total={total} setPage={setPage} {...rest} />;
   }
-
-  const classes = useStyles(props);
-  const theme = useTheme();
-  const translate = useTranslate();
 
   return (
     <Toolbar>
@@ -39,3 +38,5 @@ export default (props) => {
     </Toolbar>
   );
 };
+
+export default CustomPagination;

@@ -130,7 +130,11 @@ export const IntrospectedInputGuesser = ({
           validate={guessedValidate}
           {...props}>
           <SimpleFormIterator>
-            <TextInput format={textInputFormat} parse={textInputParse} />
+            <TextInput
+              source=""
+              format={textInputFormat}
+              parse={textInputParse}
+            />
           </SimpleFormIterator>
         </ArrayInput>
       );
@@ -198,7 +202,7 @@ export const IntrospectedInputGuesser = ({
   }
 };
 
-const InputGuesser = (props) => (
+const InputGuesser = (props: any) => (
   <Introspecter
     component={IntrospectedInputGuesser}
     includeDeprecated={true}
@@ -208,6 +212,7 @@ const InputGuesser = (props) => (
 
 InputGuesser.propTypes = {
   source: PropTypes.string.isRequired,
+  alwaysOn: PropTypes.bool,
 };
 
 export default InputGuesser;

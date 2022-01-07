@@ -54,7 +54,7 @@ export const IntrospectedListGuesser = ({
   children,
   ...props
 }) => {
-  const [orderParameters, setOrderParameters] = useState([]);
+  const [orderParameters, setOrderParameters] = useState<any[]>([]);
 
   useEffect(() => {
     if (schema) {
