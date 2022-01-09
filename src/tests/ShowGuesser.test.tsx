@@ -4,11 +4,11 @@ import { renderWithRedux } from 'ra-test';
 import { waitFor } from '@testing-library/react';
 import { Resource } from '@api-platform/api-doc-parser';
 
-import ShowGuesser from './ShowGuesser';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import introspectReducer from './introspectReducer';
-import schemaAnalyzer from './hydra/schemaAnalyzer';
-import { ApiPlatformAdminDataProvider } from './types';
+import ShowGuesser from '../ShowGuesser';
+import SchemaAnalyzerContext from '../SchemaAnalyzerContext';
+import introspectReducer from '../introspectReducer';
+import schemaAnalyzer from '../hydra/schemaAnalyzer';
+import { ApiPlatformAdminDataProvider } from '../types';
 
 import { API_FIELDS_DATA } from './__fixtures__/parsedData';
 

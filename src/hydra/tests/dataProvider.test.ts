@@ -1,7 +1,7 @@
 import { Api, Field, Resource } from '@api-platform/api-doc-parser';
 import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
-} from './dataProvider';
+} from '../dataProvider';
 
 const EMBEDDED_ITEM = {
   '@id': '/books/2',

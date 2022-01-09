@@ -1,7 +1,7 @@
 import React from 'react';
 import ShallowRenderer from 'react-test-renderer/shallow';
-import { AdminResourcesGuesser } from './AdminGuesser';
-import ResourceGuesser from './ResourceGuesser';
+import { AdminResourcesGuesser } from '../AdminGuesser';
+import ResourceGuesser from '../ResourceGuesser';
 import { DataProvider } from 'react-admin';
 import resources from './__fixtures__/resources';
 
