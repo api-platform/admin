@@ -60,14 +60,14 @@
     "react-dom": "^16.9.0 || ^17.0.0"
   },
   "scripts": {
-    "build": "rimraf ./lib && babel src -d lib --extensions .ts,.tsx --ignore '*.test.js'",
+    "build": "rimraf ./lib && babel src -d lib --extensions .ts,.tsx --ignore ./src/tests/**/* --ignore ./src/**/tests/**/*",
     "eslint-check": "eslint-config-prettier .eslintrc.js",
     "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
     "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",
     "test": "jest src",
     "test:types": "tsc",
     "test:watch": "jest --watch src",
-    "watch": "rimraf ./lib && babel src -d lib --extensions .ts,.tsx --ignore '*.test.js' --watch"
+    "watch": "rimraf ./lib && babel src -d lib --extensions .ts,.tsx --ignore ./src/tests/**/* --ignore ./src/**/tests/**/* --watch"
   },
   "jest": {
     "preset": "ts-jest",
