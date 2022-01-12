@@ -625,7 +625,7 @@ function dataProvider(
         if (result) {
           return fetchApi(GET_LIST, resource, {
             pagination: {
-              // Asking for the good amount of items, as we could want to retrieve more items than the default itemsPerPage value.
+              // Asking for the good amount of items, as we could want to retrieve more items than the default amount sent by the API.
               perPage: params.ids?.length,
             },
             sort: {},
