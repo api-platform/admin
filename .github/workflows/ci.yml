@@ -19,8 +19,6 @@ jobs:
         run: yarn install
       - name: Check build
         run: yarn build
-      - name: Check TypeScript
-        run: yarn test:types
       - name: Check coding standards
         run: yarn lint
       - name: Run tests

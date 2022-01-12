@@ -2,22 +2,25 @@
   "compilerOptions": {
     "target": "ES6",
     "lib": ["ESNext", "dom"],
-    "jsx": "react",
     "module": "commonjs",
-    "types": ["jest"],
-    "noEmit": true,
+    "sourceMap": true,
+    "outDir": "./lib/cjs",
+    "declaration": true,
+    "declarationMap": true,
+    "rootDir": "./src",
     "isolatedModules": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
     "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     // TODO: pass noImplicitAny to true
     "noImplicitAny": false,
-    "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true
+    "noUncheckedIndexedAccess": true
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.test.tsx"]
 }

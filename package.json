@@ -8,7 +8,8 @@
     "lib",
     "src"
   ],
-  "main": "lib/index",
+  "main": "lib/cjs/index",
+  "module": "lib/esm/index",
   "repository": "api-platform/admin",
   "homepage": "https://github.com/api-platform/admin",
   "bugs": "https://github.com/api-platform/admin/issues",
@@ -23,18 +24,11 @@
     "react-admin": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/eslint-parser": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.0.0",
     "@testing-library/react": "^12.1.0",
     "@types/jest": "^27.4.0",
     "@types/jsonld": "^1.5.0",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
-    "babel-jest": "^27.2.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-import": "^2.14.0",
@@ -60,14 +54,13 @@
     "react-dom": "^16.9.0 || ^17.0.0"
   },
   "scripts": {
-    "build": "rimraf ./lib && babel src -d lib --extensions .ts,.tsx --ignore '*.test.js'",
+    "build": "rimraf ./lib && tsc && tsc -p tsconfig.esm.json",
     "eslint-check": "eslint-config-prettier .eslintrc.js",
     "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
     "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",
     "test": "jest src",
-    "test:types": "tsc",
     "test:watch": "jest --watch src",
-    "watch": "rimraf ./lib && babel src -d lib --extensions .ts,.tsx --ignore '*.test.js' --watch"
+    "watch": "tsc --watch"
   },
   "jest": {
     "preset": "ts-jest",
