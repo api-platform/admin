@@ -1,6 +1,6 @@
 # API Platform Admin
 
-[![Build Status](https://travis-ci.org/api-platform/admin.svg?branch=master)](https://travis-ci.org/api-platform/admin)
+[![GitHub Actions](https://github.com/api-platform/admin/workflows/CI/badge.svg?branch=main)](https://github.com/api-platform/admin/actions?query=workflow%3ACI+branch%3Amain)
 [![npm version](https://badge.fury.io/js/%40api-platform%2Fadmin.svg)](https://badge.fury.io/js/%40api-platform%2Fadmin)
 
 API Platform Admin is a tool to automatically create a beautiful (Material Design) and fully-featured administration interface
