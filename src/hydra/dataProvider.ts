@@ -624,7 +624,10 @@ function dataProvider(
         // Hydra doesn't handle MANY requests but if a search filter for the id is available, it is used.
         if (result) {
           return fetchApi(GET_LIST, resource, {
-            pagination: {},
+            pagination: {
+              // Asking for the good amount of items, as we could want to retrieve more items than the default itemsPerPage value.
+              perPage: params.ids?.length,
+            },
             sort: {},
             filter: { id: params.ids },
           });
