@@ -5,6 +5,9 @@ import {
   GET_MANY_REFERENCE,
   GET_ONE,
   UPDATE,
+  GetListResult,
+  GetListParams,
+  GetManyReferenceParams,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
 import { parseHydraDocumentation } from '@api-platform/api-doc-parser';
@@ -376,7 +379,9 @@ function dataProvider(
           sort: { field, order },
         } = params;
 
-        if (order) collectionUrl.searchParams.set(`order[${field}]`, order);
+        if (order && field) {
+          collectionUrl.searchParams.set(`order[${field}]`, order);
+        }
         if (page) collectionUrl.searchParams.set('page', page);
         if (perPage) collectionUrl.searchParams.set('itemsPerPage', perPage);
         if (params.filter) {
@@ -604,6 +609,52 @@ function dataProvider(
         ),
       );
 
+  /*
+   * The fetchAllPages method allows running as many requests as needed in order to load all pages of a list.
+   * This function uses the already transformed react-admin response data and could be improved by using the hydra pagination
+   */
+  const fetchAllPages = async (
+    type: typeof GET_LIST | typeof GET_MANY_REFERENCE,
+    resource: string,
+    params: Partial<GetListParams | GetManyReferenceParams>,
+    previousResult?: GetListResult,
+  ): Promise<GetListResult> => {
+    params.pagination = {
+      // Using a default perPage value big enough to limit the number of requests
+      // If the API has a max_per_page value, the perPage parameter can be ignored
+      perPage: params.pagination?.perPage || 100,
+      page: params.pagination?.page || 1,
+    };
+
+    // Get the current page data
+    const pageResult = (await fetchApi(type, resource, {
+      ...params,
+      sort: { ...(params.sort || {}) }, // GetListParams requires a full 'sort' object, but it's not mandatory for the Hydra method
+    })) as GetListResult; // As the fetchApi return is not typed for now, assuming that the result is the one we want
+
+    const result = previousResult ?? pageResult;
+    if (previousResult) {
+      result.data.push(...pageResult.data);
+      if (pageResult.total < result.total) {
+        // The total can have changed between 2 requests
+        result.total = pageResult.total;
+      }
+    }
+
+    // Minimalist infinite loop protection
+    if (params.pagination.page >= result.data.length) {
+      return result;
+    }
+
+    // Load next page
+    if (pageResult.data.length > 0 && result.data.length < result.total) {
+      params.pagination.page += 1;
+      return fetchAllPages(type, resource, params, result);
+    }
+
+    return result;
+  };
+
   /**
    * @param {string} resource
    *
@@ -623,9 +674,12 @@ function dataProvider(
       return hasIdSearchFilter(resource).then((result) => {
         // Hydra doesn't handle MANY requests but if a search filter for the id is available, it is used.
         if (result) {
-          return fetchApi(GET_LIST, resource, {
-            pagination: {},
-            sort: {},
+          return fetchAllPages(GET_LIST, resource, {
+            pagination: {
+              // Asking for the good amount of items, as we could want to retrieve more items than the default amount sent by the API.
+              perPage: params.ids?.length,
+              page: 1,
+            },
             filter: { id: params.ids },
           });
         }
