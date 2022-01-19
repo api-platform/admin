@@ -4,27 +4,16 @@ import {
   getDocumentationUrlFromHeaders,
 } from '@api-platform/api-doc-parser';
 import jsonld from 'jsonld';
-
-interface FetchHydraOptions {
-  headers?: Headers;
-  user?: {
-    authenticated: boolean;
-    token: string;
-  };
-}
+import { JsonLdObj } from 'jsonld/jsonld-spec';
+import { HydraHttpClientOptions, HydraHttpClientResponse } from '../types';
 
 /**
  * Sends HTTP requests to a Hydra API.
- *
- * Adapted from react-admin
- *
- * @copyright Kévin Dunglas
- *
- * @param {string} url
- * @param {object} options
- * @return {object}
  */
-function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
+function fetchHydra(
+  url: URL,
+  options: HydraHttpClientOptions = {},
+): Promise<HydraHttpClientResponse> {
   const requestHeaders = options.headers || new Headers();
 
   if (options.user && options.user.authenticated && options.user.token) {
@@ -39,39 +28,42 @@ function fetchHydra(url: URL, options: FetchHydraOptions = {}) {
     if (status < 200 || status >= 300) {
       const body = data.body;
 
-      // @ts-ignore
-      delete body.trace;
+      'trace' in body && delete body.trace;
 
-      return (
-        jsonld
-          // TODO: Fix fetchJsonLd return (from api-doc-parser) missing property
-          // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/jsonld/jsonld-spec.d.ts
-          // @ts-ignore
-          .expand(body, {
-            base: getDocumentationUrlFromHeaders(data.response.headers),
-            documentLoader: (input) => fetchJsonLd(input, authOptions),
-          })
-          .then((json) => {
-            return Promise.reject(
-              new HttpError(
-                json[0]['http://www.w3.org/ns/hydra/core#description']?.[0][
-                  '@value'
-                ],
-                status,
-                json,
-              ),
-            );
-          })
-          .catch((e) => {
-            if (e.hasOwnProperty('body')) {
-              return Promise.reject(e);
-            }
+      return jsonld
+        .expand(body, {
+          base: getDocumentationUrlFromHeaders(data.response.headers),
+          documentLoader: (input) => fetchJsonLd(input, authOptions),
+        })
+        .then((json) => {
+          return Promise.reject(
+            new HttpError(
+              (
+                json[0][
+                  'http://www.w3.org/ns/hydra/core#description'
+                ] as JsonLdObj[]
+              )?.[0]?.['@value'],
+              status,
+              json,
+            ),
+          );
+        })
+        .catch((e) => {
+          if (e.hasOwnProperty('body')) {
+            return Promise.reject(e);
+          }
 
-            return Promise.reject(
-              new HttpError(data.response.statusText, status),
-            );
-          })
-      );
+          return Promise.reject(
+            new HttpError(data.response.statusText, status),
+          );
+        });
+    }
+
+    if (Array.isArray(data.body)) {
+      return Promise.reject('Hydra response should not be an array.');
+    }
+    if (!('@id' in data.body)) {
+      return Promise.reject('Hydra response needs to have an @id member.');
     }
 
     return {

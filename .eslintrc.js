@@ -60,11 +60,14 @@ module.exports = {
   },
 
   settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
     'import/ignore': ['node_modules'],
-    'import/extensions': ['.js'],
+    'import/extensions': ['.ts'],
     'import/resolver': {
-      node: {
-        extensions: ['.js', '.json'],
+      typescript: {
+        alwaysTryTypes: true,
       },
     },
     react: {
@@ -125,7 +128,7 @@ module.exports = {
     'no-template-curly-in-string': 'warn',
     'no-this-before-super': 'warn',
     'no-throw-literal': 'warn',
-    'no-undef': 'error',
+    'no-undef': 'off',
     'no-restricted-globals': ['error', 'event'],
     'no-unexpected-multiline': 'warn',
     'no-unreachable': 'warn',
@@ -208,7 +211,7 @@ module.exports = {
     // 'import/no-extraneous-dependencies': 'warn',
     // 'import/no-named-as-default': 'warn',
     // 'import/no-named-as-default-member': 'warn',
-    // 'import/no-unresolved': ['warn', { commonjs: true }],
+    'import/no-unresolved': 'error',
     // We don't support configuring Webpack using import source strings, so this
     // is always an error.
     'import/no-webpack-loader-syntax': 'error',
@@ -242,7 +245,10 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-empty-function': 'off',
-    '@typescript-eslint/no-unused-vars': ['warn', { ignoreRestSiblings: true }],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { ignoreRestSiblings: true, argsIgnorePattern: '^_' },
+    ],
 
     'prettier/prettier': [
       'error',

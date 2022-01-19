@@ -1,4 +1,16 @@
-import { Field } from '@api-platform/api-doc-parser';
+import { Api, Field, Parameter, Resource } from '@api-platform/api-doc-parser';
+
+export const API_DATA = new Api('entrypoint', {
+  resources: [
+    new Resource('resource', '/resources', {
+      fields: [new Field('bar')],
+    }),
+    new Resource('idSearchFilterResource', '/id_search_filter_resources', {
+      parameters: [new Parameter('id', 'xmls:string', false, '')],
+      getParameters: () => Promise.resolve([]),
+    }),
+  ],
+});
 
 export const API_FIELDS_DATA = [
   new Field('fieldA', {

@@ -135,7 +135,7 @@ const Introspecter = ({
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const dataProvider: ApiPlatformAdminDataProvider = useDataProvider();
+  const dataProvider = useDataProvider<ApiPlatformAdminDataProvider>();
 
   useEffect(() => {
     if (resources) {

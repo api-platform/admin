@@ -5,28 +5,59 @@ import {
   GET_MANY_REFERENCE,
   GET_ONE,
   UPDATE,
-  GetListResult,
+  CreateParams,
+  DataProviderResult,
+  DeleteParams,
   GetListParams,
+  GetListResult,
+  GetOneResult,
   GetManyReferenceParams,
+  GetManyReferenceResult,
+  UpdateParams,
 } from 'react-admin';
-import isPlainObject from 'lodash.isplainobject';
-import { parseHydraDocumentation } from '@api-platform/api-doc-parser';
+import { JsonLdObj } from 'jsonld/jsonld-spec';
+import lodashIsPlainObject from 'lodash.isplainobject';
+import {
+  Api,
+  Resource,
+  parseHydraDocumentation,
+  Field,
+} from '@api-platform/api-doc-parser';
 import fetchHydra from './fetchHydra';
 import { resolveSchemaParameters } from './schemaAnalyzer';
+import {
+  ApiDocumentationParserResponse,
+  ApiPlatformAdminDataProvider,
+  ApiPlatformAdminDataProviderParams,
+  ApiPlatformAdminDataProviderTypeParams,
+  ApiPlatformAdminRecord,
+  DataProviderType,
+  HydraCollection,
+  HydraDataProviderFactoryParams,
+  HydraHttpClientResponse,
+  MercureOptions,
+  MercureSubscription,
+  SearchParams,
+} from '../types';
 
-class ReactAdminDocument {
-  id: any;
+const isPlainObject = (value: any): value is object =>
+  lodashIsPlainObject(value);
 
-  constructor(obj) {
-    Object.assign(this, obj, {
-      originId: obj.id,
-      id: obj['@id'],
-    });
+class ReactAdminDocument implements ApiPlatformAdminRecord {
+  originId?: string;
+  id: string;
+
+  constructor(obj: JsonLdObj) {
+    Object.assign(this, obj);
+    if (obj.id) {
+      this.originId = obj.id.toString();
+    }
+    if (!obj['@id']) {
+      throw new Error('Document needs to have an @id member.');
+    }
+    this.id = obj['@id'];
   }
 
-  /**
-   * @return {string}
-   */
   toString() {
     return `[object ${this.id}]`;
   }
@@ -35,48 +66,40 @@ class ReactAdminDocument {
 /**
  * Local cache containing embedded documents.
  * It will be used to prevent useless extra HTTP query if the relation is displayed.
- *
- * @type {Map}
  */
-const reactAdminDocumentsCache = new Map();
+const reactAdminDocumentsCache = new Map<string, ApiPlatformAdminRecord>();
 
 /**
  * Transforms a JSON-LD document to a react-admin compatible document.
- *
- * @param {Object} document
- * @param {boolean} clone
- * @param {boolean} addToCache
- * @param {boolean} useEmbedded
- *
- * @return {ReactAdminDocument}
  */
 export const transformJsonLdDocumentToReactAdminDocument = (
-  document,
+  jsonLdDocument: JsonLdObj,
   clone = true,
   addToCache = true,
   useEmbedded = false,
-) => {
+): ApiPlatformAdminRecord => {
   if (clone) {
     // deep clone documents
-    document = JSON.parse(JSON.stringify(document));
+    jsonLdDocument = JSON.parse(JSON.stringify(jsonLdDocument));
   }
 
-  // The main document is a JSON-LD document, convert it and store it in the cache
-  if (document['@id']) {
-    document = new ReactAdminDocument(document);
-  }
+  const document: ApiPlatformAdminRecord = new ReactAdminDocument(
+    jsonLdDocument,
+  );
 
   // Replace embedded objects by their IRIs, and store the object itself in the cache to reuse without issuing new HTTP requests.
   Object.keys(document).forEach((key) => {
     // to-one
     if (isPlainObject(document[key]) && document[key]['@id']) {
       if (addToCache) {
-        reactAdminDocumentsCache[document[key]['@id']] =
+        reactAdminDocumentsCache.set(
+          document[key]['@id'],
           transformJsonLdDocumentToReactAdminDocument(
             document[key],
             false,
             false,
-          );
+          ),
+        );
       }
       document[key] = useEmbedded ? document[key] : document[key]['@id'];
 
@@ -90,10 +113,12 @@ export const transformJsonLdDocumentToReactAdminDocument = (
       isPlainObject(document[key][0]) &&
       document[key][0]['@id']
     ) {
-      document[key] = document[key].map((obj) => {
-        if (addToCache) {
-          reactAdminDocumentsCache[obj['@id']] =
-            transformJsonLdDocumentToReactAdminDocument(obj, false, false);
+      document[key] = document[key].map((obj: JsonLdObj) => {
+        if (addToCache && obj['@id']) {
+          reactAdminDocumentsCache.set(
+            obj['@id'],
+            transformJsonLdDocumentToReactAdminDocument(obj, false, false),
+          );
         }
 
         return useEmbedded ? obj : obj['@id'];
@@ -104,11 +129,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
   return document;
 };
 
-/**
- * @param {Response} response
- * @returns {string|null}
- */
-const extractHubUrl = (response) => {
+const extractHubUrl = (response: HydraHttpClientResponse) => {
   const linkHeader = response.headers.get('Link');
   if (!linkHeader) {
     return null;
@@ -121,13 +142,11 @@ const extractHubUrl = (response) => {
   return matches && matches[1] ? matches[1] : null;
 };
 
-/**
- * @param {{hub: string|null, jwt: string|null, topicUrl: string}} mercure
- * @param {string} topic
- * @param callback
- * @returns {{subscribed: boolean, topic: string, callback: function, eventSource?: EventSource, eventListener?: EventListener, count: number}}
- */
-const createSubscription = (mercure, topic, callback) => {
+const createSubscription = (
+  mercure: MercureOptions,
+  topic: string,
+  callback: (document: ApiPlatformAdminRecord) => void,
+): MercureSubscription => {
   if (mercure.hub === null) {
     return {
       subscribed: false,
@@ -147,7 +166,7 @@ const createSubscription = (mercure, topic, callback) => {
   const eventSource = new EventSource(url.toString(), {
     withCredentials: mercure.jwt !== null,
   });
-  const eventListener = (event) => {
+  const eventListener = (event: MessageEvent) => {
     const document = transformJsonLdDocumentToReactAdminDocument(
       JSON.parse(event.data),
     );
@@ -166,7 +185,9 @@ const createSubscription = (mercure, topic, callback) => {
   };
 };
 
-const defaultParams = {
+const defaultParams: Required<
+  Omit<HydraDataProviderFactoryParams, 'entrypoint'>
+> = {
   httpClient: fetchHydra,
   apiDocumentationParser: parseHydraDocumentation,
   mercure: {},
@@ -188,20 +209,25 @@ const defaultParams = {
  * UPDATE   => PUT http://my.api.url/posts/123
  */
 function dataProvider(
-  entrypointOrParams,
+  entrypointOrParams: string | HydraDataProviderFactoryParams,
   httpClient = fetchHydra,
   apiDocumentationParser = parseHydraDocumentation,
   useEmbedded = false, // remove this parameter for 3.0 (as true)
-) {
-  let entrypoint = entrypointOrParams;
-  let mercure = {
-    hub: null,
-    jwt: null,
-    topicUrl: entrypoint,
-  };
-  let disableCache = false;
+): ApiPlatformAdminDataProvider {
+  let entrypoint: string;
+  let mercure: MercureOptions;
+  let disableCache: boolean;
+  if (typeof entrypointOrParams === 'string') {
+    entrypoint = entrypointOrParams;
+    mercure = {
+      hub: null,
+      jwt: null,
+      topicUrl: entrypoint,
+    };
+    disableCache = false;
+  }
   if (typeof entrypointOrParams === 'object') {
-    const params = {
+    const params: Required<HydraDataProviderFactoryParams> = {
       ...defaultParams,
       ...entrypointOrParams,
     };
@@ -222,44 +248,49 @@ function dataProvider(
     );
   }
 
-  /** @type {Api} */
-  let apiSchema;
+  let apiSchema: Api & { resources: Resource[] };
 
   // store mercure subscriptions
-  const subscriptions = {};
+  const subscriptions: Record<string, MercureSubscription> = {};
 
-  /**
-   * @param {Resource} resource
-   * @param {Object} data
-   *
-   * @returns {Promise<Object>}
-   */
-  const convertReactAdminDataToHydraData = (resource, data = {}) => {
-    const fieldData: any[] = [];
-    resource.fields.forEach(({ name, reference, normalizeData }) => {
-      if (!(name in data)) {
-        return;
-      }
+  const convertReactAdminDataToHydraData = (
+    resource: Resource,
+    data: Record<string, unknown> = {},
+  ) => {
+    const fieldData: Record<string, unknown> = {};
+    if (resource.fields) {
+      (
+        resource.fields as (Field & {
+          normalizeData: (data: unknown) => unknown;
+        })[]
+      ).forEach(({ name, reference, normalizeData }) => {
+        if (!(name in data)) {
+          return;
+        }
 
-      if (reference && data[name] === '') {
-        data[name] = null;
-        return;
-      }
+        if (reference && data[name] === '') {
+          data[name] = null;
+          return;
+        }
 
-      if (undefined === normalizeData) {
-        return;
-      }
+        if (undefined === normalizeData) {
+          return;
+        }
 
-      fieldData[name] = normalizeData(data[name]);
-    });
+        fieldData[name] = normalizeData(data[name]);
+      });
+    }
 
-    const fieldDataKeys: any = Object.keys(fieldData);
+    const fieldDataKeys = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
     return Promise.all(fieldDataValues).then((fieldData) => {
-      const object = {};
+      const object: Record<string, unknown> = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
-        object[fieldDataKeys[i]] = fieldData[i];
+        const key = fieldDataKeys[i];
+        if (key) {
+          object[key] = fieldData[i];
+        }
       }
 
       return { ...data, ...object };
@@ -268,22 +299,33 @@ function dataProvider(
 
   const transformReactAdminDataToRequestBody = (
     resource: string,
-    data: object,
-    extraInformation: { hasFileField?: any },
-  ): Promise<any> => {
-    /** @type {Resource} */
+    data: Record<string, unknown> | XMLHttpRequestBodyInit,
+    extraInformation: { hasFileField?: boolean },
+  ): Promise<XMLHttpRequestBodyInit> => {
     const apiResource = apiSchema.resources.find(
       ({ name }) => resource === name,
     );
     if (undefined === apiResource) {
-      return Promise.resolve(data);
+      return Promise.resolve(data as XMLHttpRequestBodyInit);
     }
 
-    return convertReactAdminDataToHydraData(apiResource, data).then((data) => {
+    return convertReactAdminDataToHydraData(
+      apiResource,
+      data as Record<string, unknown>,
+    ).then((data) => {
       const values = Object.values(data);
-      const containFile = (element) =>
+      const containFile = (element: unknown) =>
         isPlainObject(element) &&
-        Object.values(element).some((value) => value instanceof File);
+        Object.values(element as Record<string, unknown>).some(
+          (value) => value instanceof File,
+        );
+      type toJSONObject = { toJSON(): string };
+      const hasToJSON = (
+        element: string | toJSONObject,
+      ): element is toJSONObject =>
+        !!element &&
+        'string' !== typeof element &&
+        'function' === typeof element.toJSON;
 
       if (
         !extraInformation.hasFileField &&
@@ -293,15 +335,17 @@ function dataProvider(
       }
 
       const body = new FormData();
-      Object.entries(data).map(([key, value]: [key: string, value: any]) => {
+      Object.entries<string | toJSONObject>(
+        data as Record<string, string | toJSONObject>,
+      ).map(([key, value]) => {
         // React-Admin FileInput format is an object containing a file.
         if (containFile(value)) {
           return body.append(
             key,
-            Object.values(value).find((value) => value instanceof File) as any,
+            Object.values(value).find((value) => value instanceof File),
           );
         }
-        if (value && 'function' === typeof value.toJSON) {
+        if (hasToJSON(value)) {
           return body.append(key, value.toJSON());
         }
         if (isPlainObject(value) || Array.isArray(value)) {
@@ -314,38 +358,31 @@ function dataProvider(
     });
   };
 
-  /**
-   * @param {string} type
-   * @param {string} resource
-   * @param {{
-   *   id: ?string,
-   *   data: ?Object,
-   *   target: ?string,
-   *   filter: ?Object,
-   *   pagination: ?Object,
-   *   sort: ?Object,
-   *   searchParams: ?Object
-   * }} params
-   *
-   * @returns {Object}
-   */
-  const convertReactAdminRequestToHydraRequest = (type, resource, params) => {
+  const convertReactAdminRequestToHydraRequest = (
+    type: DataProviderType,
+    resource: string,
+    params: ApiPlatformAdminDataProviderParams,
+  ) => {
     const entrypointUrl = new URL(entrypoint, window.location.href);
-    const collectionUrl = new URL(`${entrypoint}/${resource}`, entrypointUrl);
-    const itemUrl = new URL(params.id, entrypointUrl);
-    const searchParams = params.searchParams || {};
+    let url: URL;
+    if ('id' in params) {
+      url = new URL(params.id.toString(), entrypointUrl);
+    } else {
+      url = new URL(`${entrypoint}/${resource}`, entrypointUrl);
+    }
+
+    const searchParams: SearchParams = params.searchParams || {};
     for (const searchParamKey in searchParams) {
       if (!searchParams.hasOwnProperty(searchParamKey)) {
         continue;
       }
-      collectionUrl.searchParams.set(
-        searchParamKey,
-        searchParams[searchParamKey],
-      );
-      itemUrl.searchParams.set(searchParamKey, searchParams[searchParamKey]);
+      const searchParam = searchParams[searchParamKey];
+      if (searchParam) {
+        url.searchParams.set(searchParamKey, searchParam);
+      }
     }
-    let extraInformation: { hasFileField?: any } = {};
-    if (params.data && params.data.extraInformation) {
+    let extraInformation: { hasFileField?: boolean } = {};
+    if ('data' in params && params.data.extraInformation) {
       extraInformation = params.data.extraInformation;
       delete params.data.extraInformation;
     }
@@ -354,14 +391,14 @@ function dataProvider(
       case CREATE:
         return transformReactAdminDataToRequestBody(
           resource,
-          params.data,
+          (params as CreateParams).data,
           extraInformation,
         ).then((body) => ({
           options: {
             body,
             method: 'POST',
           },
-          url: collectionUrl,
+          url,
         }));
 
       case DELETE:
@@ -369,7 +406,7 @@ function dataProvider(
           options: {
             method: 'DELETE',
           },
-          url: itemUrl,
+          url,
         });
 
       case GET_LIST:
@@ -377,29 +414,40 @@ function dataProvider(
         const {
           pagination: { page, perPage },
           sort: { field, order },
-        } = params;
+          filter,
+        } = params as GetListParams | GetManyReferenceParams;
 
         if (order && field) {
-          collectionUrl.searchParams.set(`order[${field}]`, order);
+          url.searchParams.set(`order[${field}]`, order);
         }
-        if (page) collectionUrl.searchParams.set('page', page);
-        if (perPage) collectionUrl.searchParams.set('itemsPerPage', perPage);
-        if (params.filter) {
-          const buildFilterParams = (key, nestedFilter, rootKey) => {
+        if (page) url.searchParams.set('page', page.toString());
+        if (perPage) url.searchParams.set('itemsPerPage', perPage.toString());
+        if (filter) {
+          const buildFilterParams = (
+            key: string,
+            nestedFilter: Record<
+              string,
+              | string
+              | boolean
+              | number
+              | Record<string, string | boolean | number>
+            >,
+            rootKey: string,
+          ) => {
             const filterValue = nestedFilter[key];
+            if (filterValue === undefined) {
+              return;
+            }
 
             if (Array.isArray(filterValue)) {
               filterValue.forEach((arrayFilterValue, index) => {
-                collectionUrl.searchParams.set(
-                  `${rootKey}[${index}]`,
-                  arrayFilterValue,
-                );
+                url.searchParams.set(`${rootKey}[${index}]`, arrayFilterValue);
               });
               return;
             }
 
             if (!isPlainObject(filterValue)) {
-              collectionUrl.searchParams.set(rootKey, filterValue);
+              url.searchParams.set(rootKey, filterValue.toString());
               return;
             }
 
@@ -428,39 +476,42 @@ function dataProvider(
             });
           };
 
-          Object.keys(params.filter).forEach((key) => {
-            buildFilterParams(key, params.filter, key);
+          Object.keys(filter).forEach((key) => {
+            buildFilterParams(key, filter, key);
           });
         }
 
-        if (type === GET_MANY_REFERENCE && params.target) {
-          collectionUrl.searchParams.set(params.target, params.id);
+        if (type === GET_MANY_REFERENCE) {
+          const { target, id } = params as GetManyReferenceParams;
+          if (target) {
+            url.searchParams.set(target, id.toString());
+          }
         }
 
         return Promise.resolve({
           options: {},
-          url: collectionUrl,
+          url,
         });
       }
 
       case GET_ONE:
         return Promise.resolve({
           options: {},
-          url: itemUrl,
+          url,
         });
 
       case UPDATE:
         const updateHttpMethod = extraInformation.hasFileField ? 'POST' : 'PUT';
         return transformReactAdminDataToRequestBody(
           resource,
-          params.data,
+          (params as UpdateParams).data,
           extraInformation,
         ).then((body) => ({
           options: {
             body,
             method: updateHttpMethod,
           },
-          url: itemUrl,
+          url,
         }));
 
       default:
@@ -468,61 +519,61 @@ function dataProvider(
     }
   };
 
-  /**
-   * @param {string} resource
-   * @param {Object} data
-   *
-   * @returns {Promise}
-   */
-  const convertHydraDataToReactAdminData = (resource, data = {}) => {
-    resource = apiSchema.resources.find(({ name }) => resource === name);
-    if (undefined === resource) {
+  const convertHydraDataToReactAdminData = (
+    resource: string,
+    data: ApiPlatformAdminRecord,
+  ) => {
+    const apiResource = apiSchema.resources.find(
+      ({ name }) => resource === name,
+    );
+    if (undefined === apiResource) {
       return Promise.resolve(data);
     }
 
-    const fieldData = {};
-    resource.fields.forEach(({ name, denormalizeData }) => {
-      if (!(name in data) || undefined === denormalizeData) {
-        return;
-      }
+    const fieldData: Record<string, unknown> = {};
+    if (apiResource.fields) {
+      (
+        apiResource.fields as (Field & {
+          denormalizeData: (data: unknown) => unknown;
+        })[]
+      ).forEach(({ name, denormalizeData }) => {
+        if (!(name in data) || undefined === denormalizeData) {
+          return;
+        }
 
-      fieldData[name] = denormalizeData(data[name]);
-    });
+        fieldData[name] = denormalizeData(data[name]);
+      });
+    }
 
-    const fieldDataKeys: any = Object.keys(fieldData);
+    const fieldDataKeys = Object.keys(fieldData);
     const fieldDataValues = Object.values(fieldData);
 
     return Promise.all(fieldDataValues).then((fieldData) => {
-      const object = {};
+      const object: Record<string, unknown> = {};
       for (let i = 0; i < fieldDataKeys.length; i++) {
-        object[fieldDataKeys[i]] = fieldData[i];
+        const key = fieldDataKeys[i];
+        if (key) {
+          object[key] = fieldData[i];
+        }
       }
 
       return { ...data, ...object };
     });
   };
 
-  /**
-   * @param {string} type
-   * @param {string} resource
-   * @param {{ id: ?string }} params
-   * @param {Response} response
-   *
-   * @returns {Promise}
-   */
   const convertHydraResponseToReactAdminResponse = (
-    type,
-    resource,
-    params,
-    response,
-  ) => {
+    type: DataProviderType,
+    resource: string,
+    params: ApiPlatformAdminDataProviderParams,
+    response: HydraHttpClientResponse,
+  ): Promise<DataProviderResult<ApiPlatformAdminRecord>> => {
     if (mercure.hub === null) {
       const hubUrl = extractHubUrl(response);
       if (hubUrl) {
         mercure.hub = hubUrl;
         for (const subKey in subscriptions) {
           const sub = subscriptions[subKey];
-          if (!sub.subscribed) {
+          if (sub && !sub.subscribed) {
             subscriptions[subKey] = createSubscription(
               mercure,
               sub.topic,
@@ -537,8 +588,9 @@ function dataProvider(
       case GET_LIST:
       case GET_MANY_REFERENCE:
         // TODO: support other prefixes than "hydra:"
+        const hydraCollection = response.json as HydraCollection;
         return Promise.resolve(
-          response.json['hydra:member'].map((document) =>
+          hydraCollection['hydra:member'].map((document) =>
             transformJsonLdDocumentToReactAdminDocument(
               document,
               true,
@@ -556,17 +608,17 @@ function dataProvider(
           )
           .then((data) => ({
             data,
-            total: response.json.hasOwnProperty('hydra:totalItems')
-              ? response.json['hydra:totalItems']
-              : response.json['hydra:view']
-              ? response.json['hydra:view']['hydra:next']
+            total: hydraCollection.hasOwnProperty('hydra:totalItems')
+              ? hydraCollection['hydra:totalItems']
+              : hydraCollection['hydra:view']
+              ? hydraCollection['hydra:view']['hydra:next']
                 ? -2 // there is a next page
                 : -1 // no next page
               : -3, // no information
           }));
 
       case DELETE:
-        return Promise.resolve({ data: { id: params.id } });
+        return Promise.resolve({ data: { id: (params as DeleteParams).id } });
 
       default:
         return Promise.resolve(
@@ -582,22 +634,15 @@ function dataProvider(
     }
   };
 
-  /**
-   * @param {string} type
-   * @param {string} resource
-   * @param {{
-   *   id: ?string,
-   *   data: ?Object,
-   *   target: ?string,
-   *   filter: ?Object,
-   *   pagination: ?Object,
-   *   sort: ?Object,
-   *   searchParams: ?Object
-   * }} params
-   *
-   * @returns {Promise}
-   */
-  const fetchApi = (type, resource, params) =>
+  const fetchApi = <
+    T extends DataProviderType,
+    R extends DataProviderResult<ApiPlatformAdminRecord>,
+  >(
+    type: T,
+    resource: string,
+    params: ApiPlatformAdminDataProviderTypeParams<T>,
+  ): Promise<R> =>
+    // @ts-ignore
     convertReactAdminRequestToHydraRequest(type, resource, params)
       .then(({ url, options }) => httpClient(url, options))
       .then((response) =>
@@ -611,26 +656,21 @@ function dataProvider(
 
   /*
    * The fetchAllPages method allows running as many requests as needed in order to load all pages of a list.
-   * This function uses the already transformed react-admin response data and could be improved by using the hydra pagination
+   * This function uses the already transformed react-admin response data and could be improved by using the hydra pagination.
    */
   const fetchAllPages = async (
     type: typeof GET_LIST | typeof GET_MANY_REFERENCE,
     resource: string,
-    params: Partial<GetListParams | GetManyReferenceParams>,
-    previousResult?: GetListResult,
-  ): Promise<GetListResult> => {
-    params.pagination = {
-      // Using a default perPage value big enough to limit the number of requests
-      // If the API has a max_per_page value, the perPage parameter can be ignored
-      perPage: params.pagination?.perPage || 100,
-      page: params.pagination?.page || 1,
+    params: GetListParams | GetManyReferenceParams,
+    previousResult?: GetListResult | GetManyReferenceResult,
+  ): Promise<GetListResult | GetManyReferenceResult> => {
+    const pageParams: GetListParams | GetManyReferenceParams = {
+      ...params,
     };
 
-    // Get the current page data
-    const pageResult = (await fetchApi(type, resource, {
-      ...params,
-      sort: { ...(params.sort || {}) }, // GetListParams requires a full 'sort' object, but it's not mandatory for the Hydra method
-    })) as GetListResult; // As the fetchApi return is not typed for now, assuming that the result is the one we want
+    const pageResult = (await fetchApi(type, resource, pageParams)) as
+      | GetListResult
+      | GetManyReferenceResult;
 
     const result = previousResult ?? pageResult;
     if (previousResult) {
@@ -646,7 +686,6 @@ function dataProvider(
       return result;
     }
 
-    // Load next page
     if (pageResult.data.length > 0 && result.data.length < result.total) {
       params.pagination.page += 1;
       return fetchAllPages(type, resource, params, result);
@@ -655,13 +694,11 @@ function dataProvider(
     return result;
   };
 
-  /**
-   * @param {string} resource
-   *
-   * @returns {Promise<boolean>}
-   */
-  const hasIdSearchFilter = (resource) => {
+  const hasIdSearchFilter = (resource: string) => {
     const schema = apiSchema.resources.find((r) => r.name === resource);
+    if (!schema) {
+      return Promise.resolve(false);
+    }
     return resolveSchemaParameters(schema).then((parameters) =>
       parameters.map((filter) => filter.variable).includes('id'),
     );
@@ -681,16 +718,19 @@ function dataProvider(
               page: 1,
             },
             filter: { id: params.ids },
-          });
+            sort: { field: '', order: '' },
+          }).then(({ data }) => ({ data }));
         }
 
         // Else fallback to calling the ONE request n times instead.
         return Promise.all(
-          params.ids.map((id) =>
-            reactAdminDocumentsCache[id]
-              ? Promise.resolve({ data: reactAdminDocumentsCache[id] })
-              : fetchApi(GET_ONE, resource, { id }),
-          ),
+          params.ids.map((id) => {
+            const document = reactAdminDocumentsCache.get(id.toString());
+            if (document) {
+              return Promise.resolve(document);
+            }
+            return fetchApi(GET_ONE, resource, { id }) as Promise<GetOneResult>;
+          }),
         ).then((responses) => ({ data: responses.map(({ data }) => data) }));
       });
     },
@@ -699,7 +739,9 @@ function dataProvider(
     update: (resource, params) => fetchApi(UPDATE, resource, params),
     updateMany: (resource, params) =>
       Promise.all(
-        params.ids.map((id) => fetchApi(UPDATE, resource, { ...params, id })),
+        params.ids.map((id) =>
+          fetchApi(UPDATE, resource, { ...params, id, previousData: { id } }),
+        ),
       ).then(() => ({ data: [] })),
     create: (resource, params) => fetchApi(CREATE, resource, params),
     delete: (resource, params) => fetchApi(DELETE, resource, params),
@@ -707,16 +749,18 @@ function dataProvider(
       Promise.all(
         params.ids.map((id) => fetchApi(DELETE, resource, { id })),
       ).then(() => ({ data: [] })),
-    introspect: () =>
+    introspect: (_resource = '', _params = {}) =>
       apiSchema
         ? Promise.resolve({ data: apiSchema })
         : apiDocumentationParser(entrypoint)
-            .then(({ api, customRoutes = [] }: any) => {
-              if (api.resources.length > 0) {
-                apiSchema = api;
-              }
-              return { data: api, customRoutes };
-            })
+            .then(
+              ({ api, customRoutes = [] }: ApiDocumentationParserResponse) => {
+                if (api.resources && api.resources.length > 0) {
+                  apiSchema = { ...api, resources: api.resources };
+                }
+                return { data: api, customRoutes };
+              },
+            )
             .catch((err) => {
               const { status, error } = err;
               let { message } = err;
@@ -760,7 +804,7 @@ function dataProvider(
         sub.count--;
 
         if (sub.count <= 0) {
-          if (sub.subscribed) {
+          if (sub.subscribed && sub.eventSource && sub.eventListener) {
             sub.eventSource.removeEventListener('message', sub.eventListener);
           }
           delete subscriptions[resourceId];

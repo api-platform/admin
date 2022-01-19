@@ -1,5 +1,6 @@
 import { createContext } from 'react';
+import { SchemaAnalyzer } from './types';
 
-const SchemaAnalyzerContext = createContext(null);
+const SchemaAnalyzerContext = createContext<SchemaAnalyzer | null>(null);
 
 export default SchemaAnalyzerContext;

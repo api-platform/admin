@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Filter } from 'react-admin';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
-
-type FilterParameter = {
-  name: string;
-  isRequired: boolean;
-};
+import { FilterParameter } from './types';
 
 export const IntrospectedFilterGuesser = ({
   fields,

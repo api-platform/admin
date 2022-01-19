@@ -1,19 +1,33 @@
-/**
- * @param {Resource} schema The schema of a resource
- *
- * @returns {Promise<Parameter[]>} The filter parameters
- */
-export const resolveSchemaParameters = (schema) =>
-  !schema.parameters.length
-    ? schema.getParameters()
-    : Promise.resolve(schema.parameters);
+import { Field, Resource } from '@api-platform/api-doc-parser';
+import { HttpError } from 'react-admin';
+import { JsonLdObj } from 'jsonld/jsonld-spec';
+import { FilterParameter, SchemaAnalyzer, SubmissionErrors } from '../types';
 
 /**
- * @param {Resource} schema The schema of a resource
+ * @param schema The schema of a resource
  *
- * @returns {string} The name of the reference field
+ * @returns The filter parameters
  */
-const getFieldNameFromSchema = (schema) => {
+export const resolveSchemaParameters = (schema: Resource) => {
+  if (!schema.parameters || !schema.getParameters) {
+    return Promise.resolve([]);
+  }
+
+  return !schema.parameters.length
+    ? schema.getParameters()
+    : Promise.resolve(schema.parameters);
+};
+
+/**
+ * @param schema The schema of a resource
+ *
+ * @returns The name of the reference field
+ */
+const getFieldNameFromSchema = (schema: Resource) => {
+  if (!schema.fields) {
+    return '';
+  }
+
   const field = schema.fields.find(
     (field) => 'http://schema.org/name' === field.id,
   );
@@ -24,11 +38,15 @@ const getFieldNameFromSchema = (schema) => {
 const ORDER_MARKER = 'order[';
 
 /**
- * @param {Resource} schema The schema of a resource
+ * @param schema The schema of a resource
  *
- * @returns {Promise<Parameter[]>} The order filter parameters
+ * @returns The order filter parameters
  */
-const getOrderParametersFromSchema = (schema) => {
+const getOrderParametersFromSchema = (schema: Resource): Promise<string[]> => {
+  if (!schema.fields) {
+    return Promise.resolve([]);
+  }
+
   const authorizedFields = schema.fields.map((field) => field.name);
   return resolveSchemaParameters(schema).then((parameters) =>
     parameters
@@ -39,18 +57,24 @@ const getOrderParametersFromSchema = (schema) => {
       )
       .filter((filter) =>
         authorizedFields.includes(
-          filter.split('.')[0], // split to manage nested properties
+          filter.split('.')[0] || '', // split to manage nested properties
         ),
       ),
   );
 };
 
 /**
- * @param {Resource} schema The schema of a resource
+ * @param schema The schema of a resource
  *
- * @returns {Promise<Parameter[]>} The filter parameters without the order ones
+ * @returns The filter parameters without the order ones
  */
-const getFiltersParametersFromSchema = (schema) => {
+const getFiltersParametersFromSchema = (
+  schema: Resource,
+): Promise<FilterParameter[]> => {
+  if (!schema.fields) {
+    return Promise.resolve([]);
+  }
+
   const authorizedFields = schema.fields.map((field) => field.name);
   return resolveSchemaParameters(schema).then((parameters) =>
     parameters
@@ -64,11 +88,9 @@ const getFiltersParametersFromSchema = (schema) => {
 };
 
 /**
- * @param {Field} field
- *
- * @returns {string} The type of the field
+ * @returns The type of the field
  */
-const getFieldType = (field) => {
+const getFieldType = (field: Field) => {
   switch (field.id) {
     case 'http://schema.org/identifier':
       return 'id';
@@ -102,12 +124,7 @@ const getFieldType = (field) => {
   }
 };
 
-/**
- * @param {HttpError} error
- *
- * @returns {?Object<string, string>}
- */
-const getSubmissionErrors = (error) => {
+const getSubmissionErrors = (error: HttpError) => {
   if (!error.body || !error.body[0]) {
     return null;
   }
@@ -121,14 +138,17 @@ const getSubmissionErrors = (error) => {
   }
   const base = violationKey.substring(0, violationKey.indexOf('#'));
 
-  const violations = content[violationKey].reduce(
-    (violations, violation) =>
+  const violations: SubmissionErrors = content[violationKey].reduce(
+    (violations: SubmissionErrors, violation: JsonLdObj) =>
       !violation[`${base}#propertyPath`] || !violation[`${base}#message`]
         ? violations
         : {
             ...violations,
-            [violation[`${base}#propertyPath`][0]['@value']]:
-              violation[`${base}#message`][0]['@value'],
+            [(violation[`${base}#propertyPath`] as JsonLdObj[])[0]?.[
+              '@value'
+            ] as string]: (violation[`${base}#message`] as JsonLdObj[])[0]?.[
+              '@value'
+            ],
           },
     {},
   );
@@ -139,7 +159,7 @@ const getSubmissionErrors = (error) => {
   return violations;
 };
 
-export default function schemaAnalyzer() {
+export default function schemaAnalyzer(): SchemaAnalyzer {
   return {
     getFieldNameFromSchema,
     getOrderParametersFromSchema,
