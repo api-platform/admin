@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import dataProviderFactory from './dataProvider';
 import schemaAnalyzer from './schemaAnalyzer';
 import AdminGuesser, { AdminGuesserProps } from '../AdminGuesser';
+import { ApiPlatformAdminDataProvider, MercureOptions } from '../types';
 
-interface HydraAdminProps extends AdminGuesserProps {
+interface HydraAdminProps extends Omit<AdminGuesserProps, 'dataProvider'> {
   entrypoint: string;
-  mercure: any;
-  dataProvider: any;
+  mercure?: MercureOptions;
+  dataProvider?: ApiPlatformAdminDataProvider;
 }
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
