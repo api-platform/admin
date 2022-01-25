@@ -806,6 +806,7 @@ function dataProvider(
         if (sub.count <= 0) {
           if (sub.subscribed && sub.eventSource && sub.eventListener) {
             sub.eventSource.removeEventListener('message', sub.eventListener);
+            sub.eventSource.close();
           }
           delete subscriptions[resourceId];
         }
