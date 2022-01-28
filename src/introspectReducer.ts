@@ -1,4 +1,9 @@
-const introspectReducer = (previousState = {}, { type, payload }) => {
+import { IntrospectPayload } from './types';
+
+const introspectReducer = (
+  previousState = {},
+  { type, payload }: { type: string; payload: IntrospectPayload },
+) => {
   if (type !== 'INTROSPECT_SUCCESS') {
     return previousState;
   }

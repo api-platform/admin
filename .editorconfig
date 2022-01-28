@@ -5,7 +5,7 @@ end_of_line = LF
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.js]
+[*.{js,ts,tsx}]
 indent_style = space
 charset = utf-8
 indent_size = 2

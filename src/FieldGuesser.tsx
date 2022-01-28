@@ -2,22 +2,54 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
   ArrayField,
+  ArrayFieldProps,
   BooleanField,
+  BooleanFieldProps,
   ChipField,
   DateField,
+  DateFieldProps,
   EmailField,
+  EmailFieldProps,
   NumberField,
+  NumberFieldProps,
   ReferenceField,
+  ReferenceFieldProps,
   ReferenceArrayField,
+  ReferenceArrayFieldProps,
   SimpleList,
   SingleFieldList,
   TextField,
+  TextFieldProps,
   UrlField,
+  UrlFieldProps,
+  useCheckMinimumRequiredProps,
 } from 'react-admin';
-import Introspecter from './Introspecter';
+import { Field, Resource } from '@api-platform/api-doc-parser';
+import Introspecter, { BaseIntrospecterProps } from './Introspecter';
+import { IntrospectedGuesserProps, SchemaAnalyzer } from './types';
 
-const isFieldSortable = (field, schema) => {
+type FieldProps =
+  | TextFieldProps
+  | DateFieldProps
+  | BooleanFieldProps
+  | NumberFieldProps
+  | UrlFieldProps
+  | EmailFieldProps
+  | ArrayFieldProps
+  | ReferenceArrayFieldProps
+  | ReferenceFieldProps;
+
+type IntrospectedFieldGuesserProps = FieldProps & IntrospectedGuesserProps;
+
+export type FieldGuesserProps = Omit<
+  FieldProps & BaseIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+
+const isFieldSortable = (field: Field, schema: Resource) => {
   return (
+    !!schema.parameters &&
     schema.parameters.filter((parameter) => parameter.variable === field.name)
       .length > 0 &&
     schema.parameters.filter(
@@ -26,11 +58,17 @@ const isFieldSortable = (field, schema) => {
   );
 };
 
-const renderField = (field, schemaAnalyzer, props) => {
-  if (null !== field.reference) {
+const renderField = (
+  field: Field,
+  schemaAnalyzer: SchemaAnalyzer,
+  props: FieldProps,
+) => {
+  if (null !== field.reference && typeof field.reference === 'object') {
     if (1 === field.maxCardinality) {
       return (
-        <ReferenceField reference={field.reference.name} {...props} allowEmpty>
+        <ReferenceField
+          {...(props as ReferenceFieldProps)}
+          reference={field.reference.name}>
           <ChipField
             source={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
           />
@@ -40,7 +78,9 @@ const renderField = (field, schemaAnalyzer, props) => {
 
     const fieldName = schemaAnalyzer.getFieldNameFromSchema(field.reference);
     return (
-      <ReferenceArrayField reference={field.reference.name} {...props}>
+      <ReferenceArrayField
+        {...(props as ReferenceArrayFieldProps)}
+        reference={field.reference.name}>
         <SingleFieldList>
           <ChipField source={fieldName} key={fieldName} />
         </SingleFieldList>
@@ -50,7 +90,7 @@ const renderField = (field, schemaAnalyzer, props) => {
 
   if (null !== field.embedded && 1 !== field.maxCardinality) {
     return (
-      <ArrayField {...props}>
+      <ArrayField {...(props as ArrayFieldProps)}>
         <SimpleList
           primaryText={(record) => JSON.stringify(record)}
           linkType={false}
@@ -65,24 +105,24 @@ const renderField = (field, schemaAnalyzer, props) => {
 
   switch (fieldType) {
     case 'email':
-      return <EmailField {...props} />;
+      return <EmailField {...(props as EmailFieldProps)} />;
 
     case 'url':
-      return <UrlField {...props} />;
+      return <UrlField {...(props as UrlFieldProps)} />;
 
     case 'integer':
     case 'float':
-      return <NumberField {...props} />;
+      return <NumberField {...(props as NumberFieldProps)} />;
 
     case 'boolean':
-      return <BooleanField {...props} />;
+      return <BooleanField {...(props as BooleanFieldProps)} />;
 
     case 'date':
     case 'dateTime':
-      return <DateField {...props} />;
+      return <DateField {...(props as DateFieldProps)} />;
 
     default:
-      return <TextField {...props} />;
+      return <TextField {...(props as TextFieldProps)} />;
   }
 };
 
@@ -93,7 +133,7 @@ export const IntrospectedFieldGuesser = ({
   schema,
   schemaAnalyzer,
   ...props
-}) => {
+}: IntrospectedFieldGuesserProps) => {
   const field = fields.find((f) => f.name === props.source);
 
   if (!field) {
@@ -110,13 +150,21 @@ export const IntrospectedFieldGuesser = ({
   });
 };
 
-const FieldGuesser = (props) => (
-  <Introspecter
-    component={IntrospectedFieldGuesser}
-    includeDeprecated={true}
-    {...props}
-  />
-);
+const FieldGuesser = (props: FieldGuesserProps) => {
+  useCheckMinimumRequiredProps('FieldGuesser', ['resource'], props);
+  if (!props.resource) {
+    return null;
+  }
+
+  return (
+    <Introspecter
+      component={IntrospectedFieldGuesser}
+      resource={props.resource}
+      includeDeprecated={true}
+      {...props}
+    />
+  );
+};
 
 FieldGuesser.propTypes = {
   source: PropTypes.string.isRequired,

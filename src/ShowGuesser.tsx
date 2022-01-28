@@ -3,14 +3,17 @@ import PropTypes from 'prop-types';
 import {
   Show,
   ShowProps,
+  SimpleFormProps,
   SimpleShowLayout,
   useCheckMinimumRequiredProps,
 } from 'react-admin';
+import { Field, Resource } from '@api-platform/api-doc-parser';
 import FieldGuesser from './FieldGuesser';
-import Introspecter, { IntrospecterProps } from './Introspecter';
+import Introspecter, { BaseIntrospecterProps } from './Introspecter';
 import useMercureSubscription from './useMercureSubscription';
+import { IntrospectedGuesserProps } from './types';
 
-const displayOverrideCode = (schema, fields) => {
+const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
@@ -30,6 +33,16 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
+type ShowSimpleFormProps = ShowProps & Omit<SimpleFormProps, 'children'>;
+
+type IntrospectedShowGuesserProps = ShowSimpleFormProps &
+  IntrospectedGuesserProps;
+
+export type ShowGuesserProps = Omit<
+  ShowSimpleFormProps & BaseIntrospecterProps,
+  'component' | 'resource'
+>;
+
 export const IntrospectedShowGuesser = ({
   fields,
   readableFields,
@@ -38,7 +51,7 @@ export const IntrospectedShowGuesser = ({
   schemaAnalyzer,
   children,
   ...props
-}) => {
+}: IntrospectedShowGuesserProps) => {
   let fieldChildren = children;
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => (
@@ -56,10 +69,7 @@ export const IntrospectedShowGuesser = ({
   );
 };
 
-const ShowGuesser = (
-  props: Omit<IntrospecterProps, 'component' | 'resource'> &
-    Omit<ShowProps, 'component'>,
-) => {
+const ShowGuesser = (props: ShowGuesserProps) => {
   useCheckMinimumRequiredProps('ShowGuesser', ['resource'], props);
   if (!props.resource) {
     return null;

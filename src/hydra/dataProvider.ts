@@ -40,6 +40,7 @@ import {
   SearchParams,
 } from '../types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isPlainObject = (value: any): value is object =>
   lodashIsPlainObject(value);
 
@@ -642,6 +643,7 @@ function dataProvider(
     resource: string,
     params: ApiPlatformAdminDataProviderTypeParams<T>,
   ): Promise<R> =>
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     convertReactAdminRequestToHydraRequest(type, resource, params)
       .then(({ url, options }) => httpClient(url, options))
@@ -707,6 +709,8 @@ function dataProvider(
   return {
     getList: (resource, params) => fetchApi(GET_LIST, resource, params),
     getOne: (resource, params) => fetchApi(GET_ONE, resource, params),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     getMany: (resource, params) => {
       return hasIdSearchFilter(resource).then((result) => {
         // Hydra doesn't handle MANY requests but if a search filter for the id is available, it is used.
@@ -727,9 +731,11 @@ function dataProvider(
           params.ids.map((id) => {
             const document = reactAdminDocumentsCache.get(id.toString());
             if (document) {
-              return Promise.resolve(document);
+              return Promise.resolve({ data: document });
             }
-            return fetchApi(GET_ONE, resource, { id }) as Promise<GetOneResult>;
+            return fetchApi(GET_ONE, resource, { id }) as Promise<
+              GetOneResult<ApiPlatformAdminRecord>
+            >;
           }),
         ).then((responses) => ({ data: responses.map(({ data }) => data) }));
       });

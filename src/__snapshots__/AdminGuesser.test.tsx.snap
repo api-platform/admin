@@ -23,6 +23,9 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
       "getMany": [Function],
       "getManyReference": [Function],
       "getOne": [Function],
+      "introspect": [Function],
+      "subscribe": [Function],
+      "unsubscribe": [Function],
       "update": [Function],
       "updateMany": [Function],
     }
@@ -51,6 +54,9 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
       "getMany": [Function],
       "getManyReference": [Function],
       "getOne": [Function],
+      "introspect": [Function],
+      "subscribe": [Function],
+      "unsubscribe": [Function],
       "update": [Function],
       "updateMany": [Function],
     }
@@ -79,6 +85,9 @@ exports[`<AdminGuesser /> renders without data 1`] = `
       "getMany": [Function],
       "getManyReference": [Function],
       "getOne": [Function],
+      "introspect": [Function],
+      "subscribe": [Function],
+      "unsubscribe": [Function],
       "update": [Function],
       "updateMany": [Function],
     }

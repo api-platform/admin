@@ -4,16 +4,22 @@ import {
   Edit,
   EditProps,
   FileInput,
+  HttpError,
+  Record as RaRecord,
   SimpleForm,
+  SimpleFormProps,
+  useCheckMinimumRequiredProps,
   useMutation,
   useNotify,
   useRedirect,
 } from 'react-admin';
+import { Field, Resource } from '@api-platform/api-doc-parser';
 import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
+import Introspecter, { BaseIntrospecterProps } from './Introspecter';
 import useMercureSubscription from './useMercureSubscription';
+import { IntrospectedGuesserProps } from './types';
 
-const displayOverrideCode = (schema, fields) => {
+const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
@@ -33,25 +39,15 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
-interface IntrospectedEditGuesserProps extends EditProps {
-  children: any;
-  fields: any;
-  initialValues: any;
-  margin: any;
-  readableFields: any;
-  redirect: string;
-  sanitizeEmptyValues: any;
-  schema: any;
-  schemaAnalyzer: any;
-  simpleFormComponent: any;
-  submitOnEnter: any;
-  successMessage: any;
-  toolbar: any;
-  validate: any;
-  variant: any;
-  warnWhenUnsavedChanges: any;
-  writableFields: any;
-}
+type EditSimpleFormProps = EditProps & Omit<SimpleFormProps, 'children'>;
+
+type IntrospectedEditGuesserProps = EditSimpleFormProps &
+  IntrospectedGuesserProps;
+
+export type EditGuesserProps = Omit<
+  EditSimpleFormProps & BaseIntrospecterProps,
+  'component' | 'resource'
+>;
 
 export const IntrospectedEditGuesser = ({
   fields,
@@ -87,19 +83,18 @@ export const IntrospectedEditGuesser = ({
   const notify = useNotify();
   const redirect = useRedirect();
 
-  let inputChildren = children;
-  if (!inputChildren) {
+  let inputChildren = React.Children.toArray(children);
+  if (inputChildren.length === 0) {
     inputChildren = writableFields.map((field) => (
       <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, writableFields);
   }
 
-  if (!Array.isArray(inputChildren)) {
-    inputChildren = [inputChildren];
-  }
-
-  const hasFileField = inputChildren.some((child) => child.type === FileInput);
+  const hasFileField = inputChildren.some(
+    (child) =>
+      typeof child === 'object' && 'type' in child && child.type === FileInput,
+  );
 
   const save = useCallback(
     async (values) => {
@@ -117,18 +112,21 @@ export const IntrospectedEditGuesser = ({
         );
         const success = onSuccess
           ? onSuccess
-          : ({ data }) => {
+          : ({ data }: { data: RaRecord }) => {
               notify(successMessage || 'ra.notification.updated', 'info', {
                 smart_count: 1,
               });
               redirect(redirectTo, basePath, data.id, data);
             };
         success(response);
+        return;
       } catch (error) {
-        const submissionErrors = schemaAnalyzer.getSubmissionErrors(error);
+        const submissionErrors = schemaAnalyzer.getSubmissionErrors(
+          error as HttpError,
+        );
         const failure = onFailure
           ? onFailure
-          : (error) => {
+          : (error: string | Error) => {
               let message = 'ra.notification.http_error';
               if (!submissionErrors) {
                 message =
@@ -143,7 +141,7 @@ export const IntrospectedEditGuesser = ({
                     : undefined,
               });
             };
-        failure(error);
+        failure(error as string | Error);
         if (submissionErrors) {
           return submissionErrors;
         }
@@ -192,9 +190,20 @@ export const IntrospectedEditGuesser = ({
   );
 };
 
-const EditGuesser = (props) => (
-  <Introspecter component={IntrospectedEditGuesser} {...props} />
-);
+const EditGuesser = (props: EditGuesserProps) => {
+  useCheckMinimumRequiredProps('EditGuesser', ['resource'], props);
+  if (!props.resource) {
+    return null;
+  }
+
+  return (
+    <Introspecter
+      component={IntrospectedEditGuesser}
+      resource={props.resource}
+      {...props}
+    />
+  );
+};
 
 EditGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
