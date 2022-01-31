@@ -31,6 +31,7 @@ import {
   UpdateParams,
   UpdateResult,
   HttpError,
+  ReduxState,
 } from 'react-admin';
 import { Api, Field, Resource } from '@api-platform/api-doc-parser';
 
@@ -54,7 +55,7 @@ export interface HydraCollection extends JsonLdObj {
 }
 
 export interface HydraHttpClientOptions {
-  headers?: Headers;
+  headers?: HeadersInit | (() => HeadersInit);
   user?: {
     authenticated: boolean;
     token: string;
@@ -274,4 +275,23 @@ export interface ApiPlatformAdminDataProvider extends DataProvider {
 export interface FilterParameter {
   name: string;
   isRequired: boolean;
+}
+
+export interface IntrospectPayload {
+  data: Api;
+}
+
+export interface ApiPlatformAdminState extends ReduxState {
+  introspect: {
+    introspect?: IntrospectPayload;
+  };
+}
+
+export interface IntrospectedGuesserProps {
+  schemaAnalyzer: SchemaAnalyzer;
+  resource: string;
+  schema: Resource;
+  fields: Field[];
+  readableFields: Field[];
+  writableFields: Field[];
 }

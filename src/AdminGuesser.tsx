@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Admin,
@@ -9,8 +9,10 @@ import {
   Loading,
   TranslationProvider,
   defaultI18nProvider,
+  ErrorProps,
 } from 'react-admin';
-import { createHashHistory } from 'history';
+import { Resource } from '@api-platform/api-doc-parser';
+import { createHashHistory, createMemoryHistory } from 'history';
 import { createTheme as createMuiTheme } from '@material-ui/core';
 
 import ErrorBoundary from './ErrorBoundary';
@@ -19,27 +21,27 @@ import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Layout } from './layout';
 import introspectReducer from './introspectReducer';
-import { ApiPlatformAdminDataProvider } from './types';
+import { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
 
 export interface AdminGuesserProps extends AdminProps {
   dataProvider: ApiPlatformAdminDataProvider;
-  schemaAnalyzer: any;
+  schemaAnalyzer: SchemaAnalyzer;
   includeDeprecated: boolean;
 }
 
 interface AdminGuesserWithErrorProps extends AdminGuesserProps {
-  error: string;
+  error: ComponentType<ErrorProps>;
 }
 
 interface AdminResourcesGuesserProps extends Omit<AdminProps, 'loading'> {
-  admin?: any;
+  admin?: ComponentType<AdminProps>;
   includeDeprecated: boolean;
   loading: boolean;
-  loadingPage?: any;
-  resources: any;
+  loadingPage?: ComponentType;
+  resources: Resource[];
 }
 
-const displayOverrideCode = (resources) => {
+const displayOverrideCode = (resources: Resource[]) => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
@@ -121,14 +123,17 @@ const AdminGuesser = ({
   children,
   ...rest
 }: AdminGuesserProps) => {
-  const [resources, setResources] = useState<unknown>();
+  const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setError] = useState();
   const [addedCustomRoutes, setAddedCustomRoutes] = useState<CustomRoutes>([]);
   const [introspect, setIntrospect] = useState(true);
 
   if (!history) {
-    history = typeof window === 'undefined' ? {} : createHashHistory();
+    history =
+      typeof window === 'undefined'
+        ? createMemoryHistory()
+        : createHashHistory();
   }
 
   useEffect(() => {
@@ -145,7 +150,7 @@ const AdminGuesser = ({
     dataProvider
       .introspect()
       .then(({ data, customRoutes = [] }) => {
-        setResources(data.resources);
+        setResources(data.resources || []);
         setAddedCustomRoutes(customRoutes);
         setIntrospect(false);
         setLoading(false);

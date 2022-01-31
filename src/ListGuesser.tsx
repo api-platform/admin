@@ -6,14 +6,20 @@ import {
   EditButton,
   ShowButton,
   DatagridBody,
+  DatagridBodyProps,
+  DatagridProps,
+  ListProps,
+  useCheckMinimumRequiredProps,
 } from 'react-admin';
+import { Field, Resource } from '@api-platform/api-doc-parser';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
-import Introspecter from './Introspecter';
+import Introspecter, { BaseIntrospecterProps } from './Introspecter';
 import Pagination from './list/Pagination';
 import useMercureSubscription from './useMercureSubscription';
+import { IntrospectedGuesserProps } from './types';
 
-const displayOverrideCode = (schema, fields) => {
+const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
@@ -33,7 +39,18 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
-export const DatagridBodyWithMercure = (props) => {
+type ListDatagridProps = ListProps & DatagridProps;
+
+type IntrospectedListGuesserProps = ListDatagridProps &
+  IntrospectedGuesserProps;
+
+export type ListGuesserProps = Omit<
+  ListDatagridProps & BaseIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+
+export const DatagridBodyWithMercure = (props: DatagridBodyProps) => {
   useMercureSubscription(props.resource, props.ids);
 
   return <DatagridBody {...props} />;
@@ -53,7 +70,7 @@ export const IntrospectedListGuesser = ({
   optimized,
   children,
   ...props
-}) => {
+}: IntrospectedListGuesserProps) => {
   const [orderParameters, setOrderParameters] = useState<string[]>([]);
 
   useEffect(() => {
@@ -101,9 +118,24 @@ export const IntrospectedListGuesser = ({
   );
 };
 
-const ListGuesser = (props) => (
-  <Introspecter component={IntrospectedListGuesser} {...props} />
-);
+const ListGuesser = ({
+  filters = <FilterGuesser />,
+  ...props
+}: ListGuesserProps) => {
+  useCheckMinimumRequiredProps('ListGuesser', ['resource'], props);
+  if (!props.resource) {
+    return null;
+  }
+
+  return (
+    <Introspecter
+      component={IntrospectedListGuesser}
+      resource={props.resource}
+      filters={filters}
+      {...props}
+    />
+  );
+};
 
 ListGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
@@ -112,10 +144,6 @@ ListGuesser.propTypes = {
   hasShow: PropTypes.bool,
   hasEdit: PropTypes.bool,
   rowClick: PropTypes.string,
-};
-
-ListGuesser.defaultProps = {
-  filters: <FilterGuesser />,
 };
 
 export default ListGuesser;

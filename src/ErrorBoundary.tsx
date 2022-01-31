@@ -1,45 +1,43 @@
-import { Component, createElement } from 'react';
+import { Component, ComponentType, createElement, ErrorInfo } from 'react';
 import PropTypes from 'prop-types';
-import { ComponentPropType } from 'react-admin';
+import { ComponentPropType, ErrorProps } from 'react-admin';
 
 type ErrorBoundaryProps = {
-  error: string;
+  error: ComponentType<ErrorProps>;
 };
 
 type ErrorBoundaryState = {
   hasError: boolean;
-  errorMessage: string | null;
-  errorInfo: string | null;
+  error: Error | undefined;
+  errorInfo: ErrorInfo | undefined;
 };
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  static propTypes: any;
+  static propTypes = {
+    children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+    error: ComponentPropType,
+  };
 
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, errorMessage: null, errorInfo: null };
+    this.state = { hasError: false, error: undefined, errorInfo: undefined };
   }
 
-  componentDidCatch(errorMessage, errorInfo) {
-    this.setState({ hasError: true, errorMessage, errorInfo });
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    this.setState({ hasError: true, error, errorInfo });
   }
 
   render() {
-    const { error, children } = this.props;
-    const { hasError, errorMessage, errorInfo } = this.state;
+    const { error: Error, children } = this.props;
+    const { hasError, error, errorInfo } = this.state;
 
-    return hasError
-      ? createElement(error, {
-          error: errorMessage,
+    return hasError && error
+      ? createElement(Error, {
+          error,
           errorInfo,
         })
       : children;
   }
 }
-
-ErrorBoundary.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-  error: ComponentPropType,
-};
 
 export default ErrorBoundary;

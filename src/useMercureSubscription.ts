@@ -3,19 +3,28 @@ import {
   CRUD_GET_ONE_SUCCESS,
   FETCH_END,
   GET_ONE,
+  Identifier,
   useDataProvider,
 } from 'react-admin';
 import { useDispatch } from 'react-redux';
 import { ApiPlatformAdminDataProvider } from './types';
 
-export default function useMercureSubscription(resource, idOrIds) {
+export default function useMercureSubscription(
+  resource: string | undefined,
+  idOrIds: Identifier | Identifier[] | undefined,
+) {
   const dataProvider: ApiPlatformAdminDataProvider = useDataProvider();
   const dispatch = useDispatch();
 
   const hasShownNoSubscribeWarning = useRef(false);
 
   useEffect(() => {
-    const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
+    if (!idOrIds || !resource) {
+      return;
+    }
+    const ids = Array.isArray(idOrIds)
+      ? idOrIds.map((id) => id.toString())
+      : [idOrIds.toString()];
 
     if (
       !hasShownNoSubscribeWarning.current &&
@@ -44,7 +53,9 @@ export default function useMercureSubscription(resource, idOrIds) {
     });
 
     return () => {
-      dataProvider.unsubscribe(resource, ids);
+      if (resource) {
+        dataProvider.unsubscribe(resource, ids);
+      }
     };
   }, [idOrIds, resource, dataProvider, dispatch]);
 }

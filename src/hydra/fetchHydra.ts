@@ -14,9 +14,15 @@ function fetchHydra(
   url: URL,
   options: HydraHttpClientOptions = {},
 ): Promise<HydraHttpClientResponse> {
-  const requestHeaders = options.headers || new Headers();
+  let requestHeaders = options.headers || new Headers();
 
-  if (options.user && options.user.authenticated && options.user.token) {
+  if (
+    typeof requestHeaders !== 'function' &&
+    options.user &&
+    options.user.authenticated &&
+    options.user.token
+  ) {
+    requestHeaders = new Headers(requestHeaders);
     requestHeaders.set('Authorization', options.user.token);
   }
 

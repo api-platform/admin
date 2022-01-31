@@ -1,4 +1,6 @@
-export default [
+import { Resource } from '@api-platform/api-doc-parser';
+
+const resources: Resource[] = [
   {
     name: 'books',
     url: 'https://demo.api-platform.com/books',
@@ -128,8 +130,8 @@ export default [
               deprecated: false,
             },
           ],
-          readableFields: [null, null, null, null, null, null],
-          writableFields: [null, null, null, null, null, null],
+          readableFields: [],
+          writableFields: [],
           operations: [
             {
               name: 'Retrieves the collection of Review resources.',
@@ -325,8 +327,8 @@ export default [
               deprecated: false,
             },
           ],
-          readableFields: [null, null, null, null, null, null],
-          writableFields: [null, null, null, null, null, null],
+          readableFields: [],
+          writableFields: [],
           operations: [
             {
               name: 'Retrieves the collection of Review resources.',
@@ -522,8 +524,8 @@ export default [
               deprecated: false,
             },
           ],
-          readableFields: [null, null, null, null, null, null],
-          writableFields: [null, null, null, null, null, null],
+          readableFields: [],
+          writableFields: [],
           operations: [
             {
               name: 'Retrieves the collection of Review resources.',
@@ -789,3 +791,5 @@ export default [
     parameters: [],
   },
 ];
+
+export default resources;

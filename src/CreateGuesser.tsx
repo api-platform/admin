@@ -4,15 +4,21 @@ import {
   Create,
   CreateProps,
   FileInput,
+  HttpError,
+  Record as RaRecord,
   SimpleForm,
+  SimpleFormProps,
+  useCheckMinimumRequiredProps,
   useMutation,
   useNotify,
   useRedirect,
 } from 'react-admin';
+import { Field, Resource } from '@api-platform/api-doc-parser';
 import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
+import Introspecter, { BaseIntrospecterProps } from './Introspecter';
+import { IntrospectedGuesserProps } from './types';
 
-const displayOverrideCode = (schema, fields) => {
+const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
 
   let code =
@@ -32,25 +38,15 @@ const displayOverrideCode = (schema, fields) => {
   console.info(code);
 };
 
-interface IntrospectedCreateGuesserProps extends CreateProps {
-  children: any;
-  fields: any;
-  initialValues: any;
-  margin: any;
-  readableFields: any;
-  redirect: string;
-  sanitizeEmptyValues: any;
-  schema: any;
-  schemaAnalyzer: any;
-  simpleFormComponent: any;
-  submitOnEnter: any;
-  successMessage: any;
-  toolbar: any;
-  validate: any;
-  variant: any;
-  warnWhenUnsavedChanges: any;
-  writableFields: any;
-}
+type CreateSimpleFormProps = CreateProps & Omit<SimpleFormProps, 'children'>;
+
+type IntrospectedCreateGuesserProps = CreateSimpleFormProps &
+  IntrospectedGuesserProps;
+
+export type CreateGuesserProps = Omit<
+  CreateSimpleFormProps & BaseIntrospecterProps,
+  'component' | 'resource'
+>;
 
 export const IntrospectedCreateGuesser = ({
   fields,
@@ -80,19 +76,18 @@ export const IntrospectedCreateGuesser = ({
   const notify = useNotify();
   const redirect = useRedirect();
 
-  let inputChildren = children;
-  if (!inputChildren) {
+  let inputChildren = React.Children.toArray(children);
+  if (inputChildren.length === 0) {
     inputChildren = writableFields.map((field) => (
       <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, writableFields);
   }
 
-  if (!Array.isArray(inputChildren)) {
-    inputChildren = [inputChildren];
-  }
-
-  const hasFileField = inputChildren.some((child) => child.type === FileInput);
+  const hasFileField = inputChildren.some(
+    (child) =>
+      typeof child === 'object' && 'type' in child && child.type === FileInput,
+  );
 
   const save = useCallback(
     async (values) => {
@@ -109,18 +104,21 @@ export const IntrospectedCreateGuesser = ({
         );
         const success = onSuccess
           ? onSuccess
-          : ({ data: newRecord }) => {
+          : ({ data: newRecord }: { data: RaRecord }) => {
               notify(successMessage || 'ra.notification.created', 'info', {
                 smart_count: 1,
               });
               redirect(redirectTo, basePath, newRecord.id, newRecord);
             };
         success(response);
+        return;
       } catch (error) {
-        const submissionErrors = schemaAnalyzer.getSubmissionErrors(error);
+        const submissionErrors = schemaAnalyzer.getSubmissionErrors(
+          error as HttpError,
+        );
         const failure = onFailure
           ? onFailure
-          : (error) => {
+          : (error: string | Error) => {
               let message = 'ra.notification.http_error';
               if (!submissionErrors) {
                 message =
@@ -135,7 +133,7 @@ export const IntrospectedCreateGuesser = ({
                     : undefined,
               });
             };
-        failure(error);
+        failure(error as string | Error);
         if (submissionErrors) {
           return submissionErrors;
         }
@@ -176,9 +174,20 @@ export const IntrospectedCreateGuesser = ({
   );
 };
 
-const CreateGuesser = (props) => (
-  <Introspecter component={IntrospectedCreateGuesser} {...props} />
-);
+const CreateGuesser = (props: CreateGuesserProps) => {
+  useCheckMinimumRequiredProps('CreateGuesser', ['resource'], props);
+  if (!props.resource) {
+    return null;
+  }
+
+  return (
+    <Introspecter
+      component={IntrospectedCreateGuesser}
+      resource={props.resource}
+      {...props}
+    />
+  );
+};
 
 CreateGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),

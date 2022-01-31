@@ -1,27 +1,35 @@
 import React from 'react';
-import ShallowRenderer from 'react-test-renderer/shallow';
+import { createRenderer } from 'react-test-renderer/shallow';
 import { AdminResourcesGuesser } from './AdminGuesser';
 import ResourceGuesser from './ResourceGuesser';
-import { DataProvider } from 'react-admin';
 import resources from './__fixtures__/resources';
+import { API_DATA } from './__fixtures__/parsedData';
+import { ApiPlatformAdminDataProvider, ApiPlatformAdminRecord } from './types';
 
-const dataProvider = {
+const dataProvider: ApiPlatformAdminDataProvider = {
   getList: () => Promise.resolve({ data: [], total: 0 }),
-  getOne: () => Promise.resolve({ data: { id: 'id' } }),
+  getOne: <RecordType extends ApiPlatformAdminRecord>() =>
+    Promise.resolve({ data: { id: 'id' } } as { data: RecordType }),
   getMany: () => Promise.resolve({ data: [] }),
   getManyReference: () => Promise.resolve({ data: [], total: 0 }),
-  update: () => Promise.resolve({ data: {} }),
+  update: <RecordType extends ApiPlatformAdminRecord>() =>
+    Promise.resolve({ data: {} } as { data: RecordType }),
   updateMany: () => Promise.resolve({ data: [] }),
-  create: () => Promise.resolve({ data: null }),
-  delete: () => Promise.resolve({ data: { id: 'id' } }),
+  create: <RecordType extends ApiPlatformAdminRecord>() =>
+    Promise.resolve({ data: {} } as { data: RecordType }),
+  delete: <RecordType extends ApiPlatformAdminRecord>() =>
+    Promise.resolve({ data: { id: 'id' } } as { data: RecordType }),
   deleteMany: () => Promise.resolve({ data: [] }),
-} as DataProvider;
+  introspect: () => Promise.resolve({ data: API_DATA }),
+  subscribe: () => Promise.resolve({ data: null }),
+  unsubscribe: () => Promise.resolve({ data: null }),
+};
 
 describe('<AdminGuesser />', () => {
-  const renderer = new ShallowRenderer();
+  const renderer = createRenderer();
 
   test('renders loading', () => {
-    const tree = renderer.render(
+    renderer.render(
       <AdminResourcesGuesser
         resources={[]}
         loading={true}
@@ -30,11 +38,11 @@ describe('<AdminGuesser />', () => {
       />,
     );
 
-    expect(tree).toMatchSnapshot();
+    expect(renderer.getRenderOutput()).toMatchSnapshot();
   });
 
   test('renders without custom resources', () => {
-    const tree = renderer.render(
+    renderer.render(
       <AdminResourcesGuesser
         resources={resources}
         loading={false}
@@ -43,11 +51,11 @@ describe('<AdminGuesser />', () => {
       />,
     );
 
-    expect(tree).toMatchSnapshot();
+    expect(renderer.getRenderOutput()).toMatchSnapshot();
   });
 
   test('renders with custom resources', () => {
-    const tree = renderer.render(
+    renderer.render(
       <AdminResourcesGuesser
         resources={resources}
         loading={false}
@@ -57,11 +65,11 @@ describe('<AdminGuesser />', () => {
       </AdminResourcesGuesser>,
     );
 
-    expect(tree).toMatchSnapshot();
+    expect(renderer.getRenderOutput()).toMatchSnapshot();
   });
 
   test('renders without data', () => {
-    const tree = renderer.render(
+    renderer.render(
       <AdminResourcesGuesser
         resources={[]}
         loading={false}
@@ -70,6 +78,6 @@ describe('<AdminGuesser />', () => {
       />,
     );
 
-    expect(tree).toMatchSnapshot();
+    expect(renderer.getRenderOutput()).toMatchSnapshot();
   });
 });

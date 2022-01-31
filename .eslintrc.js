@@ -241,10 +241,6 @@ module.exports = {
     'jsx-a11y/img-redundant-alt': 'warn',
     'jsx-a11y/no-access-key': 'warn',
 
-    // TODO: update these rules
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn',
       { ignoreRestSiblings: true, argsIgnorePattern: '^_' },

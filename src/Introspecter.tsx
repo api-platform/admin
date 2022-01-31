@@ -1,32 +1,55 @@
-import React, { useContext, useEffect, useState, useMemo } from 'react';
+import React, {
+  ComponentType,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useDataProvider, useLogoutIfAccessDenied } from 'react-admin';
 import { useSelector } from 'react-redux';
+import { Resource } from '@api-platform/api-doc-parser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import { ApiPlatformAdminDataProvider } from './types';
-
-interface Resource {
-  name: string;
-  fields: any[];
-  readableFields: any[];
-  writableFields: any[];
-}
+import {
+  ApiPlatformAdminDataProvider,
+  ApiPlatformAdminState,
+  IntrospectedGuesserProps,
+  SchemaAnalyzer,
+} from './types';
+import { CreateGuesserProps } from './CreateGuesser';
+import { EditGuesserProps } from './EditGuesser';
+import { FieldGuesserProps } from './FieldGuesser';
+import { FilterGuesserProps } from './FilterGuesser';
+import { InputGuesserProps } from './InputGuesser';
+import { ListGuesserProps } from './ListGuesser';
+import { ShowGuesserProps } from './ShowGuesser';
 
 interface ResourcesIntrospecterProps {
-  component: React.ComponentType<any>;
-  schemaAnalyzer: any;
+  component: ComponentType<IntrospectedGuesserProps>;
+  schemaAnalyzer: SchemaAnalyzer;
   includeDeprecated: boolean;
   resource: string;
   resources: Resource[];
   loading: boolean;
-  error: any;
+  error: Error | null;
 }
 
-export type IntrospecterProps = Pick<
+export type BaseIntrospecterProps = Pick<
   ResourcesIntrospecterProps,
   'component' | 'resource'
 > &
   Partial<Pick<ResourcesIntrospecterProps, 'includeDeprecated'>>;
+
+type IntrospecterProps = (
+  | CreateGuesserProps
+  | EditGuesserProps
+  | FieldGuesserProps
+  | FilterGuesserProps
+  | InputGuesserProps
+  | ListGuesserProps
+  | ShowGuesserProps
+) &
+  BaseIntrospecterProps;
 
 const ResourcesIntrospecter = ({
   component: Component,
@@ -48,10 +71,6 @@ const ResourcesIntrospecter = ({
     }
 
     throw new Error('API schema is not readable');
-  }
-
-  if (resources == null) {
-    return null;
   }
 
   const schema = resources.find((r) => r.name === resource);
@@ -99,42 +118,47 @@ const Introspecter = ({
   ...rest
 }: IntrospecterProps) => {
   const logoutIfAccessDenied = useLogoutIfAccessDenied();
-  const schemaAnalyzer = useContext<any>(SchemaAnalyzerContext);
-  const schemaAnalyzerProxy = useMemo(
-    () =>
-      new Proxy(schemaAnalyzer, {
-        get: (target, key) => {
-          if (typeof target[key] !== 'function') {
-            return target[key];
+  const schemaAnalyzer = useContext<SchemaAnalyzer | null>(
+    SchemaAnalyzerContext,
+  );
+  const schemaAnalyzerProxy = useMemo(() => {
+    if (!schemaAnalyzer) {
+      return null;
+    }
+    return new Proxy(schemaAnalyzer, {
+      get: (target, key: keyof SchemaAnalyzer) => {
+        if (typeof target[key] !== 'function') {
+          return target[key];
+        }
+
+        return (...args: never[]) => {
+          // eslint-disable-next-line prefer-spread,@typescript-eslint/ban-types
+          const result = (target[key] as Function).apply(target, args);
+
+          if (result && typeof result.then === 'function') {
+            return result.catch((e: Error) => {
+              logoutIfAccessDenied(e).then((loggedOut) => {
+                if (loggedOut) {
+                  return;
+                }
+
+                throw e;
+              });
+            });
           }
 
-          return (...args) => {
-            // eslint-disable-next-line prefer-spread
-            const result = target[key].apply(target, args);
-
-            if (result && typeof result.then === 'function') {
-              return result.catch((e) => {
-                logoutIfAccessDenied(e).then((loggedOut) => {
-                  if (loggedOut) {
-                    return;
-                  }
-
-                  throw e;
-                });
-              });
-            }
-
-            return result;
-          };
-        },
-      }),
-    [schemaAnalyzer, logoutIfAccessDenied],
-  );
-  const { resources } = useSelector<any, any>((state) =>
-    state.introspect['introspect'] ? state.introspect['introspect'].data : {},
+          return result;
+        };
+      },
+    });
+  }, [schemaAnalyzer, logoutIfAccessDenied]);
+  const { resources } = useSelector((state: ApiPlatformAdminState) =>
+    state.introspect['introspect']
+      ? state.introspect['introspect'].data
+      : { resources: null },
   );
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
   const dataProvider = useDataProvider<ApiPlatformAdminDataProvider>();
 
   useEffect(() => {
@@ -151,13 +175,17 @@ const Introspecter = ({
       });
   }, [dataProvider, resource, resources]);
 
+  if (!schemaAnalyzerProxy) {
+    return null;
+  }
+
   return (
     <ResourcesIntrospecter
       component={component}
       schemaAnalyzer={schemaAnalyzerProxy}
       includeDeprecated={includeDeprecated}
       resource={resource}
-      resources={resources}
+      resources={resources || []}
       loading={loading}
       error={error}
       {...rest}

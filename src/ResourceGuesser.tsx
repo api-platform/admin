@@ -17,7 +17,7 @@ const ResourceGuesser = ({
     {...props}
     create={undefined === create ? CreateGuesser : create}
     edit={undefined === edit ? EditGuesser : edit}
-    list={undefined === list ? (ListGuesser as any) : list}
+    list={undefined === list ? ListGuesser : list}
     show={undefined === show ? ShowGuesser : show}
   />
 );

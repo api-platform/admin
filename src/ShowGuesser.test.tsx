@@ -26,6 +26,7 @@ const dataProvider: ApiPlatformAdminDataProvider = {
     Promise.resolve({ data: { id: 'id' } } as { data: RecordType }),
   deleteMany: () => Promise.resolve({ data: [] }),
   getOne: () =>
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     Promise.resolve({
       data: {

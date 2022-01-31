@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Filter } from 'react-admin';
+import {
+  Filter,
+  FilterProps as RaFilterProps,
+  useCheckMinimumRequiredProps,
+} from 'react-admin';
 import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
-import { FilterParameter } from './types';
+import Introspecter, { BaseIntrospecterProps } from './Introspecter';
+import { FilterParameter, IntrospectedGuesserProps } from './types';
+
+type FilterProps = Omit<RaFilterProps, 'children'> & {
+  hasShow?: boolean;
+  hasEdit?: boolean;
+};
+
+type IntrospectedFiterGuesserProps = FilterProps & IntrospectedGuesserProps;
+
+export type FilterGuesserProps = Omit<
+  FilterProps & BaseIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
 
 export const IntrospectedFilterGuesser = ({
   fields,
@@ -13,7 +30,7 @@ export const IntrospectedFilterGuesser = ({
   hasShow,
   hasEdit,
   ...rest
-}) => {
+}: IntrospectedFiterGuesserProps) => {
   const [filtersParameters, setFiltersParameters] = useState<FilterParameter[]>(
     [],
   );
@@ -43,8 +60,19 @@ export const IntrospectedFilterGuesser = ({
   );
 };
 
-const FilterGuesser = (props) => (
-  <Introspecter component={IntrospectedFilterGuesser} {...props} />
-);
+const FilterGuesser = (props: FilterGuesserProps) => {
+  useCheckMinimumRequiredProps('FilterGuesser', ['resource'], props);
+  if (!props.resource) {
+    return null;
+  }
+
+  return (
+    <Introspecter
+      component={IntrospectedFilterGuesser}
+      resource={props.resource}
+      {...props}
+    />
+  );
+};
 
 export default FilterGuesser;
