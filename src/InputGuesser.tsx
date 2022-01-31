@@ -1,58 +1,38 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   ArrayInput,
-  ArrayInputProps,
   BooleanInput,
   DateInput,
-  DateInputProps,
   DateTimeInput,
-  DateTimeInputProps,
-  getFieldLabelTranslationArgs,
-  InputProps as RaInputProps,
   NumberInput,
-  NumberInputProps,
   ReferenceArrayInput,
-  ReferenceArrayInputProps,
   ReferenceInput,
-  ReferenceInputProps,
-  required,
   SelectArrayInput,
   SelectInput,
   SimpleFormIterator,
   TextInput,
-  TextInputProps,
+  getFieldLabelTranslationArgs,
+  required,
   useCheckMinimumRequiredProps,
   useTranslate,
 } from 'react-admin';
+import type {
+  ArrayInputProps,
+  DateInputProps,
+  DateTimeInputProps,
+  NumberInputProps,
+  ReferenceArrayInputProps,
+  ReferenceInputProps,
+  TextInputProps,
+} from 'react-admin';
 import { useForm } from 'react-final-form';
-import { SwitchProps } from '@material-ui/core/Switch';
-import { FormGroupProps } from '@material-ui/core/FormGroup';
-import Introspecter, { BaseIntrospecterProps } from './Introspecter';
-import { IntrospectedGuesserProps } from './types';
-
-// @TODO Remove after react-admin 3.19.8 is released.
-type BooleanInputProps = RaInputProps<SwitchProps> &
-  Omit<FormGroupProps, 'defaultValue' | 'onChange' | 'onBlur' | 'onFocus'>;
-
-type InputProps =
-  | TextInputProps
-  | DateTimeInputProps
-  | DateInputProps
-  | BooleanInputProps
-  | NumberInputProps
-  | ArrayInputProps
-  | ReferenceArrayInputProps
-  | ReferenceInputProps;
-
-type IntrospectedInputGuesserProps = Partial<InputProps> &
-  IntrospectedGuesserProps;
-
-export type InputGuesserProps = Omit<
-  InputProps & BaseIntrospecterProps,
-  'component' | 'resource'
-> &
-  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+import Introspecter from './Introspecter';
+import type {
+  BooleanInputProps,
+  InputGuesserProps,
+  IntrospectedInputGuesserProps,
+} from './types';
 
 export const IntrospectedInputGuesser = ({
   fields,
@@ -75,17 +55,18 @@ export const IntrospectedInputGuesser = ({
 
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {
+    // eslint-disable-next-line no-console
     console.error(
       `Field ${props.source} not present inside API description for the resource ${props.resource}`,
     );
 
-    return <Fragment />;
+    return null;
   }
 
   const guessedValidate = !validate && field.required ? [required()] : validate;
 
-  if (null !== field.reference && typeof field.reference === 'object') {
-    if (1 === field.maxCardinality) {
+  if (field.reference !== null && typeof field.reference === 'object') {
+    if (field.maxCardinality === 1) {
       return (
         <ReferenceInput
           key={field.name}
@@ -125,35 +106,35 @@ export const IntrospectedInputGuesser = ({
     );
   }
 
+  let { format, parse } = props;
   const fieldType = schemaAnalyzer.getFieldType(field);
 
   if (fieldType === 'id') {
     const prefix = `/${props.resource}/`;
 
-    props.format = (value: string) => {
-      return value && 0 === value.indexOf(prefix)
+    format = (value: string) =>
+      value && value.indexOf(prefix) === 0
         ? value.substr(prefix.length)
         : value;
-    };
 
-    props.parse = (value: string) => {
-      return -1 !== value.indexOf(prefix) ? prefix + value : value;
-    };
+    parse = (value: string) =>
+      value.indexOf(prefix) !== -1 ? prefix + value : value;
   }
 
   const formatEmbedded = (value: string) => JSON.stringify(value);
   const parseEmbedded = (value: string) => JSON.parse(value);
 
-  if (null !== field.embedded && 1 === field.maxCardinality) {
-    props.format = formatEmbedded;
-    props.parse = parseEmbedded;
+  if (field.embedded !== null && field.maxCardinality === 1) {
+    format = formatEmbedded;
+    parse = parseEmbedded;
   }
+
+  let textInputFormat = (value: string) => value;
+  let textInputParse = (value: string) => value;
 
   switch (fieldType) {
     case 'array':
-      let textInputFormat = (value: string) => value;
-      let textInputParse = (value: string) => value;
-      if (null !== field.embedded && 1 !== field.maxCardinality) {
+      if (field.embedded !== null && field.maxCardinality !== 1) {
         textInputFormat = formatEmbedded;
         textInputParse = parseEmbedded;
       }
@@ -180,6 +161,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as NumberInputProps)}
+          format={format}
+          parse={parse}
           source={field.name}
         />
       );
@@ -191,6 +174,8 @@ export const IntrospectedInputGuesser = ({
           step="0.1"
           validate={guessedValidate}
           {...(props as NumberInputProps)}
+          format={format}
+          parse={parse}
           source={field.name}
         />
       );
@@ -201,6 +186,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as BooleanInputProps)}
+          format={format}
+          parse={parse}
           source={field.name}
         />
       );
@@ -211,6 +198,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as DateInputProps)}
+          format={format}
+          parse={parse}
           source={field.name}
         />
       );
@@ -221,6 +210,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as DateTimeInputProps)}
+          format={format}
+          parse={parse}
           source={field.name}
         />
       );
@@ -231,6 +222,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as TextInputProps)}
+          format={format}
+          parse={parse}
           source={field.name}
         />
       );
@@ -239,16 +232,17 @@ export const IntrospectedInputGuesser = ({
 
 const InputGuesser = (props: InputGuesserProps) => {
   useCheckMinimumRequiredProps('InputGuesser', ['resource'], props);
-  if (!props.resource) {
+  const { resource, ...rest } = props;
+  if (!resource) {
     return null;
   }
 
   return (
     <Introspecter
       component={IntrospectedInputGuesser}
-      resource={props.resource}
-      includeDeprecated={true}
-      {...props}
+      resource={resource}
+      includeDeprecated
+      {...rest}
     />
   );
 };

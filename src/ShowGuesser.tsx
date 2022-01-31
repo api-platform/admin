@@ -2,16 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Show,
-  ShowProps,
-  SimpleFormProps,
   SimpleShowLayout,
   useCheckMinimumRequiredProps,
 } from 'react-admin';
-import { Field, Resource } from '@api-platform/api-doc-parser';
+import type { Field, Resource } from '@api-platform/api-doc-parser';
 import FieldGuesser from './FieldGuesser';
-import Introspecter, { BaseIntrospecterProps } from './Introspecter';
+import Introspecter from './Introspecter';
 import useMercureSubscription from './useMercureSubscription';
-import { IntrospectedGuesserProps } from './types';
+import type { IntrospectedShowGuesserProps, ShowGuesserProps } from './types';
 
 const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -30,18 +28,9 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
   code += `<ResourceGuesser name={"${schema.name}"} show={${schema.title}Show} />`;
+  // eslint-disable-next-line no-console
   console.info(code);
 };
-
-type ShowSimpleFormProps = ShowProps & Omit<SimpleFormProps, 'children'>;
-
-type IntrospectedShowGuesserProps = ShowSimpleFormProps &
-  IntrospectedGuesserProps;
-
-export type ShowGuesserProps = Omit<
-  ShowSimpleFormProps & BaseIntrospecterProps,
-  'component' | 'resource'
->;
 
 export const IntrospectedShowGuesser = ({
   fields,
@@ -55,7 +44,7 @@ export const IntrospectedShowGuesser = ({
   let fieldChildren = children;
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => (
-      <FieldGuesser key={field.name} source={field.name} addLabel={true} />
+      <FieldGuesser key={field.name} source={field.name} addLabel />
     ));
     displayOverrideCode(schema, readableFields);
   }
@@ -71,15 +60,16 @@ export const IntrospectedShowGuesser = ({
 
 const ShowGuesser = (props: ShowGuesserProps) => {
   useCheckMinimumRequiredProps('ShowGuesser', ['resource'], props);
-  if (!props.resource) {
+  const { resource, ...rest } = props;
+  if (!resource) {
     return null;
   }
 
   return (
     <Introspecter
       component={IntrospectedShowGuesser}
-      resource={props.resource}
-      {...props}
+      resource={resource}
+      {...rest}
     />
   );
 };

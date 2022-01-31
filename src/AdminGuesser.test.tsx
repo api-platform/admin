@@ -4,7 +4,10 @@ import { AdminResourcesGuesser } from './AdminGuesser';
 import ResourceGuesser from './ResourceGuesser';
 import resources from './__fixtures__/resources';
 import { API_DATA } from './__fixtures__/parsedData';
-import { ApiPlatformAdminDataProvider, ApiPlatformAdminRecord } from './types';
+import type {
+  ApiPlatformAdminDataProvider,
+  ApiPlatformAdminRecord,
+} from './types';
 
 const dataProvider: ApiPlatformAdminDataProvider = {
   getList: () => Promise.resolve({ data: [], total: 0 }),
@@ -32,7 +35,7 @@ describe('<AdminGuesser />', () => {
     renderer.render(
       <AdminResourcesGuesser
         resources={[]}
-        loading={true}
+        loading
         includeDeprecated={false}
         dataProvider={dataProvider}
       />,

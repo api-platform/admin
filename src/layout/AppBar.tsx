@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppBar, useAuthProvider } from 'react-admin';
-import { Typography, withStyles, WithStyles } from '@material-ui/core';
+import { Typography, withStyles } from '@material-ui/core';
+import type { WithStyles } from '@material-ui/core';
 
 import Logo from './Logo';
 
@@ -24,7 +25,7 @@ const CustomAppBar = ({ classes, userMenu, ...props }: CustomAppBarProps) => {
   const authProvider = useAuthProvider();
 
   return (
-    <AppBar userMenu={userMenu || !!authProvider} {...props}>
+    <AppBar userMenu={userMenu ?? !!authProvider} {...props}>
       <Typography
         variant="h6"
         color="inherit"

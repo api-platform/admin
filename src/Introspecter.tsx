@@ -1,55 +1,15 @@
-import React, {
-  ComponentType,
-  useContext,
-  useEffect,
-  useState,
-  useMemo,
-} from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDataProvider, useLogoutIfAccessDenied } from 'react-admin';
 import { useSelector } from 'react-redux';
-import { Resource } from '@api-platform/api-doc-parser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import {
+import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminState,
-  IntrospectedGuesserProps,
+  IntrospecterProps,
+  ResourcesIntrospecterProps,
   SchemaAnalyzer,
 } from './types';
-import { CreateGuesserProps } from './CreateGuesser';
-import { EditGuesserProps } from './EditGuesser';
-import { FieldGuesserProps } from './FieldGuesser';
-import { FilterGuesserProps } from './FilterGuesser';
-import { InputGuesserProps } from './InputGuesser';
-import { ListGuesserProps } from './ListGuesser';
-import { ShowGuesserProps } from './ShowGuesser';
-
-interface ResourcesIntrospecterProps {
-  component: ComponentType<IntrospectedGuesserProps>;
-  schemaAnalyzer: SchemaAnalyzer;
-  includeDeprecated: boolean;
-  resource: string;
-  resources: Resource[];
-  loading: boolean;
-  error: Error | null;
-}
-
-export type BaseIntrospecterProps = Pick<
-  ResourcesIntrospecterProps,
-  'component' | 'resource'
-> &
-  Partial<Pick<ResourcesIntrospecterProps, 'includeDeprecated'>>;
-
-type IntrospecterProps = (
-  | CreateGuesserProps
-  | EditGuesserProps
-  | FieldGuesserProps
-  | FilterGuesserProps
-  | InputGuesserProps
-  | ListGuesserProps
-  | ShowGuesserProps
-) &
-  BaseIntrospecterProps;
 
 const ResourcesIntrospecter = ({
   component: Component,
@@ -66,7 +26,8 @@ const ResourcesIntrospecter = ({
   }
 
   if (error) {
-    if ('production' === process.env.NODE_ENV) {
+    if (process.env.NODE_ENV === 'production') {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
 
@@ -81,7 +42,8 @@ const ResourcesIntrospecter = ({
     !schema.readableFields ||
     !schema.writableFields
   ) {
-    if ('production' === process.env.NODE_ENV) {
+    if (process.env.NODE_ENV === 'production') {
+      // eslint-disable-next-line no-console
       console.error(`Resource ${resource} not present inside API description`);
     }
 
@@ -153,8 +115,8 @@ const Introspecter = ({
     });
   }, [schemaAnalyzer, logoutIfAccessDenied]);
   const { resources } = useSelector((state: ApiPlatformAdminState) =>
-    state.introspect['introspect']
-      ? state.introspect['introspect'].data
+    state.introspect.introspect
+      ? state.introspect.introspect.data
       : { resources: null },
   );
   const [loading, setLoading] = useState(true);
@@ -169,8 +131,8 @@ const Introspecter = ({
 
     dataProvider
       .introspect(resource, {}, { action: 'INTROSPECT' })
-      .catch((error) => {
-        setError(error);
+      .catch((introspectError) => {
+        setError(introspectError);
         setLoading(false);
       });
   }, [dataProvider, resource, resources]);
@@ -185,7 +147,7 @@ const Introspecter = ({
       schemaAnalyzer={schemaAnalyzerProxy}
       includeDeprecated={includeDeprecated}
       resource={resource}
-      resources={resources || []}
+      resources={resources ?? []}
       loading={loading}
       error={error}
       {...rest}

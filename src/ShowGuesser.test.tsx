@@ -8,7 +8,10 @@ import ShowGuesser from './ShowGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import introspectReducer from './introspectReducer';
 import schemaAnalyzer from './hydra/schemaAnalyzer';
-import { ApiPlatformAdminDataProvider, ApiPlatformAdminRecord } from './types';
+import type {
+  ApiPlatformAdminDataProvider,
+  ApiPlatformAdminRecord,
+} from './types';
 
 import { API_FIELDS_DATA } from './__fixtures__/parsedData';
 
@@ -95,9 +98,9 @@ describe('<ShowGuesser />', () => {
       <DataProviderContext.Provider value={dataProvider}>
         <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
           <ShowGuesser basePath="/users" resource="user" id="/users/123">
-            <TextField source="id" label={'label of id'} />
-            <TextField source="title" label={'label of title'} />
-            <TextField source="body" label={'label of body'} />
+            <TextField source="id" label="label of id" />
+            <TextField source="title" label="label of title" />
+            <TextField source="body" label="label of body" />
           </ShowGuesser>
         </SchemaAnalyzerContext.Provider>
       </DataProviderContext.Provider>,

@@ -3,11 +3,11 @@ import {
   CRUD_GET_ONE_SUCCESS,
   FETCH_END,
   GET_ONE,
-  Identifier,
   useDataProvider,
 } from 'react-admin';
 import { useDispatch } from 'react-redux';
-import { ApiPlatformAdminDataProvider } from './types';
+import type { Identifier } from 'react-admin';
+import type { ApiPlatformAdminDataProvider } from './types';
 
 export default function useMercureSubscription(
   resource: string | undefined,
@@ -20,7 +20,7 @@ export default function useMercureSubscription(
 
   useEffect(() => {
     if (!idOrIds || !resource) {
-      return;
+      return undefined;
     }
     const ids = Array.isArray(idOrIds)
       ? idOrIds.map((id) => id.toString())
@@ -31,11 +31,12 @@ export default function useMercureSubscription(
       (dataProvider.subscribe === undefined ||
         dataProvider.unsubscribe === undefined)
     ) {
+      // eslint-disable-next-line no-console
       console.warn(
         'subscribe and/or unsubscribe methods were not set in the data provider, Mercure realtime update functionalities will not work. Please use a compatible data provider.',
       );
       hasShownNoSubscribeWarning.current = true;
-      return;
+      return undefined;
     }
 
     dataProvider.subscribe(ids, (document) => {

@@ -1,7 +1,7 @@
 import React from 'react';
+import type { PaginationProps } from 'react-admin';
 import {
   Pagination,
-  PaginationProps,
   useListPaginationContext,
   useTranslate,
 } from 'react-admin';
@@ -29,13 +29,23 @@ const CustomPagination = (props: PaginationProps) => {
     <Toolbar>
       <div className={classes.spacer} />
       {page > 1 && (
-        <Button color="primary" key="prev" onClick={() => setPage(page - 1)}>
+        <Button
+          color="primary"
+          key="prev"
+          onClick={() => {
+            setPage(page - 1);
+          }}>
           {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
           {translate('ra.navigation.prev')}
         </Button>
       )}
       {total < -1 && (
-        <Button color="primary" key="next" onClick={() => setPage(page + 1)}>
+        <Button
+          color="primary"
+          key="next"
+          onClick={() => {
+            setPage(page + 1);
+          }}>
           {translate('ra.navigation.next')}
           {theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
         </Button>

@@ -1,70 +1,56 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   ArrayField,
-  ArrayFieldProps,
   BooleanField,
-  BooleanFieldProps,
   ChipField,
   DateField,
-  DateFieldProps,
   EmailField,
-  EmailFieldProps,
   NumberField,
-  NumberFieldProps,
-  ReferenceField,
-  ReferenceFieldProps,
   ReferenceArrayField,
-  ReferenceArrayFieldProps,
+  ReferenceField,
   SimpleList,
   SingleFieldList,
   TextField,
-  TextFieldProps,
   UrlField,
-  UrlFieldProps,
   useCheckMinimumRequiredProps,
 } from 'react-admin';
-import { Field, Resource } from '@api-platform/api-doc-parser';
-import Introspecter, { BaseIntrospecterProps } from './Introspecter';
-import { IntrospectedGuesserProps, SchemaAnalyzer } from './types';
+import type {
+  ArrayFieldProps,
+  BooleanFieldProps,
+  DateFieldProps,
+  EmailFieldProps,
+  NumberFieldProps,
+  ReferenceArrayFieldProps,
+  ReferenceFieldProps,
+  TextFieldProps,
+  UrlFieldProps,
+} from 'react-admin';
+import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-type FieldProps =
-  | TextFieldProps
-  | DateFieldProps
-  | BooleanFieldProps
-  | NumberFieldProps
-  | UrlFieldProps
-  | EmailFieldProps
-  | ArrayFieldProps
-  | ReferenceArrayFieldProps
-  | ReferenceFieldProps;
+import Introspecter from './Introspecter';
+import type {
+  FieldGuesserProps,
+  FieldProps,
+  IntrospectedFieldGuesserProps,
+  SchemaAnalyzer,
+} from './types';
 
-type IntrospectedFieldGuesserProps = FieldProps & IntrospectedGuesserProps;
-
-export type FieldGuesserProps = Omit<
-  FieldProps & BaseIntrospecterProps,
-  'component' | 'resource'
-> &
-  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
-
-const isFieldSortable = (field: Field, schema: Resource) => {
-  return (
-    !!schema.parameters &&
-    schema.parameters.filter((parameter) => parameter.variable === field.name)
-      .length > 0 &&
-    schema.parameters.filter(
-      (parameter) => parameter.variable === `order[${field.name}]`,
-    ).length > 0
-  );
-};
+const isFieldSortable = (field: Field, schema: Resource) =>
+  !!schema.parameters &&
+  schema.parameters.filter((parameter) => parameter.variable === field.name)
+    .length > 0 &&
+  schema.parameters.filter(
+    (parameter) => parameter.variable === `order[${field.name}]`,
+  ).length > 0;
 
 const renderField = (
   field: Field,
   schemaAnalyzer: SchemaAnalyzer,
   props: FieldProps,
 ) => {
-  if (null !== field.reference && typeof field.reference === 'object') {
-    if (1 === field.maxCardinality) {
+  if (field.reference !== null && typeof field.reference === 'object') {
+    if (field.maxCardinality === 1) {
       return (
         <ReferenceField
           {...(props as ReferenceFieldProps)}
@@ -88,7 +74,7 @@ const renderField = (
     );
   }
 
-  if (null !== field.embedded && 1 !== field.maxCardinality) {
+  if (field.embedded !== null && field.maxCardinality !== 1) {
     return (
       <ArrayField {...(props as ArrayFieldProps)}>
         <SimpleList
@@ -137,11 +123,12 @@ export const IntrospectedFieldGuesser = ({
   const field = fields.find((f) => f.name === props.source);
 
   if (!field) {
+    // eslint-disable-next-line no-console
     console.error(
       `Field "${props.source}" not present inside API description for the resource "${props.resource}"`,
     );
 
-    return <Fragment />;
+    return null;
   }
 
   return renderField(field, schemaAnalyzer, {
@@ -152,16 +139,17 @@ export const IntrospectedFieldGuesser = ({
 
 const FieldGuesser = (props: FieldGuesserProps) => {
   useCheckMinimumRequiredProps('FieldGuesser', ['resource'], props);
-  if (!props.resource) {
+  const { resource, ...rest } = props;
+  if (!resource) {
     return null;
   }
 
   return (
     <Introspecter
       component={IntrospectedFieldGuesser}
-      resource={props.resource}
-      includeDeprecated={true}
-      {...props}
+      resource={resource}
+      includeDeprecated
+      {...rest}
     />
   );
 };

@@ -4,8 +4,8 @@ import {
   getDocumentationUrlFromHeaders,
 } from '@api-platform/api-doc-parser';
 import jsonld from 'jsonld';
-import { JsonLdObj } from 'jsonld/jsonld-spec';
-import { HydraHttpClientOptions, HydraHttpClientResponse } from '../types';
+import type { JsonLdObj } from 'jsonld/jsonld-spec';
+import type { HydraHttpClientOptions, HydraHttpClientResponse } from '../types';
 
 /**
  * Sends HTTP requests to a Hydra API.
@@ -14,7 +14,7 @@ function fetchHydra(
   url: URL,
   options: HydraHttpClientOptions = {},
 ): Promise<HydraHttpClientResponse> {
-  let requestHeaders = options.headers || new Headers();
+  let requestHeaders = options.headers ?? new Headers();
 
   if (
     typeof requestHeaders !== 'function' &&
@@ -29,20 +29,21 @@ function fetchHydra(
   const authOptions = { ...options, headers: requestHeaders };
 
   return fetchJsonLd(url.href, authOptions).then((data) => {
-    const status = data.response.status;
+    const { status, statusText, headers } = data.response;
+    const { body } = data;
 
     if (status < 200 || status >= 300) {
-      const body = data.body;
-
-      'trace' in body && delete body.trace;
+      if ('trace' in body) {
+        delete body.trace;
+      }
 
       return jsonld
         .expand(body, {
-          base: getDocumentationUrlFromHeaders(data.response.headers),
+          base: getDocumentationUrlFromHeaders(headers),
           documentLoader: (input) => fetchJsonLd(input, authOptions),
         })
-        .then((json) => {
-          return Promise.reject(
+        .then((json) =>
+          Promise.reject(
             new HttpError(
               (
                 json[0][
@@ -52,30 +53,32 @@ function fetchHydra(
               status,
               json,
             ),
-          );
-        })
+          ),
+        )
         .catch((e) => {
-          if (e.hasOwnProperty('body')) {
+          if ('body' in e) {
             return Promise.reject(e);
           }
 
-          return Promise.reject(
-            new HttpError(data.response.statusText, status),
-          );
+          return Promise.reject(new HttpError(statusText, status));
         });
     }
 
-    if (Array.isArray(data.body)) {
-      return Promise.reject('Hydra response should not be an array.');
+    if (Array.isArray(body)) {
+      return Promise.reject(
+        new Error('Hydra response should not be an array.'),
+      );
     }
-    if (!('@id' in data.body)) {
-      return Promise.reject('Hydra response needs to have an @id member.');
+    if (!('@id' in body)) {
+      return Promise.reject(
+        new Error('Hydra response needs to have an @id member.'),
+      );
     }
 
     return {
-      status: status,
-      headers: data.response.headers,
-      json: data.body,
+      status,
+      headers,
+      json: body,
     };
   });
 }

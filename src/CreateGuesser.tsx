@@ -2,21 +2,22 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Create,
-  CreateProps,
   FileInput,
-  HttpError,
-  Record as RaRecord,
   SimpleForm,
-  SimpleFormProps,
   useCheckMinimumRequiredProps,
   useMutation,
   useNotify,
   useRedirect,
 } from 'react-admin';
-import { Field, Resource } from '@api-platform/api-doc-parser';
+import type { HttpError, Record as RaRecord } from 'react-admin';
+import type { Field, Resource } from '@api-platform/api-doc-parser';
+
 import InputGuesser from './InputGuesser';
-import Introspecter, { BaseIntrospecterProps } from './Introspecter';
-import { IntrospectedGuesserProps } from './types';
+import Introspecter from './Introspecter';
+import type {
+  CreateGuesserProps,
+  IntrospectedCreateGuesserProps,
+} from './types';
 
 const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -35,18 +36,9 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
   code += `<ResourceGuesser name={"${schema.name}"} create={${schema.title}Create} />`;
+  // eslint-disable-next-line no-console
   console.info(code);
 };
-
-type CreateSimpleFormProps = CreateProps & Omit<SimpleFormProps, 'children'>;
-
-type IntrospectedCreateGuesserProps = CreateSimpleFormProps &
-  IntrospectedGuesserProps;
-
-export type CreateGuesserProps = Omit<
-  CreateSimpleFormProps & BaseIntrospecterProps,
-  'component' | 'resource'
->;
 
 export const IntrospectedCreateGuesser = ({
   fields,
@@ -95,45 +87,46 @@ export const IntrospectedCreateGuesser = ({
         const response = await mutate(
           {
             type: 'create',
-            resource: resource,
+            resource,
             payload: {
               data: { ...values, extraInformation: { hasFileField } },
             },
           },
           { returnPromise: true },
         );
-        const success = onSuccess
-          ? onSuccess
-          : ({ data: newRecord }: { data: RaRecord }) => {
-              notify(successMessage || 'ra.notification.created', 'info', {
-                smart_count: 1,
-              });
-              redirect(redirectTo, basePath, newRecord.id, newRecord);
-            };
+        const success =
+          onSuccess ??
+          (({ data: newRecord }: { data: RaRecord }) => {
+            notify(successMessage || 'ra.notification.created', 'info', {
+              smart_count: 1,
+            });
+            redirect(redirectTo, basePath, newRecord.id, newRecord);
+          });
         success(response);
-        return;
-      } catch (error) {
+        return undefined;
+      } catch (mutateError) {
         const submissionErrors = schemaAnalyzer.getSubmissionErrors(
-          error as HttpError,
+          mutateError as HttpError,
         );
-        const failure = onFailure
-          ? onFailure
-          : (error: string | Error) => {
-              let message = 'ra.notification.http_error';
-              if (!submissionErrors) {
-                message =
-                  typeof error === 'string' ? error : error.message || message;
-              }
-              notify(message, 'warning', {
-                _:
-                  typeof error === 'string'
-                    ? error
-                    : error && error.message
-                    ? error.message
-                    : undefined,
-              });
-            };
-        failure(error as string | Error);
+        const failure =
+          onFailure ??
+          ((error: string | Error) => {
+            let message = 'ra.notification.http_error';
+            if (!submissionErrors) {
+              message =
+                typeof error === 'string' ? error : error.message || message;
+            }
+            let errorMessage;
+            if (typeof error === 'string') {
+              errorMessage = error;
+            } else if (error?.message) {
+              errorMessage = error.message;
+            }
+            notify(message, 'warning', {
+              _: errorMessage,
+            });
+          });
+        failure(mutateError as string | Error);
         if (submissionErrors) {
           return submissionErrors;
         }
@@ -176,15 +169,16 @@ export const IntrospectedCreateGuesser = ({
 
 const CreateGuesser = (props: CreateGuesserProps) => {
   useCheckMinimumRequiredProps('CreateGuesser', ['resource'], props);
-  if (!props.resource) {
+  const { resource, ...rest } = props;
+  if (!resource) {
     return null;
   }
 
   return (
     <Introspecter
       component={IntrospectedCreateGuesser}
-      resource={props.resource}
-      {...props}
+      resource={resource}
+      {...rest}
     />
   );
 };

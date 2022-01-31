@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Datagrid,
-  List,
-  EditButton,
-  ShowButton,
   DatagridBody,
-  DatagridBodyProps,
-  DatagridProps,
-  ListProps,
+  EditButton,
+  List,
+  ShowButton,
   useCheckMinimumRequiredProps,
 } from 'react-admin';
-import { Field, Resource } from '@api-platform/api-doc-parser';
+import type { DatagridBodyProps } from 'react-admin';
+import type { Field, Resource } from '@api-platform/api-doc-parser';
+
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
-import Introspecter, { BaseIntrospecterProps } from './Introspecter';
+import Introspecter from './Introspecter';
 import Pagination from './list/Pagination';
 import useMercureSubscription from './useMercureSubscription';
-import { IntrospectedGuesserProps } from './types';
+import type { IntrospectedListGuesserProps, ListGuesserProps } from './types';
 
 const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -36,22 +35,13 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
   code += `<ResourceGuesser name={"${schema.name}"} list={${schema.title}List} />`;
+  // eslint-disable-next-line no-console
   console.info(code);
 };
 
-type ListDatagridProps = ListProps & DatagridProps;
-
-type IntrospectedListGuesserProps = ListDatagridProps &
-  IntrospectedGuesserProps;
-
-export type ListGuesserProps = Omit<
-  ListDatagridProps & BaseIntrospecterProps,
-  'component' | 'resource'
-> &
-  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
-
 export const DatagridBodyWithMercure = (props: DatagridBodyProps) => {
-  useMercureSubscription(props.resource, props.ids);
+  const { resource, ids } = props;
+  useMercureSubscription(resource, ids);
 
   return <DatagridBody {...props} />;
 };
@@ -75,9 +65,9 @@ export const IntrospectedListGuesser = ({
 
   useEffect(() => {
     if (schema) {
-      schemaAnalyzer
-        .getOrderParametersFromSchema(schema)
-        .then((parameters) => setOrderParameters(parameters));
+      schemaAnalyzer.getOrderParametersFromSchema(schema).then((parameters) => {
+        setOrderParameters(parameters);
+      });
     }
   }, [schema, schemaAnalyzer]);
 

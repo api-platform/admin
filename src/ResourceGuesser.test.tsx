@@ -1,6 +1,6 @@
 import React from 'react';
-import ResourceGuesser from './ResourceGuesser';
 import { createRenderer } from 'react-test-renderer/shallow';
+import ResourceGuesser from './ResourceGuesser';
 
 describe('<ResourceGuesser />', () => {
   const renderer = createRenderer();
