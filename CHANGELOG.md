@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.0
+
+* Migrate codebase to TypeScript (export CommonJS module and ECMAScript module)
+* Correctly parse the `id` input in `InputGuesser`
+* Hydra: use pagination when fetching data with a search id filter (getMany)
+* Mercure: close event source connection when unsubscribing
+
 ## 2.7.1
 
 * Extract the Mercure hub from response headers
