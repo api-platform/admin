@@ -120,6 +120,7 @@ export interface SchemaAnalyzer {
   getFieldType: (
     field: Field,
   ) =>
+    | 'integer_id'
     | 'id'
     | 'email'
     | 'url'

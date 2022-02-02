@@ -13,6 +13,13 @@ export const API_DATA = new Api('entrypoint', {
 });
 
 export const API_FIELDS_DATA = [
+  new Field('id', {
+    id: 'http://schema.org/id',
+    range: 'http://www.w3.org/2001/XMLSchema#integer',
+    reference: null,
+    embedded: null,
+    required: false,
+  }),
   new Field('fieldA', {
     id: 'http://schema.org/fieldA',
     range: 'http://www.w3.org/2001/XMLSchema#string',

@@ -97,7 +97,9 @@ const getFiltersParametersFromSchema = (
 const getFieldType = (field: Field) => {
   switch (field.id) {
     case 'http://schema.org/identifier':
-      return 'id';
+      return field.range === 'http://www.w3.org/2001/XMLSchema#integer'
+        ? 'integer_id'
+        : 'id';
     case 'http://schema.org/email':
       return 'email';
     case 'http://schema.org/url':

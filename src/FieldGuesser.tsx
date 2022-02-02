@@ -97,6 +97,7 @@ const renderField = (
       return <UrlField {...(props as UrlFieldProps)} />;
 
     case 'integer':
+    case 'integer_id':
     case 'float':
       return <NumberField {...(props as NumberFieldProps)} />;
 

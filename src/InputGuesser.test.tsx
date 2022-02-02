@@ -1,10 +1,13 @@
 import React from 'react';
-import { DataProviderContext, TextField } from 'react-admin';
+import { DataProviderContext, Edit, SimpleForm } from 'react-admin';
 import { renderWithRedux } from 'ra-test';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Resource } from '@api-platform/api-doc-parser';
+import { ThemeProvider } from '@material-ui/core';
+import { createTheme } from '@material-ui/core/styles';
 
-import ShowGuesser from './ShowGuesser';
+import InputGuesser from './InputGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import introspectReducer from './introspectReducer';
 import schemaAnalyzer from './hydra/schemaAnalyzer';
@@ -14,6 +17,8 @@ import type {
 } from './types';
 
 import { API_FIELDS_DATA } from './__fixtures__/parsedData';
+
+const theme = createTheme();
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
 const dataProvider: ApiPlatformAdminDataProvider = {
@@ -60,12 +65,27 @@ const dataProvider: ApiPlatformAdminDataProvider = {
   unsubscribe: () => Promise.resolve({ data: null }),
 };
 
-describe('<ShowGuesser />', () => {
-  test('renders with no children', async () => {
+describe('<InputGuesser />', () => {
+  test('renders a parsed integer identifier input', async () => {
+    let updatedData = {};
+
     renderWithRedux(
       <DataProviderContext.Provider value={dataProvider}>
         <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ShowGuesser basePath="/users" resource="users" id="/users/123" />
+          <ThemeProvider theme={theme}>
+            <Edit
+              basePath="/users"
+              resource="users"
+              id="/users/123"
+              undoable={false}>
+              <SimpleForm
+                save={(data: { id: number }) => {
+                  updatedData = data;
+                }}>
+                <InputGuesser source="id" />
+              </SimpleForm>
+            </Edit>
+          </ThemeProvider>
         </SchemaAnalyzerContext.Provider>
       </DataProviderContext.Provider>,
       {
@@ -81,53 +101,17 @@ describe('<ShowGuesser />', () => {
       { introspect: introspectReducer },
     );
 
-    await waitFor(() => {
-      expect(
-        screen.queryAllByText('resources.users.fields.fieldA'),
-      ).toHaveLength(1);
-      expect(screen.queryAllByText('fieldA value')).toHaveLength(1);
-      expect(
-        screen.queryAllByText('resources.users.fields.fieldB'),
-      ).toHaveLength(1);
-      expect(screen.queryAllByText('fieldB value')).toHaveLength(1);
-      expect(
-        screen.queryAllByText('resources.users.fields.deprecatedField'),
-      ).toHaveLength(0);
-      expect(screen.queryAllByText('deprecatedField value')).toHaveLength(0);
-    });
-  });
+    expect(
+      await screen.findAllByText('resources.users.fields.id'),
+    ).toHaveLength(1);
+    const idField = screen.getByLabelText('resources.users.fields.id');
+    expect(idField).toHaveValue(123);
 
-  test('renders with custom fields', async () => {
-    renderWithRedux(
-      <DataProviderContext.Provider value={dataProvider}>
-        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ShowGuesser basePath="/users" resource="users" id="/users/123">
-            <TextField source="id" label="label of id" />
-            <TextField source="title" label="label of title" />
-            <TextField source="body" label="label of body" />
-          </ShowGuesser>
-        </SchemaAnalyzerContext.Provider>
-      </DataProviderContext.Provider>,
-      {
-        admin: {
-          resources: {
-            users: {
-              data: {},
-            },
-          },
-        },
-      },
-      {},
-      { introspect: introspectReducer },
-    );
+    userEvent.type(idField, '4');
+    expect(idField).toHaveValue(1234);
 
-    await waitFor(() => {
-      expect(screen.queryAllByText('label of id')).toHaveLength(1);
-      expect(screen.queryAllByText('/users/123')).toHaveLength(1);
-      expect(screen.queryAllByText('label of title')).toHaveLength(1);
-      expect(screen.queryAllByText('Title')).toHaveLength(1);
-      expect(screen.queryAllByText('label of body')).toHaveLength(1);
-      expect(screen.queryAllByText('Body')).toHaveLength(1);
-    });
+    const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
+    userEvent.click(saveButton);
+    expect(updatedData).toMatchObject({ id: 1234 });
   });
 });

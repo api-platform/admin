@@ -14,6 +14,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
+      excludedFiles: ['jest.config.ts', 'jest.setup.ts'],
       extends: [
         'airbnb',
         'airbnb-typescript',
