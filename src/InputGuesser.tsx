@@ -109,16 +109,19 @@ export const IntrospectedInputGuesser = ({
   let { format, parse } = props;
   const fieldType = schemaAnalyzer.getFieldType(field);
 
-  if (fieldType === 'id') {
+  if (['integer_id', 'id'].includes(fieldType) || field.name === 'id') {
     const prefix = `/${props.resource}/`;
 
-    format = (value: string) =>
-      value && value.indexOf(prefix) === 0
-        ? value.substr(prefix.length)
-        : value;
-
-    parse = (value: string) =>
-      value.indexOf(prefix) !== -1 ? prefix + value : value;
+    format = (value: string | number) => {
+      if (typeof value === 'string' && value.indexOf(prefix) === 0) {
+        const id = value.substring(prefix.length);
+        if (['integer_id', 'integer'].includes(fieldType)) {
+          return parseInt(id, 10);
+        }
+        return id;
+      }
+      return value;
+    };
   }
 
   const formatEmbedded = (value: string) => JSON.stringify(value);
@@ -156,6 +159,7 @@ export const IntrospectedInputGuesser = ({
       );
 
     case 'integer':
+    case 'integer_id':
       return (
         <NumberInput
           key={field.name}
