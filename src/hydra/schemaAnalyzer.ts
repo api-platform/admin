@@ -1,7 +1,11 @@
-import { Field, Resource } from '@api-platform/api-doc-parser';
-import { HttpError } from 'react-admin';
-import { JsonLdObj } from 'jsonld/jsonld-spec';
-import { FilterParameter, SchemaAnalyzer, SubmissionErrors } from '../types';
+import type { Field, Resource } from '@api-platform/api-doc-parser';
+import type { HttpError } from 'react-admin';
+import type { JsonLdObj } from 'jsonld/jsonld-spec';
+import type {
+  FilterParameter,
+  SchemaAnalyzer,
+  SubmissionErrors,
+} from '../types';
 
 /**
  * @param schema The schema of a resource
@@ -29,7 +33,7 @@ const getFieldNameFromSchema = (schema: Resource) => {
   }
 
   const field = schema.fields.find(
-    (field) => 'http://schema.org/name' === field.id,
+    (schemaField) => schemaField.id === 'http://schema.org/name',
   );
 
   return field ? field.name : 'id';
@@ -57,7 +61,7 @@ const getOrderParametersFromSchema = (schema: Resource): Promise<string[]> => {
       )
       .filter((filter) =>
         authorizedFields.includes(
-          filter.split('.')[0] || '', // split to manage nested properties
+          filter.split('.')[0] ?? '', // split to manage nested properties
         ),
       ),
   );
@@ -101,7 +105,7 @@ const getFieldType = (field: Field) => {
     default:
   }
 
-  if (null !== field.embedded && 1 !== field.maxCardinality) {
+  if (field.embedded !== null && field.maxCardinality !== 1) {
     return 'array';
   }
 
@@ -139,11 +143,11 @@ const getSubmissionErrors = (error: HttpError) => {
   const base = violationKey.substring(0, violationKey.indexOf('#'));
 
   const violations: SubmissionErrors = content[violationKey].reduce(
-    (violations: SubmissionErrors, violation: JsonLdObj) =>
+    (previousViolations: SubmissionErrors, violation: JsonLdObj) =>
       !violation[`${base}#propertyPath`] || !violation[`${base}#message`]
-        ? violations
+        ? previousViolations
         : {
-            ...violations,
+            ...previousViolations,
             [(violation[`${base}#propertyPath`] as JsonLdObj[])[0]?.[
               '@value'
             ] as string]: (violation[`${base}#message`] as JsonLdObj[])[0]?.[

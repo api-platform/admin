@@ -1,5 +1,6 @@
 import React from 'react';
-import { Layout, LayoutProps } from 'react-admin';
+import { Layout } from 'react-admin';
+import type { LayoutProps } from 'react-admin';
 import AppBar from './AppBar';
 
 const CustomLayout = (props: LayoutProps) => (

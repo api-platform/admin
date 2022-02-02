@@ -1,19 +1,18 @@
-import React, { ComponentType, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Admin,
-  AdminProps,
   ComponentPropType,
-  CustomRoutes,
   Error as DefaultError,
   Loading,
   TranslationProvider,
   defaultI18nProvider,
-  ErrorProps,
 } from 'react-admin';
-import { Resource } from '@api-platform/api-doc-parser';
 import { createHashHistory, createMemoryHistory } from 'history';
 import { createTheme as createMuiTheme } from '@material-ui/core';
+import type { ComponentType } from 'react';
+import type { AdminProps, CustomRoutes, ErrorProps } from 'react-admin';
+import type { Resource } from '@api-platform/api-doc-parser';
 
 import ErrorBoundary from './ErrorBoundary';
 import IntrospectionContext from './IntrospectionContext';
@@ -21,7 +20,7 @@ import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Layout } from './layout';
 import introspectReducer from './introspectReducer';
-import { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
+import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
 
 export interface AdminGuesserProps extends AdminProps {
   dataProvider: ApiPlatformAdminDataProvider;
@@ -50,6 +49,7 @@ const displayOverrideCode = (resources: Resource[]) => {
   resources.forEach((r) => {
     code += `<ResourceGuesser name={"${r.name}"} />\n`;
   });
+  // eslint-disable-next-line no-console
   console.info(code);
 };
 
@@ -128,9 +128,10 @@ const AdminGuesser = ({
   const [, setError] = useState();
   const [addedCustomRoutes, setAddedCustomRoutes] = useState<CustomRoutes>([]);
   const [introspect, setIntrospect] = useState(true);
+  let adminHistory = history;
 
-  if (!history) {
-    history =
+  if (!adminHistory) {
+    adminHistory =
       typeof window === 'undefined'
         ? createMemoryHistory()
         : createHashHistory();
@@ -149,9 +150,9 @@ const AdminGuesser = ({
 
     dataProvider
       .introspect()
-      .then(({ data, customRoutes = [] }) => {
-        setResources(data.resources || []);
-        setAddedCustomRoutes(customRoutes);
+      .then(({ data, customRoutes: introspectCustomRoutes = [] }) => {
+        setResources(data.resources ?? []);
+        setAddedCustomRoutes(introspectCustomRoutes);
         setIntrospect(false);
         setLoading(false);
       })
@@ -163,21 +164,25 @@ const AdminGuesser = ({
       });
   }, [introspect, dataProvider]);
 
+  const introspectionContext = useMemo(
+    () => ({
+      introspect: () => {
+        setLoading(true);
+        setIntrospect(true);
+      },
+    }),
+    [setLoading, setIntrospect],
+  );
+
   return (
-    <IntrospectionContext.Provider
-      value={{
-        introspect: () => {
-          setLoading(true);
-          setIntrospect(true);
-        },
-      }}>
+    <IntrospectionContext.Provider value={introspectionContext}>
       <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
         <AdminResourcesGuesser
           includeDeprecated={includeDeprecated}
           resources={resources}
           loading={loading}
           dataProvider={dataProvider}
-          history={history}
+          history={adminHistory}
           customRoutes={[...addedCustomRoutes, ...customRoutes]}
           layout={layout}
           loadingPage={loadingPage}

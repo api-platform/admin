@@ -1,6 +1,7 @@
 import React from 'react';
-import { Resource, ResourceProps } from 'react-admin';
 import PropTypes from 'prop-types';
+import { Resource } from 'react-admin';
+import type { ResourceProps } from 'react-admin';
 import ListGuesser from './ListGuesser';
 import CreateGuesser from './CreateGuesser';
 import EditGuesser from './EditGuesser';

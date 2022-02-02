@@ -1,16 +1,27 @@
-import { JsonLdObj } from 'jsonld/jsonld-spec';
-import {
+import type { ComponentType } from 'react';
+import type { JsonLdObj } from 'jsonld/jsonld-spec';
+import type {
+  ArrayFieldProps,
+  ArrayInputProps,
+  BooleanFieldProps,
   CREATE,
   CreateParams,
+  CreateProps,
   CreateResult,
   CustomRoutes,
-  DataProvider,
   DELETE,
   DELETE_MANY,
+  DataProvider,
+  DatagridProps,
+  DateFieldProps,
+  DateInputProps,
+  DateTimeInputProps,
   DeleteManyParams,
   DeleteManyResult,
   DeleteParams,
   DeleteResult,
+  EditProps,
+  EmailFieldProps,
   GET_LIST,
   GET_MANY,
   GET_MANY_REFERENCE,
@@ -18,22 +29,38 @@ import {
   GetListParams,
   GetListResult,
   GetManyParams,
-  GetManyResult,
   GetManyReferenceParams,
   GetManyReferenceResult,
+  GetManyResult,
   GetOneParams,
   GetOneResult,
+  HttpError,
+  ListProps,
+  NumberFieldProps,
+  NumberInputProps,
+  FilterProps as RaFilterProps,
+  InputProps as RaInputProps,
   Record as RaRecord,
+  ReduxState,
+  ReferenceArrayFieldProps,
+  ReferenceArrayInputProps,
+  ReferenceFieldProps,
+  ReferenceInputProps,
+  ShowProps,
+  SimpleFormProps,
+  TextFieldProps,
+  TextInputProps,
   UPDATE,
   UPDATE_MANY,
   UpdateManyParams,
   UpdateManyResult,
   UpdateParams,
   UpdateResult,
-  HttpError,
-  ReduxState,
+  UrlFieldProps,
 } from 'react-admin';
-import { Api, Field, Resource } from '@api-platform/api-doc-parser';
+import type { Api, Field, Resource } from '@api-platform/api-doc-parser';
+import type { SwitchProps } from '@material-ui/core/Switch';
+import type { FormGroupProps } from '@material-ui/core/FormGroup';
 
 export interface ApiPlatformAdminRecord extends RaRecord {
   originId?: string;
@@ -281,13 +308,15 @@ export interface IntrospectPayload {
   data: Api;
 }
 
-export interface ApiPlatformAdminState extends ReduxState {
-  introspect: {
-    introspect?: IntrospectPayload;
-  };
+export interface IntrospectState {
+  introspect?: IntrospectPayload;
 }
 
-export interface IntrospectedGuesserProps {
+export interface ApiPlatformAdminState extends ReduxState {
+  introspect: IntrospectState;
+}
+
+interface IntrospectedGuesserProps {
   schemaAnalyzer: SchemaAnalyzer;
   resource: string;
   schema: Resource;
@@ -295,3 +324,128 @@ export interface IntrospectedGuesserProps {
   readableFields: Field[];
   writableFields: Field[];
 }
+
+export interface ResourcesIntrospecterProps {
+  component: ComponentType<IntrospectedGuesserProps>;
+  schemaAnalyzer: SchemaAnalyzer;
+  includeDeprecated: boolean;
+  resource: string;
+  resources: Resource[];
+  loading: boolean;
+  error: Error | null;
+}
+
+type BaseIntrospecterProps = Pick<
+  ResourcesIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<ResourcesIntrospecterProps, 'includeDeprecated'>>;
+
+type CreateSimpleFormProps = CreateProps & Omit<SimpleFormProps, 'children'>;
+
+export type IntrospectedCreateGuesserProps = CreateSimpleFormProps &
+  IntrospectedGuesserProps;
+
+export type CreateGuesserProps = Omit<
+  CreateSimpleFormProps & BaseIntrospecterProps,
+  'component' | 'resource'
+>;
+
+type EditSimpleFormProps = EditProps & Omit<SimpleFormProps, 'children'>;
+
+export type IntrospectedEditGuesserProps = EditSimpleFormProps &
+  IntrospectedGuesserProps;
+
+export type EditGuesserProps = Omit<
+  EditSimpleFormProps & BaseIntrospecterProps,
+  'component' | 'resource'
+>;
+
+type ListDatagridProps = ListProps & DatagridProps;
+
+export type IntrospectedListGuesserProps = ListDatagridProps &
+  IntrospectedGuesserProps;
+
+export type ListGuesserProps = Omit<
+  ListDatagridProps & BaseIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+
+type ShowSimpleFormProps = ShowProps & Omit<SimpleFormProps, 'children'>;
+
+export type IntrospectedShowGuesserProps = ShowSimpleFormProps &
+  IntrospectedGuesserProps;
+
+export type ShowGuesserProps = Omit<
+  ShowSimpleFormProps & BaseIntrospecterProps,
+  'component' | 'resource'
+>;
+
+type FilterProps = Omit<RaFilterProps, 'children'> & {
+  hasShow?: boolean;
+  hasEdit?: boolean;
+};
+
+export type IntrospectedFiterGuesserProps = FilterProps &
+  IntrospectedGuesserProps;
+
+export type FilterGuesserProps = Omit<
+  FilterProps & BaseIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+
+export type FieldProps =
+  | TextFieldProps
+  | DateFieldProps
+  | BooleanFieldProps
+  | NumberFieldProps
+  | UrlFieldProps
+  | EmailFieldProps
+  | ArrayFieldProps
+  | ReferenceArrayFieldProps
+  | ReferenceFieldProps;
+
+export type IntrospectedFieldGuesserProps = FieldProps &
+  IntrospectedGuesserProps;
+
+export type FieldGuesserProps = Omit<
+  FieldProps & BaseIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+
+// @TODO Remove after react-admin 3.19.8 is released.
+export type BooleanInputProps = RaInputProps<SwitchProps> &
+  Omit<FormGroupProps, 'defaultValue' | 'onChange' | 'onBlur' | 'onFocus'>;
+
+type InputProps =
+  | TextInputProps
+  | DateTimeInputProps
+  | DateInputProps
+  | BooleanInputProps
+  | NumberInputProps
+  | ArrayInputProps
+  | ReferenceArrayInputProps
+  | ReferenceInputProps;
+
+export type IntrospectedInputGuesserProps = Partial<InputProps> &
+  IntrospectedGuesserProps;
+
+export type InputGuesserProps = Omit<
+  InputProps & BaseIntrospecterProps,
+  'component' | 'resource'
+> &
+  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+
+export type IntrospecterProps = (
+  | CreateGuesserProps
+  | EditGuesserProps
+  | FieldGuesserProps
+  | FilterGuesserProps
+  | InputGuesserProps
+  | ListGuesserProps
+  | ShowGuesserProps
+) &
+  BaseIntrospecterProps;

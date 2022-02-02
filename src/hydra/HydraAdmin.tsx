@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import dataProviderFactory from './dataProvider';
 import schemaAnalyzer from './schemaAnalyzer';
-import AdminGuesser, { AdminGuesserProps } from '../AdminGuesser';
-import { ApiPlatformAdminDataProvider, MercureOptions } from '../types';
+import AdminGuesser from '../AdminGuesser';
+import type { AdminGuesserProps } from '../AdminGuesser';
+import type { ApiPlatformAdminDataProvider, MercureOptions } from '../types';
 
 interface HydraAdminProps extends Omit<AdminGuesserProps, 'dataProvider'> {
   entrypoint: string;
@@ -21,12 +21,12 @@ const HydraAdmin = ({
     entrypoint,
     mercure,
   }),
-  schemaAnalyzer = hydraSchemaAnalyzer,
+  schemaAnalyzer: adminSchemaAnalyzer = hydraSchemaAnalyzer,
   ...props
 }: HydraAdminProps) => (
   <AdminGuesser
     dataProvider={dataProvider}
-    schemaAnalyzer={schemaAnalyzer}
+    schemaAnalyzer={adminSchemaAnalyzer}
     {...props}
   />
 );

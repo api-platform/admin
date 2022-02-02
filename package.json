@@ -33,8 +33,9 @@
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
     "eslint": "^7.14.0",
+    "eslint-config-airbnb": "^19.0.0",
+    "eslint-config-airbnb-typescript": "^16.0.0",
     "eslint-config-prettier": "^8.0.0",
-    "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.0",
     "eslint-plugin-markdown": "^2.1.0",
@@ -58,7 +59,7 @@
     "react-dom": "^16.9.0 || ^17.0.0"
   },
   "scripts": {
-    "build": "rimraf ./lib && tsc && tsc -p tsconfig.esm.json",
+    "build": "rimraf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
     "eslint-check": "eslint-config-prettier .eslintrc.js",
     "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
     "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",

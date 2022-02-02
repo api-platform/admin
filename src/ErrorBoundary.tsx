@@ -1,6 +1,8 @@
-import { Component, ComponentType, createElement, ErrorInfo } from 'react';
+import { Component, createElement } from 'react';
 import PropTypes from 'prop-types';
-import { ComponentPropType, ErrorProps } from 'react-admin';
+import { ComponentPropType } from 'react-admin';
+import type { ComponentType, ErrorInfo } from 'react';
+import type { ErrorProps } from 'react-admin';
 
 type ErrorBoundaryProps = {
   error: ComponentType<ErrorProps>;
@@ -13,6 +15,7 @@ type ErrorBoundaryState = {
 };
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  // eslint-disable-next-line react/static-property-placement
   static propTypes = {
     children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
     error: ComponentPropType,
