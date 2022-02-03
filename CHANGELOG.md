@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.8.1
+
+* TypeScript: make some props partial in HydraAdmin and AdminGuesser
+* Hydra: use right URL for getManyReference
+
 ## 2.8.0
 
 * Migrate codebase to TypeScript (export CommonJS module and ECMAScript module)
