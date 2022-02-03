@@ -25,7 +25,7 @@ import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
 export interface AdminGuesserProps extends AdminProps {
   dataProvider: ApiPlatformAdminDataProvider;
   schemaAnalyzer: SchemaAnalyzer;
-  includeDeprecated: boolean;
+  includeDeprecated?: boolean;
 }
 
 interface AdminGuesserWithErrorProps extends AdminGuesserProps {

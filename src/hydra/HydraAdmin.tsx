@@ -4,12 +4,17 @@ import dataProviderFactory from './dataProvider';
 import schemaAnalyzer from './schemaAnalyzer';
 import AdminGuesser from '../AdminGuesser';
 import type { AdminGuesserProps } from '../AdminGuesser';
-import type { ApiPlatformAdminDataProvider, MercureOptions } from '../types';
+import type { MercureOptions } from '../types';
 
-interface HydraAdminProps extends Omit<AdminGuesserProps, 'dataProvider'> {
+type AdminGuesserPartialProps = Omit<
+  AdminGuesserProps,
+  'dataProvider' | 'schemaAnalyzer'
+> &
+  Partial<Pick<AdminGuesserProps, 'dataProvider' | 'schemaAnalyzer'>>;
+
+interface HydraAdminProps extends AdminGuesserPartialProps {
   entrypoint: string;
   mercure?: MercureOptions;
-  dataProvider?: ApiPlatformAdminDataProvider;
 }
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
