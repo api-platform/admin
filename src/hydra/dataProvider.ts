@@ -368,6 +368,17 @@ function dataProvider(
     });
   };
 
+  const shouldUseItemUrl = (type: DataProviderType) => {
+    switch (type) {
+      case 'GET_ONE':
+      case 'UPDATE':
+      case 'DELETE':
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const convertReactAdminRequestToHydraRequest = (
     type: DataProviderType,
     resource: string,
@@ -376,7 +387,7 @@ function dataProvider(
     const params = dataProviderParams;
     const entrypointUrl = new URL(entrypoint, window.location.href);
     let url: URL;
-    if ('id' in params) {
+    if ('id' in params && shouldUseItemUrl(type)) {
       url = new URL(params.id.toString(), entrypointUrl);
     } else {
       url = new URL(`${entrypoint}/${resource}`, entrypointUrl);
