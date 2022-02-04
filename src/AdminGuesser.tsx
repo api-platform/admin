@@ -9,7 +9,7 @@ import {
   defaultI18nProvider,
 } from 'react-admin';
 import { createHashHistory, createMemoryHistory } from 'history';
-import { createTheme as createMuiTheme } from '@material-ui/core';
+import { createTheme as /* tree-shaking no-side-effects-when-called */ createMuiTheme } from '@material-ui/core';
 import type { ComponentType } from 'react';
 import type { AdminProps, CustomRoutes, ErrorProps } from 'react-admin';
 import type { Resource } from '@api-platform/api-doc-parser';
@@ -195,6 +195,7 @@ const AdminGuesser = ({
   );
 };
 
+/* eslint-disable tree-shaking/no-side-effects-in-initialization */
 AdminGuesser.propTypes = {
   dataProvider: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
     .isRequired,
@@ -210,6 +211,7 @@ AdminGuesser.propTypes = {
   includeDeprecated: PropTypes.bool,
   customRoutes: PropTypes.array,
 };
+/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 const AdminGuesserWithError = ({
   error,

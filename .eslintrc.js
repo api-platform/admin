@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['prettier'],
+  plugins: ['tree-shaking', 'prettier'],
   extends: [
     'airbnb',
     'airbnb/hooks',
@@ -51,6 +51,18 @@ module.exports = {
         'react/jsx-props-no-spreading': 'off',
         'react/forbid-prop-types': 'off',
         'react/default-props-match-prop-types': 'off',
+      },
+    },
+    {
+      files: ['*.ts', '*.tsx'],
+      excludedFiles: [
+        'jest.config.ts',
+        'jest.setup.ts',
+        '*.test.ts',
+        '*.test.tsx',
+      ],
+      rules: {
+        'tree-shaking/no-side-effects-in-initialization': 'error',
       },
     },
   ],
