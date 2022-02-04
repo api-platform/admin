@@ -213,15 +213,14 @@ AdminGuesser.propTypes = {
 
 const AdminGuesserWithError = ({
   error,
-  i18nProvider,
   ...props
 }: AdminGuesserWithErrorProps) => {
-  if (!i18nProvider) {
+  if (!props.i18nProvider) {
     throw new Error('Missing i18nProvider');
   }
 
   return (
-    <TranslationProvider i18nProvider={i18nProvider}>
+    <TranslationProvider i18nProvider={props.i18nProvider}>
       <ErrorBoundary error={error}>
         <AdminGuesser {...props} />
       </ErrorBoundary>
