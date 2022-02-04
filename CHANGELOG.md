@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.2
+
+* Make sure i18n provider is passed down to `AdminGuesser`
+
 ## 2.8.1
 
 * TypeScript: make some props partial in HydraAdmin and AdminGuesser
