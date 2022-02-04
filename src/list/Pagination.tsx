@@ -5,7 +5,12 @@ import {
   useListPaginationContext,
   useTranslate,
 } from 'react-admin';
-import { Button, Toolbar, makeStyles, useTheme } from '@material-ui/core';
+import {
+  Button,
+  Toolbar,
+  /* tree-shaking no-side-effects-when-called */ makeStyles,
+  useTheme,
+} from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 

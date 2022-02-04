@@ -1,3 +1,4 @@
+// eslint-disable-next-line tree-shaking/no-side-effects-in-initialization
 import { Api, Field, Parameter, Resource } from '@api-platform/api-doc-parser';
 
 export const API_DATA = new Api('entrypoint', {

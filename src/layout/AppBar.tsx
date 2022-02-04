@@ -38,4 +38,5 @@ const CustomAppBar = ({ classes, userMenu, ...props }: CustomAppBarProps) => {
   );
 };
 
+// eslint-disable-next-line tree-shaking/no-side-effects-in-initialization
 export default withStyles(styles)(CustomAppBar);

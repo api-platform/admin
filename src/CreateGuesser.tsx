@@ -183,9 +183,11 @@ const CreateGuesser = (props: CreateGuesserProps) => {
   );
 };
 
+/* eslint-disable tree-shaking/no-side-effects-in-initialization */
 CreateGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
 };
+/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default CreateGuesser;

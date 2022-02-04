@@ -196,9 +196,11 @@ const EditGuesser = (props: EditGuesserProps) => {
   );
 };
 
+/* eslint-disable tree-shaking/no-side-effects-in-initialization */
 EditGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
 };
+/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default EditGuesser;

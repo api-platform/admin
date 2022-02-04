@@ -15,11 +15,13 @@ type ErrorBoundaryState = {
 };
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  /* eslint-disable tree-shaking/no-side-effects-in-initialization */
   // eslint-disable-next-line react/static-property-placement
   static propTypes = {
     children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
     error: ComponentPropType,
   };
+  /* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
   constructor(props: ErrorBoundaryProps) {
     super(props);

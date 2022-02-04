@@ -127,6 +127,7 @@ const ListGuesser = ({
   );
 };
 
+/* eslint-disable tree-shaking/no-side-effects-in-initialization */
 ListGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   resource: PropTypes.string.isRequired,
@@ -135,5 +136,6 @@ ListGuesser.propTypes = {
   hasEdit: PropTypes.bool,
   rowClick: PropTypes.string,
 };
+/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default ListGuesser;

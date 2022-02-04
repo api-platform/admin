@@ -15,6 +15,7 @@
   "bugs": "https://github.com/api-platform/admin/issues",
   "author": "Kévin Dunglas",
   "license": "MIT",
+  "sideEffects": false,
   "dependencies": {
     "@api-platform/api-doc-parser": "^0.13.2",
     "history": "^4.7.0",
@@ -44,6 +45,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.12.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-tree-shaking": "^1.10.0",
     "jest": "^27.2.0",
     "prettier": "^2.0.0",
     "ra-test": "^3.0.0",
