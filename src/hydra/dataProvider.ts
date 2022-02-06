@@ -630,7 +630,7 @@ function dataProvider(
             if (hydraCollection['hydra:totalItems'] !== undefined) {
               total = hydraCollection['hydra:totalItems'];
             }
-            if (hydraCollection['hydra:view']) {
+            else if (hydraCollection['hydra:view']) {
               total = hydraCollection['hydra:view']['hydra:next']
                 ? -2 // there is a next page
                 : -1; // no next page
