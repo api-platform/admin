@@ -391,6 +391,13 @@ describe('Transform a React Admin request to an Hydra request', () => {
           { '@id': '/comments/976' },
         ],
         'hydra:totalItems': 2,
+        'hydra:view': {
+          '@id': '/comments?page=1',
+          '@type': 'hydra:PartialCollectionView',
+          'hydra:first': '/comments?page=1',
+          'hydra:last': '/comments?page=1',
+          'hydra:next': '/comments?page=1',
+        },
       },
     });
     const result = await dataProvider.getManyReference('comments', {
@@ -411,6 +418,79 @@ describe('Transform a React Admin request to an Hydra request', () => {
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual(
       'http://localhost/entrypoint/comments?order%5Bid%5D=ASC&page=1&itemsPerPage=30&posts=%2Fposts%2F346',
+    );
+  });
+
+  test('React Admin get list', async () => {
+    mockFetchHydra.mockClear();
+    mockFetchHydra.mockReturnValueOnce({
+      json: {
+        'hydra:member': [
+          { '@id': '/comments/423' },
+          { '@id': '/comments/976' },
+        ],
+        'hydra:totalItems': 2,
+        'hydra:view': {
+          '@id': '/comments?page=1',
+          '@type': 'hydra:PartialCollectionView',
+          'hydra:first': '/comments?page=1',
+          'hydra:last': '/comments?page=1',
+          'hydra:next': '/comments?page=1',
+        },
+      },
+    });
+    const result = await dataProvider.getList('comments', {
+      pagination: { page: 1, perPage: 30 },
+      sort: { field: 'id', order: 'ASC' },
+      filter: false,
+    });
+    expect(result).toEqual({
+      data: [
+        { '@id': '/comments/423', id: '/comments/423' },
+        { '@id': '/comments/976', id: '/comments/976' },
+      ],
+      total: 2,
+    });
+    const url = mockFetchHydra.mock.calls[0][0];
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual(
+      'http://localhost/entrypoint/comments?order%5Bid%5D=ASC&page=1&itemsPerPage=30',
+    );
+  });
+
+  test('React Admin get list with partial pagination', async () => {
+    mockFetchHydra.mockClear();
+    mockFetchHydra.mockReturnValueOnce({
+      json: {
+        'hydra:member': [
+          { '@id': '/comments/423' },
+          { '@id': '/comments/976' },
+        ],
+        'hydra:view': {
+          '@id': '/comments?page=1',
+          '@type': 'hydra:PartialCollectionView',
+          'hydra:first': '/comments?page=1',
+          'hydra:last': '/comments?page=1',
+          'hydra:next': '/comments?page=1',
+        },
+      },
+    });
+    const result = await dataProvider.getList('comments', {
+      pagination: { page: 1, perPage: 30 },
+      sort: { field: 'id', order: 'ASC' },
+      filter: false,
+    });
+    expect(result).toEqual({
+      data: [
+        { '@id': '/comments/423', id: '/comments/423' },
+        { '@id': '/comments/976', id: '/comments/976' },
+      ],
+      total: -2,
+    });
+    const url = mockFetchHydra.mock.calls[0][0];
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual(
+      'http://localhost/entrypoint/comments?order%5Bid%5D=ASC&page=1&itemsPerPage=30',
     );
   });
 });
