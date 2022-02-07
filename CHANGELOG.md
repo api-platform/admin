@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.3
+
+* Hydra: total was overridden by partial pagination
+
 ## 2.8.2
 
 * Make sure i18n provider is passed down to `AdminGuesser`
