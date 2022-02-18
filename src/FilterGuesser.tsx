@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Filter, useCheckMinimumRequiredProps } from 'react-admin';
+import { Filter, useResourceContext } from 'react-admin';
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
 import type {
@@ -14,8 +14,6 @@ export const IntrospectedFilterGuesser = ({
   writableFields,
   schema,
   schemaAnalyzer,
-  hasShow,
-  hasEdit,
   ...rest
 }: IntrospectedFiterGuesserProps) => {
   const [filtersParameters, setFiltersParameters] = useState<FilterParameter[]>(
@@ -50,17 +48,13 @@ export const IntrospectedFilterGuesser = ({
 };
 
 const FilterGuesser = (props: FilterGuesserProps) => {
-  useCheckMinimumRequiredProps('FilterGuesser', ['resource'], props);
-  const { resource, ...rest } = props;
-  if (!resource) {
-    return null;
-  }
+  const resource = useResourceContext(props);
 
   return (
     <Introspecter
       component={IntrospectedFilterGuesser}
       resource={resource}
-      {...rest}
+      {...props}
     />
   );
 };

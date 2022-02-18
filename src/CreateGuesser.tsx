@@ -4,12 +4,12 @@ import {
   Create,
   FileInput,
   SimpleForm,
-  useCheckMinimumRequiredProps,
-  useMutation,
+  useCreate,
   useNotify,
   useRedirect,
+  useResourceContext,
 } from 'react-admin';
-import type { HttpError, Record as RaRecord } from 'react-admin';
+import type { HttpError, RaRecord } from 'react-admin';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
 import InputGuesser from './InputGuesser';
@@ -47,24 +47,18 @@ export const IntrospectedCreateGuesser = ({
   schema,
   schemaAnalyzer,
   resource,
-  basePath,
-  onSuccess,
-  successMessage,
-  onFailure,
+  mutationOptions,
   redirect: redirectTo = 'list',
-  initialValues,
+  mode,
+  defaultValues,
   validate,
   toolbar,
-  margin,
-  variant,
-  submitOnEnter,
   warnWhenUnsavedChanges,
-  sanitizeEmptyValues,
   simpleFormComponent,
   children,
   ...props
 }: IntrospectedCreateGuesserProps) => {
-  const [mutate] = useMutation();
+  const [create] = useCreate();
   const notify = useNotify();
   const redirect = useRedirect();
 
@@ -84,32 +78,30 @@ export const IntrospectedCreateGuesser = ({
   const save = useCallback(
     async (values) => {
       try {
-        const response = await mutate(
+        const response = await create(
+          resource,
           {
-            type: 'create',
-            resource,
-            payload: {
-              data: { ...values, extraInformation: { hasFileField } },
-            },
+            data: { ...values, extraInformation: { hasFileField } },
           },
           { returnPromise: true },
         );
         const success =
-          onSuccess ??
-          (({ data: newRecord }: { data: RaRecord }) => {
-            notify(successMessage || 'ra.notification.created', 'info', {
-              smart_count: 1,
+          mutationOptions?.onSuccess ??
+          ((newRecord: RaRecord) => {
+            notify('ra.notification.created', {
+              type: 'info',
+              messageArgs: { smart_count: 1 },
             });
-            redirect(redirectTo, basePath, newRecord.id, newRecord);
+            redirect(redirectTo, resource, newRecord.id, newRecord);
           });
-        success(response);
+        success(response, { data: response }, {});
         return undefined;
       } catch (mutateError) {
         const submissionErrors = schemaAnalyzer.getSubmissionErrors(
           mutateError as HttpError,
         );
         const failure =
-          onFailure ??
+          mutationOptions?.onError ??
           ((error: string | Error) => {
             let message = 'ra.notification.http_error';
             if (!submissionErrors) {
@@ -122,11 +114,12 @@ export const IntrospectedCreateGuesser = ({
             } else if (error?.message) {
               errorMessage = error.message;
             }
-            notify(message, 'warning', {
-              _: errorMessage,
+            notify(message, {
+              type: 'warning',
+              messageArgs: { _: errorMessage },
             });
           });
-        failure(mutateError as string | Error);
+        failure(mutateError as string | Error, { data: values }, {});
         if (submissionErrors) {
           return submissionErrors;
         }
@@ -134,32 +127,26 @@ export const IntrospectedCreateGuesser = ({
       }
     },
     [
-      mutate,
+      create,
       hasFileField,
       resource,
-      onSuccess,
-      successMessage,
-      onFailure,
+      mutationOptions,
       notify,
       redirect,
       redirectTo,
-      basePath,
       schemaAnalyzer,
     ],
   );
 
   return (
-    <Create resource={resource} basePath={basePath} {...props}>
+    <Create resource={resource} {...props}>
       <SimpleForm
-        save={save}
-        initialValues={initialValues}
+        onSubmit={save}
+        mode={mode}
+        defaultValues={defaultValues}
         validate={validate}
         toolbar={toolbar}
-        margin={margin}
-        variant={variant}
-        submitOnEnter={submitOnEnter}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
-        sanitizeEmptyValues={sanitizeEmptyValues}
         component={simpleFormComponent}>
         {inputChildren}
       </SimpleForm>
@@ -168,17 +155,13 @@ export const IntrospectedCreateGuesser = ({
 };
 
 const CreateGuesser = (props: CreateGuesserProps) => {
-  useCheckMinimumRequiredProps('CreateGuesser', ['resource'], props);
-  const { resource, ...rest } = props;
-  if (!resource) {
-    return null;
-  }
+  const resource = useResourceContext(props);
 
   return (
     <Introspecter
       component={IntrospectedCreateGuesser}
       resource={resource}
-      {...rest}
+      {...props}
     />
   );
 };
@@ -186,7 +169,7 @@ const CreateGuesser = (props: CreateGuesserProps) => {
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
 CreateGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string.isRequired,
+  resource: PropTypes.string,
 };
 /* eslint-enable tree-shaking/no-side-effects-in-initialization */
 

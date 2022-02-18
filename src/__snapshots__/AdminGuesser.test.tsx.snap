@@ -9,11 +9,6 @@ exports[`<AdminGuesser /> renders loading 1`] = `
 
 exports[`<AdminGuesser /> renders with custom resources 1`] = `
 <Admin
-  customReducers={
-    Object {
-      "introspect": [Function],
-    }
-  }
   dataProvider={
     Object {
       "create": [Function],
@@ -30,7 +25,25 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
       "updateMany": [Function],
     }
   }
+  i18nProvider={
+    Object {
+      "changeLocale": [Function],
+      "getLocale": [Function],
+      "translate": [Function],
+    }
+  }
   loading={[Function]}
+  store={
+    Object {
+      "getItem": [Function],
+      "removeItem": [Function],
+      "reset": [Function],
+      "setItem": [Function],
+      "setup": [Function],
+      "subscribe": [Function],
+      "teardown": [Function],
+    }
+  }
 >
   <ResourceGuesser
     name="custom"
@@ -40,11 +53,6 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
 
 exports[`<AdminGuesser /> renders without custom resources 1`] = `
 <Admin
-  customReducers={
-    Object {
-      "introspect": [Function],
-    }
-  }
   dataProvider={
     Object {
       "create": [Function],
@@ -61,7 +69,25 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
       "updateMany": [Function],
     }
   }
+  i18nProvider={
+    Object {
+      "changeLocale": [Function],
+      "getLocale": [Function],
+      "translate": [Function],
+    }
+  }
   loading={[Function]}
+  store={
+    Object {
+      "getItem": [Function],
+      "removeItem": [Function],
+      "reset": [Function],
+      "setItem": [Function],
+      "setup": [Function],
+      "subscribe": [Function],
+      "teardown": [Function],
+    }
+  }
 >
   <ResourceGuesser
     name="books"
@@ -71,11 +97,6 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
 
 exports[`<AdminGuesser /> renders without data 1`] = `
 <Admin
-  customReducers={
-    Object {
-      "introspect": [Function],
-    }
-  }
   dataProvider={
     Object {
       "create": [Function],
@@ -92,6 +113,24 @@ exports[`<AdminGuesser /> renders without data 1`] = `
       "updateMany": [Function],
     }
   }
+  i18nProvider={
+    Object {
+      "changeLocale": [Function],
+      "getLocale": [Function],
+      "translate": [Function],
+    }
+  }
   loading={[Function]}
+  store={
+    Object {
+      "getItem": [Function],
+      "removeItem": [Function],
+      "reset": [Function],
+      "setItem": [Function],
+      "setup": [Function],
+      "subscribe": [Function],
+      "teardown": [Function],
+    }
+  }
 />
 `;

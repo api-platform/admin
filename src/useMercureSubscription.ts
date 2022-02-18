@@ -1,12 +1,7 @@
 import { useEffect, useRef } from 'react';
-import {
-  CRUD_GET_ONE_SUCCESS,
-  FETCH_END,
-  GET_ONE,
-  useDataProvider,
-} from 'react-admin';
-import { useDispatch } from 'react-redux';
+import { useDataProvider } from 'react-admin';
 import type { Identifier } from 'react-admin';
+import { useUpdateCache } from './dataProvider';
 import type { ApiPlatformAdminDataProvider } from './types';
 
 export default function useMercureSubscription(
@@ -14,7 +9,7 @@ export default function useMercureSubscription(
   idOrIds: Identifier | Identifier[] | undefined,
 ) {
   const dataProvider: ApiPlatformAdminDataProvider = useDataProvider();
-  const dispatch = useDispatch();
+  const updateCache = useUpdateCache();
 
   const hasShownNoSubscribeWarning = useRef(false);
 
@@ -40,17 +35,7 @@ export default function useMercureSubscription(
     }
 
     dataProvider.subscribe(ids, (document) => {
-      dispatch({
-        type: CRUD_GET_ONE_SUCCESS,
-        payload: {
-          data: document,
-        },
-        meta: {
-          resource,
-          fetchResponse: GET_ONE,
-          fetchStatus: FETCH_END,
-        },
-      });
+      updateCache({ resource, id: document.id, data: document });
     });
 
     return () => {
@@ -58,5 +43,5 @@ export default function useMercureSubscription(
         dataProvider.unsubscribe(resource, ids);
       }
     };
-  }, [idOrIds, resource, dataProvider, dispatch]);
+  }, [idOrIds, resource, dataProvider, updateCache]);
 }

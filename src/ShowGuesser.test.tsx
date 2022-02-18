@@ -1,12 +1,10 @@
 import React from 'react';
-import { DataProviderContext, TextField } from 'react-admin';
-import { renderWithRedux } from 'ra-test';
-import { screen, waitFor } from '@testing-library/react';
+import { AdminContext, ResourceContextProvider, TextField } from 'react-admin';
+import { render, screen, waitFor } from '@testing-library/react';
 import { Resource } from '@api-platform/api-doc-parser';
 
 import ShowGuesser from './ShowGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import introspectReducer from './introspectReducer';
 import schemaAnalyzer from './hydra/schemaAnalyzer';
 import type {
   ApiPlatformAdminDataProvider,
@@ -54,7 +52,6 @@ const dataProvider: ApiPlatformAdminDataProvider = {
           }),
         ],
       },
-      customRoutes: [],
     }),
   subscribe: () => Promise.resolve({ data: null }),
   unsubscribe: () => Promise.resolve({ data: null }),
@@ -62,23 +59,14 @@ const dataProvider: ApiPlatformAdminDataProvider = {
 
 describe('<ShowGuesser />', () => {
   test('renders with no children', async () => {
-    renderWithRedux(
-      <DataProviderContext.Provider value={dataProvider}>
+    render(
+      <AdminContext dataProvider={dataProvider}>
         <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ShowGuesser basePath="/users" resource="users" id="/users/123" />
+          <ResourceContextProvider value="users">
+            <ShowGuesser id="/users/123" />
+          </ResourceContextProvider>
         </SchemaAnalyzerContext.Provider>
-      </DataProviderContext.Provider>,
-      {
-        admin: {
-          resources: {
-            users: {
-              data: {},
-            },
-          },
-        },
-      },
-      {},
-      { introspect: introspectReducer },
+      </AdminContext>,
     );
 
     await waitFor(() => {
@@ -98,27 +86,16 @@ describe('<ShowGuesser />', () => {
   });
 
   test('renders with custom fields', async () => {
-    renderWithRedux(
-      <DataProviderContext.Provider value={dataProvider}>
+    render(
+      <AdminContext dataProvider={dataProvider}>
         <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ShowGuesser basePath="/users" resource="users" id="/users/123">
+          <ShowGuesser resource="users" id="/users/123">
             <TextField source="id" label="label of id" />
             <TextField source="title" label="label of title" />
             <TextField source="body" label="label of body" />
           </ShowGuesser>
         </SchemaAnalyzerContext.Provider>
-      </DataProviderContext.Provider>,
-      {
-        admin: {
-          resources: {
-            users: {
-              data: {},
-            },
-          },
-        },
-      },
-      {},
-      { introspect: introspectReducer },
+      </AdminContext>,
     );
 
     await waitFor(() => {

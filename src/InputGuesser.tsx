@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   ArrayInput,
@@ -12,13 +12,12 @@ import {
   SelectInput,
   SimpleFormIterator,
   TextInput,
-  getFieldLabelTranslationArgs,
   required,
-  useCheckMinimumRequiredProps,
-  useTranslate,
+  useResourceContext,
 } from 'react-admin';
 import type {
   ArrayInputProps,
+  BooleanInputProps,
   DateInputProps,
   DateTimeInputProps,
   NumberInputProps,
@@ -26,13 +25,9 @@ import type {
   ReferenceInputProps,
   TextInputProps,
 } from 'react-admin';
-import { useForm } from 'react-final-form';
+import isPlainObject from 'lodash.isplainobject';
 import Introspecter from './Introspecter';
-import type {
-  BooleanInputProps,
-  InputGuesserProps,
-  IntrospectedInputGuesserProps,
-} from './types';
+import type { InputGuesserProps, IntrospectedInputGuesserProps } from './types';
 
 export const IntrospectedInputGuesser = ({
   fields,
@@ -43,16 +38,6 @@ export const IntrospectedInputGuesser = ({
   validate,
   ...props
 }: IntrospectedInputGuesserProps) => {
-  const translate = useTranslate();
-  const form = useForm();
-  // Pause the validation while the Final Form field is registered to prevent a form state desynchronization bug when using async validators.
-  // Since the field is not registered directly because of the introspection, Final Form is using the previous form state (without the field) when notifying after the async validation done during the registration.
-  // See also https://github.com/final-form/react-final-form/issues/780.
-  form.pauseValidation();
-  useEffect(() => {
-    form.resumeValidation();
-  });
-
   const field = fields.find(({ name }) => name === props.source);
   if (!field) {
     // eslint-disable-next-line no-console
@@ -82,18 +67,9 @@ export const IntrospectedInputGuesser = ({
       );
     }
 
-    // Not needed after React-Admin >= 3.10.4 (see https://github.com/marmelab/react-admin/pull/5606).
-    const translatedLabel = translate(
-      ...getFieldLabelTranslationArgs({
-        resource: props.resource,
-        source: field.name,
-      }),
-    );
-
     return (
       <ReferenceArrayInput
         key={field.name}
-        label={translatedLabel}
         validate={guessedValidate}
         {...(props as ReferenceArrayInputProps)}
         reference={field.reference.name}
@@ -124,8 +100,19 @@ export const IntrospectedInputGuesser = ({
     };
   }
 
-  const formatEmbedded = (value: string) => JSON.stringify(value);
-  const parseEmbedded = (value: string) => JSON.parse(value);
+  const formatEmbedded = (value: string | object) =>
+    typeof value === 'string' ? value : JSON.stringify(value);
+  const parseEmbedded = (value: string) => {
+    try {
+      const parsed = JSON.parse(value);
+      if (!isPlainObject(parsed)) {
+        return value;
+      }
+      return parsed;
+    } catch (e) {
+      return value;
+    }
+  };
 
   if (field.embedded !== null && field.maxCardinality === 1) {
     format = formatEmbedded;
@@ -235,18 +222,14 @@ export const IntrospectedInputGuesser = ({
 };
 
 const InputGuesser = (props: InputGuesserProps) => {
-  useCheckMinimumRequiredProps('InputGuesser', ['resource'], props);
-  const { resource, ...rest } = props;
-  if (!resource) {
-    return null;
-  }
+  const resource = useResourceContext(props);
 
   return (
     <Introspecter
       component={IntrospectedInputGuesser}
       resource={resource}
       includeDeprecated
-      {...rest}
+      {...props}
     />
   );
 };

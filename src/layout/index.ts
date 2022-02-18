@@ -1,4 +1,6 @@
+import Error from './Error';
 import Layout from './Layout';
+import LoginPage from './LoginPage';
 
-// eslint-disable-next-line import/prefer-default-export
-export { Layout };
+export { Error, Layout, LoginPage };
+export * from './themes';

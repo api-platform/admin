@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.0
+
+* Compatibility with react-admin 4 (see UPGRADE.md)
+* Add a light/dark theme switcher by default
+* Improve the error page with more information to get help
+* Improve parsing and formatting of embedded relations
+* Add a new `useIntrospect` hook (calling the actual introspection request, use `useIntrospection` to ask for a new introspection)
+* Partial pagination support is back (native to react-admin)
+* Embedded support is enabled by default
+
 ## 2.8.3
 
 * Hydra: total was overridden by partial pagination

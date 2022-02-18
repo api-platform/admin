@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Show,
-  SimpleShowLayout,
-  useCheckMinimumRequiredProps,
-} from 'react-admin';
+import { Show, SimpleShowLayout, useResourceContext } from 'react-admin';
+import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 import FieldGuesser from './FieldGuesser';
 import Introspecter from './Introspecter';
@@ -21,7 +18,7 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   code += `    <ShowGuesser {...props}>\n`;
 
   fields.forEach((field) => {
-    code += `        <FieldGuesser source={"${field.name}"} addLabel={true} />\n`;
+    code += `        <FieldGuesser source={"${field.name}"} />\n`;
   });
   code += `    </ShowGuesser>\n`;
   code += `);\n`;
@@ -41,15 +38,17 @@ export const IntrospectedShowGuesser = ({
   children,
   ...props
 }: IntrospectedShowGuesserProps) => {
+  const { id: routeId } = useParams<'id'>();
+  const id = decodeURIComponent(routeId ?? '');
+  useMercureSubscription(props.resource, id);
+
   let fieldChildren = children;
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => (
-      <FieldGuesser key={field.name} source={field.name} addLabel />
+      <FieldGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(schema, readableFields);
   }
-
-  useMercureSubscription(props.resource, props.id);
 
   return (
     <Show {...props}>
@@ -59,17 +58,13 @@ export const IntrospectedShowGuesser = ({
 };
 
 const ShowGuesser = (props: ShowGuesserProps) => {
-  useCheckMinimumRequiredProps('ShowGuesser', ['resource'], props);
-  const { resource, ...rest } = props;
-  if (!resource) {
-    return null;
-  }
+  const resource = useResourceContext(props);
 
   return (
     <Introspecter
       component={IntrospectedShowGuesser}
       resource={resource}
-      {...rest}
+      {...props}
     />
   );
 };
@@ -77,7 +72,7 @@ const ShowGuesser = (props: ShowGuesserProps) => {
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
 ShowGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string.isRequired,
+  resource: PropTypes.string,
 };
 /* eslint-enable tree-shaking/no-side-effects-in-initialization */
 

@@ -485,7 +485,10 @@ describe('Transform a React Admin request to an Hydra request', () => {
         { '@id': '/comments/423', id: '/comments/423' },
         { '@id': '/comments/976', id: '/comments/976' },
       ],
-      total: -2,
+      pageInfo: {
+        hasNextPage: true,
+        hasPreviousPage: false,
+      },
     });
     const url = mockFetchHydra.mock.calls[0][0];
     expect(url).toBeInstanceOf(URL);

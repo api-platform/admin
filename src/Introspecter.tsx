@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useDataProvider, useLogoutIfAccessDenied } from 'react-admin';
-import { useSelector } from 'react-redux';
+import { useLogoutIfAccessDenied } from 'react-admin';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
+import useIntrospect from './useIntrospect';
 import type {
-  ApiPlatformAdminDataProvider,
-  ApiPlatformAdminState,
   IntrospecterProps,
   ResourcesIntrospecterProps,
   SchemaAnalyzer,
@@ -114,28 +112,14 @@ const Introspecter = ({
       },
     });
   }, [schemaAnalyzer, logoutIfAccessDenied]);
-  const { resources } = useSelector((state: ApiPlatformAdminState) =>
-    state.introspect.introspect
-      ? state.introspect.introspect.data
-      : { resources: null },
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const dataProvider = useDataProvider<ApiPlatformAdminDataProvider>();
+  const { refetch, data, isLoading, isIdle, error } = useIntrospect();
+  const resources = data ? data.data.resources : null;
 
   useEffect(() => {
-    if (resources) {
-      setLoading(false);
-      return;
+    if (!error && !resources) {
+      refetch();
     }
-
-    dataProvider
-      .introspect(resource, {}, { action: 'INTROSPECT' })
-      .catch((introspectError) => {
-        setError(introspectError);
-        setLoading(false);
-      });
-  }, [dataProvider, resource, resources]);
+  }, [refetch, error, resources]);
 
   if (!schemaAnalyzerProxy) {
     return null;
@@ -148,7 +132,7 @@ const Introspecter = ({
       includeDeprecated={includeDeprecated}
       resource={resource}
       resources={resources ?? []}
-      loading={loading}
+      loading={isLoading || isIdle}
       error={error}
       {...rest}
     />
@@ -158,7 +142,7 @@ const Introspecter = ({
 Introspecter.propTypes = {
   component: PropTypes.elementType.isRequired,
   includeDeprecated: PropTypes.bool,
-  resource: PropTypes.string.isRequired,
+  resource: PropTypes.string,
 };
 
 export default Introspecter;

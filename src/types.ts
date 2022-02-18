@@ -1,14 +1,14 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import type { JsonLdObj } from 'jsonld/jsonld-spec';
 import type {
   ArrayFieldProps,
   ArrayInputProps,
   BooleanFieldProps,
+  BooleanInputProps,
   CREATE,
   CreateParams,
   CreateProps,
   CreateResult,
-  CustomRoutes,
   DELETE,
   DELETE_MANY,
   DataProvider,
@@ -39,9 +39,7 @@ import type {
   NumberFieldProps,
   NumberInputProps,
   FilterProps as RaFilterProps,
-  InputProps as RaInputProps,
-  Record as RaRecord,
-  ReduxState,
+  RaRecord,
   ReferenceArrayFieldProps,
   ReferenceArrayInputProps,
   ReferenceFieldProps,
@@ -59,8 +57,11 @@ import type {
   UrlFieldProps,
 } from 'react-admin';
 import type { Api, Field, Resource } from '@api-platform/api-doc-parser';
-import type { SwitchProps } from '@material-ui/core/Switch';
-import type { FormGroupProps } from '@material-ui/core/FormGroup';
+import type { SxProps } from '@mui/system';
+
+type PickRename<T, K extends keyof T, R extends PropertyKey> = {
+  [P in keyof T as P extends K ? R : P]: T[P];
+};
 
 export interface ApiPlatformAdminRecord extends RaRecord {
   originId?: string;
@@ -73,6 +74,7 @@ export interface HydraView extends JsonLdObj {
   'hydra:first': string;
   'hydra:last': string;
   'hydra:next': string;
+  'hydra:previous': string;
 }
 
 export interface HydraCollection extends JsonLdObj {
@@ -104,7 +106,6 @@ export interface ApiDocumentationParserResponse {
   api: Api;
   response: Response;
   status: number;
-  customRoutes?: CustomRoutes;
 }
 
 export interface SubmissionErrors {
@@ -286,10 +287,7 @@ export interface ApiPlatformAdminDataProvider extends DataProvider {
   introspect: (
     _resource?: string,
     _params?: object,
-  ) => Promise<{
-    data: Api;
-    customRoutes?: CustomRoutes;
-  }>;
+  ) => Promise<IntrospectPayload>;
   subscribe: (
     resourceIds: string[],
     callback: (document: ApiPlatformAdminRecord) => void,
@@ -307,14 +305,6 @@ export interface FilterParameter {
 
 export interface IntrospectPayload {
   data: Api;
-}
-
-export interface IntrospectState {
-  introspect?: IntrospectPayload;
-}
-
-export interface ApiPlatformAdminState extends ReduxState {
-  introspect: IntrospectState;
 }
 
 interface IntrospectedGuesserProps {
@@ -342,51 +332,64 @@ type BaseIntrospecterProps = Pick<
 > &
   Partial<Pick<ResourcesIntrospecterProps, 'includeDeprecated'>>;
 
-type CreateSimpleFormProps = CreateProps & Omit<SimpleFormProps, 'children'>;
+type CreateSimpleFormProps = Omit<
+  CreateProps & Omit<SimpleFormProps, 'component'>,
+  'children'
+> &
+  Partial<PickRename<SimpleFormProps, 'component', 'simpleFormComponent'>> & {
+    children?: ReactNode;
+  };
 
 export type IntrospectedCreateGuesserProps = CreateSimpleFormProps &
   IntrospectedGuesserProps;
 
 export type CreateGuesserProps = Omit<
-  CreateSimpleFormProps & BaseIntrospecterProps,
-  'component' | 'resource'
+  CreateSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
+  'component'
 >;
 
-type EditSimpleFormProps = EditProps & Omit<SimpleFormProps, 'children'>;
+type EditSimpleFormProps = Omit<EditProps & SimpleFormProps, 'children'> &
+  Partial<PickRename<SimpleFormProps, 'component', 'simpleFormComponent'>> & {
+    children?: ReactNode;
+  };
 
 export type IntrospectedEditGuesserProps = EditSimpleFormProps &
   IntrospectedGuesserProps;
 
 export type EditGuesserProps = Omit<
-  EditSimpleFormProps & BaseIntrospecterProps,
-  'component' | 'resource'
+  EditSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
+  'component'
 >;
 
-type ListDatagridProps = ListProps & DatagridProps;
+type ListDatagridProps = Omit<
+  ListProps & Omit<DatagridProps, 'sx'>,
+  'children'
+> & {
+  datagridSx?: SxProps;
+  children?: ReactNode;
+};
 
 export type IntrospectedListGuesserProps = ListDatagridProps &
   IntrospectedGuesserProps;
 
 export type ListGuesserProps = Omit<
-  ListDatagridProps & BaseIntrospecterProps,
-  'component' | 'resource'
-> &
-  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+  ListDatagridProps & Omit<BaseIntrospecterProps, 'resource'>,
+  'component'
+>;
 
-type ShowSimpleFormProps = ShowProps & Omit<SimpleFormProps, 'children'>;
+type ShowSimpleFormProps = Omit<ShowProps & SimpleFormProps, 'children'> & {
+  children?: ReactNode;
+};
 
 export type IntrospectedShowGuesserProps = ShowSimpleFormProps &
   IntrospectedGuesserProps;
 
 export type ShowGuesserProps = Omit<
-  ShowSimpleFormProps & BaseIntrospecterProps,
-  'component' | 'resource'
+  ShowSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
+  'component'
 >;
 
-type FilterProps = Omit<RaFilterProps, 'children'> & {
-  hasShow?: boolean;
-  hasEdit?: boolean;
-};
+type FilterProps = Omit<RaFilterProps, 'children'>;
 
 export type IntrospectedFiterGuesserProps = FilterProps &
   IntrospectedGuesserProps;
@@ -412,14 +415,9 @@ export type IntrospectedFieldGuesserProps = FieldProps &
   IntrospectedGuesserProps;
 
 export type FieldGuesserProps = Omit<
-  FieldProps & BaseIntrospecterProps,
-  'component' | 'resource'
-> &
-  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
-
-// @TODO Remove after react-admin 3.19.8 is released.
-export type BooleanInputProps = RaInputProps<SwitchProps> &
-  Omit<FormGroupProps, 'defaultValue' | 'onChange' | 'onBlur' | 'onFocus'>;
+  FieldProps & Omit<BaseIntrospecterProps, 'resource'>,
+  'component'
+>;
 
 type InputProps =
   | TextInputProps
@@ -435,10 +433,9 @@ export type IntrospectedInputGuesserProps = Partial<InputProps> &
   IntrospectedGuesserProps;
 
 export type InputGuesserProps = Omit<
-  InputProps & BaseIntrospecterProps,
-  'component' | 'resource'
-> &
-  Partial<Pick<BaseIntrospecterProps, 'resource'>>;
+  InputProps & Omit<BaseIntrospecterProps, 'resource'>,
+  'component'
+>;
 
 export type IntrospecterProps = (
   | CreateGuesserProps

@@ -1,15 +1,16 @@
 import React from 'react';
-import { DataProviderContext, Edit, SimpleForm } from 'react-admin';
-import { renderWithRedux } from 'ra-test';
-import { screen } from '@testing-library/react';
+import {
+  AdminContext,
+  Edit,
+  ResourceContextProvider,
+  SimpleForm,
+} from 'react-admin';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Resource } from '@api-platform/api-doc-parser';
-import { ThemeProvider } from '@material-ui/core';
-import { createTheme } from '@material-ui/core/styles';
 
 import InputGuesser from './InputGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import introspectReducer from './introspectReducer';
 import schemaAnalyzer from './hydra/schemaAnalyzer';
 import type {
   ApiPlatformAdminDataProvider,
@@ -18,15 +19,13 @@ import type {
 
 import { API_FIELDS_DATA } from './__fixtures__/parsedData';
 
-const theme = createTheme();
-
 const hydraSchemaAnalyzer = schemaAnalyzer();
 const dataProvider: ApiPlatformAdminDataProvider = {
   getList: () => Promise.resolve({ data: [], total: 0 }),
   getMany: () => Promise.resolve({ data: [] }),
   getManyReference: () => Promise.resolve({ data: [], total: 0 }),
   update: <RecordType extends ApiPlatformAdminRecord>() =>
-    Promise.resolve({ data: { id: 'id' } } as { data: RecordType }),
+    Promise.resolve({ data: { id: '/users/123' } } as { data: RecordType }),
   updateMany: () => Promise.resolve({ data: [] }),
   create: <RecordType extends ApiPlatformAdminRecord>() =>
     Promise.resolve({ data: { id: 'id' } } as { data: RecordType }),
@@ -59,7 +58,6 @@ const dataProvider: ApiPlatformAdminDataProvider = {
           }),
         ],
       },
-      customRoutes: [],
     }),
   subscribe: () => Promise.resolve({ data: null }),
   unsubscribe: () => Promise.resolve({ data: null }),
@@ -69,36 +67,21 @@ describe('<InputGuesser />', () => {
   test('renders a parsed integer identifier input', async () => {
     let updatedData = {};
 
-    renderWithRedux(
-      <DataProviderContext.Provider value={dataProvider}>
+    render(
+      <AdminContext dataProvider={dataProvider}>
         <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ThemeProvider theme={theme}>
-            <Edit
-              basePath="/users"
-              resource="users"
-              id="/users/123"
-              undoable={false}>
+          <ResourceContextProvider value="users">
+            <Edit id="/users/123" mutationMode="pessimistic">
               <SimpleForm
-                save={(data: { id: number }) => {
+                onSubmit={(data: { id?: number }) => {
                   updatedData = data;
                 }}>
                 <InputGuesser source="id" />
               </SimpleForm>
             </Edit>
-          </ThemeProvider>
+          </ResourceContextProvider>
         </SchemaAnalyzerContext.Provider>
-      </DataProviderContext.Provider>,
-      {
-        admin: {
-          resources: {
-            users: {
-              data: {},
-            },
-          },
-        },
-      },
-      {},
-      { introspect: introspectReducer },
+      </AdminContext>,
     );
 
     expect(
@@ -112,6 +95,8 @@ describe('<InputGuesser />', () => {
 
     const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
     userEvent.click(saveButton);
-    expect(updatedData).toMatchObject({ id: 1234 });
+    await waitFor(() => {
+      expect(updatedData).toMatchObject({ id: 1234 });
+    });
   });
 });
