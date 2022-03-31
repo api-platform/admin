@@ -1,27 +1,17 @@
 import React from 'react';
-import { AppBar, useAuthProvider } from 'react-admin';
-import { Typography, withStyles } from '@material-ui/core';
-import type { WithStyles } from '@material-ui/core';
+import {
+  AppBar,
+  AppBarClasses,
+  ToggleThemeButton,
+  useAuthProvider,
+} from 'react-admin';
+import type { AppBarProps } from 'react-admin';
+import { Box, Typography } from '@mui/material';
 
 import Logo from './Logo';
+import { darkTheme, lightTheme } from './themes';
 
-interface CustomAppBarProps extends WithStyles {
-  userMenu?: boolean | JSX.Element;
-}
-
-const styles = {
-  title: {
-    flex: 1,
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-  },
-  spacer: {
-    flex: 1,
-  },
-} as const;
-
-const CustomAppBar = ({ classes, userMenu, ...props }: CustomAppBarProps) => {
+const CustomAppBar = ({ classes, userMenu, ...props }: AppBarProps) => {
   const authProvider = useAuthProvider();
 
   return (
@@ -29,14 +19,14 @@ const CustomAppBar = ({ classes, userMenu, ...props }: CustomAppBarProps) => {
       <Typography
         variant="h6"
         color="inherit"
-        className={classes.title}
+        className={AppBarClasses.title}
         id="react-admin-title"
       />
       <Logo />
-      <span className={classes.spacer} />
+      <Box component="span" sx={{ flex: 1 }} />
+      <ToggleThemeButton lightTheme={lightTheme} darkTheme={darkTheme} />
     </AppBar>
   );
 };
 
-// eslint-disable-next-line tree-shaking/no-side-effects-in-initialization
-export default withStyles(styles)(CustomAppBar);
+export default CustomAppBar;

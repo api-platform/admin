@@ -172,7 +172,7 @@ const createSubscription = (
     const document = transformJsonLdDocumentToReactAdminDocument(
       JSON.parse(event.data),
     );
-    // the only need for this callback is for accessing redux's `dispatch` method to update RA's state.
+    // this callback is for updating RA's state
     callback(document);
   };
   eventSource.addEventListener('message', eventListener);
@@ -193,7 +193,7 @@ const defaultParams: Required<
   httpClient: fetchHydra,
   apiDocumentationParser: parseHydraDocumentation,
   mercure: {},
-  useEmbedded: false,
+  useEmbedded: true,
   disableCache: false,
 };
 
@@ -211,48 +211,24 @@ const defaultParams: Required<
  * UPDATE   => PUT http://my.api.url/posts/123
  */
 function dataProvider(
-  entrypointOrParams: string | HydraDataProviderFactoryParams,
-  httpClient = fetchHydra,
-  apiDocumentationParser = parseHydraDocumentation,
-  useEmbedded = false, // remove this parameter for 3.0 (as true)
+  factoryParams: HydraDataProviderFactoryParams,
 ): ApiPlatformAdminDataProvider {
-  let entrypoint: string;
-  let mercure: MercureOptions;
-  let disableCache: boolean;
-  if (typeof entrypointOrParams === 'string') {
-    entrypoint = entrypointOrParams;
-    mercure = {
-      hub: null,
-      jwt: null,
-      topicUrl: entrypoint,
-    };
-    disableCache = false;
-  }
-  if (typeof entrypointOrParams === 'object') {
-    const params: Required<HydraDataProviderFactoryParams> = {
-      ...defaultParams,
-      ...entrypointOrParams,
-    };
-    entrypoint = params.entrypoint;
-    // eslint-disable-next-line no-param-reassign
-    httpClient = params.httpClient;
-    // eslint-disable-next-line no-param-reassign
-    apiDocumentationParser = params.apiDocumentationParser;
-    mercure = {
-      hub: null,
-      jwt: null,
-      topicUrl: params.entrypoint,
-      ...params.mercure,
-    };
-    disableCache = params.disableCache;
-    // eslint-disable-next-line no-param-reassign
-    useEmbedded = params.useEmbedded;
-  } else {
-    // eslint-disable-next-line no-console
-    console.warn(
-      'Passing a list of arguments for building the data provider is deprecated. Please use an object instead.',
-    );
-  }
+  const {
+    entrypoint,
+    httpClient,
+    apiDocumentationParser,
+    useEmbedded,
+    disableCache,
+  }: Required<HydraDataProviderFactoryParams> = {
+    ...defaultParams,
+    ...factoryParams,
+  };
+  const mercure: MercureOptions = {
+    hub: null,
+    jwt: null,
+    topicUrl: entrypoint,
+    ...factoryParams.mercure,
+  };
 
   let apiSchema: Api & { resources: Resource[] };
 
@@ -626,19 +602,26 @@ function dataProvider(
             ),
           )
           .then((data) => {
-            let total = -3; // no information
-            if (hydraCollection['hydra:view']) {
-              total = hydraCollection['hydra:view']['hydra:next']
-                ? -2 // there is a next page
-                : -1; // no next page
-            }
             if (hydraCollection['hydra:totalItems'] !== undefined) {
-              total = hydraCollection['hydra:totalItems'];
+              return {
+                data,
+                total: hydraCollection['hydra:totalItems'],
+              };
+            }
+            if (hydraCollection['hydra:view']) {
+              const pageInfo = {
+                hasNextPage: !!hydraCollection['hydra:view']['hydra:next'],
+                hasPreviousPage:
+                  !!hydraCollection['hydra:view']['hydra:previous'],
+              };
+              return {
+                data,
+                pageInfo,
+              };
             }
 
             return {
               data,
-              total,
             };
           });
 
@@ -699,7 +682,7 @@ function dataProvider(
     const result = previousResult ?? pageResult;
     if (previousResult) {
       result.data.push(...pageResult.data);
-      if (pageResult.total < result.total) {
+      if (pageResult.total && result.total && pageResult.total < result.total) {
         // The total can have changed between 2 requests
         result.total = pageResult.total;
       }
@@ -710,7 +693,11 @@ function dataProvider(
       return result;
     }
 
-    if (pageResult.data.length > 0 && result.data.length < result.total) {
+    if (
+      pageResult.data.length > 0 &&
+      ((result.total && result.data.length < result.total) ||
+        result.pageInfo?.hasNextPage)
+    ) {
       pageParams.pagination.page += 1;
       return fetchAllPages(type, resource, pageParams, result);
     }
@@ -781,14 +768,12 @@ function dataProvider(
       apiSchema
         ? Promise.resolve({ data: apiSchema })
         : apiDocumentationParser(entrypoint)
-            .then(
-              ({ api, customRoutes = [] }: ApiDocumentationParserResponse) => {
-                if (api.resources && api.resources.length > 0) {
-                  apiSchema = { ...api, resources: api.resources };
-                }
-                return { data: api, customRoutes };
-              },
-            )
+            .then(({ api }: ApiDocumentationParserResponse) => {
+              if (api.resources && api.resources.length > 0) {
+                apiSchema = { ...api, resources: api.resources };
+              }
+              return { data: api };
+            })
             .catch((err) => {
               const { status, error } = err;
               let { message } = err;

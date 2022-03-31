@@ -18,17 +18,17 @@
   "sideEffects": false,
   "dependencies": {
     "@api-platform/api-doc-parser": "^0.13.2",
-    "history": "^4.7.0",
+    "history": "^5.0.0",
     "jsonld": "^5.2.0",
     "lodash.isplainobject": "^4.0.6",
     "prop-types": "^15.6.2",
-    "react-admin": "^3.0.0"
+    "react-admin": "4.0.0-rc.0",
+    "react-error-boundary": "^3.1.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.0",
     "@testing-library/react": "^12.1.0",
     "@testing-library/user-event": "^13.5.0",
-    "@types/history": "^4.7.0",
     "@types/jest": "^27.4.0",
     "@types/jsonld": "^1.5.0",
     "@types/lodash.isplainobject": "^4.0.0",
@@ -48,20 +48,17 @@
     "eslint-plugin-tree-shaking": "^1.10.0",
     "jest": "^27.2.0",
     "prettier": "^2.0.0",
-    "ra-test": "^3.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "react-redux": "^7.1.0",
     "react-test-renderer": "^17.0.0",
-    "redux": "^3.7.0 || ^4.0.0",
     "rimraf": "^3.0.0",
     "ts-jest": "^27.1.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.0"
   },
   "peerDependencies": {
-    "react": "^16.9.0 || ^17.0.0",
-    "react-dom": "^16.9.0 || ^17.0.0"
+    "react": "*",
+    "react-dom": "*"
   },
   "scripts": {
     "build": "rimraf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",

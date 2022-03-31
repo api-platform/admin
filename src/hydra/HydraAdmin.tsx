@@ -12,7 +12,7 @@ type AdminGuesserPartialProps = Omit<
 > &
   Partial<Pick<AdminGuesserProps, 'dataProvider' | 'schemaAnalyzer'>>;
 
-interface HydraAdminProps extends AdminGuesserPartialProps {
+export interface HydraAdminProps extends AdminGuesserPartialProps {
   entrypoint: string;
   mercure?: MercureOptions;
 }

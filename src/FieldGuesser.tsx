@@ -13,7 +13,7 @@ import {
   SingleFieldList,
   TextField,
   UrlField,
-  useCheckMinimumRequiredProps,
+  useResourceContext,
 } from 'react-admin';
 import type {
   ArrayFieldProps,
@@ -139,25 +139,20 @@ export const IntrospectedFieldGuesser = ({
 };
 
 const FieldGuesser = (props: FieldGuesserProps) => {
-  useCheckMinimumRequiredProps('FieldGuesser', ['resource'], props);
-  const { resource, ...rest } = props;
-  if (!resource) {
-    return null;
-  }
+  const resource = useResourceContext(props);
 
   return (
     <Introspecter
       component={IntrospectedFieldGuesser}
       resource={resource}
       includeDeprecated
-      {...rest}
+      {...props}
     />
   );
 };
 
 FieldGuesser.propTypes = {
   source: PropTypes.string.isRequired,
-  addLabel: PropTypes.bool,
   resource: PropTypes.string,
   sortable: PropTypes.bool,
   sortBy: PropTypes.string,

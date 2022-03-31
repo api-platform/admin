@@ -8,6 +8,7 @@ import ListGuesser from './ListGuesser';
 import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import ShowGuesser from './ShowGuesser';
+import useIntrospect from './useIntrospect';
 import useIntrospection from './useIntrospection';
 import useMercureSubscription from './useMercureSubscription';
 
@@ -22,6 +23,7 @@ export {
   ResourceGuesser,
   SchemaAnalyzerContext,
   ShowGuesser,
+  useIntrospect,
   useIntrospection,
   useMercureSubscription,
 };
@@ -31,5 +33,5 @@ export {
   schemaAnalyzer as hydraSchemaAnalyzer,
   fetchHydra,
 } from './hydra';
-export { Pagination } from './list';
+export type { HydraAdminProps } from './hydra';
 export * from './types';

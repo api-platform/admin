@@ -6,7 +6,8 @@ import {
   EditButton,
   List,
   ShowButton,
-  useCheckMinimumRequiredProps,
+  useResourceContext,
+  useResourceDefinition,
 } from 'react-admin';
 import type { DatagridBodyProps } from 'react-admin';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
@@ -14,9 +15,12 @@ import type { Field, Resource } from '@api-platform/api-doc-parser';
 import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import Introspecter from './Introspecter';
-import Pagination from './list/Pagination';
 import useMercureSubscription from './useMercureSubscription';
-import type { IntrospectedListGuesserProps, ListGuesserProps } from './types';
+import type {
+  ApiPlatformAdminRecord,
+  IntrospectedListGuesserProps,
+  ListGuesserProps,
+} from './types';
 
 const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   if (process.env.NODE_ENV === 'production') return;
@@ -40,8 +44,12 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
 };
 
 export const DatagridBodyWithMercure = (props: DatagridBodyProps) => {
-  const { resource, ids } = props;
-  useMercureSubscription(resource, ids);
+  const { data } = props;
+  const resource = useResourceContext(props);
+  useMercureSubscription(
+    resource,
+    data?.map((record: ApiPlatformAdminRecord) => record.id),
+  );
 
   return <DatagridBody {...props} />;
 };
@@ -52,15 +60,23 @@ export const IntrospectedListGuesser = ({
   writableFields,
   schema,
   schemaAnalyzer,
+  datagridSx,
+  bulkActionButtons,
   rowClick,
   rowStyle,
   isRowSelectable,
+  isRowExpandable,
   body = DatagridBodyWithMercure,
+  header,
+  empty,
+  hover,
   expand,
   optimized,
+  size,
   children,
   ...props
 }: IntrospectedListGuesserProps) => {
+  const { hasShow, hasEdit } = useResourceDefinition(props);
   const [orderParameters, setOrderParameters] = useState<string[]>([]);
 
   useEffect(() => {
@@ -92,17 +108,24 @@ export const IntrospectedListGuesser = ({
   }
 
   return (
-    <List pagination={<Pagination />} {...props}>
+    <List {...props}>
       <Datagrid
+        bulkActionButtons={bulkActionButtons}
         rowClick={rowClick}
         rowStyle={rowStyle}
         isRowSelectable={isRowSelectable}
+        isRowExpandable={isRowExpandable}
         body={body}
+        header={header}
+        empty={empty}
+        hover={hover}
         expand={expand}
-        optimized={optimized}>
+        optimized={optimized}
+        size={size}
+        sx={datagridSx}>
         {fieldChildren}
-        {props.hasShow && <ShowButton />}
-        {props.hasEdit && <EditButton />}
+        {hasShow && <ShowButton />}
+        {hasEdit && <EditButton />}
       </Datagrid>
     </List>
   );
@@ -112,15 +135,12 @@ const ListGuesser = ({
   filters = <FilterGuesser />,
   ...props
 }: ListGuesserProps) => {
-  useCheckMinimumRequiredProps('ListGuesser', ['resource'], props);
-  if (!props.resource) {
-    return null;
-  }
+  const resource = useResourceContext(props);
 
   return (
     <Introspecter
       component={IntrospectedListGuesser}
-      resource={props.resource}
+      resource={resource}
       filters={filters}
       {...props}
     />

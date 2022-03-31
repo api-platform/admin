@@ -4,12 +4,13 @@ import {
   Edit,
   FileInput,
   SimpleForm,
-  useCheckMinimumRequiredProps,
-  useMutation,
   useNotify,
   useRedirect,
+  useResourceContext,
+  useUpdate,
 } from 'react-admin';
-import type { HttpError, Record as RaRecord } from 'react-admin';
+import type { HttpError, RaRecord } from 'react-admin';
+import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
 import InputGuesser from './InputGuesser';
@@ -45,30 +46,23 @@ export const IntrospectedEditGuesser = ({
   schema,
   schemaAnalyzer,
   resource,
-  id,
-  basePath,
-  // @deprecated use mutationMode: undoable instead
-  undoable = false,
-  mutationMode = undoable ? 'undoable' : 'pessimistic',
-  onSuccess,
-  successMessage,
-  onFailure,
+  mutationMode = 'pessimistic',
+  mutationOptions,
   redirect: redirectTo = 'list',
-  initialValues,
+  mode,
+  defaultValues,
   validate,
   toolbar,
-  margin,
-  variant,
-  submitOnEnter,
   warnWhenUnsavedChanges,
-  sanitizeEmptyValues,
   simpleFormComponent,
   children,
   ...props
 }: IntrospectedEditGuesserProps) => {
+  const { id: routeId } = useParams<'id'>();
+  const id = decodeURIComponent(routeId ?? '');
   useMercureSubscription(resource, id);
 
-  const [mutate] = useMutation();
+  const [update] = useUpdate();
   const notify = useNotify();
   const redirect = useRedirect();
 
@@ -87,34 +81,35 @@ export const IntrospectedEditGuesser = ({
 
   const save = useCallback(
     async (values) => {
+      if (id === undefined) {
+        return undefined;
+      }
       try {
-        const response = await mutate(
+        const response = await update(
+          resource,
           {
-            type: 'update',
-            resource,
-            payload: {
-              id,
-              data: { ...values, extraInformation: { hasFileField } },
-            },
+            id,
+            data: { ...values, extraInformation: { hasFileField } },
           },
           { returnPromise: true },
         );
         const success =
-          onSuccess ??
-          (({ data }: { data: RaRecord }) => {
-            notify(successMessage || 'ra.notification.updated', 'info', {
-              smart_count: 1,
+          mutationOptions?.onSuccess ??
+          ((data: RaRecord) => {
+            notify('ra.notification.updated', {
+              type: 'info',
+              messageArgs: { smart_count: 1 },
             });
-            redirect(redirectTo, basePath, data.id, data);
+            redirect(redirectTo, resource, data.id, data);
           });
-        success(response);
+        success(response, { id, data: response, previousData: values }, {});
         return undefined;
       } catch (mutateError) {
         const submissionErrors = schemaAnalyzer.getSubmissionErrors(
           mutateError as HttpError,
         );
         const failure =
-          onFailure ??
+          mutationOptions?.onError ??
           ((error: string | Error) => {
             let message = 'ra.notification.http_error';
             if (!submissionErrors) {
@@ -127,11 +122,16 @@ export const IntrospectedEditGuesser = ({
             } else if (error?.message) {
               errorMessage = error.message;
             }
-            notify(message, 'warning', {
-              _: errorMessage,
+            notify(message, {
+              type: 'warning',
+              messageArgs: { _: errorMessage },
             });
           });
-        failure(mutateError as string | Error);
+        failure(
+          mutateError as string | Error,
+          { id, data: values, previousData: values },
+          {},
+        );
         if (submissionErrors) {
           return submissionErrors;
         }
@@ -139,17 +139,14 @@ export const IntrospectedEditGuesser = ({
       }
     },
     [
-      mutate,
+      update,
       hasFileField,
       resource,
       id,
-      onSuccess,
-      successMessage,
-      onFailure,
+      mutationOptions,
       notify,
       redirect,
       redirectTo,
-      basePath,
       schemaAnalyzer,
     ],
   );
@@ -158,21 +155,17 @@ export const IntrospectedEditGuesser = ({
     <Edit
       resource={resource}
       id={id}
-      basePath={basePath}
       mutationMode={mutationMode}
       transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
       {...props}>
       <SimpleForm
-        save={mutationMode !== 'pessimistic' ? undefined : save}
-        initialValues={initialValues}
+        onSubmit={mutationMode !== 'pessimistic' ? undefined : save}
+        mode={mode}
+        defaultValues={defaultValues}
         validate={validate}
         redirect={redirectTo}
         toolbar={toolbar}
-        margin={margin}
-        variant={variant}
-        submitOnEnter={submitOnEnter}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
-        sanitizeEmptyValues={sanitizeEmptyValues}
         component={simpleFormComponent}>
         {inputChildren}
       </SimpleForm>
@@ -181,17 +174,13 @@ export const IntrospectedEditGuesser = ({
 };
 
 const EditGuesser = (props: EditGuesserProps) => {
-  useCheckMinimumRequiredProps('EditGuesser', ['resource'], props);
-  const { resource, ...rest } = props;
-  if (!resource) {
-    return null;
-  }
+  const resource = useResourceContext(props);
 
   return (
     <Introspecter
       component={IntrospectedEditGuesser}
       resource={resource}
-      {...rest}
+      {...props}
     />
   );
 };
@@ -199,7 +188,7 @@ const EditGuesser = (props: EditGuesserProps) => {
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
 EditGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string.isRequired,
+  resource: PropTypes.string,
 };
 /* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
