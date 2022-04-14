@@ -10,6 +10,7 @@ import {
 } from 'react-admin';
 import { createHashHistory, createMemoryHistory } from 'history';
 import { ErrorBoundary } from 'react-error-boundary';
+import type { FallbackProps } from 'react-error-boundary';
 import type { ComponentType, ErrorInfo } from 'react';
 import type { AdminProps, ErrorProps } from 'react-admin';
 import type { Resource } from '@api-platform/api-doc-parser';
@@ -20,7 +21,7 @@ import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Error as DefaultError, Layout, LoginPage, lightTheme } from './layout';
 import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
 import getRoutesAndResourcesFromNodes, {
-  getSingleChildFunction,
+  isSingleChildFunction,
 } from './getRoutesAndResourcesFromNodes';
 
 export interface AdminGuesserProps extends AdminProps {
@@ -78,7 +79,7 @@ export const AdminResourcesGuesser = ({
   const { resources: resourceChildren, customRoutes } =
     getRoutesAndResourcesFromNodes(children);
   if (
-    !getSingleChildFunction(adminChildren) &&
+    !isSingleChildFunction(adminChildren) &&
     resourceChildren.length === 0 &&
     resources
   ) {
@@ -216,7 +217,7 @@ const AdminGuesserWithError = ({
   };
 
   const renderError = useCallback(
-    (fallbackRenderProps) => (
+    (fallbackRenderProps: FallbackProps) => (
       <ErrorComponent {...fallbackRenderProps} errorInfo={errorInfo} />
     ),
     [ErrorComponent, errorInfo],

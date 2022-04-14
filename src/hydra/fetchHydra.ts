@@ -4,6 +4,7 @@ import {
   getDocumentationUrlFromHeaders,
 } from '@api-platform/api-doc-parser';
 import jsonld from 'jsonld';
+import type { NodeObject } from 'jsonld';
 import type { JsonLdObj } from 'jsonld/jsonld-spec';
 import type { HydraHttpClientOptions, HydraHttpClientResponse } from '../types';
 
@@ -30,17 +31,29 @@ function fetchHydra(
 
   return fetchJsonLd(url.href, authOptions).then((data) => {
     const { status, statusText, headers } = data.response;
-    const { body } = data;
+    const body = 'body' in data ? data.body : undefined;
 
     if (status < 200 || status >= 300) {
-      if ('trace' in body) {
-        delete body.trace;
+      if (!body) {
+        return Promise.reject(new HttpError(statusText, status));
       }
+
+      delete (body as NodeObject).trace;
+
+      const documentLoader = (input: string) =>
+        fetchJsonLd(input, authOptions).then((response) => {
+          if (!('body' in response)) {
+            throw new Error(
+              'An empty response was received when expanding JSON-LD error document.',
+            );
+          }
+          return response;
+        });
 
       return jsonld
         .expand(body, {
           base: getDocumentationUrlFromHeaders(headers),
-          documentLoader: (input) => fetchJsonLd(input, authOptions),
+          documentLoader,
         })
         .then((json) =>
           Promise.reject(
@@ -69,7 +82,7 @@ function fetchHydra(
         new Error('Hydra response should not be an array.'),
       );
     }
-    if (!('@id' in body)) {
+    if (body && !('@id' in body)) {
       return Promise.reject(
         new Error('Hydra response needs to have an @id member.'),
       );
