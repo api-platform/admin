@@ -1,6 +1,7 @@
 import React, { Children, Fragment } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactElement } from 'react';
 import type {
+  AdminChildren,
   CustomRoutesProps,
   RenderResourcesFunction,
   ResourceProps,
@@ -13,7 +14,7 @@ type RaComponent = {
 // From https://github.com/marmelab/react-admin/blob/next/packages/ra-core/src/core/useConfigureAdminRouterFromChildren.tsx
 
 export const getSingleChildFunction = (
-  children: ReactNode | RenderResourcesFunction,
+  children: AdminChildren,
 ): RenderResourcesFunction | null => {
   const childrenArray = Array.isArray(children) ? children : [children];
 
@@ -32,14 +33,26 @@ export const getSingleChildFunction = (
   return functionChildren[0] as RenderResourcesFunction;
 };
 
+export const isSingleChildFunction = (
+  children: AdminChildren,
+): children is RenderResourcesFunction => !!getSingleChildFunction(children);
+
 /**
  * Inspect the children and return an object with the following keys:
  * - customRoutes: an array of the custom routes
  * - resources: an array of resources elements
  */
-const getRoutesAndResourcesFromNodes = (children: ReactNode) => {
+const getRoutesAndResourcesFromNodes = (children: AdminChildren) => {
   const customRoutes: ReactElement<CustomRoutesProps>[] = [];
   const resources: ReactElement<ResourceProps>[] = [];
+
+  if (isSingleChildFunction(children)) {
+    return {
+      customRoutes,
+      resources,
+    };
+  }
+
   Children.forEach(children, (element) => {
     if (!React.isValidElement(element)) {
       // Ignore non-elements. This allows people to more easily inline

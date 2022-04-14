@@ -76,7 +76,7 @@ export const IntrospectedCreateGuesser = ({
   );
 
   const save = useCallback(
-    async (values) => {
+    async (values: Partial<RaRecord>) => {
       try {
         const response = await create(
           resource,

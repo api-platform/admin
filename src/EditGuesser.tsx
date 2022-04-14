@@ -80,7 +80,7 @@ export const IntrospectedEditGuesser = ({
   );
 
   const save = useCallback(
-    async (values) => {
+    async (values: Partial<RaRecord>) => {
       if (id === undefined) {
         return undefined;
       }

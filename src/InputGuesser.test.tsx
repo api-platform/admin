@@ -5,7 +5,7 @@ import {
   ResourceContextProvider,
   SimpleForm,
 } from 'react-admin';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Resource } from '@api-platform/api-doc-parser';
 
@@ -65,6 +65,7 @@ const dataProvider: ApiPlatformAdminDataProvider = {
 
 describe('<InputGuesser />', () => {
   test('renders a parsed integer identifier input', async () => {
+    const user = userEvent.setup();
     let updatedData = {};
 
     render(
@@ -90,11 +91,11 @@ describe('<InputGuesser />', () => {
     const idField = screen.getByLabelText('resources.users.fields.id');
     expect(idField).toHaveValue(123);
 
-    userEvent.type(idField, '4');
+    await user.type(idField, '4');
     expect(idField).toHaveValue(1234);
 
     const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
-    userEvent.click(saveButton);
+    fireEvent.click(saveButton);
     await waitFor(() => {
       expect(updatedData).toMatchObject({ id: 1234 });
     });

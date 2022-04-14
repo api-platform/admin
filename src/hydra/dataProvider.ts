@@ -581,6 +581,16 @@ function dataProvider(
     switch (type) {
       case GET_LIST:
       case GET_MANY_REFERENCE:
+        if (!response.json) {
+          return Promise.reject(
+            new Error(`An empty response was received for "${type}".`),
+          );
+        }
+        if (!('hydra:member' in response.json)) {
+          return Promise.reject(
+            new Error(`Response doesn't have a "hydra:member" field.`),
+          );
+        }
         // TODO: support other prefixes than "hydra:"
         // eslint-disable-next-line no-case-declarations
         const hydraCollection = response.json as HydraCollection;
@@ -629,6 +639,11 @@ function dataProvider(
         return Promise.resolve({ data: { id: (params as DeleteParams).id } });
 
       default:
+        if (!response.json) {
+          return Promise.reject(
+            new Error(`An empty response was received for "${type}".`),
+          );
+        }
         return Promise.resolve(
           transformJsonLdDocumentToReactAdminDocument(
             response.json,

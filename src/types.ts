@@ -94,7 +94,7 @@ export interface HydraHttpClientOptions {
 export interface HydraHttpClientResponse {
   status: number;
   headers: Headers;
-  json: Hydra;
+  json?: Hydra;
 }
 
 export interface ApiDocumentationParserOptions

@@ -10,6 +10,10 @@
 * Partial pagination support is back (native to react-admin)
 * Embedded support is enabled by default
 
+## 2.8.4
+
+* Hydra: manage empty response correctly
+
 ## 2.8.3
 
 * Hydra: total was overridden by partial pagination
