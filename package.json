@@ -22,7 +22,7 @@
     "jsonld": "^5.2.0",
     "lodash.isplainobject": "^4.0.6",
     "prop-types": "^15.6.2",
-    "react-admin": "4.0.0-rc.0",
+    "react-admin": "^4.0.0",
     "react-error-boundary": "^3.1.0"
   },
   "devDependencies": {
@@ -35,9 +35,9 @@
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
-    "eslint": "^7.14.0",
+    "eslint": "^8.0.0",
     "eslint-config-airbnb": "^19.0.0",
-    "eslint-config-airbnb-typescript": "^16.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.0",
