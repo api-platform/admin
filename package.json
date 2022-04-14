@@ -17,7 +17,7 @@
   "license": "MIT",
   "sideEffects": false,
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.13.2",
+    "@api-platform/api-doc-parser": "^0.13.3",
     "history": "^4.7.0",
     "jsonld": "^5.2.0",
     "lodash.isplainobject": "^4.0.6",
