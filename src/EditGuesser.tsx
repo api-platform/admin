@@ -86,7 +86,7 @@ export const IntrospectedEditGuesser = ({
   );
 
   const save = useCallback(
-    async (values) => {
+    async (values: Partial<RaRecord>) => {
       try {
         const response = await mutate(
           {

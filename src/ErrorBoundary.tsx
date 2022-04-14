@@ -1,11 +1,12 @@
 import { Component, createElement } from 'react';
 import PropTypes from 'prop-types';
 import { ComponentPropType } from 'react-admin';
-import type { ComponentType, ErrorInfo } from 'react';
+import type { ComponentType, ErrorInfo, ReactNode } from 'react';
 import type { ErrorProps } from 'react-admin';
 
 type ErrorBoundaryProps = {
   error: ComponentType<ErrorProps>;
+  children: ReactNode;
 };
 
 type ErrorBoundaryState = {
