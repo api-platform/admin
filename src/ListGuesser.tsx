@@ -16,15 +16,14 @@ import FieldGuesser from './FieldGuesser';
 import FilterGuesser from './FilterGuesser';
 import Introspecter from './Introspecter';
 import useMercureSubscription from './useMercureSubscription';
+import useDisplayOverrideCode from './useDisplayOverrideCode';
 import type {
   ApiPlatformAdminRecord,
   IntrospectedListGuesserProps,
   ListGuesserProps,
 } from './types';
 
-const displayOverrideCode = (schema: Resource, fields: Field[]) => {
-  if (process.env.NODE_ENV === 'production') return;
-
+const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
     'If you want to override at least one field, paste this content in the <ListGuesser> component of your resource:\n\n';
 
@@ -39,8 +38,8 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
   code += `<ResourceGuesser name={"${schema.name}"} list={${schema.title}List} />`;
-  // eslint-disable-next-line no-console
-  console.info(code);
+
+  return code;
 };
 
 export const DatagridBodyWithMercure = (props: DatagridBodyProps) => {
@@ -77,9 +76,7 @@ export const IntrospectedListGuesser = ({
   ...props
 }: IntrospectedListGuesserProps) => {
   const { hasShow, hasEdit } = useResourceDefinition(props);
-  const [orderParameters, setOrderParameters] = useState<
-    string[] | undefined
-  >();
+  const [orderParameters, setOrderParameters] = useState<string[]>([]);
 
   useEffect(() => {
     if (schema) {
@@ -89,10 +86,12 @@ export const IntrospectedListGuesser = ({
     }
   }, [schema, schemaAnalyzer]);
 
+  const displayOverrideCode = useDisplayOverrideCode();
+
   let fieldChildren = children;
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => {
-      const orderField = (orderParameters ?? []).find(
+      const orderField = orderParameters.find(
         (orderParameter) => orderParameter.split('.')[0] === field.name,
       );
 
@@ -106,9 +105,8 @@ export const IntrospectedListGuesser = ({
         />
       );
     });
-    if (orderParameters !== undefined) {
-      displayOverrideCode(schema, readableFields);
-    }
+
+    displayOverrideCode(getOverrideCode(schema, readableFields));
   }
 
   return (

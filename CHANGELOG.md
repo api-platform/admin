@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.2
+
+* Introduce `useDisplayOverrideCode` hook to avoid displaying the code message if the guesser component is rendered multiple times
+
 ## 3.0.1
 
 * Make sure columns can be sorted when there is an order filter in `ListGuesser`

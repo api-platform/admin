@@ -14,14 +14,13 @@ import type { Field, Resource } from '@api-platform/api-doc-parser';
 
 import InputGuesser from './InputGuesser';
 import Introspecter from './Introspecter';
+import useDisplayOverrideCode from './useDisplayOverrideCode';
 import type {
   CreateGuesserProps,
   IntrospectedCreateGuesserProps,
 } from './types';
 
-const displayOverrideCode = (schema: Resource, fields: Field[]) => {
-  if (process.env.NODE_ENV === 'production') return;
-
+const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
     'If you want to override at least one input, paste this content in the <CreateGuesser> component of your resource:\n\n';
 
@@ -36,8 +35,8 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
   code += `<ResourceGuesser name={"${schema.name}"} create={${schema.title}Create} />`;
-  // eslint-disable-next-line no-console
-  console.info(code);
+
+  return code;
 };
 
 export const IntrospectedCreateGuesser = ({
@@ -62,12 +61,14 @@ export const IntrospectedCreateGuesser = ({
   const notify = useNotify();
   const redirect = useRedirect();
 
+  const displayOverrideCode = useDisplayOverrideCode();
+
   let inputChildren = React.Children.toArray(children);
   if (inputChildren.length === 0) {
     inputChildren = writableFields.map((field) => (
       <InputGuesser key={field.name} source={field.name} />
     ));
-    displayOverrideCode(schema, writableFields);
+    displayOverrideCode(getOverrideCode(schema, writableFields));
   }
 
   const hasFileField = inputChildren.some(
