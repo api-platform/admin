@@ -18,6 +18,12 @@ for all available resources.
 
 You can also customize all screens by using React-admin components and even raw JavaScript/React code.
 
+## Demo
+
+[Click here](https://demo.api-platform.com/admin) to test API Platform Admin in live.
+
+The source code of the demo is available [in this repository](https://github.com/api-platform/demo).
+
 ## Installation
 
     yarn add @api-platform/admin
@@ -69,11 +75,14 @@ ReactDOM.render(<Admin />, document.getElementById('root'));
 * Sends proper HTTP requests to the API and decodes them using Hydra and JSON-LD formats
 * Nicely displays server-side errors (e.g. advanced validation)
 * Supports real-time updates with [Mercure](https://mercure.rocks)
+* All the [features provided by React-admin](https://marmelab.com/react-admin/Tutorial.html) can also be used
 * **100% customizable**
 
 ## Documentation
 
 The documentation of API Platform Admin can be browsed [on the official website](https://api-platform.com/docs/admin/).
+
+Check also the documentation of React-admin [on their official website](https://marmelab.com/react-admin/Tutorial.html).
 
 ## Credits
 
