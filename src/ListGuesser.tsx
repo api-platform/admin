@@ -77,7 +77,9 @@ export const IntrospectedListGuesser = ({
   ...props
 }: IntrospectedListGuesserProps) => {
   const { hasShow, hasEdit } = useResourceDefinition(props);
-  const [orderParameters, setOrderParameters] = useState<string[]>([]);
+  const [orderParameters, setOrderParameters] = useState<
+    string[] | undefined
+  >();
 
   useEffect(() => {
     if (schema) {
@@ -90,13 +92,13 @@ export const IntrospectedListGuesser = ({
   let fieldChildren = children;
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => {
-      const orderField = orderParameters.find(
+      const orderField = (orderParameters ?? []).find(
         (orderParameter) => orderParameter.split('.')[0] === field.name,
       );
 
       return (
         <FieldGuesser
-          key={field.name}
+          key={field.name + (orderField ? `-${orderField}` : '')}
           source={field.name}
           sortable={!!orderField}
           sortBy={orderField}
@@ -104,7 +106,9 @@ export const IntrospectedListGuesser = ({
         />
       );
     });
-    displayOverrideCode(schema, readableFields);
+    if (orderParameters !== undefined) {
+      displayOverrideCode(schema, readableFields);
+    }
   }
 
   return (
@@ -150,7 +154,7 @@ const ListGuesser = ({
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
 ListGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string.isRequired,
+  resource: PropTypes.string,
   filters: PropTypes.element,
   hasShow: PropTypes.bool,
   hasEdit: PropTypes.bool,
