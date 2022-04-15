@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1
+
+* Make sure columns can be sorted when there is an order filter in `ListGuesser`
+
 ## 3.0.0
 
 * Compatibility with react-admin 4 (see UPGRADE.md)
