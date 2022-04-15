@@ -19,10 +19,11 @@ import IntrospectionContext from './IntrospectionContext';
 import ResourceGuesser from './ResourceGuesser';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext';
 import { Error as DefaultError, Layout, LoginPage, lightTheme } from './layout';
-import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
 import getRoutesAndResourcesFromNodes, {
   isSingleChildFunction,
 } from './getRoutesAndResourcesFromNodes';
+import useDisplayOverrideCode from './useDisplayOverrideCode';
+import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
 
 export interface AdminGuesserProps extends AdminProps {
   dataProvider: ApiPlatformAdminDataProvider;
@@ -42,17 +43,15 @@ interface AdminResourcesGuesserProps extends Omit<AdminProps, 'loading'> {
   resources: Resource[];
 }
 
-const displayOverrideCode = (resources: Resource[]) => {
-  if (process.env.NODE_ENV === 'production') return;
-
+const getOverrideCode = (resources: Resource[]) => {
   let code =
     'If you want to override at least one resource, paste this content in the <AdminGuesser> component of your app:\n\n';
 
   resources.forEach((r) => {
     code += `<ResourceGuesser name={"${r.name}"} />\n`;
   });
-  // eslint-disable-next-line no-console
-  console.info(code);
+
+  return code;
 };
 
 /**
@@ -71,6 +70,8 @@ export const AdminResourcesGuesser = ({
   loading,
   ...rest
 }: AdminResourcesGuesserProps) => {
+  const displayOverrideCode = useDisplayOverrideCode();
+
   if (loading) {
     return <LoadingPage />;
   }
@@ -92,7 +93,7 @@ export const AdminResourcesGuesser = ({
         <ResourceGuesser name={r.name} key={r.name} />
       )),
     ];
-    displayOverrideCode(guessResources);
+    displayOverrideCode(getOverrideCode(guessResources));
   }
 
   return (

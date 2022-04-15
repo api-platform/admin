@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { Show, SimpleShowLayout, useResourceContext } from 'react-admin';
 import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
+
 import FieldGuesser from './FieldGuesser';
 import Introspecter from './Introspecter';
 import useMercureSubscription from './useMercureSubscription';
+import useDisplayOverrideCode from './useDisplayOverrideCode';
 import type { IntrospectedShowGuesserProps, ShowGuesserProps } from './types';
 
-const displayOverrideCode = (schema: Resource, fields: Field[]) => {
-  if (process.env.NODE_ENV === 'production') return;
-
+const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
     'If you want to override at least one field, paste this content in the <ShowGuesser> component of your resource:\n\n';
 
@@ -25,8 +25,8 @@ const displayOverrideCode = (schema: Resource, fields: Field[]) => {
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
   code += `<ResourceGuesser name={"${schema.name}"} show={${schema.title}Show} />`;
-  // eslint-disable-next-line no-console
-  console.info(code);
+
+  return code;
 };
 
 export const IntrospectedShowGuesser = ({
@@ -42,12 +42,14 @@ export const IntrospectedShowGuesser = ({
   const id = decodeURIComponent(routeId ?? '');
   useMercureSubscription(props.resource, id);
 
+  const displayOverrideCode = useDisplayOverrideCode();
+
   let fieldChildren = children;
   if (!fieldChildren) {
     fieldChildren = readableFields.map((field) => (
       <FieldGuesser key={field.name} source={field.name} />
     ));
-    displayOverrideCode(schema, readableFields);
+    displayOverrideCode(getOverrideCode(schema, readableFields));
   }
 
   return (
