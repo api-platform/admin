@@ -67,6 +67,9 @@ export interface ApiPlatformAdminRecord extends RaRecord {
   originId?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DataTransformer = (parsedData: any) => ApiPlatformAdminRecord;
+
 export type Hydra = JsonLdObj | HydraCollection;
 
 export interface HydraView extends JsonLdObj {
@@ -83,7 +86,7 @@ export interface HydraCollection extends JsonLdObj {
   'hydra:view'?: HydraView;
 }
 
-export interface HydraHttpClientOptions {
+export interface HttpClientOptions {
   headers?: HeadersInit | (() => HeadersInit);
   user?: {
     authenticated: boolean;
@@ -91,9 +94,13 @@ export interface HydraHttpClientOptions {
   };
 }
 
-export interface HydraHttpClientResponse {
+export interface HttpClientResponse {
   status: number;
   headers: Headers;
+  json?: unknown;
+}
+
+export interface HydraHttpClientResponse extends HttpClientResponse {
   json?: Hydra;
 }
 
@@ -232,19 +239,34 @@ export type ApiPlatformAdminDataProviderTypeParams<T extends DataProviderType> =
     ? ApiPlatformAdminDeleteManyParams
     : never;
 
-export interface HydraDataProviderFactoryParams {
+export interface ApiPlatformAdminDataProviderFactoryParams {
   entrypoint: string;
+  docEntrypoint?: string;
   httpClient?: (
     url: URL,
-    options?: HydraHttpClientOptions,
-  ) => Promise<HydraHttpClientResponse>;
+    options?: HttpClientOptions,
+  ) => Promise<HttpClientResponse>;
   apiDocumentationParser?: (
     entrypointUrl: string,
     options?: ApiDocumentationParserOptions,
   ) => Promise<ApiDocumentationParserResponse>;
   mercure?: Partial<MercureOptions>;
+}
+
+export interface HydraDataProviderFactoryParams
+  extends ApiPlatformAdminDataProviderFactoryParams {
+  httpClient?: (
+    url: URL,
+    options?: HttpClientOptions,
+  ) => Promise<HydraHttpClientResponse>;
   useEmbedded?: boolean;
   disableCache?: boolean;
+}
+
+export interface OpenApiDataProviderFactoryParams
+  extends ApiPlatformAdminDataProviderFactoryParams {
+  docEntrypoint: string;
+  dataProvider: DataProvider;
 }
 
 export interface ApiPlatformAdminDataProvider extends DataProvider {

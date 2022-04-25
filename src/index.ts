@@ -34,4 +34,10 @@ export {
   fetchHydra,
 } from './hydra';
 export type { HydraAdminProps } from './hydra';
+export {
+  OpenApiAdmin,
+  dataProvider as openApiDataProvider,
+  schemaAnalyzer as openApiSchemaAnalyzer,
+} from './openapi';
+export type { OpenApiAdminProps } from './openapi';
 export * from './types';

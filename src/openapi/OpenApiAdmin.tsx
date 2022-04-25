@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import dataProviderFactory from './dataProvider';
+import { restDataProvider } from '../dataProvider';
 import /* tree-shaking no-side-effects-when-called */ schemaAnalyzer from './schemaAnalyzer';
 import AdminGuesser from '../AdminGuesser';
 import type { AdminGuesserProps } from '../AdminGuesser';
@@ -12,23 +13,27 @@ type AdminGuesserPartialProps = Omit<
 > &
   Partial<Pick<AdminGuesserProps, 'dataProvider' | 'schemaAnalyzer'>>;
 
-export interface HydraAdminProps extends AdminGuesserPartialProps {
+export interface OpenApiAdminProps extends AdminGuesserPartialProps {
   entrypoint: string;
+  docEntrypoint: string;
   mercure?: MercureOptions;
 }
 
-const hydraSchemaAnalyzer = schemaAnalyzer();
+const openApiSchemaAnalyzer = schemaAnalyzer();
 
-const HydraAdmin = ({
+const OpenApiAdmin = ({
   entrypoint,
+  docEntrypoint,
   mercure,
   dataProvider = dataProviderFactory({
+    dataProvider: restDataProvider(entrypoint),
     entrypoint,
+    docEntrypoint,
     mercure: mercure ?? {},
   }),
-  schemaAnalyzer: adminSchemaAnalyzer = hydraSchemaAnalyzer,
+  schemaAnalyzer: adminSchemaAnalyzer = openApiSchemaAnalyzer,
   ...props
-}: HydraAdminProps) => (
+}: OpenApiAdminProps) => (
   <AdminGuesser
     dataProvider={dataProvider}
     schemaAnalyzer={adminSchemaAnalyzer}
@@ -36,8 +41,8 @@ const HydraAdmin = ({
   />
 );
 
-HydraAdmin.propTypes = {
+OpenApiAdmin.propTypes = {
   entrypoint: PropTypes.string.isRequired,
 };
 
-export default HydraAdmin;
+export default OpenApiAdmin;

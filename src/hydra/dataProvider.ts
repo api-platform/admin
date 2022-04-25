@@ -23,9 +23,10 @@ import type {
 } from 'react-admin';
 
 import fetchHydra from './fetchHydra';
-import { resolveSchemaParameters } from './schemaAnalyzer';
+import { resolveSchemaParameters } from '../schemaAnalyzer';
+import { adminDataProvider } from '../dataProvider';
+import { mercureManager } from '../mercure';
 import type {
-  ApiDocumentationParserResponse,
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminDataProviderParams,
   ApiPlatformAdminDataProviderTypeParams,
@@ -35,7 +36,6 @@ import type {
   HydraDataProviderFactoryParams,
   HydraHttpClientResponse,
   MercureOptions,
-  MercureSubscription,
   SearchParams,
 } from '../types';
 
@@ -144,51 +144,8 @@ const extractHubUrl = (response: HydraHttpClientResponse) => {
   return matches?.[1] ? matches[1] : null;
 };
 
-const createSubscription = (
-  mercure: MercureOptions,
-  topic: string,
-  callback: (document: ApiPlatformAdminRecord) => void,
-): MercureSubscription => {
-  if (mercure.hub === null) {
-    return {
-      subscribed: false,
-      topic,
-      callback,
-      count: 1,
-    };
-  }
-
-  const url = new URL(mercure.hub, window.origin);
-  url.searchParams.append('topic', new URL(topic, mercure.topicUrl).toString());
-
-  if (mercure.jwt !== null) {
-    document.cookie = `mercureAuthorization=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
-  }
-
-  const eventSource = new EventSource(url.toString(), {
-    withCredentials: mercure.jwt !== null,
-  });
-  const eventListener = (event: MessageEvent) => {
-    const document = transformJsonLdDocumentToReactAdminDocument(
-      JSON.parse(event.data),
-    );
-    // this callback is for updating RA's state
-    callback(document);
-  };
-  eventSource.addEventListener('message', eventListener);
-
-  return {
-    subscribed: true,
-    topic,
-    callback,
-    eventSource,
-    eventListener,
-    count: 1,
-  };
-};
-
 const defaultParams: Required<
-  Omit<HydraDataProviderFactoryParams, 'entrypoint'>
+  Omit<HydraDataProviderFactoryParams, 'entrypoint' | 'docEntrypoint'>
 > = {
   httpClient: fetchHydra,
   apiDocumentationParser: parseHydraDocumentation,
@@ -219,7 +176,7 @@ function dataProvider(
     apiDocumentationParser,
     useEmbedded,
     disableCache,
-  }: Required<HydraDataProviderFactoryParams> = {
+  }: Required<Omit<HydraDataProviderFactoryParams, 'docEntrypoint'>> = {
     ...defaultParams,
     ...factoryParams,
   };
@@ -231,9 +188,6 @@ function dataProvider(
   };
 
   let apiSchema: Api & { resources: Resource[] };
-
-  // store mercure subscriptions
-  const subscriptions: Record<string, MercureSubscription> = {};
 
   const convertReactAdminDataToHydraData = (
     resource: Resource,
@@ -564,17 +518,8 @@ function dataProvider(
       const hubUrl = extractHubUrl(response);
       if (hubUrl) {
         mercure.hub = hubUrl;
-        const subKeys = Object.keys(subscriptions);
-        subKeys.forEach((subKey) => {
-          const sub = subscriptions[subKey];
-          if (sub && !sub.subscribed) {
-            subscriptions[subKey] = createSubscription(
-              mercure,
-              sub.topic,
-              sub.callback,
-            );
-          }
-        });
+        mercureManager.setMercureOptions(mercure);
+        mercureManager.initSubscriptions();
       }
     }
 
@@ -730,6 +675,17 @@ function dataProvider(
     );
   };
 
+  const { introspect, subscribe, unsubscribe } = adminDataProvider({
+    entrypoint,
+    docEntrypoint: entrypoint,
+    httpClient,
+    apiDocumentationParser,
+    mercure,
+  });
+  mercureManager.setDataTransformer(
+    transformJsonLdDocumentToReactAdminDocument,
+  );
+
   return {
     getList: (resource, params) => fetchApi(GET_LIST, resource, params),
     getOne: (resource, params) => fetchApi(GET_ONE, resource, params),
@@ -780,68 +736,15 @@ function dataProvider(
         params.ids.map((id) => fetchApi(DELETE, resource, { id })),
       ).then(() => ({ data: [] })),
     introspect: (_resource = '', _params = {}) =>
-      apiSchema
-        ? Promise.resolve({ data: apiSchema })
-        : apiDocumentationParser(entrypoint)
-            .then(({ api }: ApiDocumentationParserResponse) => {
-              if (api.resources && api.resources.length > 0) {
-                apiSchema = { ...api, resources: api.resources };
-              }
-              return { data: api };
-            })
-            .catch((err) => {
-              const { status, error } = err;
-              let { message } = err;
-              // Note that the `api-doc-parser` rejects with a non-standard error object hence the check
-              if (error?.message) {
-                message = error.message;
-              }
-
-              throw new Error(
-                `Cannot fetch API documentation:\n${
-                  message
-                    ? `${message}\nHave you verified that CORS is correctly configured in your API?\n`
-                    : ''
-                }${status ? `Status: ${status}` : ''}`,
-              );
-            }),
-    subscribe: (resourceIds, callback) => {
-      resourceIds.forEach((resourceId) => {
-        const sub = subscriptions[resourceId];
-        if (sub !== undefined) {
-          sub.count += 1;
-          return;
+      introspect().then(({ data }) => {
+        if (data.resources && data.resources.length > 0) {
+          apiSchema = { ...data, resources: data.resources };
         }
 
-        subscriptions[resourceId] = createSubscription(
-          mercure,
-          resourceId,
-          callback,
-        );
-      });
-
-      return Promise.resolve({ data: null });
-    },
-    unsubscribe: (_resource, resourceIds) => {
-      resourceIds.forEach((resourceId) => {
-        const sub = subscriptions[resourceId];
-        if (sub === undefined) {
-          return;
-        }
-
-        sub.count -= 1;
-
-        if (sub.count <= 0) {
-          if (sub.subscribed && sub.eventSource && sub.eventListener) {
-            sub.eventSource.removeEventListener('message', sub.eventListener);
-            sub.eventSource.close();
-          }
-          delete subscriptions[resourceId];
-        }
-      });
-
-      return Promise.resolve({ data: null });
-    },
+        return { data };
+      }),
+    subscribe,
+    unsubscribe,
   };
 }
 
