@@ -3,6 +3,7 @@
 ## 3.1.0
 
 * Add full OpenAPI support (introduce `OpenApiAdmin`)
+* Make sure i18n provider and theme are passed down to `AdminGuesser`
 
 ## 3.0.2
 

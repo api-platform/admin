@@ -228,7 +228,7 @@ const AdminGuesserWithError = ({
     <I18nContextProvider value={i18nProvider}>
       <ThemeProvider theme={theme}>
         <ErrorBoundary onError={handleError} fallbackRender={renderError}>
-          <AdminGuesser {...props} />
+          <AdminGuesser {...props} i18nProvider={i18nProvider} theme={theme} />
         </ErrorBoundary>
       </ThemeProvider>
     </I18nContextProvider>
