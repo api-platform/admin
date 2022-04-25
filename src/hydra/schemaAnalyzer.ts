@@ -1,26 +1,11 @@
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 import type { HttpError } from 'react-admin';
 import type { JsonLdObj } from 'jsonld/jsonld-spec';
-import type {
-  FilterParameter,
-  SchemaAnalyzer,
-  SubmissionErrors,
-} from '../types';
-
-/**
- * @param schema The schema of a resource
- *
- * @returns The filter parameters
- */
-export const resolveSchemaParameters = (schema: Resource) => {
-  if (!schema.parameters || !schema.getParameters) {
-    return Promise.resolve([]);
-  }
-
-  return !schema.parameters.length
-    ? schema.getParameters()
-    : Promise.resolve(schema.parameters);
-};
+import {
+  getFiltersParametersFromSchema,
+  getOrderParametersFromSchema,
+} from '../schemaAnalyzer';
+import type { SchemaAnalyzer, SubmissionErrors } from '../types';
 
 /**
  * @param schema The schema of a resource
@@ -37,58 +22,6 @@ const getFieldNameFromSchema = (schema: Resource) => {
   );
 
   return field ? field.name : 'id';
-};
-
-const ORDER_MARKER = 'order[';
-
-/**
- * @param schema The schema of a resource
- *
- * @returns The order filter parameters
- */
-const getOrderParametersFromSchema = (schema: Resource): Promise<string[]> => {
-  if (!schema.fields) {
-    return Promise.resolve([]);
-  }
-
-  const authorizedFields = schema.fields.map((field) => field.name);
-  return resolveSchemaParameters(schema).then((parameters) =>
-    parameters
-      .map((filter) => filter.variable)
-      .filter((filter) => filter.includes(ORDER_MARKER))
-      .map((orderFilter) =>
-        orderFilter.replace(ORDER_MARKER, '').replace(']', ''),
-      )
-      .filter((filter) =>
-        authorizedFields.includes(
-          filter.split('.')[0] ?? '', // split to manage nested properties
-        ),
-      ),
-  );
-};
-
-/**
- * @param schema The schema of a resource
- *
- * @returns The filter parameters without the order ones
- */
-const getFiltersParametersFromSchema = (
-  schema: Resource,
-): Promise<FilterParameter[]> => {
-  if (!schema.fields) {
-    return Promise.resolve([]);
-  }
-
-  const authorizedFields = schema.fields.map((field) => field.name);
-  return resolveSchemaParameters(schema).then((parameters) =>
-    parameters
-      .map((filter) => ({
-        name: filter.variable,
-        isRequired: filter.required,
-      }))
-      .filter((filter) => !filter.name.includes(ORDER_MARKER))
-      .filter((filter) => authorizedFields.includes(filter.name)),
-  );
 };
 
 /**

@@ -6,14 +6,14 @@ import {
 import jsonld from 'jsonld';
 import type { NodeObject } from 'jsonld';
 import type { JsonLdObj } from 'jsonld/jsonld-spec';
-import type { HydraHttpClientOptions, HydraHttpClientResponse } from '../types';
+import type { HttpClientOptions, HydraHttpClientResponse } from '../types';
 
 /**
  * Sends HTTP requests to a Hydra API.
  */
 function fetchHydra(
   url: URL,
-  options: HydraHttpClientOptions = {},
+  options: HttpClientOptions = {},
 ): Promise<HydraHttpClientResponse> {
   let requestHeaders = options.headers ?? new Headers();
 

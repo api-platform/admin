@@ -1,4 +1,5 @@
+import adminDataProvider from './adminDataProvider';
+import restDataProvider from './restDataProvider';
 import useUpdateCache from './useUpdateCache';
 
-// eslint-disable-next-line import/prefer-default-export
-export { useUpdateCache };
+export { adminDataProvider, restDataProvider, useUpdateCache };

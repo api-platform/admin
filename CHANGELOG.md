@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+* Add full OpenAPI support (introduce `OpenApiAdmin`)
+
 ## 3.0.2
 
 * Introduce `useDisplayOverrideCode` hook to avoid displaying the code message if the guesser component is rendered multiple times
