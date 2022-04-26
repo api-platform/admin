@@ -11,12 +11,14 @@ export default (
   factoryParams: Required<ApiPlatformAdminDataProviderFactoryParams>,
 ) => {
   const { entrypoint, docEntrypoint, apiDocumentationParser } = factoryParams;
-  const mercure: MercureOptions = {
-    hub: null,
-    jwt: null,
-    topicUrl: entrypoint,
-    ...factoryParams.mercure,
-  };
+  const mercure: MercureOptions | null = factoryParams.mercure
+    ? {
+        hub: null,
+        jwt: null,
+        topicUrl: entrypoint,
+        ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
+      }
+    : null;
   mercureManager.setMercureOptions(mercure);
 
   let apiSchema: Api & { resources: Resource[] };

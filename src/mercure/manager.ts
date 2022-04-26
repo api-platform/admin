@@ -8,11 +8,7 @@ import type {
 
 // store mercure subscriptions
 const subscriptions: Record<string, MercureSubscription> = {};
-let mercure: MercureOptions = {
-  hub: null,
-  jwt: null,
-  topicUrl: '',
-};
+let mercure: MercureOptions | null = null;
 let dataTransform: DataTransformer = (parsedData) =>
   parsedData as ApiPlatformAdminRecord;
 
@@ -29,6 +25,10 @@ export default {
     topic: string,
     callback: (document: ApiPlatformAdminRecord) => void,
   ) => {
+    if (mercure === null) {
+      return;
+    }
+
     const sub = subscriptions[resourceId];
     if (sub !== undefined) {
       sub.count += 1;
@@ -56,12 +56,17 @@ export default {
     }
   },
   initSubscriptions: () => {
+    const mercureOptions = mercure;
+    if (mercureOptions === null) {
+      return;
+    }
+
     const subKeys = Object.keys(subscriptions);
     subKeys.forEach((subKey) => {
       const sub = subscriptions[subKey];
       if (sub && !sub.subscribed) {
         subscriptions[subKey] = createSubscription(
-          mercure,
+          mercureOptions,
           sub.topic,
           sub.callback,
           dataTransform,
@@ -69,7 +74,7 @@ export default {
       }
     });
   },
-  setMercureOptions: (mercureOptions: MercureOptions) => {
+  setMercureOptions: (mercureOptions: MercureOptions | null) => {
     mercure = mercureOptions;
   },
   setDataTransformer: (dataTransformer: DataTransformer) => {

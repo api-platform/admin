@@ -16,7 +16,7 @@ type AdminGuesserPartialProps = Omit<
 export interface OpenApiAdminProps extends AdminGuesserPartialProps {
   entrypoint: string;
   docEntrypoint: string;
-  mercure?: MercureOptions;
+  mercure?: MercureOptions | false;
 }
 
 const openApiSchemaAnalyzer = schemaAnalyzer();
@@ -29,7 +29,7 @@ const OpenApiAdmin = ({
     dataProvider: restDataProvider(entrypoint),
     entrypoint,
     docEntrypoint,
-    mercure: mercure ?? {},
+    mercure: mercure ?? false,
   }),
   schemaAnalyzer: adminSchemaAnalyzer = openApiSchemaAnalyzer,
   ...props
