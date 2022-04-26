@@ -149,7 +149,7 @@ const defaultParams: Required<
 > = {
   httpClient: fetchHydra,
   apiDocumentationParser: parseHydraDocumentation,
-  mercure: {},
+  mercure: true,
   useEmbedded: true,
   disableCache: false,
 };
@@ -180,12 +180,14 @@ function dataProvider(
     ...defaultParams,
     ...factoryParams,
   };
-  const mercure: MercureOptions = {
-    hub: null,
-    jwt: null,
-    topicUrl: entrypoint,
-    ...factoryParams.mercure,
-  };
+  const mercure: MercureOptions | null = factoryParams.mercure
+    ? {
+        hub: null,
+        jwt: null,
+        topicUrl: entrypoint,
+        ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
+      }
+    : null;
 
   let apiSchema: Api & { resources: Resource[] };
 
@@ -514,7 +516,7 @@ function dataProvider(
     params: ApiPlatformAdminDataProviderParams,
     response: HydraHttpClientResponse,
   ): Promise<DataProviderResult<ApiPlatformAdminRecord>> => {
-    if (mercure.hub === null) {
+    if (mercure !== null && mercure.hub === null) {
       const hubUrl = extractHubUrl(response);
       if (hubUrl) {
         mercure.hub = hubUrl;
@@ -680,7 +682,7 @@ function dataProvider(
     docEntrypoint: entrypoint,
     httpClient,
     apiDocumentationParser,
-    mercure,
+    mercure: factoryParams.mercure ?? true,
   });
   mercureManager.setDataTransformer(
     transformJsonLdDocumentToReactAdminDocument,

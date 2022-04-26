@@ -14,7 +14,7 @@ type AdminGuesserPartialProps = Omit<
 
 export interface HydraAdminProps extends AdminGuesserPartialProps {
   entrypoint: string;
-  mercure?: MercureOptions;
+  mercure?: MercureOptions | boolean;
 }
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
@@ -24,7 +24,7 @@ const HydraAdmin = ({
   mercure,
   dataProvider = dataProviderFactory({
     entrypoint,
-    mercure: mercure ?? {},
+    mercure: mercure ?? true,
   }),
   schemaAnalyzer: adminSchemaAnalyzer = hydraSchemaAnalyzer,
   ...props

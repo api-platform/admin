@@ -27,7 +27,7 @@ const defaultParams: Required<
 > = {
   httpClient: fetchJson,
   apiDocumentationParser: parseOpenApi3Documentation,
-  mercure: {},
+  mercure: false,
 };
 
 function dataProvider(
@@ -53,19 +53,21 @@ function dataProvider(
     ...defaultParams,
     ...factoryParams,
   };
-  const mercure: MercureOptions = {
-    hub: null,
-    jwt: null,
-    topicUrl: entrypoint,
-    ...factoryParams.mercure,
-  };
+  const mercure: MercureOptions | null = factoryParams.mercure
+    ? {
+        hub: null,
+        jwt: null,
+        topicUrl: entrypoint,
+        ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
+      }
+    : null;
 
   const { introspect, subscribe, unsubscribe } = adminDataProvider({
     entrypoint,
     docEntrypoint,
     httpClient,
     apiDocumentationParser,
-    mercure,
+    mercure: factoryParams.mercure ?? false,
   });
 
   return {
@@ -80,7 +82,7 @@ function dataProvider(
     deleteMany,
     introspect,
     subscribe: (resourceIds, callback) => {
-      if (mercure.hub === null) {
+      if (mercure === null || mercure.hub === null) {
         return Promise.resolve({ data: null });
       }
 

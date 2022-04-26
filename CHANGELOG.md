@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1
+
+* Mercure: add back the possibility to use a boolean
+
 ## 3.1.0
 
 * Add full OpenAPI support (introduce `OpenApiAdmin`)

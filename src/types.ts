@@ -250,7 +250,7 @@ export interface ApiPlatformAdminDataProviderFactoryParams {
     entrypointUrl: string,
     options?: ApiDocumentationParserOptions,
   ) => Promise<ApiDocumentationParserResponse>;
-  mercure?: Partial<MercureOptions>;
+  mercure?: Partial<MercureOptions> | boolean;
 }
 
 export interface HydraDataProviderFactoryParams
