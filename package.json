@@ -17,12 +17,12 @@
   "license": "MIT",
   "sideEffects": false,
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.14.3",
+    "@api-platform/api-doc-parser": "^0.15.1",
     "history": "^5.0.0",
     "jsonld": "^5.2.0",
     "lodash.isplainobject": "^4.0.6",
     "prop-types": "^15.6.2",
-    "react-admin": "^4.0.0",
+    "react-admin": "^4.0.3",
     "react-error-boundary": "^3.1.0"
   },
   "devDependencies": {
@@ -46,13 +46,14 @@
     "eslint-plugin-react": "^7.12.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-tree-shaking": "^1.10.0",
-    "jest": "^27.2.0",
+    "jest": "^28.0.0",
+    "jest-environment-jsdom": "^28.1.0",
     "prettier": "^2.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-test-renderer": "^18.0.0",
     "rimraf": "^3.0.0",
-    "ts-jest": "^27.1.0",
+    "ts-jest": "^28.0.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.0"
   },

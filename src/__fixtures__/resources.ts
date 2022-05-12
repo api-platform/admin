@@ -135,6 +135,7 @@ const resources: Resource[] = [
           operations: [
             {
               name: 'Retrieves the collection of Review resources.',
+              type: 'list',
               method: 'GET',
               returns: 'http://www.w3.org/ns/hydra/core#Collection',
               types: [
@@ -145,6 +146,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Creates a Review resource.',
+              type: 'create',
               method: 'POST',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -156,6 +158,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Retrieves Review resource.',
+              type: 'show',
               method: 'GET',
               returns: 'http://schema.org/Review',
               types: [
@@ -166,6 +169,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Deletes the Review resource.',
+              type: 'delete',
               method: 'DELETE',
               returns: 'http://www.w3.org/2002/07/owl#Nothing',
               types: [
@@ -176,6 +180,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Replaces the Review resource.',
+              type: 'edit',
               method: 'PUT',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -187,6 +192,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Updates the Review resource.',
+              type: 'edit',
               method: 'PATCH',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -332,6 +338,7 @@ const resources: Resource[] = [
           operations: [
             {
               name: 'Retrieves the collection of Review resources.',
+              type: 'list',
               method: 'GET',
               returns: 'http://www.w3.org/ns/hydra/core#Collection',
               types: [
@@ -342,6 +349,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Creates a Review resource.',
+              type: 'create',
               method: 'POST',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -353,6 +361,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Retrieves Review resource.',
+              type: 'show',
               method: 'GET',
               returns: 'http://schema.org/Review',
               types: [
@@ -363,6 +372,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Deletes the Review resource.',
+              type: 'delete',
               method: 'DELETE',
               returns: 'http://www.w3.org/2002/07/owl#Nothing',
               types: [
@@ -373,6 +383,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Replaces the Review resource.',
+              type: 'edit',
               method: 'PUT',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -384,6 +395,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Updates the Review resource.',
+              type: 'edit',
               method: 'PATCH',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -529,6 +541,7 @@ const resources: Resource[] = [
           operations: [
             {
               name: 'Retrieves the collection of Review resources.',
+              type: 'list',
               method: 'GET',
               returns: 'http://www.w3.org/ns/hydra/core#Collection',
               types: [
@@ -539,6 +552,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Creates a Review resource.',
+              type: 'create',
               method: 'POST',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -550,6 +564,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Retrieves Review resource.',
+              type: 'show',
               method: 'GET',
               returns: 'http://schema.org/Review',
               types: [
@@ -560,6 +575,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Deletes the Review resource.',
+              type: 'delete',
               method: 'DELETE',
               returns: 'http://www.w3.org/2002/07/owl#Nothing',
               types: [
@@ -570,6 +586,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Replaces the Review resource.',
+              type: 'edit',
               method: 'PUT',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -581,6 +598,7 @@ const resources: Resource[] = [
             },
             {
               name: 'Updates the Review resource.',
+              type: 'edit',
               method: 'PATCH',
               expects: 'http://schema.org/Review',
               returns: 'http://schema.org/Review',
@@ -600,6 +618,7 @@ const resources: Resource[] = [
     operations: [
       {
         name: 'Retrieves the collection of Book resources.',
+        type: 'list',
         method: 'GET',
         returns: 'http://www.w3.org/ns/hydra/core#Collection',
         types: [
@@ -610,6 +629,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Creates a Book resource.',
+        type: 'create',
         method: 'POST',
         expects: 'http://schema.org/Book',
         returns: 'http://schema.org/Book',
@@ -621,6 +641,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Retrieves Book resource.',
+        type: 'show',
         method: 'GET',
         returns: 'http://schema.org/Book',
         types: [
@@ -631,6 +652,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Replaces the Book resource.',
+        type: 'edit',
         method: 'PUT',
         expects: 'http://schema.org/Book',
         returns: 'http://schema.org/Book',
@@ -642,6 +664,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Deletes the Book resource.',
+        type: 'delete',
         method: 'DELETE',
         returns: 'http://www.w3.org/2002/07/owl#Nothing',
         types: [
@@ -728,6 +751,7 @@ const resources: Resource[] = [
     operations: [
       {
         name: 'Retrieves the collection of Parchment resources.',
+        type: 'list',
         method: 'GET',
         returns: 'http://www.w3.org/ns/hydra/core#Collection',
         types: [
@@ -738,6 +762,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Creates a Parchment resource.',
+        type: 'create',
         method: 'POST',
         expects: 'https://demo.api-platform.com/docs.jsonld#Parchment',
         returns: 'https://demo.api-platform.com/docs.jsonld#Parchment',
@@ -749,6 +774,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Retrieves Parchment resource.',
+        type: 'show',
         method: 'GET',
         returns: 'https://demo.api-platform.com/docs.jsonld#Parchment',
         types: [
@@ -759,6 +785,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Deletes the Parchment resource.',
+        type: 'delete',
         method: 'DELETE',
         returns: 'http://www.w3.org/2002/07/owl#Nothing',
         types: [
@@ -769,6 +796,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Replaces the Parchment resource.',
+        type: 'edit',
         method: 'PUT',
         expects: 'https://demo.api-platform.com/docs.jsonld#Parchment',
         returns: 'https://demo.api-platform.com/docs.jsonld#Parchment',
@@ -780,6 +808,7 @@ const resources: Resource[] = [
       },
       {
         name: 'Updates the Parchment resource.',
+        type: 'edit',
         method: 'PATCH',
         expects: 'https://demo.api-platform.com/docs.jsonld#Parchment',
         returns: 'https://demo.api-platform.com/docs.jsonld#Parchment',

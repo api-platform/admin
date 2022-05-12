@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0
+
+* Take the operations into account (list, create, edit, delete)
+
 ## 3.1.1
 
 * Mercure: add back the possibility to use a boolean
