@@ -1,81 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ResourceGuesser /> renders with create 1`] = `
-<Resource
+<Introspecter
+  component={[Function]}
   create={[Function]}
-  edit={[Function]}
-  list={[Function]}
-  name="dummy"
-  show={[Function]}
+  resource="dummy"
 />
 `;
 
 exports[`<ResourceGuesser /> renders with edit 1`] = `
-<Resource
-  create={[Function]}
+<Introspecter
+  component={[Function]}
   edit={[Function]}
-  list={[Function]}
-  name="dummy"
-  show={[Function]}
+  resource="dummy"
 />
 `;
 
 exports[`<ResourceGuesser /> renders with list 1`] = `
-<Resource
-  create={[Function]}
-  edit={[Function]}
+<Introspecter
+  component={[Function]}
   list={[Function]}
-  name="dummy"
-  show={[Function]}
+  resource="dummy"
 />
 `;
 
 exports[`<ResourceGuesser /> renders with show 1`] = `
-<Resource
-  create={[Function]}
-  edit={[Function]}
-  list={[Function]}
-  name="dummy"
+<Introspecter
+  component={[Function]}
+  resource="dummy"
   show={[Function]}
 />
 `;
 
 exports[`<ResourceGuesser /> renders without create 1`] = `
-<Resource
-  create={[Function]}
-  edit={[Function]}
-  list={[Function]}
-  name="dummy"
-  show={[Function]}
+<Introspecter
+  component={[Function]}
+  resource="dummy"
 />
 `;
 
 exports[`<ResourceGuesser /> renders without edit 1`] = `
-<Resource
-  create={[Function]}
-  edit={[Function]}
-  list={[Function]}
-  name="dummy"
-  show={[Function]}
+<Introspecter
+  component={[Function]}
+  resource="dummy"
 />
 `;
 
 exports[`<ResourceGuesser /> renders without list 1`] = `
-<Resource
-  create={[Function]}
-  edit={[Function]}
-  list={[Function]}
-  name="dummy"
-  show={[Function]}
+<Introspecter
+  component={[Function]}
+  resource="dummy"
 />
 `;
 
 exports[`<ResourceGuesser /> renders without show 1`] = `
-<Resource
-  create={[Function]}
-  edit={[Function]}
-  list={[Function]}
-  name="dummy"
-  show={[Function]}
+<Introspecter
+  component={[Function]}
+  resource="dummy"
 />
 `;

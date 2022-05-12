@@ -1,20 +1,77 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Resource } from 'react-admin';
+import { Resource, useResourceDefinitionContext } from 'react-admin';
 import type { ResourceDefinition, ResourceProps } from 'react-admin';
 import ListGuesser from './ListGuesser';
 import CreateGuesser from './CreateGuesser';
 import EditGuesser from './EditGuesser';
 import ShowGuesser from './ShowGuesser';
+import Introspecter from './Introspecter';
+import type {
+  IntrospectedResourceGuesserProps,
+  ResourceGuesserProps,
+} from './types';
 
-const ResourceGuesser = ({
+export const IntrospectedResourceGuesser = ({
+  resource,
+  schema,
+  schemaAnalyzer,
   list = ListGuesser,
   edit = EditGuesser,
   create = CreateGuesser,
   show = ShowGuesser,
   ...props
-}: ResourceProps) => (
-  <Resource {...props} create={create} edit={edit} list={list} show={show} />
+}: IntrospectedResourceGuesserProps) => {
+  const { register } = useResourceDefinitionContext();
+
+  let hasList = false;
+  let hasEdit = false;
+  let hasCreate = false;
+  let hasShow = false;
+  schema.operations?.forEach((operation) => {
+    if (operation.type === 'list') {
+      hasList = true;
+    }
+    if (operation.type === 'edit') {
+      hasEdit = true;
+    }
+    if (operation.type === 'create') {
+      hasCreate = true;
+    }
+    if (operation.type === 'show') {
+      hasShow = true;
+    }
+  });
+  const resourceDefinition: ResourceDefinition = {
+    name: resource,
+    icon: props.icon,
+    options: props.options,
+    hasList,
+    hasEdit,
+    hasCreate,
+    hasShow,
+  };
+
+  register(resourceDefinition);
+
+  return (
+    <Resource
+      {...props}
+      name={resource}
+      create={create}
+      edit={edit}
+      list={list}
+      show={show}
+    />
+  );
+};
+
+const ResourceGuesser = ({ name, ...props }: ResourceGuesserProps) => (
+  <Introspecter
+    component={IntrospectedResourceGuesser}
+    resource={name}
+    {...props}
+  />
 );
 
 ResourceGuesser.raName = 'Resource';

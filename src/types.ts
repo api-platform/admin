@@ -44,6 +44,7 @@ import type {
   ReferenceArrayInputProps,
   ReferenceFieldProps,
   ReferenceInputProps,
+  ResourceProps,
   ShowProps,
   SimpleFormProps,
   TextFieldProps,
@@ -353,6 +354,14 @@ type BaseIntrospecterProps = Pick<
   'component' | 'resource'
 > &
   Partial<Pick<ResourcesIntrospecterProps, 'includeDeprecated'>>;
+
+export type IntrospectedResourceGuesserProps = Omit<ResourceProps, 'name'> &
+  IntrospectedGuesserProps;
+
+export type ResourceGuesserProps = Omit<
+  ResourceProps & Omit<BaseIntrospecterProps, 'resource'>,
+  'component'
+>;
 
 type CreateSimpleFormProps = Omit<
   CreateProps & Omit<SimpleFormProps, 'component'>,
