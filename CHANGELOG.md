@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.3.0
+
+* Add `sanitizeEmptyValues` prop (default `true`) to `CreateGuesser` and `EditGuesser`
+* Add `sanitizeEmptyValue` prop (default `true`) to `InputGuesser`
+* Fix `transform` prop in `CreateGuesser` and `EditGuesser`
+
 ## 3.2.0
 
 * Take the operations into account (list, create, edit, delete)

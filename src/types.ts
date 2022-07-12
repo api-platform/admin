@@ -372,12 +372,16 @@ type CreateSimpleFormProps = Omit<
   };
 
 export type IntrospectedCreateGuesserProps = CreateSimpleFormProps &
-  IntrospectedGuesserProps;
+  IntrospectedGuesserProps & {
+    sanitizeEmptyValues?: boolean;
+  };
 
 export type CreateGuesserProps = Omit<
   CreateSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
->;
+> & {
+  sanitizeEmptyValues?: boolean;
+};
 
 type EditSimpleFormProps = Omit<EditProps & SimpleFormProps, 'children'> &
   Partial<PickRename<SimpleFormProps, 'component', 'simpleFormComponent'>> & {
@@ -385,12 +389,16 @@ type EditSimpleFormProps = Omit<EditProps & SimpleFormProps, 'children'> &
   };
 
 export type IntrospectedEditGuesserProps = EditSimpleFormProps &
-  IntrospectedGuesserProps;
+  IntrospectedGuesserProps & {
+    sanitizeEmptyValues?: boolean;
+  };
 
 export type EditGuesserProps = Omit<
   EditSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
->;
+> & {
+  sanitizeEmptyValues?: boolean;
+};
 
 type ListDatagridProps = Omit<
   ListProps & Omit<DatagridProps, 'sx'>,
@@ -461,12 +469,16 @@ type InputProps =
   | ReferenceInputProps;
 
 export type IntrospectedInputGuesserProps = Partial<InputProps> &
-  IntrospectedGuesserProps;
+  IntrospectedGuesserProps & {
+    sanitizeEmptyValue?: boolean;
+  };
 
 export type InputGuesserProps = Omit<
   InputProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
->;
+> & {
+  sanitizeEmptyValue?: boolean;
+};
 
 export type IntrospecterProps = (
   | CreateGuesserProps

@@ -29,6 +29,11 @@ import isPlainObject from 'lodash.isplainobject';
 import Introspecter from './Introspecter';
 import type { InputGuesserProps, IntrospectedInputGuesserProps } from './types';
 
+const convertEmptyStringToNull = (value: string) =>
+  value === '' ? null : value;
+
+const convertNullToEmptyString = (value: string | null) => value ?? '';
+
 export const IntrospectedInputGuesser = ({
   fields,
   readableFields,
@@ -36,6 +41,7 @@ export const IntrospectedInputGuesser = ({
   schema,
   schemaAnalyzer,
   validate,
+  sanitizeEmptyValue = true,
   ...props
 }: IntrospectedInputGuesserProps) => {
   const field = fields.find(({ name }) => name === props.source);
@@ -82,6 +88,12 @@ export const IntrospectedInputGuesser = ({
     );
   }
 
+  const defaultValueSanitize = sanitizeEmptyValue ? null : '';
+  const formatSanitize = (value: string | null) =>
+    convertNullToEmptyString(value);
+  const parseSanitize = (value: string) =>
+    sanitizeEmptyValue ? convertEmptyStringToNull(value) : value;
+
   let { format, parse } = props;
   const fieldType = schemaAnalyzer.getFieldType(field);
 
@@ -100,9 +112,20 @@ export const IntrospectedInputGuesser = ({
     };
   }
 
-  const formatEmbedded = (value: string | object) =>
-    typeof value === 'string' ? value : JSON.stringify(value);
-  const parseEmbedded = (value: string) => {
+  const formatEmbedded = (value: string | object | null) => {
+    if (value === null) {
+      return '';
+    }
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    return JSON.stringify(value);
+  };
+  const parseEmbedded = (value: string | null) => {
+    if (value === null) {
+      return null;
+    }
     try {
       const parsed = JSON.parse(value);
       if (!isPlainObject(parsed)) {
@@ -113,20 +136,22 @@ export const IntrospectedInputGuesser = ({
       return value;
     }
   };
+  const parseEmbeddedSanitize = (value: string) =>
+    parseEmbedded(parseSanitize(value));
 
   if (field.embedded !== null && field.maxCardinality === 1) {
     format = formatEmbedded;
-    parse = parseEmbedded;
+    parse = parseEmbeddedSanitize;
   }
 
-  let textInputFormat = (value: string) => value;
-  let textInputParse = (value: string) => value;
+  let textInputFormat = formatSanitize;
+  let textInputParse = parseSanitize;
 
   switch (fieldType) {
     case 'array':
       if (field.embedded !== null && field.maxCardinality !== 1) {
         textInputFormat = formatEmbedded;
-        textInputParse = parseEmbedded;
+        textInputParse = parseEmbeddedSanitize;
       }
 
       return (
@@ -138,6 +163,7 @@ export const IntrospectedInputGuesser = ({
           <SimpleFormIterator>
             <TextInput
               source=""
+              defaultValue={defaultValueSanitize}
               format={textInputFormat}
               parse={textInputParse}
             />
@@ -212,9 +238,10 @@ export const IntrospectedInputGuesser = ({
         <TextInput
           key={field.name}
           validate={guessedValidate}
+          defaultValue={defaultValueSanitize}
           {...(props as TextInputProps)}
-          format={format}
-          parse={parse}
+          format={format ?? formatSanitize}
+          parse={parse ?? parseSanitize}
           source={field.name}
         />
       );
