@@ -43,4 +43,18 @@ export const API_FIELDS_DATA = [
     required: true,
     deprecated: true,
   }),
+  new Field('title', {
+    id: 'http://schema.org/title',
+    range: 'http://www.w3.org/2001/XMLSchema#string',
+    reference: null,
+    embedded: null,
+    required: false,
+  }),
+  new Field('description', {
+    id: 'http://schema.org/description',
+    range: 'http://www.w3.org/2001/XMLSchema#string',
+    reference: null,
+    embedded: null,
+    required: false,
+  }),
 ];

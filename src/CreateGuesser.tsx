@@ -50,9 +50,11 @@ export const IntrospectedCreateGuesser = ({
   redirect: redirectTo = 'list',
   mode,
   defaultValues,
+  transform,
   validate,
   toolbar,
   warnWhenUnsavedChanges,
+  sanitizeEmptyValues,
   simpleFormComponent,
   children,
   ...props
@@ -66,7 +68,11 @@ export const IntrospectedCreateGuesser = ({
   let inputChildren = React.Children.toArray(children);
   if (inputChildren.length === 0) {
     inputChildren = writableFields.map((field) => (
-      <InputGuesser key={field.name} source={field.name} />
+      <InputGuesser
+        key={field.name}
+        source={field.name}
+        sanitizeEmptyValue={sanitizeEmptyValues}
+      />
     ));
     displayOverrideCode(getOverrideCode(schema, writableFields));
   }
@@ -78,11 +84,15 @@ export const IntrospectedCreateGuesser = ({
 
   const save = useCallback(
     async (values: Partial<RaRecord>) => {
+      let data = values;
+      if (transform) {
+        data = transform(values);
+      }
       try {
         const response = await create(
           resource,
           {
-            data: { ...values, extraInformation: { hasFileField } },
+            data: { ...data, extraInformation: { hasFileField } },
           },
           { returnPromise: true },
         );
@@ -136,6 +146,7 @@ export const IntrospectedCreateGuesser = ({
       redirect,
       redirectTo,
       schemaAnalyzer,
+      transform,
     ],
   );
 

@@ -51,9 +51,11 @@ export const IntrospectedEditGuesser = ({
   mode,
   defaultValues,
   validate,
+  transform,
   toolbar,
   warnWhenUnsavedChanges,
   simpleFormComponent,
+  sanitizeEmptyValues,
   children,
   ...props
 }: IntrospectedEditGuesserProps) => {
@@ -70,7 +72,11 @@ export const IntrospectedEditGuesser = ({
   let inputChildren = React.Children.toArray(children);
   if (inputChildren.length === 0) {
     inputChildren = writableFields.map((field) => (
-      <InputGuesser key={field.name} source={field.name} />
+      <InputGuesser
+        key={field.name}
+        source={field.name}
+        sanitizeEmptyValue={sanitizeEmptyValues}
+      />
     ));
     displayOverrideCode(getOverrideCode(schema, writableFields));
   }
@@ -85,23 +91,27 @@ export const IntrospectedEditGuesser = ({
       if (id === undefined) {
         return undefined;
       }
+      let data = values;
+      if (transform) {
+        data = transform(values);
+      }
       try {
         const response = await update(
           resource,
           {
             id,
-            data: { ...values, extraInformation: { hasFileField } },
+            data: { ...data, extraInformation: { hasFileField } },
           },
           { returnPromise: true },
         );
         const success =
           mutationOptions?.onSuccess ??
-          ((data: RaRecord) => {
+          ((updatedRecord: RaRecord) => {
             notify('ra.notification.updated', {
               type: 'info',
               messageArgs: { smart_count: 1 },
             });
-            redirect(redirectTo, resource, data.id, data);
+            redirect(redirectTo, resource, updatedRecord.id, updatedRecord);
           });
         success(response, { id, data: response, previousData: values }, {});
         return undefined;
@@ -149,6 +159,7 @@ export const IntrospectedEditGuesser = ({
       redirect,
       redirectTo,
       schemaAnalyzer,
+      transform,
     ],
   );
 

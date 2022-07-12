@@ -42,7 +42,7 @@ const dataProvider: ApiPlatformAdminDataProvider = {
         fieldB: 'fieldB value',
         deprecatedField: 'deprecatedField value',
         title: 'Title',
-        body: 'Body',
+        description: 'Lorem ipsum dolor sit amet',
       },
     }),
   introspect: () =>
@@ -92,12 +92,63 @@ describe('<InputGuesser />', () => {
     expect(idField).toHaveValue(123);
 
     await user.type(idField, '4');
+    await user.tab();
     expect(idField).toHaveValue(1234);
 
     const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(updatedData).toMatchObject({ id: 1234 });
+    });
+  });
+
+  test('renders a sanitized text input', async () => {
+    const user = userEvent.setup();
+    let updatedData = {};
+
+    render(
+      <AdminContext dataProvider={dataProvider}>
+        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
+          <ResourceContextProvider value="users">
+            <Edit id="/users/123" mutationMode="pessimistic">
+              <SimpleForm
+                onSubmit={(data: {
+                  title?: string | null;
+                  description?: string | null;
+                }) => {
+                  updatedData = data;
+                }}>
+                <InputGuesser source="title" />
+                <InputGuesser source="description" sanitizeEmptyValue={false} />
+              </SimpleForm>
+            </Edit>
+          </ResourceContextProvider>
+        </SchemaAnalyzerContext.Provider>
+      </AdminContext>,
+    );
+
+    expect(
+      await screen.findAllByText('resources.users.fields.title'),
+    ).toHaveLength(1);
+    const titleField = screen.getByLabelText('resources.users.fields.title');
+    expect(titleField).toHaveValue('Title');
+    expect(
+      await screen.findAllByText('resources.users.fields.description'),
+    ).toHaveLength(1);
+    const descriptionField = screen.getByLabelText(
+      'resources.users.fields.description',
+    );
+    expect(descriptionField).toHaveValue('Lorem ipsum dolor sit amet');
+
+    await user.clear(titleField);
+    expect(titleField).toHaveValue('');
+    await user.clear(descriptionField);
+    expect(descriptionField).toHaveValue('');
+
+    const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
+    fireEvent.click(saveButton);
+    await waitFor(() => {
+      expect(updatedData).toMatchObject({ title: null, description: '' });
     });
   });
 });
