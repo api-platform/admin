@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.1
+
+* A relative entrypoint can be used
+* Improve performance
+
 ## 3.3.0
 
 * Add `sanitizeEmptyValues` prop (default `true`) to `CreateGuesser` and `EditGuesser`
