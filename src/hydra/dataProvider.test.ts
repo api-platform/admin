@@ -1,7 +1,11 @@
+import { jest } from '@jest/globals';
+import { Response } from 'node-fetch';
+import type { parseHydraDocumentation } from '@api-platform/api-doc-parser';
 import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
 } from './dataProvider';
 import { API_DATA } from '../__fixtures__/parsedData';
+import type fetchHydra from './fetchHydra';
 
 const EMBEDDED_ITEM = {
   '@id': '/books/2',
@@ -97,13 +101,16 @@ describe('Transform a JSON-LD document to a React Admin compatible document (tra
 });
 
 describe('Transform a React Admin request to an Hydra request', () => {
-  const mockFetchHydra = jest.fn();
-  const mockApiDocumentationParser = jest.fn(() =>
-    Promise.resolve({
-      api: API_DATA,
-      response: new Response(),
-      status: 200,
-    }),
+  const mockFetchHydra = jest.fn<typeof fetchHydra>();
+  const mockApiDocumentationParser = jest.fn<typeof parseHydraDocumentation>(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore Incompatibility between node-fetch and TS Response type
+    () =>
+      Promise.resolve({
+        api: API_DATA,
+        response: new Response(),
+        status: 200,
+      }),
   );
   const dataProvider = dataProviderFactory({
     entrypoint: 'entrypoint',
@@ -116,9 +123,13 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin get list with filter parameters and custom search params', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValue({
-      json: { 'hydra:member': [], 'hydra:totalItems': 3 },
-    });
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { 'hydra:member': [], 'hydra:totalItems': 3 },
+      }),
+    );
     await dataProvider.getList('resource', {
       pagination: {
         page: 1,
@@ -141,7 +152,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
       searchParams: { pagination: 'true' },
     });
     const searchParams = Array.from(
-      mockFetchHydra.mock.calls[0][0].searchParams.entries(),
+      mockFetchHydra.mock.calls?.[0]?.[0]?.searchParams.entries() ?? [],
     );
     expect(searchParams[0]).toEqual(['pagination', 'true']);
     expect(searchParams[1]).toEqual(['page', '1']);
@@ -169,9 +180,13 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin create', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValue({
-      json: { '@id': '/foos/76' },
-    });
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/foos/76' },
+      }),
+    );
     await dataProvider.introspect();
     await dataProvider.create('resource', {
       data: {
@@ -179,10 +194,10 @@ describe('Transform a React Admin request to an Hydra request', () => {
         bar: 'baz',
       },
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
-    const options = mockFetchHydra.mock.calls[0][1];
+    const options = mockFetchHydra.mock.calls?.[0]?.[1] ?? {};
     expect(options).toHaveProperty('method');
     expect(options.method).toEqual('POST');
     expect(options).toHaveProperty('body');
@@ -191,9 +206,13 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin create upload file', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValue({
-      json: { '@id': '/foos/43' },
-    });
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/foos/43' },
+      }),
+    );
     await dataProvider.introspect();
 
     const file = new File(['foo'], 'foo.txt');
@@ -209,15 +228,15 @@ describe('Transform a React Admin request to an Hydra request', () => {
         date: new Date(Date.UTC(2020, 6, 6, 12)),
       },
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
-    const options = mockFetchHydra.mock.calls[0][1];
+    const options = mockFetchHydra.mock.calls?.[0]?.[1] ?? {};
     expect(options).toHaveProperty('method');
     expect(options.method).toEqual('POST');
     expect(options).toHaveProperty('body');
     expect(options.body).toBeInstanceOf(FormData);
-    expect(Array.from(options.body.entries())).toEqual([
+    expect(Array.from((options.body as FormData).entries())).toEqual([
       ['image', file],
       ['bar', 'baz'],
       ['qux', 'null'],
@@ -229,9 +248,13 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin create with file field', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValue({
-      json: { '@id': '/foos/23' },
-    });
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/foos/23' },
+      }),
+    );
     await dataProvider.introspect();
     await dataProvider.create('resource', {
       data: {
@@ -242,15 +265,15 @@ describe('Transform a React Admin request to an Hydra request', () => {
         },
       },
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual('http://localhost/entrypoint/resource');
-    const options = mockFetchHydra.mock.calls[0][1];
+    const options = mockFetchHydra.mock.calls?.[0]?.[1] ?? {};
     expect(options).toHaveProperty('method');
     expect(options.method).toEqual('POST');
     expect(options).toHaveProperty('body');
     expect(options.body).toBeInstanceOf(FormData);
-    expect(Array.from(options.body.entries())).toEqual([
+    expect(Array.from((options.body as FormData).entries())).toEqual([
       ['bar', 'baz'],
       ['foo', 'foo'],
     ]);
@@ -258,9 +281,13 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin update', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValue({
-      json: { '@id': '/entrypoint/resource/1' },
-    });
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/entrypoint/resource/1' },
+      }),
+    );
     await dataProvider.introspect();
     await dataProvider.update('resource', {
       id: '/entrypoint/resource/1',
@@ -272,10 +299,10 @@ describe('Transform a React Admin request to an Hydra request', () => {
         id: '/entrypoint/resource/1',
       },
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
-    const options = mockFetchHydra.mock.calls[0][1];
+    const options = mockFetchHydra.mock.calls?.[0]?.[1] ?? {};
     expect(options).toHaveProperty('method');
     expect(options.method).toEqual('PUT');
     expect(options).toHaveProperty('body');
@@ -284,9 +311,13 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin update with file field', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValue({
-      json: { '@id': '/entrypoint/resource/1' },
-    });
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/entrypoint/resource/1' },
+      }),
+    );
     await dataProvider.introspect();
     await dataProvider.update('resource', {
       id: '/entrypoint/resource/1',
@@ -302,15 +333,15 @@ describe('Transform a React Admin request to an Hydra request', () => {
         id: '/entrypoint/resource/1',
       },
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual('http://localhost/entrypoint/resource/1');
-    const options = mockFetchHydra.mock.calls[0][1];
+    const options = mockFetchHydra.mock.calls?.[0]?.[1] ?? {};
     expect(options).toHaveProperty('method');
     expect(options.method).toEqual('POST');
     expect(options).toHaveProperty('body');
     expect(options.body).toBeInstanceOf(FormData);
-    expect(Array.from(options.body.entries())).toEqual([
+    expect(Array.from((options.body as FormData).entries())).toEqual([
       ['foo', 'foo'],
       ['bar', 'baz'],
       ['qux', 'null'],
@@ -319,21 +350,29 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin get many with id search filter', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValueOnce({
-      json: {
-        'hydra:member': [
-          { '@id': '/resources/76' },
-          { '@id': '/resources/87' },
-        ],
-        'hydra:totalItems': 3,
-      },
-    });
-    mockFetchHydra.mockReturnValueOnce({
-      json: {
-        'hydra:member': [{ '@id': '/resources/99' }],
-        'hydra:totalItems': 3,
-      },
-    });
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: {
+          'hydra:member': [
+            { '@id': '/resources/76' },
+            { '@id': '/resources/87' },
+          ],
+          'hydra:totalItems': 3,
+        },
+      }),
+    );
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: {
+          'hydra:member': [{ '@id': '/resources/99' }],
+          'hydra:totalItems': 3,
+        },
+      }),
+    );
     const result = await dataProvider.getMany('idSearchFilterResource', {
       ids: ['/resources/76', '/resources/87', '/resources/99'],
     });
@@ -344,12 +383,12 @@ describe('Transform a React Admin request to an Hydra request', () => {
         { '@id': '/resources/99', id: '/resources/99' },
       ],
     });
-    const url1 = mockFetchHydra.mock.calls[0][0];
+    const url1 = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url1).toBeInstanceOf(URL);
     expect(url1.toString()).toEqual(
       'http://localhost/entrypoint/idSearchFilterResource?page=1&itemsPerPage=3&id%5B0%5D=%2Fresources%2F76&id%5B1%5D=%2Fresources%2F87&id%5B2%5D=%2Fresources%2F99',
     );
-    const url2 = mockFetchHydra.mock.calls[1][0];
+    const url2 = mockFetchHydra.mock.calls?.[1]?.[0] ?? new URL('https://foo');
     expect(url2).toBeInstanceOf(URL);
     expect(url2.toString()).toEqual(
       'http://localhost/entrypoint/idSearchFilterResource?page=2&itemsPerPage=3&id%5B0%5D=%2Fresources%2F76&id%5B1%5D=%2Fresources%2F87&id%5B2%5D=%2Fresources%2F99',
@@ -358,9 +397,27 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin get many without id search filter', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValueOnce({ json: { '@id': '/resources/76' } });
-    mockFetchHydra.mockReturnValueOnce({ json: { '@id': '/resources/87' } });
-    mockFetchHydra.mockReturnValueOnce({ json: { '@id': '/resources/99' } });
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/resources/76' },
+      }),
+    );
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/resources/87' },
+      }),
+    );
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/resources/99' },
+      }),
+    );
     const result = await dataProvider.getMany('resource', {
       ids: ['/resources/76', '/resources/87', '/resources/99'],
     });
@@ -371,35 +428,39 @@ describe('Transform a React Admin request to an Hydra request', () => {
         { '@id': '/resources/99', id: '/resources/99' },
       ],
     });
-    const url1 = mockFetchHydra.mock.calls[0][0];
+    const url1 = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url1).toBeInstanceOf(URL);
     expect(url1.toString()).toEqual('http://localhost/resources/76');
-    const url2 = mockFetchHydra.mock.calls[1][0];
+    const url2 = mockFetchHydra.mock.calls?.[1]?.[0] ?? new URL('https://foo');
     expect(url2).toBeInstanceOf(URL);
     expect(url2.toString()).toEqual('http://localhost/resources/87');
-    const url3 = mockFetchHydra.mock.calls[2][0];
+    const url3 = mockFetchHydra.mock.calls?.[2]?.[0] ?? new URL('https://foo');
     expect(url3).toBeInstanceOf(URL);
     expect(url3.toString()).toEqual('http://localhost/resources/99');
   });
 
   test('React Admin get many reference', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValueOnce({
-      json: {
-        'hydra:member': [
-          { '@id': '/comments/423' },
-          { '@id': '/comments/976' },
-        ],
-        'hydra:totalItems': 2,
-        'hydra:view': {
-          '@id': '/comments?page=1',
-          '@type': 'hydra:PartialCollectionView',
-          'hydra:first': '/comments?page=1',
-          'hydra:last': '/comments?page=1',
-          'hydra:next': '/comments?page=1',
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: {
+          'hydra:member': [
+            { '@id': '/comments/423' },
+            { '@id': '/comments/976' },
+          ],
+          'hydra:totalItems': 2,
+          'hydra:view': {
+            '@id': '/comments?page=1',
+            '@type': 'hydra:PartialCollectionView',
+            'hydra:first': '/comments?page=1',
+            'hydra:last': '/comments?page=1',
+            'hydra:next': '/comments?page=1',
+          },
         },
-      },
-    });
+      }),
+    );
     const result = await dataProvider.getManyReference('comments', {
       target: 'posts',
       id: '/posts/346',
@@ -414,7 +475,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
       ],
       total: 2,
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual(
       'http://localhost/entrypoint/comments?order%5Bid%5D=ASC&page=1&itemsPerPage=30&posts=%2Fposts%2F346',
@@ -423,22 +484,26 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin get list', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValueOnce({
-      json: {
-        'hydra:member': [
-          { '@id': '/comments/423' },
-          { '@id': '/comments/976' },
-        ],
-        'hydra:totalItems': 2,
-        'hydra:view': {
-          '@id': '/comments?page=1',
-          '@type': 'hydra:PartialCollectionView',
-          'hydra:first': '/comments?page=1',
-          'hydra:last': '/comments?page=1',
-          'hydra:next': '/comments?page=1',
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: {
+          'hydra:member': [
+            { '@id': '/comments/423' },
+            { '@id': '/comments/976' },
+          ],
+          'hydra:totalItems': 2,
+          'hydra:view': {
+            '@id': '/comments?page=1',
+            '@type': 'hydra:PartialCollectionView',
+            'hydra:first': '/comments?page=1',
+            'hydra:last': '/comments?page=1',
+            'hydra:next': '/comments?page=1',
+          },
         },
-      },
-    });
+      }),
+    );
     const result = await dataProvider.getList('comments', {
       pagination: { page: 1, perPage: 30 },
       sort: { field: 'id', order: 'ASC' },
@@ -451,7 +516,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
       ],
       total: 2,
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual(
       'http://localhost/entrypoint/comments?order%5Bid%5D=ASC&page=1&itemsPerPage=30',
@@ -460,21 +525,25 @@ describe('Transform a React Admin request to an Hydra request', () => {
 
   test('React Admin get list with partial pagination', async () => {
     mockFetchHydra.mockClear();
-    mockFetchHydra.mockReturnValueOnce({
-      json: {
-        'hydra:member': [
-          { '@id': '/comments/423' },
-          { '@id': '/comments/976' },
-        ],
-        'hydra:view': {
-          '@id': '/comments?page=1',
-          '@type': 'hydra:PartialCollectionView',
-          'hydra:first': '/comments?page=1',
-          'hydra:last': '/comments?page=1',
-          'hydra:next': '/comments?page=1',
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: {
+          'hydra:member': [
+            { '@id': '/comments/423' },
+            { '@id': '/comments/976' },
+          ],
+          'hydra:view': {
+            '@id': '/comments?page=1',
+            '@type': 'hydra:PartialCollectionView',
+            'hydra:first': '/comments?page=1',
+            'hydra:last': '/comments?page=1',
+            'hydra:next': '/comments?page=1',
+          },
         },
-      },
-    });
+      }),
+    );
     const result = await dataProvider.getList('comments', {
       pagination: { page: 1, perPage: 30 },
       sort: { field: 'id', order: 'ASC' },
@@ -490,7 +559,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         hasPreviousPage: false,
       },
     });
-    const url = mockFetchHydra.mock.calls[0][0];
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);
     expect(url.toString()).toEqual(
       'http://localhost/entrypoint/comments?order%5Bid%5D=ASC&page=1&itemsPerPage=30',

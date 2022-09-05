@@ -1,148 +1,169 @@
 import { stringify } from 'query-string';
 import { fetchUtils } from 'react-admin';
 import type { DataProvider } from 'react-admin';
+import { removeTrailingSlash } from '../removeTrailingSlash';
 
 // Based on https://github.com/marmelab/react-admin/blob/master/packages/ra-data-simple-rest/src/index.ts
 
 export default (
-  apiUrl: string,
+  entrypoint: string,
   httpClient = fetchUtils.fetchJson,
-): DataProvider => ({
-  getList: async (resource, params) => {
-    const { page, perPage } = params.pagination;
-    const { field, order } = params.sort;
+): DataProvider => {
+  const apiUrl = new URL(entrypoint, window.location.href);
 
-    const rangeStart = (page - 1) * perPage;
-    const rangeEnd = page * perPage - 1;
+  return {
+    getList: async (resource, params) => {
+      const { page, perPage } = params.pagination;
+      const { field, order } = params.sort;
 
-    const query = {
-      sort: JSON.stringify([field, order]),
-      range: JSON.stringify([rangeStart, rangeEnd]),
-      filter: JSON.stringify(params.filter),
-    };
-    const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    const { json } = await httpClient(url);
+      const rangeStart = (page - 1) * perPage;
+      const rangeEnd = page * perPage - 1;
 
-    return {
-      data: json,
-      pageInfo: {
-        hasNextPage: true,
-        hasPreviousPage: page > 1,
-      },
-    };
-  },
+      const query = {
+        sort: JSON.stringify([field, order]),
+        range: JSON.stringify([rangeStart, rangeEnd]),
+        filter: JSON.stringify(params.filter),
+      };
+      const url = `${removeTrailingSlash(
+        apiUrl.toString(),
+      )}/${resource}?${stringify(query)}`;
+      const { json } = await httpClient(url);
 
-  getOne: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/${params.id}`;
-    const { json } = await httpClient(url);
+      return {
+        data: json,
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: page > 1,
+        },
+      };
+    },
 
-    return {
-      data: json,
-    };
-  },
+    getOne: async (resource, params) => {
+      const url = `${removeTrailingSlash(apiUrl.toString())}/${resource}/${
+        params.id
+      }`;
+      const { json } = await httpClient(url);
 
-  getMany: async (resource, params) => {
-    const query = {
-      filter: JSON.stringify({ id: params.ids }),
-    };
-    const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    const { json } = await httpClient(url);
+      return {
+        data: json,
+      };
+    },
 
-    return {
-      data: json,
-    };
-  },
+    getMany: async (resource, params) => {
+      const query = {
+        filter: JSON.stringify({ id: params.ids }),
+      };
+      const url = `${removeTrailingSlash(
+        apiUrl.toString(),
+      )}/${resource}?${stringify(query)}`;
+      const { json } = await httpClient(url);
 
-  getManyReference: async (resource, params) => {
-    const { page, perPage } = params.pagination;
-    const { field, order } = params.sort;
+      return {
+        data: json,
+      };
+    },
 
-    const rangeStart = (page - 1) * perPage;
-    const rangeEnd = page * perPage - 1;
+    getManyReference: async (resource, params) => {
+      const { page, perPage } = params.pagination;
+      const { field, order } = params.sort;
 
-    const query = {
-      sort: JSON.stringify([field, order]),
-      range: JSON.stringify([rangeStart, rangeEnd]),
-      filter: JSON.stringify({
-        ...params.filter,
-        [params.target]: params.id,
-      }),
-    };
-    const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    const { json } = await httpClient(url);
+      const rangeStart = (page - 1) * perPage;
+      const rangeEnd = page * perPage - 1;
 
-    return {
-      data: json,
-      pageInfo: {
-        hasNextPage: true,
-        hasPreviousPage: page > 1,
-      },
-    };
-  },
+      const query = {
+        sort: JSON.stringify([field, order]),
+        range: JSON.stringify([rangeStart, rangeEnd]),
+        filter: JSON.stringify({
+          ...params.filter,
+          [params.target]: params.id,
+        }),
+      };
+      const url = `${removeTrailingSlash(
+        apiUrl.toString(),
+      )}/${resource}?${stringify(query)}`;
+      const { json } = await httpClient(url);
 
-  update: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/${params.id}`;
-    const { json } = await httpClient(url, {
-      method: 'PUT',
-      body: JSON.stringify(params.data),
-    });
+      return {
+        data: json,
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: page > 1,
+        },
+      };
+    },
 
-    return {
-      data: json,
-    };
-  },
+    update: async (resource, params) => {
+      const url = `${removeTrailingSlash(apiUrl.toString())}/${resource}/${
+        params.id
+      }`;
+      const { json } = await httpClient(url, {
+        method: 'PUT',
+        body: JSON.stringify(params.data),
+      });
 
-  updateMany: async (resource, params) => {
-    const responses = await Promise.all(
-      params.ids.map((id) => {
-        const url = `${apiUrl}/${resource}/${id}`;
+      return {
+        data: json,
+      };
+    },
 
-        return httpClient(url, {
-          method: 'PUT',
-          body: JSON.stringify(params.data),
-        });
-      }),
-    );
+    updateMany: async (resource, params) => {
+      const responses = await Promise.all(
+        params.ids.map((id) => {
+          const url = `${removeTrailingSlash(
+            apiUrl.toString(),
+          )}/${resource}/${id}`;
 
-    return { data: responses.map(({ json }) => json.id) };
-  },
+          return httpClient(url, {
+            method: 'PUT',
+            body: JSON.stringify(params.data),
+          });
+        }),
+      );
 
-  create: async (resource, params) => {
-    const url = `${apiUrl}/${resource}`;
-    const { json } = await httpClient(url, {
-      method: 'POST',
-      body: JSON.stringify(params.data),
-    });
+      return { data: responses.map(({ json }) => json.id) };
+    },
 
-    return {
-      data: { ...params.data, id: json.id },
-    };
-  },
+    create: async (resource, params) => {
+      const url = `${removeTrailingSlash(apiUrl.toString())}/${resource}`;
+      const { json } = await httpClient(url, {
+        method: 'POST',
+        body: JSON.stringify(params.data),
+      });
 
-  delete: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/${params.id}`;
-    const { json } = await httpClient(url, {
-      method: 'DELETE',
-    });
+      return {
+        data: { ...params.data, id: json.id },
+      };
+    },
 
-    return {
-      data: json,
-    };
-  },
+    delete: async (resource, params) => {
+      const url = `${removeTrailingSlash(apiUrl.toString())}/${resource}/${
+        params.id
+      }`;
+      const { json } = await httpClient(url, {
+        method: 'DELETE',
+      });
 
-  deleteMany: async (resource, params) => {
-    const responses = await Promise.all(
-      params.ids.map((id) => {
-        const url = `${apiUrl}/${resource}/${id}`;
+      return {
+        data: json,
+      };
+    },
 
-        return httpClient(url, {
-          method: 'DELETE',
-        });
-      }),
-    );
+    deleteMany: async (resource, params) => {
+      const responses = await Promise.all(
+        params.ids.map((id) => {
+          const url = `${removeTrailingSlash(
+            apiUrl.toString(),
+          )}/${resource}/${id}`;
 
-    return {
-      data: responses.map(({ json }) => json.id),
-    };
-  },
-});
+          return httpClient(url, {
+            method: 'DELETE',
+          });
+        }),
+      );
+
+      return {
+        data: responses.map(({ json }) => json.id),
+      };
+    },
+  };
+};

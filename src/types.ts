@@ -93,6 +93,8 @@ export interface HttpClientOptions {
     authenticated: boolean;
     token: string;
   };
+  method?: string;
+  body?: XMLHttpRequestBodyInit;
 }
 
 export interface HttpClientResponse {
@@ -146,7 +148,7 @@ export interface SchemaAnalyzer {
 export interface MercureOptions {
   hub: string | null;
   jwt: string | null;
-  topicUrl: string;
+  topicUrl: URL;
 }
 
 export interface MercureSubscription {

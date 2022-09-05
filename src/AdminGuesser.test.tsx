@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRenderer } from 'react-test-renderer/shallow';
+import ReactTestRenderer from 'react-test-renderer/shallow';
 import { AdminResourcesGuesser } from './AdminGuesser';
 import ResourceGuesser from './ResourceGuesser';
 import resources from './__fixtures__/resources';
@@ -29,7 +29,7 @@ const dataProvider: ApiPlatformAdminDataProvider = {
 };
 
 describe('<AdminGuesser />', () => {
-  const renderer = createRenderer();
+  const renderer = ReactTestRenderer.createRenderer();
 
   test('renders loading', () => {
     renderer.render(

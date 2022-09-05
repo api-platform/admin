@@ -8,8 +8,15 @@
     "lib",
     "src"
   ],
-  "main": "lib/cjs/index",
-  "module": "lib/esm/index",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
+    }
+  },
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
   "repository": "api-platform/admin",
   "homepage": "https://github.com/api-platform/admin",
   "bugs": "https://github.com/api-platform/admin/issues",
@@ -17,9 +24,9 @@
   "license": "MIT",
   "sideEffects": false,
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.15.1",
+    "@api-platform/api-doc-parser": "^0.15.4",
     "history": "^5.0.0",
-    "jsonld": "^5.2.0",
+    "jsonld": "^8.1.0",
     "lodash.isplainobject": "^4.0.6",
     "prop-types": "^15.6.2",
     "react-admin": "^4.0.3",
@@ -29,7 +36,7 @@
     "@testing-library/jest-dom": "^5.16.0",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^14.0.0",
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^29.0.0",
     "@types/jsonld": "^1.5.0",
     "@types/lodash.isplainobject": "^4.0.0",
     "@types/react-test-renderer": "^18.0.0",
@@ -41,19 +48,20 @@
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.0",
-    "eslint-plugin-markdown": "^2.1.0",
+    "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.12.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-tree-shaking": "^1.10.0",
-    "jest": "^28.0.0",
-    "jest-environment-jsdom": "^28.1.0",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0",
+    "node-fetch": "^3.2.10",
     "prettier": "^2.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-test-renderer": "^18.0.0",
     "rimraf": "^3.0.0",
-    "ts-jest": "^28.0.0",
+    "ts-jest": "^29.0.0-next.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.0"
   },
@@ -63,11 +71,11 @@
   },
   "scripts": {
     "build": "rimraf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
-    "eslint-check": "eslint-config-prettier .eslintrc.js",
+    "eslint-check": "eslint-config-prettier .eslintrc.cjs",
     "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
     "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",
-    "test": "jest src",
-    "test:watch": "jest --watch src",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest src",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch src",
     "watch": "tsc --watch"
   }
 }

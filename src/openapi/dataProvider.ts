@@ -53,11 +53,12 @@ function dataProvider(
     ...defaultParams,
     ...factoryParams,
   };
+  const entrypointUrl = new URL(entrypoint, window.location.href);
   const mercure: MercureOptions | null = factoryParams.mercure
     ? {
         hub: null,
         jwt: null,
-        topicUrl: entrypoint,
+        topicUrl: entrypointUrl,
         ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
       }
     : null;

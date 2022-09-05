@@ -11,11 +11,13 @@ export default (
   factoryParams: Required<ApiPlatformAdminDataProviderFactoryParams>,
 ) => {
   const { entrypoint, docEntrypoint, apiDocumentationParser } = factoryParams;
+  const entrypointUrl = new URL(entrypoint, window.location.href);
+  const docEntrypointUrl = new URL(docEntrypoint, window.location.href);
   const mercure: MercureOptions | null = factoryParams.mercure
     ? {
         hub: null,
         jwt: null,
-        topicUrl: entrypoint,
+        topicUrl: entrypointUrl,
         ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
       }
     : null;
@@ -27,7 +29,7 @@ export default (
     introspect: (_resource = '', _params = {}) =>
       apiSchema
         ? Promise.resolve({ data: apiSchema })
-        : apiDocumentationParser(docEntrypoint)
+        : apiDocumentationParser(docEntrypointUrl.toString())
             .then(({ api }: ApiDocumentationParserResponse) => {
               if (api.resources && api.resources.length > 0) {
                 apiSchema = { ...api, resources: api.resources };
