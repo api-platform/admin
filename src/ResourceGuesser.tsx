@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Resource, useResourceDefinitionContext } from 'react-admin';
 import type { ResourceDefinition, ResourceProps } from 'react-admin';
@@ -42,17 +42,22 @@ export const IntrospectedResourceGuesser = ({
       hasShow = true;
     }
   });
-  const resourceDefinition: ResourceDefinition = {
-    name: resource,
-    icon: props.icon,
-    options: props.options,
-    hasList,
-    hasEdit,
-    hasCreate,
-    hasShow,
-  };
+  const resourceDefinition: ResourceDefinition = useMemo(
+    () => ({
+      name: resource,
+      icon: props.icon,
+      options: props.options,
+      hasList,
+      hasEdit,
+      hasCreate,
+      hasShow,
+    }),
+    [resource, props.icon, props.options, hasList, hasEdit, hasCreate, hasShow],
+  );
 
-  register(resourceDefinition);
+  useEffect(() => {
+    register(resourceDefinition);
+  }, [register, resourceDefinition]);
 
   return (
     <Resource
