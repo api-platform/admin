@@ -1,9 +1,9 @@
 import React from 'react';
-import { createRenderer } from 'react-test-renderer/shallow';
+import ReactTestRenderer from 'react-test-renderer/shallow';
 import ResourceGuesser from './ResourceGuesser';
 
 describe('<ResourceGuesser />', () => {
-  const renderer = createRenderer();
+  const renderer = ReactTestRenderer.createRenderer();
 
   test('renders with create', () => {
     const CustomCreate = () => null;

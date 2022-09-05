@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "lib": ["ESNext", "dom"],
+    "lib": ["ESNext", "dom", "dom.iterable"],
     "module": "commonjs",
+    "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "./lib/cjs",
     "declaration": true,

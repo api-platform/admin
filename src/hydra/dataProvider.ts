@@ -26,6 +26,7 @@ import fetchHydra from './fetchHydra';
 import { resolveSchemaParameters } from '../schemaAnalyzer';
 import { adminDataProvider } from '../dataProvider';
 import { mercureManager } from '../mercure';
+import { removeTrailingSlash } from '../removeTrailingSlash';
 import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminDataProviderParams,
@@ -180,11 +181,12 @@ function dataProvider(
     ...defaultParams,
     ...factoryParams,
   };
+  const entrypointUrl = new URL(entrypoint, window.location.href);
   const mercure: MercureOptions | null = factoryParams.mercure
     ? {
         hub: null,
         jwt: null,
-        topicUrl: entrypoint,
+        topicUrl: entrypointUrl,
         ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
       }
     : null;
@@ -317,12 +319,14 @@ function dataProvider(
     dataProviderParams: ApiPlatformAdminDataProviderParams,
   ) => {
     const params = dataProviderParams;
-    const entrypointUrl = new URL(entrypoint, window.location.href);
     let url: URL;
     if ('id' in params && shouldUseItemUrl(type)) {
       url = new URL(params.id.toString(), entrypointUrl);
     } else {
-      url = new URL(`${entrypoint}/${resource}`, entrypointUrl);
+      url = new URL(
+        `${removeTrailingSlash(entrypointUrl.toString())}/${resource}`,
+        entrypointUrl,
+      );
     }
 
     const searchParams: SearchParams = params.searchParams ?? {};
