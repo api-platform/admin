@@ -18,7 +18,8 @@ const getFieldNameFromSchema = (schema: Resource) => {
   }
 
   const field = schema.fields.find(
-    (schemaField) => schemaField.id?.match(/^https?:\/\/schema.org\/name$/) !== null,
+    (schemaField) =>
+      schemaField.id?.match(/^https?:\/\/schema.org\/name$/) !== null,
   );
 
   return field ? field.name : 'id';
