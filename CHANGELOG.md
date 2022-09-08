@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.2
+
+* Fix displaying name of relation in place of iri not working for https://schema.org/name
+
 ## 3.3.1
 
 * A relative entrypoint can be used
