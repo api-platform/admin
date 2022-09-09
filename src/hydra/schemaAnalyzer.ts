@@ -7,6 +7,9 @@ import {
 } from '../schemaAnalyzer';
 import type { SchemaAnalyzer, SubmissionErrors } from '../types';
 
+const withHttpScheme = (value: string | null | undefined) =>
+  value?.startsWith('https://') ? value.replace(/^https/, 'http') : value;
+
 /**
  * @param schema The schema of a resource
  *
@@ -19,7 +22,7 @@ const getFieldNameFromSchema = (schema: Resource) => {
 
   const field = schema.fields.find(
     (schemaField) =>
-      schemaField.id?.match(/^https?:\/\/schema.org\/name$/) !== null,
+      withHttpScheme(schemaField.id) === 'http://schema.org/name',
   );
 
   return field ? field.name : 'id';
@@ -29,9 +32,10 @@ const getFieldNameFromSchema = (schema: Resource) => {
  * @returns The type of the field
  */
 const getFieldType = (field: Field) => {
-  switch (field.id) {
+  switch (withHttpScheme(field.id)) {
     case 'http://schema.org/identifier':
-      return field.range === 'http://www.w3.org/2001/XMLSchema#integer'
+      return withHttpScheme(field.range) ===
+        'http://www.w3.org/2001/XMLSchema#integer'
         ? 'integer_id'
         : 'id';
     case 'http://schema.org/email':
@@ -45,7 +49,7 @@ const getFieldType = (field: Field) => {
     return 'array';
   }
 
-  switch (field.range) {
+  switch (withHttpScheme(field.range)) {
     case 'http://www.w3.org/2001/XMLSchema#array':
       return 'array';
     case 'http://www.w3.org/2001/XMLSchema#integer':
