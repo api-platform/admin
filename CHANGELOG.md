@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.3
+
+* Fix getting the field type for https://schema.org
+
 ## 3.3.2
 
 * Fix displaying name of relation in place of iri not working for https://schema.org/name
