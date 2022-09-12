@@ -8,7 +8,6 @@
     "lib",
     "src"
   ],
-  "type": "module",
   "exports": {
     ".": {
       "import": "./lib/esm/index.js",
