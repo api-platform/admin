@@ -73,7 +73,7 @@
     "eslint-check": "eslint-config-prettier .eslintrc.cjs",
     "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
     "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest src",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --maxWorkers=1 src",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch src",
     "watch": "tsc --watch"
   }
