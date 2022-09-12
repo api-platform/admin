@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.5
+
+* Fix operations registration in resource guesser
+
 ## 3.3.4
 
 * Remove type module from package.json

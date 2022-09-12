@@ -1,6 +1,10 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Resource, useResourceDefinitionContext } from 'react-admin';
+import {
+  Resource,
+  useResourceDefinition,
+  useResourceDefinitionContext,
+} from 'react-admin';
 import type { ResourceDefinition, ResourceProps } from 'react-admin';
 import ListGuesser from './ListGuesser';
 import CreateGuesser from './CreateGuesser';
@@ -23,6 +27,7 @@ export const IntrospectedResourceGuesser = ({
   ...props
 }: IntrospectedResourceGuesserProps) => {
   const { register } = useResourceDefinitionContext();
+  const registeredDefinition = useResourceDefinition({ resource });
 
   let hasList = false;
   let hasEdit = false;
@@ -42,22 +47,35 @@ export const IntrospectedResourceGuesser = ({
       hasShow = true;
     }
   });
-  const resourceDefinition: ResourceDefinition = useMemo(
-    () => ({
-      name: resource,
-      icon: props.icon,
-      options: props.options,
-      hasList,
-      hasEdit,
-      hasCreate,
-      hasShow,
-    }),
-    [resource, props.icon, props.options, hasList, hasEdit, hasCreate, hasShow],
-  );
 
   useEffect(() => {
-    register(resourceDefinition);
-  }, [register, resourceDefinition]);
+    if (
+      registeredDefinition.hasList !== hasList ||
+      registeredDefinition.hasEdit !== hasEdit ||
+      registeredDefinition.hasCreate !== hasCreate ||
+      registeredDefinition.hasShow !== hasShow
+    ) {
+      register({
+        name: resource,
+        icon: props.icon,
+        options: props.options,
+        hasList,
+        hasEdit,
+        hasCreate,
+        hasShow,
+      });
+    }
+  }, [
+    register,
+    resource,
+    props.icon,
+    props.options,
+    hasList,
+    hasEdit,
+    hasCreate,
+    hasShow,
+    registeredDefinition,
+  ]);
 
   return (
     <Resource
