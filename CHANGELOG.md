@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.4
+
+* Remove type module from package.json
+
 ## 3.3.3
 
 * Fix getting the field type for https://schema.org
