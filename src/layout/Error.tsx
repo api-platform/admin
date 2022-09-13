@@ -15,7 +15,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HistoryIcon from '@mui/icons-material/History';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import type { FallbackProps } from 'react-error-boundary';
-import LogoError from './LogoError';
+import LogoError from './LogoError.js';
 
 const PREFIX = 'RaError';
 

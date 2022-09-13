@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Filter, useResourceContext } from 'react-admin';
-import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
+import InputGuesser from './InputGuesser.js';
+import Introspecter from './Introspecter.js';
 import type {
   FilterGuesserProps,
   FilterParameter,
   IntrospectedFiterGuesserProps,
-} from './types';
+} from './types.js';
 
 export const IntrospectedFilterGuesser = ({
   fields,

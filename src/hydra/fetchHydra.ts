@@ -6,7 +6,7 @@ import {
 import jsonld from 'jsonld';
 import type { NodeObject } from 'jsonld';
 import type { JsonLdObj } from 'jsonld/jsonld-spec';
-import type { HttpClientOptions, HydraHttpClientResponse } from '../types';
+import type { HttpClientOptions, HydraHttpClientResponse } from '../types.js';
 
 /**
  * Sends HTTP requests to a Hydra API.

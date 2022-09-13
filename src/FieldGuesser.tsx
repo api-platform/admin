@@ -28,13 +28,13 @@ import type {
 } from 'react-admin';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import Introspecter from './Introspecter';
+import Introspecter from './Introspecter.js';
 import type {
   FieldGuesserProps,
   FieldProps,
   IntrospectedFieldGuesserProps,
   SchemaAnalyzer,
-} from './types';
+} from './types.js';
 
 const isFieldSortable = (field: Field, schema: Resource) =>
   !!schema.parameters &&

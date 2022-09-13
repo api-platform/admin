@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { GetListResult, Identifier } from 'react-admin';
 import { useQueryClient } from 'react-query';
-import type { ApiPlatformAdminRecord } from '../types';
+import type { ApiPlatformAdminRecord } from '../types.js';
 
 const useUpdateCache = () => {
   const queryClient = useQueryClient();

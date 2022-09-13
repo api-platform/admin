@@ -1,16 +1,16 @@
-import AdminGuesser from './AdminGuesser';
-import CreateGuesser from './CreateGuesser';
-import EditGuesser from './EditGuesser';
-import FieldGuesser from './FieldGuesser';
-import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
-import ListGuesser from './ListGuesser';
-import ResourceGuesser from './ResourceGuesser';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import ShowGuesser from './ShowGuesser';
-import useIntrospect from './useIntrospect';
-import useIntrospection from './useIntrospection';
-import useMercureSubscription from './useMercureSubscription';
+import AdminGuesser from './AdminGuesser.js';
+import CreateGuesser from './CreateGuesser.js';
+import EditGuesser from './EditGuesser.js';
+import FieldGuesser from './FieldGuesser.js';
+import InputGuesser from './InputGuesser.js';
+import Introspecter from './Introspecter.js';
+import ListGuesser from './ListGuesser.js';
+import ResourceGuesser from './ResourceGuesser.js';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
+import ShowGuesser from './ShowGuesser.js';
+import useIntrospect from './useIntrospect.js';
+import useIntrospection from './useIntrospection.js';
+import useMercureSubscription from './useMercureSubscription.js';
 
 export {
   AdminGuesser,
@@ -32,12 +32,12 @@ export {
   dataProvider as hydraDataProvider,
   schemaAnalyzer as hydraSchemaAnalyzer,
   fetchHydra,
-} from './hydra';
-export type { HydraAdminProps } from './hydra';
+} from './hydra/index.js';
+export type { HydraAdminProps } from './hydra/index.js';
 export {
   OpenApiAdmin,
   dataProvider as openApiDataProvider,
   schemaAnalyzer as openApiSchemaAnalyzer,
-} from './openapi';
-export type { OpenApiAdminProps } from './openapi';
-export * from './types';
+} from './openapi/index.js';
+export type { OpenApiAdminProps } from './openapi/index.js';
+export * from './types.js';

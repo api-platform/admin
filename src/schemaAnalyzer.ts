@@ -1,5 +1,5 @@
 import type { Resource } from '@api-platform/api-doc-parser';
-import type { FilterParameter } from './types';
+import type { FilterParameter } from './types.js';
 
 /**
  * @param schema The schema of a resource

@@ -1,6 +1,6 @@
-import Error from './Error';
-import Layout from './Layout';
-import LoginPage from './LoginPage';
+import Error from './Error.js';
+import Layout from './Layout.js';
+import LoginPage from './LoginPage.js';
 
 export { Error, Layout, LoginPage };
-export * from './themes';
+export * from './themes.js';

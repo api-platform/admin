@@ -3,7 +3,7 @@ import type {
   DataTransformer,
   MercureOptions,
   MercureSubscription,
-} from '../types';
+} from '../types.js';
 
 const createSubscription = (
   mercure: MercureOptions,

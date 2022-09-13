@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactTestRenderer from 'react-test-renderer/shallow';
-import { AdminResourcesGuesser } from './AdminGuesser';
-import ResourceGuesser from './ResourceGuesser';
-import resources from './__fixtures__/resources';
-import { API_DATA } from './__fixtures__/parsedData';
+import { AdminResourcesGuesser } from './AdminGuesser.js';
+import ResourceGuesser from './ResourceGuesser.js';
+import resources from './__fixtures__/resources.js';
+import { API_DATA } from './__fixtures__/parsedData.js';
 import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminRecord,
-} from './types';
+} from './types.js';
 
 const dataProvider: ApiPlatformAdminDataProvider = {
   getList: () => Promise.resolve({ data: [], total: 0 }),

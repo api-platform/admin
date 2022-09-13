@@ -1,5 +1,5 @@
-import adminDataProvider from './adminDataProvider';
-import restDataProvider from './restDataProvider';
-import useUpdateCache from './useUpdateCache';
+import adminDataProvider from './adminDataProvider.js';
+import restDataProvider from './restDataProvider.js';
+import useUpdateCache from './useUpdateCache.js';
 
 export { adminDataProvider, restDataProvider, useUpdateCache };

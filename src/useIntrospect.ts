@@ -1,7 +1,10 @@
 import { useQuery } from 'react-query';
 import { useDataProvider } from 'react-admin';
 import type { UseQueryOptions } from 'react-query';
-import type { ApiPlatformAdminDataProvider, IntrospectPayload } from './types';
+import type {
+  ApiPlatformAdminDataProvider,
+  IntrospectPayload,
+} from './types.js';
 
 const useIntrospect = (options?: UseQueryOptions<IntrospectPayload, Error>) => {
   const dataProvider = useDataProvider<ApiPlatformAdminDataProvider>();

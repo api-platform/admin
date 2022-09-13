@@ -6,15 +6,15 @@ import {
   useResourceDefinitionContext,
 } from 'react-admin';
 import type { ResourceDefinition, ResourceProps } from 'react-admin';
-import ListGuesser from './ListGuesser';
-import CreateGuesser from './CreateGuesser';
-import EditGuesser from './EditGuesser';
-import ShowGuesser from './ShowGuesser';
-import Introspecter from './Introspecter';
+import ListGuesser from './ListGuesser.js';
+import CreateGuesser from './CreateGuesser.js';
+import EditGuesser from './EditGuesser.js';
+import ShowGuesser from './ShowGuesser.js';
+import Introspecter from './Introspecter.js';
 import type {
   IntrospectedResourceGuesserProps,
   ResourceGuesserProps,
-} from './types';
+} from './types.js';
 
 export const IntrospectedResourceGuesser = ({
   resource,

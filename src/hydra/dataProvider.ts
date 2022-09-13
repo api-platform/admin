@@ -22,11 +22,11 @@ import type {
   UpdateParams,
 } from 'react-admin';
 
-import fetchHydra from './fetchHydra';
-import { resolveSchemaParameters } from '../schemaAnalyzer';
-import { adminDataProvider } from '../dataProvider';
-import { mercureManager } from '../mercure';
-import { removeTrailingSlash } from '../removeTrailingSlash';
+import fetchHydra from './fetchHydra.js';
+import { resolveSchemaParameters } from '../schemaAnalyzer.js';
+import { adminDataProvider } from '../dataProvider/index.js';
+import { mercureManager } from '../mercure/index.js';
+import { removeTrailingSlash } from '../removeTrailingSlash.js';
 import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminDataProviderParams,
@@ -38,7 +38,7 @@ import type {
   HydraHttpClientResponse,
   MercureOptions,
   SearchParams,
-} from '../types';
+} from '../types.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isPlainObject = (value: any): value is object =>

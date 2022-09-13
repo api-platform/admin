@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useLogoutIfAccessDenied } from 'react-admin';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import useIntrospect from './useIntrospect';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
+import useIntrospect from './useIntrospect.js';
 import type {
   IntrospecterProps,
   ResourcesIntrospecterProps,
   SchemaAnalyzer,
-} from './types';
+} from './types.js';
 
 const ResourcesIntrospecter = ({
   component: Component,
