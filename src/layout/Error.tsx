@@ -10,10 +10,10 @@ import {
   Button,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import HistoryIcon from '@mui/icons-material/History';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { styled } from '@mui/material/styles/index.js'; // eslint-disable-line import/extensions
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js'; // eslint-disable-line import/extensions
+import HistoryIcon from '@mui/icons-material/History.js'; // eslint-disable-line import/extensions
+import RefreshIcon from '@mui/icons-material/Refresh.js'; // eslint-disable-line import/extensions
 import type { FallbackProps } from 'react-error-boundary';
 import LogoError from './LogoError.js';
 
