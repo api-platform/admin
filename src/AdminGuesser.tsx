@@ -15,15 +15,20 @@ import type { ComponentType, ErrorInfo } from 'react';
 import type { AdminProps, ErrorProps } from 'react-admin';
 import type { Resource } from '@api-platform/api-doc-parser';
 
-import IntrospectionContext from './IntrospectionContext';
-import ResourceGuesser from './ResourceGuesser';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import { Error as DefaultError, Layout, LoginPage, lightTheme } from './layout';
+import IntrospectionContext from './IntrospectionContext.js';
+import ResourceGuesser from './ResourceGuesser.js';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
+import {
+  Error as DefaultError,
+  Layout,
+  LoginPage,
+  lightTheme,
+} from './layout/index.js';
 import getRoutesAndResourcesFromNodes, {
   isSingleChildFunction,
-} from './getRoutesAndResourcesFromNodes';
-import useDisplayOverrideCode from './useDisplayOverrideCode';
-import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types';
+} from './getRoutesAndResourcesFromNodes.js';
+import useDisplayOverrideCode from './useDisplayOverrideCode.js';
+import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types.js';
 
 export interface AdminGuesserProps extends AdminProps {
   dataProvider: ApiPlatformAdminDataProvider;

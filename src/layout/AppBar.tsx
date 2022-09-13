@@ -8,8 +8,8 @@ import {
 import type { AppBarProps } from 'react-admin';
 import { Box, Typography } from '@mui/material';
 
-import Logo from './Logo';
-import { darkTheme, lightTheme } from './themes';
+import Logo from './Logo.js';
+import { darkTheme, lightTheme } from './themes.js';
 
 const CustomAppBar = ({ classes, userMenu, ...props }: AppBarProps) => {
   const authProvider = useAuthProvider();

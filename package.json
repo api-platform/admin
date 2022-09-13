@@ -8,14 +8,9 @@
     "lib",
     "src"
   ],
-  "exports": {
-    ".": {
-      "import": "./lib/esm/index.js",
-      "require": "./lib/cjs/index.js"
-    }
-  },
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
   "repository": "api-platform/admin",
   "homepage": "https://github.com/api-platform/admin",
   "bugs": "https://github.com/api-platform/admin/issues",
@@ -69,7 +64,7 @@
     "react-dom": "*"
   },
   "scripts": {
-    "build": "rimraf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
+    "build": "rimraf ./lib && tsc",
     "eslint-check": "eslint-config-prettier .eslintrc.cjs",
     "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
     "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",

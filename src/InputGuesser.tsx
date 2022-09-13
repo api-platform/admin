@@ -26,8 +26,11 @@ import type {
   TextInputProps,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
-import Introspecter from './Introspecter';
-import type { InputGuesserProps, IntrospectedInputGuesserProps } from './types';
+import Introspecter from './Introspecter.js';
+import type {
+  InputGuesserProps,
+  IntrospectedInputGuesserProps,
+} from './types.js';
 
 const convertEmptyStringToNull = (value: string) =>
   value === '' ? null : value;

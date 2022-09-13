@@ -1,10 +1,10 @@
-import createSubscription from './createSubscription';
+import createSubscription from './createSubscription.js';
 import type {
   ApiPlatformAdminRecord,
   DataTransformer,
   MercureOptions,
   MercureSubscription,
-} from '../types';
+} from '../types.js';
 
 // store mercure subscriptions
 const subscriptions: Record<string, MercureSubscription> = {};

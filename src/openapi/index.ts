@@ -1,6 +1,6 @@
-import dataProvider from './dataProvider';
-import OpenApiAdmin from './OpenApiAdmin';
-import type { OpenApiAdminProps } from './OpenApiAdmin';
-import schemaAnalyzer from './schemaAnalyzer';
+import dataProvider from './dataProvider.js';
+import OpenApiAdmin from './OpenApiAdmin.js';
+import type { OpenApiAdminProps } from './OpenApiAdmin.js';
+import schemaAnalyzer from './schemaAnalyzer.js';
 
 export { dataProvider, OpenApiAdmin, OpenApiAdminProps, schemaAnalyzer };

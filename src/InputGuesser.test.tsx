@@ -9,15 +9,15 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Resource } from '@api-platform/api-doc-parser';
 
-import InputGuesser from './InputGuesser';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext';
-import schemaAnalyzer from './hydra/schemaAnalyzer';
+import InputGuesser from './InputGuesser.js';
+import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
+import schemaAnalyzer from './hydra/schemaAnalyzer.js';
 import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminRecord,
-} from './types';
+} from './types.js';
 
-import { API_FIELDS_DATA } from './__fixtures__/parsedData';
+import { API_FIELDS_DATA } from './__fixtures__/parsedData.js';
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
 const dataProvider: ApiPlatformAdminDataProvider = {

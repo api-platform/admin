@@ -1,11 +1,11 @@
 import type { Api, Resource } from '@api-platform/api-doc-parser';
-import { mercureManager } from '../mercure';
+import { mercureManager } from '../mercure/index.js';
 import type {
   ApiDocumentationParserResponse,
   ApiPlatformAdminDataProviderFactoryParams,
   ApiPlatformAdminRecord,
   MercureOptions,
-} from '../types';
+} from '../types.js';
 
 export default (
   factoryParams: Required<ApiPlatformAdminDataProviderFactoryParams>,

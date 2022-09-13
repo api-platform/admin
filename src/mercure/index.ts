@@ -1,4 +1,4 @@
-import createSubscription from './createSubscription';
-import manager from './manager';
+import createSubscription from './createSubscription.js';
+import manager from './manager.js';
 
 export { createSubscription, manager as mercureManager };

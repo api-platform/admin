@@ -13,11 +13,14 @@ import type { HttpError, RaRecord } from 'react-admin';
 import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import InputGuesser from './InputGuesser';
-import Introspecter from './Introspecter';
-import useMercureSubscription from './useMercureSubscription';
-import useDisplayOverrideCode from './useDisplayOverrideCode';
-import type { EditGuesserProps, IntrospectedEditGuesserProps } from './types';
+import InputGuesser from './InputGuesser.js';
+import Introspecter from './Introspecter.js';
+import useMercureSubscription from './useMercureSubscription.js';
+import useDisplayOverrideCode from './useDisplayOverrideCode.js';
+import type {
+  EditGuesserProps,
+  IntrospectedEditGuesserProps,
+} from './types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =

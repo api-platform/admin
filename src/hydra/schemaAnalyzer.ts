@@ -4,8 +4,8 @@ import type { JsonLdObj } from 'jsonld/jsonld-spec';
 import {
   getFiltersParametersFromSchema,
   getOrderParametersFromSchema,
-} from '../schemaAnalyzer';
-import type { SchemaAnalyzer, SubmissionErrors } from '../types';
+} from '../schemaAnalyzer.js';
+import type { SchemaAnalyzer, SubmissionErrors } from '../types.js';
 
 const withHttpScheme = (value: string | null | undefined) =>
   value?.startsWith('https://') ? value.replace(/^https/, 'http') : value;

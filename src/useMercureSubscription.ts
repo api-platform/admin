@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useDataProvider } from 'react-admin';
 import type { Identifier } from 'react-admin';
-import { useUpdateCache } from './dataProvider';
-import type { ApiPlatformAdminDataProvider } from './types';
+import { useUpdateCache } from './dataProvider/index.js';
+import type { ApiPlatformAdminDataProvider } from './types.js';
 
 export default function useMercureSubscription(
   resource: string | undefined,

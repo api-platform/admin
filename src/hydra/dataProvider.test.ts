@@ -3,9 +3,9 @@ import { Response } from 'node-fetch';
 import type { parseHydraDocumentation } from '@api-platform/api-doc-parser';
 import dataProviderFactory, {
   transformJsonLdDocumentToReactAdminDocument,
-} from './dataProvider';
-import { API_DATA } from '../__fixtures__/parsedData';
-import type fetchHydra from './fetchHydra';
+} from './dataProvider.js';
+import { API_DATA } from '../__fixtures__/parsedData.js';
+import type fetchHydra from './fetchHydra.js';
 
 const EMBEDDED_ITEM = {
   '@id': '/books/2',

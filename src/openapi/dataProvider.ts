@@ -1,12 +1,12 @@
 import { parseOpenApi3Documentation } from '@api-platform/api-doc-parser';
 import { fetchUtils } from 'react-admin';
-import { adminDataProvider } from '../dataProvider';
+import { adminDataProvider } from '../dataProvider/index.js';
 import type {
   ApiPlatformAdminDataProvider,
   HttpClientOptions,
   MercureOptions,
   OpenApiDataProviderFactoryParams,
-} from '../types';
+} from '../types.js';
 
 const fetchJson = (url: URL, options: HttpClientOptions = {}) => {
   let { headers } = options;

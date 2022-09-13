@@ -1,7 +1,7 @@
 import { stringify } from 'query-string';
 import { fetchUtils } from 'react-admin';
 import type { DataProvider } from 'react-admin';
-import { removeTrailingSlash } from '../removeTrailingSlash';
+import { removeTrailingSlash } from '../removeTrailingSlash.js';
 
 // Based on https://github.com/marmelab/react-admin/blob/master/packages/ra-data-simple-rest/src/index.ts
 

@@ -2,10 +2,10 @@
   "compilerOptions": {
     "target": "ES6",
     "lib": ["ESNext", "dom", "dom.iterable"],
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "./lib/cjs",
+    "outDir": "./lib",
     "declaration": true,
     "declarationMap": true,
     "rootDir": "./src",
@@ -21,5 +21,6 @@
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true
   },
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.test.tsx"],
   "include": ["./src"]
 }

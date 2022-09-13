@@ -4,11 +4,14 @@ import { Show, SimpleShowLayout, useResourceContext } from 'react-admin';
 import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import FieldGuesser from './FieldGuesser';
-import Introspecter from './Introspecter';
-import useMercureSubscription from './useMercureSubscription';
-import useDisplayOverrideCode from './useDisplayOverrideCode';
-import type { IntrospectedShowGuesserProps, ShowGuesserProps } from './types';
+import FieldGuesser from './FieldGuesser.js';
+import Introspecter from './Introspecter.js';
+import useMercureSubscription from './useMercureSubscription.js';
+import useDisplayOverrideCode from './useDisplayOverrideCode.js';
+import type {
+  IntrospectedShowGuesserProps,
+  ShowGuesserProps,
+} from './types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =

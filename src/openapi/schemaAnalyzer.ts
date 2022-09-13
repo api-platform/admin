@@ -2,8 +2,8 @@ import type { Field, Resource } from '@api-platform/api-doc-parser';
 import {
   getFiltersParametersFromSchema,
   getOrderParametersFromSchema,
-} from '../schemaAnalyzer';
-import type { SchemaAnalyzer } from '../types';
+} from '../schemaAnalyzer.js';
+import type { SchemaAnalyzer } from '../types.js';
 
 /**
  * @param schema The schema of a resource

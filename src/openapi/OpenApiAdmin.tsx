@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import dataProviderFactory from './dataProvider';
-import { restDataProvider } from '../dataProvider';
-import /* tree-shaking no-side-effects-when-called */ schemaAnalyzer from './schemaAnalyzer';
-import AdminGuesser from '../AdminGuesser';
-import type { AdminGuesserProps } from '../AdminGuesser';
-import type { MercureOptions } from '../types';
+import dataProviderFactory from './dataProvider.js';
+import { restDataProvider } from '../dataProvider/index.js';
+import /* tree-shaking no-side-effects-when-called */ schemaAnalyzer from './schemaAnalyzer.js';
+import AdminGuesser from '../AdminGuesser.js';
+import type { AdminGuesserProps } from '../AdminGuesser.js';
+import type { MercureOptions } from '../types.js';
 
 type AdminGuesserPartialProps = Omit<
   AdminGuesserProps,
