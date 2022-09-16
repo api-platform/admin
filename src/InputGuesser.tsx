@@ -64,13 +64,13 @@ export const IntrospectedInputGuesser = ({
       return (
         <ReferenceInput
           key={field.name}
-          validate={guessedValidate}
           {...(props as ReferenceInputProps)}
           reference={field.reference.name}
           source={field.name}
           allowEmpty>
           <SelectInput
             optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
+            validate={guessedValidate}
           />
         </ReferenceInput>
       );
@@ -79,13 +79,13 @@ export const IntrospectedInputGuesser = ({
     return (
       <ReferenceArrayInput
         key={field.name}
-        validate={guessedValidate}
         {...(props as ReferenceArrayInputProps)}
         reference={field.reference.name}
         source={field.name}
         allowEmpty>
         <SelectArrayInput
           optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
+          validate={guessedValidate}
         />
       </ReferenceArrayInput>
     );
