@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.3.8
+
+* Fix reference input validation
+
+## 3.3.7
+
+* Fix missing fully-specified imports for @mui
+
+## 3.3.6
+
+* Build only ESM
+
 ## 3.3.5
 
 * Fix operations registration in resource guesser
