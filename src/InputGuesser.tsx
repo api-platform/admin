@@ -23,6 +23,8 @@ import type {
   NumberInputProps,
   ReferenceArrayInputProps,
   ReferenceInputProps,
+  SelectArrayInputProps,
+  SelectInputProps,
   TextInputProps,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
@@ -61,31 +63,45 @@ export const IntrospectedInputGuesser = ({
 
   if (field.reference !== null && typeof field.reference === 'object') {
     if (field.maxCardinality === 1) {
+      const { filter, page, perPage, sort, enableGetChoices } =
+        props as ReferenceInputProps;
+
       return (
         <ReferenceInput
           key={field.name}
-          validate={guessedValidate}
-          {...(props as ReferenceInputProps)}
           reference={field.reference.name}
           source={field.name}
-          allowEmpty>
+          filter={filter}
+          page={page}
+          perPage={perPage}
+          sort={sort}
+          enableGetChoices={enableGetChoices}>
           <SelectInput
             optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
+            validate={guessedValidate}
+            {...(props as SelectInputProps)}
           />
         </ReferenceInput>
       );
     }
 
+    const { filter, page, perPage, sort, enableGetChoices } =
+      props as ReferenceArrayInputProps;
+
     return (
       <ReferenceArrayInput
         key={field.name}
-        validate={guessedValidate}
-        {...(props as ReferenceArrayInputProps)}
         reference={field.reference.name}
         source={field.name}
-        allowEmpty>
+        filter={filter}
+        page={page}
+        perPage={perPage}
+        sort={sort}
+        enableGetChoices={enableGetChoices}>
         <SelectArrayInput
           optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
+          validate={guessedValidate}
+          {...(props as SelectArrayInputProps)}
         />
       </ReferenceArrayInput>
     );
