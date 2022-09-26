@@ -47,6 +47,7 @@ import type {
   ResourceProps,
   ShowProps,
   SimpleFormProps,
+  TabbedFormProps,
   TextFieldProps,
   TextInputProps,
   UPDATE,
@@ -365,38 +366,45 @@ export type ResourceGuesserProps = Omit<
   'component'
 >;
 
-type CreateSimpleFormProps = Omit<
-  CreateProps & Omit<SimpleFormProps, 'component'>,
+type CreateFormProps = Omit<
+  CreateProps & SimpleFormProps & TabbedFormProps,
   'children'
 > &
-  Partial<PickRename<SimpleFormProps, 'component', 'simpleFormComponent'>> & {
+  Partial<
+    PickRename<SimpleFormProps & TabbedFormProps, 'component', 'formComponent'>
+  > & {
     children?: ReactNode;
   };
 
-export type IntrospectedCreateGuesserProps = CreateSimpleFormProps &
+export type IntrospectedCreateGuesserProps = CreateFormProps &
   IntrospectedGuesserProps & {
     sanitizeEmptyValues?: boolean;
   };
 
 export type CreateGuesserProps = Omit<
-  CreateSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
+  CreateFormProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
 > & {
   sanitizeEmptyValues?: boolean;
 };
 
-type EditSimpleFormProps = Omit<EditProps & SimpleFormProps, 'children'> &
-  Partial<PickRename<SimpleFormProps, 'component', 'simpleFormComponent'>> & {
+type EditFormProps = Omit<
+  EditProps & SimpleFormProps & TabbedFormProps,
+  'children'
+> &
+  Partial<
+    PickRename<SimpleFormProps & TabbedFormProps, 'component', 'formComponent'>
+  > & {
     children?: ReactNode;
   };
 
-export type IntrospectedEditGuesserProps = EditSimpleFormProps &
+export type IntrospectedEditGuesserProps = EditFormProps &
   IntrospectedGuesserProps & {
     sanitizeEmptyValues?: boolean;
   };
 
 export type EditGuesserProps = Omit<
-  EditSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
+  EditFormProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
 > & {
   sanitizeEmptyValues?: boolean;
@@ -418,15 +426,18 @@ export type ListGuesserProps = Omit<
   'component'
 >;
 
-type ShowSimpleFormProps = Omit<ShowProps & SimpleFormProps, 'children'> & {
+type ShowFormProps = Omit<
+  ShowProps & SimpleFormProps & TabbedFormProps,
+  'children'
+> & {
   children?: ReactNode;
 };
 
-export type IntrospectedShowGuesserProps = ShowSimpleFormProps &
+export type IntrospectedShowGuesserProps = ShowFormProps &
   IntrospectedGuesserProps;
 
 export type ShowGuesserProps = Omit<
-  ShowSimpleFormProps & Omit<BaseIntrospecterProps, 'resource'>,
+  ShowFormProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
 >;
 

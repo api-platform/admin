@@ -1,6 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Show, SimpleShowLayout, useResourceContext } from 'react-admin';
+import {
+  Show,
+  SimpleShowLayout,
+  Tab,
+  TabbedShowLayout,
+  useResourceContext,
+} from 'react-admin';
 import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
@@ -55,9 +61,17 @@ export const IntrospectedShowGuesser = ({
     displayOverrideCode(getOverrideCode(schema, readableFields));
   }
 
+  const hasTab =
+    Array.isArray(fieldChildren) &&
+    fieldChildren.some(
+      (child) =>
+        typeof child === 'object' && 'type' in child && child.type === Tab,
+    );
+  const ShowLayout = hasTab ? TabbedShowLayout : SimpleShowLayout;
+
   return (
     <Show {...props}>
-      <SimpleShowLayout>{fieldChildren}</SimpleShowLayout>
+      <ShowLayout>{fieldChildren}</ShowLayout>
     </Show>
   );
 };

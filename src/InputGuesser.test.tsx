@@ -5,9 +5,9 @@ import {
   ResourceContextProvider,
   SimpleForm,
 } from 'react-admin';
+import { Resource } from '@api-platform/api-doc-parser';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Resource } from '@api-platform/api-doc-parser';
 
 import InputGuesser from './InputGuesser.js';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';

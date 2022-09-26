@@ -1,9 +1,12 @@
 import React, { useCallback } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import {
   Edit,
   FileInput,
+  FormTab,
   SimpleForm,
+  TabbedForm,
   useNotify,
   useRedirect,
   useResourceContext,
@@ -57,7 +60,7 @@ export const IntrospectedEditGuesser = ({
   transform,
   toolbar,
   warnWhenUnsavedChanges,
-  simpleFormComponent,
+  formComponent,
   sanitizeEmptyValues,
   children,
   ...props
@@ -83,11 +86,16 @@ export const IntrospectedEditGuesser = ({
     ));
     displayOverrideCode(getOverrideCode(schema, writableFields));
   }
-
-  const hasFileField = inputChildren.some(
-    (child) =>
-      typeof child === 'object' && 'type' in child && child.type === FileInput,
-  );
+  const hasFileFieldElement = (elements: Array<ReactNode>): boolean =>
+    elements.some(
+      (child) =>
+        React.isValidElement(child) &&
+        (child.type === FileInput ||
+          hasFileFieldElement(
+            React.Children.toArray((child.props as PropsWithChildren).children),
+          )),
+    );
+  const hasFileField = hasFileFieldElement(inputChildren);
 
   const save = useCallback(
     async (values: Partial<RaRecord>) => {
@@ -166,6 +174,12 @@ export const IntrospectedEditGuesser = ({
     ],
   );
 
+  const hasFormTab = inputChildren.some(
+    (child) =>
+      typeof child === 'object' && 'type' in child && child.type === FormTab,
+  );
+  const FormType = hasFormTab ? TabbedForm : SimpleForm;
+
   return (
     <Edit
       resource={resource}
@@ -173,7 +187,7 @@ export const IntrospectedEditGuesser = ({
       mutationMode={mutationMode}
       transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
       {...props}>
-      <SimpleForm
+      <FormType
         onSubmit={mutationMode !== 'pessimistic' ? undefined : save}
         mode={mode}
         defaultValues={defaultValues}
@@ -181,9 +195,9 @@ export const IntrospectedEditGuesser = ({
         redirect={redirectTo}
         toolbar={toolbar}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
-        component={simpleFormComponent}>
+        component={formComponent}>
         {inputChildren}
-      </SimpleForm>
+      </FormType>
     </Edit>
   );
 };

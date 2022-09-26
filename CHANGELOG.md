@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.4.0
+
+* Handle multiple file upload
+* Allow to use tabbed components in guessers
+
 ## 3.3.8
 
 * Fix reference input validation
