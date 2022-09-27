@@ -257,9 +257,7 @@ function dataProvider(
       const values = Object.values(hydraData);
       const containFile = (element: unknown): boolean =>
         Array.isArray(element)
-          ? element
-              .map((value) => containFile(value))
-              .every((contain) => contain)
+          ? element.every((value) => containFile(value))
           : isPlainObject(element) &&
             Object.values(element as Record<string, unknown>).some(
               (value) => value instanceof File,
