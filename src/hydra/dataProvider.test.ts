@@ -216,11 +216,15 @@ describe('Transform a React Admin request to an Hydra request', () => {
     await dataProvider.introspect();
 
     const file = new File(['foo'], 'foo.txt');
+    const icons = [...Array(3).keys()].map((i) => ({
+      rawFile: new File([`icon_${i}`], `icon_${i}.png`),
+    }));
     await dataProvider.create('resource', {
       data: {
         image: {
           rawFile: file,
         },
+        icons,
         bar: 'baz',
         qux: null,
         array: ['foo', 'dummy'],
@@ -238,6 +242,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
     expect(options.body).toBeInstanceOf(FormData);
     expect(Array.from((options.body as FormData).entries())).toEqual([
       ['image', file],
+      ...icons.map((icon) => ['icons[]', icon.rawFile]),
       ['bar', 'baz'],
       ['qux', 'null'],
       ['array', '["foo","dummy"]'],

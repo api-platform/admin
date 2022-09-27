@@ -255,11 +255,14 @@ function dataProvider(
       data as Record<string, unknown>,
     ).then((hydraData) => {
       const values = Object.values(hydraData);
-      const containFile = (element: unknown) =>
-        isPlainObject(element) &&
-        Object.values(element as Record<string, unknown>).some(
-          (value) => value instanceof File,
-        );
+      const containFile = (element: unknown): boolean =>
+        Array.isArray(element)
+          ? element.every((value) => containFile(value))
+          : isPlainObject(element) &&
+            Object.values(element as Record<string, unknown>).some(
+              (value) => value instanceof File,
+            );
+
       type ToJSONObject = { toJSON(): string };
       const hasToJSON = (
         element: string | ToJSONObject,
@@ -281,10 +284,17 @@ function dataProvider(
       ).forEach(([key, value]) => {
         // React-Admin FileInput format is an object containing a file.
         if (containFile(value)) {
-          body.append(
-            key,
-            Object.values(value).find((val) => val instanceof File),
-          );
+          const findFile = (element: string | ToJSONObject): Blob =>
+            Object.values(element).find((val) => val instanceof File);
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          Array.isArray(value)
+            ? value
+                .map((val) => findFile(val))
+                .forEach((file) => {
+                  body.append(key.endsWith('[]') ? key : `${key}[]`, file);
+                })
+            : body.append(key, findFile(value));
+
           return;
         }
         if (hasToJSON(value)) {
