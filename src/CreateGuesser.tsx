@@ -1,9 +1,12 @@
 import React, { useCallback } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import {
   Create,
   FileInput,
+  FormTab,
   SimpleForm,
+  TabbedForm,
   useCreate,
   useNotify,
   useRedirect,
@@ -55,7 +58,7 @@ export const IntrospectedCreateGuesser = ({
   toolbar,
   warnWhenUnsavedChanges,
   sanitizeEmptyValues,
-  simpleFormComponent,
+  formComponent,
   children,
   ...props
 }: IntrospectedCreateGuesserProps) => {
@@ -77,10 +80,16 @@ export const IntrospectedCreateGuesser = ({
     displayOverrideCode(getOverrideCode(schema, writableFields));
   }
 
-  const hasFileField = inputChildren.some(
-    (child) =>
-      typeof child === 'object' && 'type' in child && child.type === FileInput,
-  );
+  const hasFileFieldElement = (elements: Array<ReactNode>): boolean =>
+    elements.some(
+      (child) =>
+        React.isValidElement(child) &&
+        (child.type === FileInput ||
+          hasFileFieldElement(
+            React.Children.toArray((child.props as PropsWithChildren).children),
+          )),
+    );
+  const hasFileField = hasFileFieldElement(inputChildren);
 
   const save = useCallback(
     async (values: Partial<RaRecord>) => {
@@ -150,18 +159,24 @@ export const IntrospectedCreateGuesser = ({
     ],
   );
 
+  const hasFormTab = inputChildren.some(
+    (child) =>
+      typeof child === 'object' && 'type' in child && child.type === FormTab,
+  );
+  const FormType = hasFormTab ? TabbedForm : SimpleForm;
+
   return (
     <Create resource={resource} {...props}>
-      <SimpleForm
+      <FormType
         onSubmit={save}
         mode={mode}
         defaultValues={defaultValues}
         validate={validate}
         toolbar={toolbar}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
-        component={simpleFormComponent}>
+        component={formComponent}>
         {inputChildren}
-      </SimpleForm>
+      </FormType>
     </Create>
   );
 };

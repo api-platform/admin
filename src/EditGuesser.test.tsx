@@ -1,15 +1,10 @@
 import React from 'react';
-import {
-  AdminContext,
-  ResourceContextProvider,
-  Tab,
-  TextField,
-} from 'react-admin';
+import { AdminContext, FormTab, TextInput } from 'react-admin';
 import { Resource } from '@api-platform/api-doc-parser';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import ShowGuesser from './ShowGuesser.js';
+import EditGuesser from './EditGuesser.js';
 import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
 import schemaAnalyzer from './hydra/schemaAnalyzer.js';
 import type {
@@ -63,54 +58,28 @@ const dataProvider: ApiPlatformAdminDataProvider = {
   unsubscribe: () => Promise.resolve({ data: null }),
 };
 
-describe('<ShowGuesser />', () => {
-  test('renders with no children', async () => {
-    render(
-      <AdminContext dataProvider={dataProvider}>
-        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ResourceContextProvider value="users">
-            <ShowGuesser id="/users/123" />
-          </ResourceContextProvider>
-        </SchemaAnalyzerContext.Provider>
-      </AdminContext>,
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.queryAllByText('resources.users.fields.fieldA'),
-      ).toHaveLength(1);
-      expect(screen.queryAllByText('fieldA value')).toHaveLength(1);
-      expect(
-        screen.queryAllByText('resources.users.fields.fieldB'),
-      ).toHaveLength(1);
-      expect(screen.queryAllByText('fieldB value')).toHaveLength(1);
-      expect(
-        screen.queryAllByText('resources.users.fields.deprecatedField'),
-      ).toHaveLength(0);
-      expect(screen.queryAllByText('deprecatedField value')).toHaveLength(0);
-    });
-  });
-
+describe('<EditGuesser />', () => {
   test('renders with custom fields', async () => {
     render(
       <AdminContext dataProvider={dataProvider}>
         <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ShowGuesser resource="users" id="/users/123">
-            <TextField source="id" label="label of id" />
-            <TextField source="title" label="label of title" />
-            <TextField source="body" label="label of body" />
-          </ShowGuesser>
+          <EditGuesser resource="users" id="/users/123">
+            <TextInput source="id" label="label of id" />
+            <TextInput source="title" label="label of title" />
+            <TextInput source="body" label="label of body" />
+          </EditGuesser>
         </SchemaAnalyzerContext.Provider>
       </AdminContext>,
     );
 
     await waitFor(() => {
-      expect(screen.queryAllByText('label of id')).toHaveLength(1);
-      expect(screen.queryAllByText('/users/123')).toHaveLength(1);
-      expect(screen.queryAllByText('label of title')).toHaveLength(1);
-      expect(screen.queryAllByText('Title')).toHaveLength(1);
-      expect(screen.queryAllByText('label of body')).toHaveLength(1);
-      expect(screen.queryAllByText('Body')).toHaveLength(1);
+      expect(screen.queryAllByRole('tab')).toHaveLength(0);
+      expect(screen.queryByText('label of id')).toBeVisible();
+      expect(screen.queryByLabelText('label of id')).toHaveValue('/users/123');
+      expect(screen.queryByText('label of title')).toBeVisible();
+      expect(screen.queryByLabelText('label of title')).toHaveValue('Title');
+      expect(screen.queryByText('label of body')).toBeVisible();
+      expect(screen.queryByLabelText('label of body')).toHaveValue('Body');
     });
   });
 
@@ -120,15 +89,15 @@ describe('<ShowGuesser />', () => {
     render(
       <AdminContext dataProvider={dataProvider}>
         <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
-          <ShowGuesser resource="users" id="/users/123">
-            <Tab label="Tab 1">
-              <TextField source="id" label="label of id" />
-              <TextField source="title" label="label of title" />
-            </Tab>
-            <Tab label="Tab 2">
-              <TextField source="body" label="label of body" />
-            </Tab>
-          </ShowGuesser>
+          <EditGuesser resource="users" id="/users/123">
+            <FormTab label="FormTab 1">
+              <TextInput source="id" label="label of id" />
+              <TextInput source="title" label="label of title" />
+            </FormTab>
+            <FormTab label="FormTab 2">
+              <TextInput source="body" label="label of body" />
+            </FormTab>
+          </EditGuesser>
         </SchemaAnalyzerContext.Provider>
       </AdminContext>,
     );
@@ -139,19 +108,24 @@ describe('<ShowGuesser />', () => {
       if (tab) {
         await user.click(tab);
       }
-
-      // First tab, available for tabId == 0.
-      expect(screen.queryAllByText('label of id')).toHaveLength(tabId ? 0 : 1);
-      expect(screen.queryAllByText('/users/123')).toHaveLength(tabId ? 0 : 1);
-      expect(screen.queryAllByText('label of title')).toHaveLength(
-        tabId ? 0 : 1,
-      );
-      expect(screen.queryAllByText('Title')).toHaveLength(tabId ? 0 : 1);
-      // Second tab, available for tabId == 1.
-      expect(screen.queryAllByText('label of body')).toHaveLength(
-        tabId ? 1 : 0,
-      );
-      expect(screen.queryAllByText('Body')).toHaveLength(tabId ? 1 : 0);
+      if (tabId === 0) {
+        // First tab, available.
+        expect(screen.queryByText('label of id')).toBeVisible();
+        expect(screen.queryByLabelText('label of id')).toHaveValue(
+          '/users/123',
+        );
+        expect(screen.queryByText('label of title')).toBeVisible();
+        expect(screen.queryByLabelText('label of title')).toHaveValue('Title');
+        // Second tab, unavailable.
+        expect(screen.queryByText('label of body')).not.toBeVisible();
+      } else {
+        // First tab, unavailable.
+        expect(screen.queryByText('label of id')).not.toBeVisible();
+        expect(screen.queryByText('label of title')).not.toBeVisible();
+        // Second tab, available.
+        expect(screen.queryByText('label of body')).toBeVisible();
+        expect(screen.queryByLabelText('label of body')).toHaveValue('Body');
+      }
     });
   });
 });
