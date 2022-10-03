@@ -34,6 +34,20 @@ import type {
   IntrospectedInputGuesserProps,
 } from './types.js';
 
+// Transform enum value to humanize representation.
+export const defaultTransformEnum = (value: string | number): string | number =>
+  // Camel case/ schema.org type to sentence.
+  `${value}`
+    .match(/([A-Z]+[a-z1-2]+)+$/)?.[0]
+    ?.replace(/([^A-Z])([A-Z])/g, '$1 $2') ??
+  // Constant underscore format to sentence.
+  `${value}`
+    .match(/[A-Z0-9]+(_[A-Z0-9]+)*$/)?.[0]
+    ?.split('_')
+    .map((v) => v[0] + v.slice(1).toLowerCase())
+    .join(' ') ??
+  value;
+
 export const IntrospectedInputGuesser = ({
   fields,
   readableFields,
@@ -41,6 +55,7 @@ export const IntrospectedInputGuesser = ({
   schema,
   schemaAnalyzer,
   validate,
+  transformEnum = defaultTransformEnum,
   ...props
 }: IntrospectedInputGuesserProps) => {
   const field = fields.find(({ name }) => name === props.source);
@@ -104,6 +119,26 @@ export const IntrospectedInputGuesser = ({
   let format;
   let parse;
   const fieldType = schemaAnalyzer.getFieldType(field);
+
+  if (field.enum) {
+    const choices = field.enum.map((e) => ({
+      id: e,
+      name: typeof transformEnum === 'function' ? transformEnum(e) : e,
+    }));
+    return fieldType === 'array' ? (
+      <SelectArrayInput
+        validate={guessedValidate}
+        choices={choices}
+        {...(props as SelectArrayInputProps)}
+      />
+    ) : (
+      <SelectInput
+        validate={guessedValidate}
+        choices={choices}
+        {...(props as SelectInputProps)}
+      />
+    );
+  }
 
   if (['integer_id', 'id'].includes(fieldType) || field.name === 'id') {
     const prefix = `/${props.resource}/`;

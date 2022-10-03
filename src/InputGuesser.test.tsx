@@ -52,6 +52,8 @@ const dataProvider: ApiPlatformAdminDataProvider = {
             address: '16 avenue de Rivoli',
           },
         ],
+        formatType: 'https://schema.org/EBook',
+        status: 'AVAILABLE',
       },
     }),
   introspect: () =>
@@ -240,4 +242,108 @@ describe('<InputGuesser />', () => {
       });
     });
   });
+
+  test.each([
+    // Default transform to humanize sentence.
+    {
+      transformEnum: undefined,
+      enums: {
+        formatType: ['EBook', 'Audiobook Format', 'Hardcover'],
+        status: ['Available', 'Sold Out'],
+      },
+    },
+    // Disable any transformation.
+    {
+      transformEnum: false,
+      enums: {
+        formatType: [
+          'https://schema.org/EBook',
+          'https://schema.org/AudiobookFormat',
+          'https://schema.org/Hardcover',
+        ],
+        status: ['AVAILABLE', 'SOLD_OUT'],
+      },
+    },
+    // Custom transformation.
+    {
+      transformEnum: (value: string | number): string =>
+        `${value}`
+          .split('/')
+          .slice(-1)[0]
+          ?.replace(/([a-z])([A-Z])/, '$1_$2')
+          .toUpperCase() ?? '',
+      enums: {
+        formatType: ['EBOOK', 'AUDIOBOOK_FORMAT', 'HARDCOVER'],
+        status: ['AVAILABLE', 'SOLD_OUT'],
+      },
+    },
+  ])(
+    'renders enum input with transformation',
+    async ({ transformEnum, enums }) => {
+      let updatedData = {};
+
+      render(
+        <AdminContext dataProvider={dataProvider}>
+          <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
+            <ResourceContextProvider value="users">
+              <Edit id="/users/123" mutationMode="pessimistic">
+                <SimpleForm
+                  onSubmit={(data: {
+                    formatType?: string | null;
+                    status?: string | null;
+                  }) => {
+                    updatedData = data;
+                  }}>
+                  <InputGuesser
+                    transformEnum={transformEnum}
+                    source="formatType"
+                  />
+                  <InputGuesser transformEnum={transformEnum} source="status" />
+                </SimpleForm>
+              </Edit>
+            </ResourceContextProvider>
+          </SchemaAnalyzerContext.Provider>
+        </AdminContext>,
+      );
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [fieldId, options] of Object.entries(enums)) {
+        // eslint-disable-next-line no-await-in-loop
+        const field = await screen.findByLabelText(
+          `resources.users.fields.${fieldId}`,
+        );
+        expect(field).toBeVisible();
+        if (field) {
+          fireEvent.mouseDown(field);
+        }
+        // First option is selected.
+        expect(
+          screen.queryAllByRole('option', { name: options[0], selected: true })
+            .length,
+        ).toEqual(1);
+        expect(
+          screen.queryAllByRole('option', { selected: false }).length,
+        ).toEqual(options.length);
+
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        options.forEach((option) => {
+          expect(
+            screen.queryAllByRole('option', { name: option }).length,
+          ).toEqual(1);
+        });
+        // Select last option.
+        const lastOption = screen.getByText(options.slice(-1)[0] ?? '');
+        fireEvent.click(lastOption);
+      }
+
+      const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
+      fireEvent.click(saveButton);
+      await waitFor(() => {
+        expect(updatedData).toMatchObject({
+          formatType: 'https://schema.org/Hardcover',
+          status: 'SOLD_OUT',
+        });
+      });
+    },
+  );
 });

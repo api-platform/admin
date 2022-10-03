@@ -5,6 +5,7 @@ const config: Config.InitialOptions = {
   setupFilesAfterEnv: ['./jest.setup.ts'],
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/', '/lib/'],
+  maxWorkers: 1,
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },

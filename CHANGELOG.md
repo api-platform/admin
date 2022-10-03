@@ -2,6 +2,7 @@
 
 ## 3.4.0
 
+* Add enum input guesser
 * Handle multiple file upload
 * Allow to use tabbed components in guessers
 * Use native react-admin `sanitizeEmptyValues`
