@@ -244,24 +244,16 @@ describe('<InputGuesser />', () => {
   });
 
   test.each([
-    // Default transform to humanize sentence.
+    // Default enum names.
     {
       transformEnum: undefined,
       enums: {
-        formatType: ['EBook', 'Audiobook Format', 'Hardcover'],
-        status: ['Available', 'Sold Out'],
-      },
-    },
-    // Disable any transformation.
-    {
-      transformEnum: false,
-      enums: {
         formatType: [
-          'https://schema.org/EBook',
-          'https://schema.org/AudiobookFormat',
-          'https://schema.org/Hardcover',
+          'Https://schema.org/ebook',
+          'Https://schema.org/audiobookformat',
+          'Https://schema.org/hardcover',
         ],
-        status: ['AVAILABLE', 'SOLD_OUT'],
+        status: ['Available', 'Sold out'],
       },
     },
     // Custom transformation.

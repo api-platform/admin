@@ -86,11 +86,12 @@ export const API_FIELDS_DATA = [
     range: 'http://www.w3.org/2001/XMLSchema#string',
     reference: null,
     embedded: null,
-    enum: [
-      'https://schema.org/EBook',
-      'https://schema.org/AudiobookFormat',
-      'https://schema.org/Hardcover',
-    ],
+    enum: {
+      'Https://schema.org/ebook': 'https://schema.org/EBook',
+      'Https://schema.org/audiobookformat':
+        'https://schema.org/AudiobookFormat',
+      'Https://schema.org/hardcover': 'https://schema.org/Hardcover',
+    },
     required: false,
   }),
   new Field('status', {
@@ -98,7 +99,7 @@ export const API_FIELDS_DATA = [
     range: 'http://www.w3.org/2001/XMLSchema#string',
     reference: null,
     embedded: null,
-    enum: ['AVAILABLE', 'SOLD_OUT'],
+    enum: { Available: 'AVAILABLE', 'Sold out': 'SOLD_OUT' },
     required: false,
   }),
 ];

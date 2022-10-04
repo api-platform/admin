@@ -475,14 +475,14 @@ type InputProps =
 
 export type IntrospectedInputGuesserProps = Partial<InputProps> &
   IntrospectedGuesserProps & {
-    transformEnum?: boolean | ((value: string | number) => string | number);
+    transformEnum?: (value: string | number) => string | number;
   };
 
 export type InputGuesserProps = Omit<
   InputProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
 > & {
-  transformEnum?: boolean | ((value: string | number) => string | number);
+  transformEnum?: (value: string | number) => string | number;
 };
 
 export type IntrospecterProps = (
