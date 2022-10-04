@@ -43,6 +43,15 @@ const dataProvider: ApiPlatformAdminDataProvider = {
         deprecatedField: 'deprecatedField value',
         title: 'Title',
         description: 'Lorem ipsum dolor sit amet',
+        nullText: null,
+        embedded: {
+          address: '91 rue du Temple',
+        },
+        embeddeds: [
+          {
+            address: '16 avenue de Rivoli',
+          },
+        ],
       },
     }),
   introspect: () =>
@@ -102,7 +111,7 @@ describe('<InputGuesser />', () => {
     });
   });
 
-  test('renders a sanitized text input', async () => {
+  test('renders text inputs', async () => {
     const user = userEvent.setup();
     let updatedData = {};
 
@@ -113,13 +122,15 @@ describe('<InputGuesser />', () => {
             <Edit id="/users/123" mutationMode="pessimistic">
               <SimpleForm
                 onSubmit={(data: {
-                  title?: string | null;
-                  description?: string | null;
+                  title?: string;
+                  description?: string;
+                  nullText?: string;
                 }) => {
                   updatedData = data;
                 }}>
                 <InputGuesser source="title" />
-                <InputGuesser source="description" sanitizeEmptyValue={false} />
+                <InputGuesser source="description" />
+                <InputGuesser source="nullText" />
               </SimpleForm>
             </Edit>
           </ResourceContextProvider>
@@ -139,16 +150,94 @@ describe('<InputGuesser />', () => {
       'resources.users.fields.description',
     );
     expect(descriptionField).toHaveValue('Lorem ipsum dolor sit amet');
+    expect(
+      await screen.findAllByText('resources.users.fields.nullText'),
+    ).toHaveLength(1);
+    const nullTextField = screen.getByLabelText(
+      'resources.users.fields.nullText',
+    );
+    expect(nullTextField).toHaveValue('');
 
-    await user.clear(titleField);
-    expect(titleField).toHaveValue('');
+    await user.type(titleField, ' Foo');
+    expect(titleField).toHaveValue('Title Foo');
     await user.clear(descriptionField);
     expect(descriptionField).toHaveValue('');
 
     const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
     fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(updatedData).toMatchObject({ title: null, description: '' });
+      expect(updatedData).toMatchObject({
+        title: 'Title Foo',
+        description: '',
+        nullText: '',
+      });
+    });
+  });
+
+  test('renders embedded inputs', async () => {
+    const user = userEvent.setup();
+    let updatedData = {};
+
+    render(
+      <AdminContext dataProvider={dataProvider}>
+        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
+          <ResourceContextProvider value="users">
+            <Edit id="/users/123" mutationMode="pessimistic">
+              <SimpleForm
+                onSubmit={(data: {
+                  embedded?: object;
+                  embeddeds?: object[];
+                }) => {
+                  updatedData = data;
+                }}>
+                <InputGuesser source="embedded" />
+                <InputGuesser source="embeddeds" />
+              </SimpleForm>
+            </Edit>
+          </ResourceContextProvider>
+        </SchemaAnalyzerContext.Provider>
+      </AdminContext>,
+    );
+
+    expect(
+      await screen.findAllByText('resources.users.fields.embedded'),
+    ).toHaveLength(1);
+    const embeddedField = screen.getByLabelText(
+      'resources.users.fields.embedded',
+    );
+    expect(embeddedField).toHaveValue('{"address":"91 rue du Temple"}');
+    expect(
+      await screen.findAllByText('resources.users.fields.embeddeds.0'),
+    ).toHaveLength(1);
+    const embeddedsField = screen.getByLabelText(
+      'resources.users.fields.embeddeds.0',
+    );
+    expect(embeddedsField).toHaveValue('{"address":"16 avenue de Rivoli"}');
+
+    await user.type(embeddedField, '{ArrowLeft}, "city": "Paris"');
+    expect(embeddedField).toHaveValue(
+      '{"address":"91 rue du Temple","city":"Paris"}',
+    );
+    await user.type(embeddedsField, '{ArrowLeft}, "city": "Paris"');
+    expect(embeddedsField).toHaveValue(
+      '{"address":"16 avenue de Rivoli","city":"Paris"}',
+    );
+
+    const saveButton = screen.getByRole('button', { name: 'ra.action.save' });
+    fireEvent.click(saveButton);
+    await waitFor(() => {
+      expect(updatedData).toMatchObject({
+        embedded: {
+          address: '91 rue du Temple',
+          city: 'Paris',
+        },
+        embeddeds: [
+          {
+            address: '16 avenue de Rivoli',
+            city: 'Paris',
+          },
+        ],
+      });
     });
   });
 });

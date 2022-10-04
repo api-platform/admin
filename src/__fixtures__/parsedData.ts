@@ -13,6 +13,10 @@ export const API_DATA = new Api('entrypoint', {
   ],
 });
 
+const EmbeddedResource = new Resource('embedded', '/embeddeds', {
+  fields: [new Field('address')],
+});
+
 export const API_FIELDS_DATA = [
   new Field('id', {
     id: 'http://schema.org/id',
@@ -55,6 +59,26 @@ export const API_FIELDS_DATA = [
     range: 'http://www.w3.org/2001/XMLSchema#string',
     reference: null,
     embedded: null,
+    required: false,
+  }),
+  new Field('nullText', {
+    id: 'http://schema.org/nullText',
+    range: 'http://www.w3.org/2001/XMLSchema#string',
+    reference: null,
+    embedded: null,
+    required: false,
+  }),
+  new Field('embedded', {
+    id: 'http://schema.org/embedded',
+    reference: null,
+    embedded: EmbeddedResource,
+    maxCardinality: 1,
+    required: false,
+  }),
+  new Field('embeddeds', {
+    id: 'http://schema.org/embedded',
+    reference: null,
+    embedded: EmbeddedResource,
     required: false,
   }),
 ];
