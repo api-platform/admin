@@ -4,6 +4,7 @@
 
 * Handle multiple file upload
 * Allow to use tabbed components in guessers
+* Use native react-admin `sanitizeEmptyValues`
 
 ## 3.3.8
 

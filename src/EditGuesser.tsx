@@ -61,7 +61,7 @@ export const IntrospectedEditGuesser = ({
   toolbar,
   warnWhenUnsavedChanges,
   formComponent,
-  sanitizeEmptyValues,
+  sanitizeEmptyValues = true,
   children,
   ...props
 }: IntrospectedEditGuesserProps) => {
@@ -78,11 +78,7 @@ export const IntrospectedEditGuesser = ({
   let inputChildren = React.Children.toArray(children);
   if (inputChildren.length === 0) {
     inputChildren = writableFields.map((field) => (
-      <InputGuesser
-        key={field.name}
-        source={field.name}
-        sanitizeEmptyValue={sanitizeEmptyValues}
-      />
+      <InputGuesser key={field.name} source={field.name} />
     ));
     displayOverrideCode(getOverrideCode(schema, writableFields));
   }
@@ -195,6 +191,7 @@ export const IntrospectedEditGuesser = ({
         redirect={redirectTo}
         toolbar={toolbar}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
+        sanitizeEmptyValues={sanitizeEmptyValues}
         component={formComponent}>
         {inputChildren}
       </FormType>

@@ -29,6 +29,7 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
     {
       "changeLocale": [Function],
       "getLocale": [Function],
+      "getLocales": [Function],
       "translate": [Function],
     }
   }
@@ -37,6 +38,7 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
     {
       "getItem": [Function],
       "removeItem": [Function],
+      "removeItems": [Function],
       "reset": [Function],
       "setItem": [Function],
       "setup": [Function],
@@ -73,6 +75,7 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
     {
       "changeLocale": [Function],
       "getLocale": [Function],
+      "getLocales": [Function],
       "translate": [Function],
     }
   }
@@ -81,6 +84,7 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
     {
       "getItem": [Function],
       "removeItem": [Function],
+      "removeItems": [Function],
       "reset": [Function],
       "setItem": [Function],
       "setup": [Function],
@@ -117,6 +121,7 @@ exports[`<AdminGuesser /> renders without data 1`] = `
     {
       "changeLocale": [Function],
       "getLocale": [Function],
+      "getLocales": [Function],
       "translate": [Function],
     }
   }
@@ -125,6 +130,7 @@ exports[`<AdminGuesser /> renders without data 1`] = `
     {
       "getItem": [Function],
       "removeItem": [Function],
+      "removeItems": [Function],
       "reset": [Function],
       "setItem": [Function],
       "setup": [Function],

@@ -23,7 +23,7 @@
     "jsonld": "^8.1.0",
     "lodash.isplainobject": "^4.0.6",
     "prop-types": "^15.6.2",
-    "react-admin": "^4.0.3",
+    "react-admin": "^4.4.0",
     "react-error-boundary": "^3.1.0"
   },
   "devDependencies": {

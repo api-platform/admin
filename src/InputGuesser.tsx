@@ -34,11 +34,6 @@ import type {
   IntrospectedInputGuesserProps,
 } from './types.js';
 
-const convertEmptyStringToNull = (value: string) =>
-  value === '' ? null : value;
-
-const convertNullToEmptyString = (value: string | null) => value ?? '';
-
 export const IntrospectedInputGuesser = ({
   fields,
   readableFields,
@@ -46,7 +41,6 @@ export const IntrospectedInputGuesser = ({
   schema,
   schemaAnalyzer,
   validate,
-  sanitizeEmptyValue = true,
   ...props
 }: IntrospectedInputGuesserProps) => {
   const field = fields.find(({ name }) => name === props.source);
@@ -107,13 +101,8 @@ export const IntrospectedInputGuesser = ({
     );
   }
 
-  const defaultValueSanitize = sanitizeEmptyValue ? null : '';
-  const formatSanitize = (value: string | null) =>
-    convertNullToEmptyString(value);
-  const parseSanitize = (value: string) =>
-    sanitizeEmptyValue ? convertEmptyStringToNull(value) : value;
-
-  let { format, parse } = props;
+  let format;
+  let parse;
   const fieldType = schemaAnalyzer.getFieldType(field);
 
   if (['integer_id', 'id'].includes(fieldType) || field.name === 'id') {
@@ -141,10 +130,7 @@ export const IntrospectedInputGuesser = ({
 
     return JSON.stringify(value);
   };
-  const parseEmbedded = (value: string | null) => {
-    if (value === null) {
-      return null;
-    }
+  const parseEmbedded = (value: string) => {
     try {
       const parsed = JSON.parse(value);
       if (!isPlainObject(parsed)) {
@@ -155,24 +141,16 @@ export const IntrospectedInputGuesser = ({
       return value;
     }
   };
-  const parseEmbeddedSanitize = (value: string) =>
-    parseEmbedded(parseSanitize(value));
 
-  if (field.embedded !== null && field.maxCardinality === 1) {
+  if (field.embedded !== null) {
     format = formatEmbedded;
-    parse = parseEmbeddedSanitize;
+    parse = parseEmbedded;
   }
 
-  let textInputFormat = formatSanitize;
-  let textInputParse = parseSanitize;
+  const { format: formatProp, parse: parseProp } = props;
 
   switch (fieldType) {
     case 'array':
-      if (field.embedded !== null && field.maxCardinality !== 1) {
-        textInputFormat = formatEmbedded;
-        textInputParse = parseEmbeddedSanitize;
-      }
-
       return (
         <ArrayInput
           key={field.name}
@@ -182,9 +160,8 @@ export const IntrospectedInputGuesser = ({
           <SimpleFormIterator>
             <TextInput
               source=""
-              defaultValue={defaultValueSanitize}
-              format={textInputFormat}
-              parse={textInputParse}
+              format={formatProp ?? format}
+              parse={parseProp ?? parse}
             />
           </SimpleFormIterator>
         </ArrayInput>
@@ -197,8 +174,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as NumberInputProps)}
-          format={format}
-          parse={parse}
+          format={formatProp ?? format}
+          parse={parseProp ?? parse}
           source={field.name}
         />
       );
@@ -210,8 +187,8 @@ export const IntrospectedInputGuesser = ({
           step="0.1"
           validate={guessedValidate}
           {...(props as NumberInputProps)}
-          format={format}
-          parse={parse}
+          format={formatProp ?? format}
+          parse={parseProp ?? parse}
           source={field.name}
         />
       );
@@ -222,8 +199,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as BooleanInputProps)}
-          format={format}
-          parse={parse}
+          format={formatProp ?? format}
+          parse={parseProp ?? parse}
           source={field.name}
         />
       );
@@ -234,8 +211,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as DateInputProps)}
-          format={format}
-          parse={parse}
+          format={formatProp ?? format}
+          parse={parseProp ?? parse}
           source={field.name}
         />
       );
@@ -246,8 +223,8 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as DateTimeInputProps)}
-          format={format}
-          parse={parse}
+          format={formatProp ?? format}
+          parse={parseProp ?? parse}
           source={field.name}
         />
       );
@@ -257,10 +234,9 @@ export const IntrospectedInputGuesser = ({
         <TextInput
           key={field.name}
           validate={guessedValidate}
-          defaultValue={defaultValueSanitize}
           {...(props as TextInputProps)}
-          format={format ?? formatSanitize}
-          parse={parse ?? parseSanitize}
+          format={formatProp ?? format}
+          parse={parseProp ?? parse}
           source={field.name}
         />
       );

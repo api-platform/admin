@@ -377,16 +377,12 @@ type CreateFormProps = Omit<
   };
 
 export type IntrospectedCreateGuesserProps = CreateFormProps &
-  IntrospectedGuesserProps & {
-    sanitizeEmptyValues?: boolean;
-  };
+  IntrospectedGuesserProps;
 
 export type CreateGuesserProps = Omit<
   CreateFormProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
-> & {
-  sanitizeEmptyValues?: boolean;
-};
+>;
 
 type EditFormProps = Omit<
   EditProps & SimpleFormProps & TabbedFormProps,
@@ -399,16 +395,12 @@ type EditFormProps = Omit<
   };
 
 export type IntrospectedEditGuesserProps = EditFormProps &
-  IntrospectedGuesserProps & {
-    sanitizeEmptyValues?: boolean;
-  };
+  IntrospectedGuesserProps;
 
 export type EditGuesserProps = Omit<
   EditFormProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
-> & {
-  sanitizeEmptyValues?: boolean;
-};
+>;
 
 type ListDatagridProps = Omit<
   ListProps & Omit<DatagridProps, 'sx'>,
@@ -482,16 +474,12 @@ type InputProps =
   | ReferenceInputProps;
 
 export type IntrospectedInputGuesserProps = Partial<InputProps> &
-  IntrospectedGuesserProps & {
-    sanitizeEmptyValue?: boolean;
-  };
+  IntrospectedGuesserProps;
 
 export type InputGuesserProps = Omit<
   InputProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
-> & {
-  sanitizeEmptyValue?: boolean;
-};
+>;
 
 export type IntrospecterProps = (
   | CreateGuesserProps
