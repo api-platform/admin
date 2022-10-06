@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.1
+
+* Fix empty array in form would trigger a file upload
+
 ## 3.4.0
 
 * Add enum input guesser
