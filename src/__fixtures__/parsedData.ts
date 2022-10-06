@@ -81,4 +81,25 @@ export const API_FIELDS_DATA = [
     embedded: EmbeddedResource,
     required: false,
   }),
+  new Field('formatType', {
+    id: 'https://schema.org/BookFormatType',
+    range: 'http://www.w3.org/2001/XMLSchema#string',
+    reference: null,
+    embedded: null,
+    enum: {
+      'Https://schema.org/ebook': 'https://schema.org/EBook',
+      'Https://schema.org/audiobookformat':
+        'https://schema.org/AudiobookFormat',
+      'Https://schema.org/hardcover': 'https://schema.org/Hardcover',
+    },
+    required: false,
+  }),
+  new Field('status', {
+    id: 'http://localhost/status',
+    range: 'http://www.w3.org/2001/XMLSchema#string',
+    reference: null,
+    embedded: null,
+    enum: { Available: 'AVAILABLE', 'Sold out': 'SOLD_OUT' },
+    required: false,
+  }),
 ];

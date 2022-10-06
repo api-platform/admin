@@ -41,6 +41,7 @@ export const IntrospectedInputGuesser = ({
   schema,
   schemaAnalyzer,
   validate,
+  transformEnum,
   ...props
 }: IntrospectedInputGuesserProps) => {
   const field = fields.find(({ name }) => name === props.source);
@@ -104,6 +105,26 @@ export const IntrospectedInputGuesser = ({
   let format;
   let parse;
   const fieldType = schemaAnalyzer.getFieldType(field);
+
+  if (field.enum) {
+    const choices = Object.entries(field.enum).map(([k, v]) => ({
+      id: v,
+      name: transformEnum ? transformEnum(v) : k,
+    }));
+    return fieldType === 'array' ? (
+      <SelectArrayInput
+        validate={guessedValidate}
+        choices={choices}
+        {...(props as SelectArrayInputProps)}
+      />
+    ) : (
+      <SelectInput
+        validate={guessedValidate}
+        choices={choices}
+        {...(props as SelectInputProps)}
+      />
+    );
+  }
 
   if (['integer_id', 'id'].includes(fieldType) || field.name === 'id') {
     const prefix = `/${props.resource}/`;
