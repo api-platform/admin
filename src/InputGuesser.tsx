@@ -29,6 +29,7 @@ import type {
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
 import Introspecter from './Introspecter.js';
+import getIdentifierValue, { isIdentifier } from './getIdentifierValue.js';
 import type {
   InputGuesserProps,
   IntrospectedInputGuesserProps,
@@ -126,19 +127,15 @@ export const IntrospectedInputGuesser = ({
     );
   }
 
-  if (['integer_id', 'id'].includes(fieldType) || field.name === 'id') {
-    const prefix = `/${props.resource}/`;
-
-    format = (value: string | number) => {
-      if (typeof value === 'string' && value.indexOf(prefix) === 0) {
-        const id = value.substring(prefix.length);
-        if (['integer_id', 'integer'].includes(fieldType)) {
-          return parseInt(id, 10);
-        }
-        return id;
-      }
-      return value;
-    };
+  if (isIdentifier(field, fieldType)) {
+    format = (value: string | number) =>
+      getIdentifierValue(
+        schemaAnalyzer,
+        props.resource,
+        fields,
+        field.name,
+        value,
+      );
   }
 
   const formatEmbedded = (value: string | object | null) => {
