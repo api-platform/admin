@@ -59,6 +59,42 @@ const dataProvider: ApiPlatformAdminDataProvider = {
 };
 
 describe('<EditGuesser />', () => {
+  test('renders default fields', async () => {
+    render(
+      <AdminContext dataProvider={dataProvider}>
+        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
+          <EditGuesser resource="users" id="/users/123" />
+        </SchemaAnalyzerContext.Provider>
+      </AdminContext>,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryAllByRole('tab')).toHaveLength(0);
+      expect(screen.queryByText('resources.users.fields.id')).toBeVisible();
+      expect(screen.queryByLabelText('resources.users.fields.id')).toHaveValue(
+        123,
+      );
+      expect(screen.queryByText('resources.users.fields.fieldA')).toBeVisible();
+      expect(
+        screen.queryByLabelText('resources.users.fields.fieldA *'),
+      ).toHaveValue('fieldA value');
+      expect(screen.queryByText('resources.users.fields.fieldB')).toBeVisible();
+      expect(
+        screen.queryByLabelText('resources.users.fields.fieldB *'),
+      ).toHaveValue('fieldB value');
+      expect(
+        screen.queryByText('resources.users.fields.deprecatedField'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText('resources.users.fields.body'),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText('resources.users.fields.title')).toBeVisible();
+      expect(
+        screen.queryByLabelText('resources.users.fields.title'),
+      ).toHaveValue('Title');
+    });
+  });
+
   test('renders with custom fields', async () => {
     render(
       <AdminContext dataProvider={dataProvider}>

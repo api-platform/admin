@@ -18,6 +18,7 @@ import type { Field, Resource } from '@api-platform/api-doc-parser';
 
 import InputGuesser from './InputGuesser.js';
 import Introspecter from './Introspecter.js';
+import getIdentifierValue from './getIdentifierValue.js';
 import useMercureSubscription from './useMercureSubscription.js';
 import useDisplayOverrideCode from './useDisplayOverrideCode.js';
 import type {
@@ -102,6 +103,19 @@ export const IntrospectedEditGuesser = ({
       if (transform) {
         data = transform(values);
       }
+      // Identifiers need to be formatted in case they have not been modified in the form.
+      Object.entries(values).forEach(([key, value]) => {
+        const identifierValue = getIdentifierValue(
+          schemaAnalyzer,
+          resource,
+          fields,
+          key,
+          value,
+        );
+        if (identifierValue !== value) {
+          data[key] = identifierValue;
+        }
+      });
       try {
         const response = await update(
           resource,
@@ -157,16 +171,17 @@ export const IntrospectedEditGuesser = ({
       }
     },
     [
-      update,
+      fields,
       hasFileField,
-      resource,
       id,
       mutationOptions,
       notify,
       redirect,
       redirectTo,
+      resource,
       schemaAnalyzer,
       transform,
+      update,
     ],
   );
 

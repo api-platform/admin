@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.2
+
+* Format identifier values on save (needed when not modified in the form)
+
 ## 3.4.1
 
 * Fix empty array in form would trigger a file upload
