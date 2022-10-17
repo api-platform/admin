@@ -54,6 +54,7 @@ export const lightTheme: RaThemeOptions = {
     mode: 'light',
   },
   components: {
+    ...defaultTheme.components,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore react-admin doesn't add its own components
     RaMenuItemLink: {

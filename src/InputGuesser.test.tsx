@@ -170,8 +170,8 @@ describe('<InputGuesser />', () => {
     await waitFor(() => {
       expect(updatedData).toMatchObject({
         title: 'Title Foo',
-        description: '',
-        nullText: '',
+        description: null,
+        nullText: null,
       });
     });
   });

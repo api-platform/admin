@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.3
+
+* Fix inconsistencies between dark and light theme
+
 ## 3.4.2
 
 * Format identifier values on save (needed when not modified in the form)
