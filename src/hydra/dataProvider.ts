@@ -57,6 +57,9 @@ class ReactAdminDocument implements ApiPlatformAdminRecord {
     if (!obj['@id']) {
       throw new Error('Document needs to have an @id member.');
     }
+    if (Array.isArray(obj['@id'])) {
+      throw new Error('Document needs to have a string @id member.');
+    }
     this.id = obj['@id'];
   }
 
@@ -117,7 +120,7 @@ export const transformJsonLdDocumentToReactAdminDocument = (
       document[key][0]['@id']
     ) {
       document[key] = document[key].map((obj: JsonLdObj) => {
-        if (addToCache && obj['@id']) {
+        if (addToCache && obj['@id'] && !Array.isArray(obj['@id'])) {
           reactAdminDocumentsCache.set(
             obj['@id'],
             transformJsonLdDocumentToReactAdminDocument(obj, false, false),
