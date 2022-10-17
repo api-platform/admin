@@ -1,6 +1,6 @@
 {
   "name": "@api-platform/admin",
-  "version": "3.4.2",
+  "version": "3.4.3",
   "description": "Automatic administration interface for Hydra-enabled APIs.",
   "files": [
     "*.md",
