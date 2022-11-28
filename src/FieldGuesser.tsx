@@ -29,7 +29,9 @@ import type {
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
 import Introspecter from './Introspecter.js';
+import EnumField from './EnumField.js';
 import type {
+  EnumFieldProps,
   FieldGuesserProps,
   FieldProps,
   IntrospectedFieldGuesserProps,
@@ -84,6 +86,18 @@ const renderField = (
           total={2}
         />
       </ArrayField>
+    );
+  }
+
+  if (field.enum) {
+    return (
+      <EnumField
+        transformEnum={(value) =>
+          Object.entries(field.enum ?? {}).find(([, v]) => v === value)?.[0] ??
+          value
+        }
+        {...(props as EnumFieldProps)}
+      />
     );
   }
 
