@@ -196,6 +196,7 @@ export const IntrospectedEditGuesser = ({
       resource={resource}
       id={id}
       mutationMode={mutationMode}
+      redirect={redirectTo}
       transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
       {...props}>
       <FormType
@@ -203,7 +204,6 @@ export const IntrospectedEditGuesser = ({
         mode={mode}
         defaultValues={defaultValues}
         validate={validate}
-        redirect={redirectTo}
         toolbar={toolbar}
         warnWhenUnsavedChanges={warnWhenUnsavedChanges}
         sanitizeEmptyValues={sanitizeEmptyValues}

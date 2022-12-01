@@ -69,7 +69,7 @@ const getFieldType = (field: Field) => {
 };
 
 const getSubmissionErrors = (error: HttpError) => {
-  if (!error.body || !error.body[0]) {
+  if (!error.body?.[0]) {
     return null;
   }
 
