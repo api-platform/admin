@@ -34,12 +34,7 @@ const ResourcesIntrospecter = ({
 
   const schema = resources.find((r) => r.name === resource);
 
-  if (
-    !schema ||
-    !schema.fields ||
-    !schema.readableFields ||
-    !schema.writableFields
-  ) {
+  if (!schema?.fields || !schema?.readableFields || !schema?.writableFields) {
     if (process.env.NODE_ENV === 'production') {
       // eslint-disable-next-line no-console
       console.error(`Resource ${resource} not present inside API description`);

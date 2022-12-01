@@ -91,7 +91,7 @@ function fetchHydra(
     return {
       status,
       headers,
-      json: body,
+      json: body as NodeObject,
     };
   });
 }

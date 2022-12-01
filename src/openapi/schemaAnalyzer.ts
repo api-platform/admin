@@ -11,7 +11,7 @@ import type { SchemaAnalyzer } from '../types.js';
  * @returns The name of the reference field
  */
 const getFieldNameFromSchema = (schema: Resource) => {
-  if (!schema.fields || !schema.fields[0]) {
+  if (!schema.fields?.[0]) {
     return '';
   }
 
