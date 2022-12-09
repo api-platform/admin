@@ -102,4 +102,13 @@ export const API_FIELDS_DATA = [
     enum: { Available: 'AVAILABLE', 'Sold out': 'SOLD_OUT' },
     required: false,
   }),
+  new Field('genre', {
+    id: 'http://localhost/tags',
+    range: 'http://www.w3.org/2001/XMLSchema#array',
+    reference: null,
+    embedded: null,
+    maxCardinality: null,
+    enum: { Epic: 'EPIC', 'Fairy tale': 'FAIRY_TALE', Myth: 'MYTH' },
+    required: false,
+  }),
 ];

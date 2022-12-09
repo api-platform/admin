@@ -453,7 +453,12 @@ export type FieldProps =
   | EmailFieldProps
   | ArrayFieldProps
   | ReferenceArrayFieldProps
+  | EnumFieldProps
   | ReferenceFieldProps;
+
+export type EnumFieldProps = TextFieldProps & {
+  transformEnum?: (value: string | number) => string | number;
+};
 
 export type IntrospectedFieldGuesserProps = FieldProps &
   IntrospectedGuesserProps;
