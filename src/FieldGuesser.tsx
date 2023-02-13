@@ -23,6 +23,7 @@ import type {
   NumberFieldProps,
   ReferenceArrayFieldProps,
   ReferenceFieldProps,
+  SingleFieldListProps,
   TextFieldProps,
   UrlFieldProps,
 } from 'react-admin';
@@ -65,11 +66,13 @@ const renderField = (
     }
 
     const fieldName = schemaAnalyzer.getFieldNameFromSchema(field.reference);
+    const { linkType, ...rest } = props as ReferenceArrayFieldProps &
+      Pick<SingleFieldListProps, 'linkType'>;
     return (
       <ReferenceArrayField
-        {...(props as ReferenceArrayFieldProps)}
+        {...(rest as ReferenceArrayFieldProps)}
         reference={field.reference.name}>
-        <SingleFieldList>
+        <SingleFieldList linkType={linkType}>
           <ChipField source={fieldName} key={fieldName} />
         </SingleFieldList>
       </ReferenceArrayField>
