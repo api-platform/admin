@@ -121,7 +121,8 @@ export const IntrospectedEditGuesser = ({
           resource,
           {
             id,
-            data: { ...data, extraInformation: { hasFileField } },
+            data,
+            meta: { hasFileField },
           },
           { returnPromise: true },
         );
@@ -197,7 +198,7 @@ export const IntrospectedEditGuesser = ({
       id={id}
       mutationMode={mutationMode}
       redirect={redirectTo}
-      transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
+      transform={(data) => data}
       {...props}>
       <FormType
         onSubmit={mutationMode !== 'pessimistic' ? undefined : save}

@@ -97,7 +97,8 @@ export const IntrospectedCreateGuesser = ({
         const response = await create(
           resource,
           {
-            data: { ...data, extraInformation: { hasFileField } },
+            data,
+            meta: { hasFileField },
           },
           { returnPromise: true },
         );

@@ -265,9 +265,9 @@ describe('Transform a React Admin request to an Hydra request', () => {
       data: {
         bar: 'baz',
         foo: 'foo',
-        extraInformation: {
-          hasFileField: true,
-        },
+      },
+      meta: {
+        hasFileField: true,
       },
     });
     const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
@@ -330,9 +330,9 @@ describe('Transform a React Admin request to an Hydra request', () => {
         foo: 'foo',
         bar: 'baz',
         qux: null,
-        extraInformation: {
-          hasFileField: true,
-        },
+      },
+      meta: {
+        hasFileField: true,
       },
       previousData: {
         id: '/entrypoint/resource/1',
