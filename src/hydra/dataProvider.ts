@@ -44,6 +44,8 @@ import type {
 const isPlainObject = (value: any): value is object =>
   lodashIsPlainObject(value);
 
+export var apiSchema: Api & { resources: Resource[] };
+
 class ReactAdminDocument implements ApiPlatformAdminRecord {
   originId?: string;
 
@@ -193,8 +195,6 @@ function dataProvider(
         ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
       }
     : null;
-
-  let apiSchema: Api & { resources: Resource[] };
 
   const convertReactAdminDataToHydraData = (
     resource: Resource,
