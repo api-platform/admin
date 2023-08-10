@@ -44,7 +44,7 @@ import type {
 const isPlainObject = (value: any): value is object =>
   lodashIsPlainObject(value);
 
-export var apiSchema: Api & { resources: Resource[] };
+let apiSchema: Api & { resources: Resource[] };
 
 class ReactAdminDocument implements ApiPlatformAdminRecord {
   originId?: string;
