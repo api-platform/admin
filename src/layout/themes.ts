@@ -15,7 +15,7 @@ export const darkTheme: RaThemeOptions = {
       dark: '#21a1ae',
     },
     secondary: {
-      ...defaultTheme.palette.secondary,
+      ...defaultTheme.palette!.secondary,
       main: '#51b2bc',
     },
     mode: 'dark',
@@ -48,7 +48,7 @@ export const lightTheme: RaThemeOptions = {
       dark: '#006a75',
     },
     secondary: {
-      ...defaultTheme.palette.secondary,
+      ...defaultTheme.palette!.secondary,
       main: '#288690',
     },
     mode: 'light',
