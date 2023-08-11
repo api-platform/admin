@@ -25,27 +25,7 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
       "updateMany": [Function],
     }
   }
-  i18nProvider={
-    {
-      "changeLocale": [Function],
-      "getLocale": [Function],
-      "getLocales": [Function],
-      "translate": [Function],
-    }
-  }
   loading={[Function]}
-  store={
-    {
-      "getItem": [Function],
-      "removeItem": [Function],
-      "removeItems": [Function],
-      "reset": [Function],
-      "setItem": [Function],
-      "setup": [Function],
-      "subscribe": [Function],
-      "teardown": [Function],
-    }
-  }
 >
   <ResourceGuesser
     name="custom"
@@ -71,27 +51,7 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
       "updateMany": [Function],
     }
   }
-  i18nProvider={
-    {
-      "changeLocale": [Function],
-      "getLocale": [Function],
-      "getLocales": [Function],
-      "translate": [Function],
-    }
-  }
   loading={[Function]}
-  store={
-    {
-      "getItem": [Function],
-      "removeItem": [Function],
-      "removeItems": [Function],
-      "reset": [Function],
-      "setItem": [Function],
-      "setup": [Function],
-      "subscribe": [Function],
-      "teardown": [Function],
-    }
-  }
 >
   <ResourceGuesser
     name="books"
@@ -117,26 +77,6 @@ exports[`<AdminGuesser /> renders without data 1`] = `
       "updateMany": [Function],
     }
   }
-  i18nProvider={
-    {
-      "changeLocale": [Function],
-      "getLocale": [Function],
-      "getLocales": [Function],
-      "translate": [Function],
-    }
-  }
   loading={[Function]}
-  store={
-    {
-      "getItem": [Function],
-      "removeItem": [Function],
-      "removeItems": [Function],
-      "reset": [Function],
-      "setItem": [Function],
-      "setup": [Function],
-      "subscribe": [Function],
-      "teardown": [Function],
-    }
-  }
 />
 `;
