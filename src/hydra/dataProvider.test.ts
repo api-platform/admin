@@ -112,13 +112,19 @@ describe('Transform a React Admin request to an Hydra request', () => {
         status: 200,
       }),
   );
-  const dataProvider = dataProviderFactory({
-    entrypoint: 'entrypoint',
-    mercure: {
-      hub: 'entrypoint',
-    },
-    httpClient: mockFetchHydra,
-    apiDocumentationParser: mockApiDocumentationParser,
+  const dataProvider = {
+    current: dataProviderFactory({
+      entrypoint: 'entrypoint',
+      mercure: {
+        hub: 'entrypoint',
+      },
+      httpClient: mockFetchHydra,
+      apiDocumentationParser: mockApiDocumentationParser,
+    }),
+  };
+
+  beforeAll(async () => {
+    await dataProvider.current.introspect();
   });
 
   test('React Admin get list with filter parameters and custom search params', async () => {
@@ -130,7 +136,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { 'hydra:member': [], 'hydra:totalItems': 3 },
       }),
     );
-    await dataProvider.getList('resource', {
+    await dataProvider.current.getList('resource', {
       pagination: {
         page: 1,
         perPage: 30,
@@ -178,6 +184,35 @@ describe('Transform a React Admin request to an Hydra request', () => {
     ]);
   });
 
+  test('DataProvider can be mutated without losing Schema', async () => {
+    mockFetchHydra.mockClear();
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { '@id': '/foos/76' },
+      }),
+    );
+    dataProvider.current = dataProviderFactory({
+      entrypoint: 'entrypoint',
+      mercure: {
+        hub: 'entrypoint',
+      },
+      httpClient: mockFetchHydra,
+      apiDocumentationParser: mockApiDocumentationParser,
+    });
+    dataProvider.current
+      .create('resource', {
+        data: {
+          foo: 'foo',
+          bar: 'baz',
+        },
+      })
+      .catch((e) => {
+        expect(e).toMatch('error');
+      });
+  });
+
   test('React Admin create', async () => {
     mockFetchHydra.mockClear();
     mockFetchHydra.mockReturnValue(
@@ -187,8 +222,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/foos/76' },
       }),
     );
-    await dataProvider.introspect();
-    await dataProvider.create('resource', {
+    await dataProvider.current.create('resource', {
       data: {
         foo: 'foo',
         bar: 'baz',
@@ -213,13 +247,12 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/foos/43' },
       }),
     );
-    await dataProvider.introspect();
 
     const file = new File(['foo'], 'foo.txt');
     const icons = [...Array(3).keys()].map((i) => ({
       rawFile: new File([`icon_${i}`], `icon_${i}.png`),
     }));
-    await dataProvider.create('resource', {
+    await dataProvider.current.create('resource', {
       data: {
         image: {
           rawFile: file,
@@ -260,8 +293,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/foos/23' },
       }),
     );
-    await dataProvider.introspect();
-    await dataProvider.create('resource', {
+    await dataProvider.current.create('resource', {
       data: {
         bar: 'baz',
         foo: 'foo',
@@ -293,8 +325,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/entrypoint/resource/1' },
       }),
     );
-    await dataProvider.introspect();
-    await dataProvider.update('resource', {
+    await dataProvider.current.update('resource', {
       id: '/entrypoint/resource/1',
       data: {
         foo: 'foo',
@@ -323,8 +354,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/entrypoint/resource/1' },
       }),
     );
-    await dataProvider.introspect();
-    await dataProvider.update('resource', {
+    await dataProvider.current.update('resource', {
       id: '/entrypoint/resource/1',
       data: {
         foo: 'foo',
@@ -378,9 +408,12 @@ describe('Transform a React Admin request to an Hydra request', () => {
         },
       }),
     );
-    const result = await dataProvider.getMany('idSearchFilterResource', {
-      ids: ['/resources/76', '/resources/87', '/resources/99'],
-    });
+    const result = await dataProvider.current.getMany(
+      'idSearchFilterResource',
+      {
+        ids: ['/resources/76', '/resources/87', '/resources/99'],
+      },
+    );
     expect(result).toEqual({
       data: [
         { '@id': '/resources/76', id: '/resources/76' },
@@ -423,7 +456,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/resources/99' },
       }),
     );
-    const result = await dataProvider.getMany('resource', {
+    const result = await dataProvider.current.getMany('resource', {
       ids: ['/resources/76', '/resources/87', '/resources/99'],
     });
     expect(result).toEqual({
@@ -466,7 +499,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         },
       }),
     );
-    const result = await dataProvider.getManyReference('comments', {
+    const result = await dataProvider.current.getManyReference('comments', {
       target: 'posts',
       id: '/posts/346',
       pagination: { page: 1, perPage: 30 },
@@ -509,7 +542,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         },
       }),
     );
-    const result = await dataProvider.getList('comments', {
+    const result = await dataProvider.current.getList('comments', {
       pagination: { page: 1, perPage: 30 },
       sort: { field: 'id', order: 'ASC' },
       filter: false,
@@ -549,7 +582,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         },
       }),
     );
-    const result = await dataProvider.getList('comments', {
+    const result = await dataProvider.current.getList('comments', {
       pagination: { page: 1, perPage: 30 },
       sort: { field: 'id', order: 'ASC' },
       filter: false,
