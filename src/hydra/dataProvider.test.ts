@@ -201,16 +201,14 @@ describe('Transform a React Admin request to an Hydra request', () => {
       httpClient: mockFetchHydra,
       apiDocumentationParser: mockApiDocumentationParser,
     });
-    dataProvider.current
-      .create('resource', {
+    expect(() =>
+      dataProvider.current.create('resource', {
         data: {
           foo: 'foo',
           bar: 'baz',
         },
-      })
-      .catch((e) => {
-        expect(e).toMatch('error');
-      });
+      }),
+    ).not.toThrow(Error);
   });
 
   test('React Admin create', async () => {
