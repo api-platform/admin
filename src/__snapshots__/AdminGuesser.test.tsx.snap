@@ -1,11 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<AdminGuesser /> renders loading 1`] = `
-<Loading
-  loadingPrimary="ra.page.loading"
-  loadingSecondary="ra.message.loading"
-/>
-`;
+exports[`<AdminGuesser /> renders loading 1`] = `<Loading />`;
 
 exports[`<AdminGuesser /> renders with custom resources 1`] = `
 <Admin
