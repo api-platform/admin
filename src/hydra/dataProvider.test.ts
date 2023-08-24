@@ -123,10 +123,6 @@ describe('Transform a React Admin request to an Hydra request', () => {
     }),
   };
 
-  beforeAll(async () => {
-    await dataProvider.current.introspect();
-  });
-
   test('React Admin get list with filter parameters and custom search params', async () => {
     mockFetchHydra.mockClear();
     mockFetchHydra.mockReturnValue(
@@ -193,6 +189,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/foos/76' },
       }),
     );
+    await dataProvider.current.introspect();
     dataProvider.current = dataProviderFactory({
       entrypoint: 'entrypoint',
       mercure: {
@@ -220,6 +217,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/foos/76' },
       }),
     );
+    await dataProvider.current.introspect();
     await dataProvider.current.create('resource', {
       data: {
         foo: 'foo',
@@ -245,6 +243,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/foos/43' },
       }),
     );
+    await dataProvider.current.introspect();
 
     const file = new File(['foo'], 'foo.txt');
     const icons = [...Array(3).keys()].map((i) => ({
@@ -291,6 +290,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/foos/23' },
       }),
     );
+    await dataProvider.current.introspect();
     await dataProvider.current.create('resource', {
       data: {
         bar: 'baz',
@@ -323,6 +323,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/entrypoint/resource/1' },
       }),
     );
+    await dataProvider.current.introspect();
     await dataProvider.current.update('resource', {
       id: '/entrypoint/resource/1',
       data: {
@@ -352,6 +353,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         json: { '@id': '/entrypoint/resource/1' },
       }),
     );
+    await dataProvider.current.introspect();
     await dataProvider.current.update('resource', {
       id: '/entrypoint/resource/1',
       data: {
