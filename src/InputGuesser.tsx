@@ -6,6 +6,7 @@ import {
   DateInput,
   DateTimeInput,
   NumberInput,
+  PasswordInput,
   ReferenceArrayInput,
   ReferenceInput,
   SelectArrayInput,
@@ -21,6 +22,7 @@ import type {
   DateInputProps,
   DateTimeInputProps,
   NumberInputProps,
+  PasswordInputProps,
   ReferenceArrayInputProps,
   ReferenceInputProps,
   SelectArrayInputProps,
@@ -241,6 +243,18 @@ export const IntrospectedInputGuesser = ({
           key={field.name}
           validate={guessedValidate}
           {...(props as DateTimeInputProps)}
+          format={formatProp ?? format}
+          parse={parseProp ?? parse}
+          source={field.name}
+        />
+      );
+
+    case 'password':
+      return (
+        <PasswordInput
+          key={field.name}
+          validate={guessedValidate}
+          {...(props as PasswordInputProps)}
           format={formatProp ?? format}
           parse={parseProp ?? parse}
           source={field.name}

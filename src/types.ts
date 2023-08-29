@@ -142,6 +142,7 @@ export interface SchemaAnalyzer {
     | 'boolean'
     | 'date'
     | 'dateTime'
+    | 'password'
     | 'text';
   getSubmissionErrors: (error: HttpError) => null | SubmissionErrors;
 }
