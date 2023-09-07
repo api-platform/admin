@@ -131,7 +131,7 @@ export default (
       });
 
       return {
-        data: { ...params.data, id: json.id },
+        data: json,
       };
     },
 

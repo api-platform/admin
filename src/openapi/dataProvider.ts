@@ -83,7 +83,7 @@ function dataProvider(
     deleteMany,
     introspect,
     subscribe: (resourceIds, callback) => {
-      if (mercure === null || mercure.hub === null) {
+      if (mercure?.hub === null) {
         return Promise.resolve({ data: null });
       }
 

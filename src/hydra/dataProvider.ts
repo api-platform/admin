@@ -674,7 +674,7 @@ function dataProvider(
 
     if (
       pageResult.data.length > 0 &&
-      ((result.total && result.data.length < result.total) ||
+      ((!!result.total && result.data.length < result.total) ||
         result.pageInfo?.hasNextPage)
     ) {
       pageParams.pagination.page += 1;
