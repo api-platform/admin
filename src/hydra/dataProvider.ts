@@ -388,7 +388,9 @@ function dataProvider(
         } = params as GetListParams | GetManyReferenceParams;
 
         if (order && field) {
-          url.searchParams.set(`order[${field}]`, order);
+          field.split(',').forEach((fieldName) => {
+            url.searchParams.set(`order[${fieldName.trim()}]`, order);
+          });
         }
         if (page) url.searchParams.set('page', page.toString());
         if (perPage) url.searchParams.set('itemsPerPage', perPage.toString());
@@ -722,7 +724,7 @@ function dataProvider(
               page: 1,
             },
             filter: { id: params.ids },
-            sort: { field: '', order: '' },
+            sort: { field: '', order: 'ASC' },
           }).then(({ data }) => ({ data }));
         }
 
