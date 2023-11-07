@@ -34,7 +34,7 @@ export {
   fetchHydra,
 } from './hydra/index.js';
 export type { HydraAdminProps } from './hydra/index.js';
-export { darkTheme, lightTheme } from './layout/index';
+export { darkTheme, lightTheme } from './layout/index.js';
 export {
   OpenApiAdmin,
   dataProvider as openApiDataProvider,
