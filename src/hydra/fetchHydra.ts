@@ -40,8 +40,12 @@ function fetchHydra(
 
       delete (body as NodeObject).trace;
 
-      const documentLoader = (input: string) =>
-        fetchJsonLd(input, authOptions).then((response) => {
+      const documentLoader = (input: string) => {
+        let options = authOptions;
+        options.method = "GET";
+        delete options.body;
+
+        return fetchJsonLd(input, options).then((response) => {
           if (!('body' in response)) {
             throw new Error(
               'An empty response was received when expanding JSON-LD error document.',
@@ -49,6 +53,7 @@ function fetchHydra(
           }
           return response;
         });
+      }
 
       return jsonld
         .expand(body, {
