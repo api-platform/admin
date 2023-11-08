@@ -55,11 +55,11 @@ function fetchHydra(
         });
       }
 
-      return jsonld
-        .expand(body, {
-          base: getDocumentationUrlFromHeaders(headers),
-          documentLoader,
-        })
+      return documentLoader(getDocumentationUrlFromHeaders(headers))
+                .then((response) => jsonld.expand(body, {
+                      expandContext: response.document as any
+                }))
+
         .then((json) =>
           Promise.reject(
             new HttpError(
