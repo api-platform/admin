@@ -722,7 +722,7 @@ function dataProvider(
               page: 1,
             },
             filter: { id: params.ids },
-            sort: { field: '', order: '' },
+            sort: { field: '', order: 'ASC' },
           }).then(({ data }) => ({ data }));
         }
 

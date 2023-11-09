@@ -138,7 +138,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
         perPage: 30,
       },
       sort: {
-        order: '',
+        order: 'ASC',
         field: '',
       },
       filter: {

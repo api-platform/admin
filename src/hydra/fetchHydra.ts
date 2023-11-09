@@ -4,7 +4,7 @@ import {
   getDocumentationUrlFromHeaders,
 } from '@api-platform/api-doc-parser';
 import jsonld from 'jsonld';
-import type { NodeObject } from 'jsonld';
+import type { ContextDefinition, NodeObject } from 'jsonld';
 import type { JsonLdObj } from 'jsonld/jsonld-spec';
 import type { HttpClientOptions, HydraHttpClientResponse } from '../types.js';
 
@@ -41,11 +41,11 @@ function fetchHydra(
       delete (body as NodeObject).trace;
 
       const documentLoader = (input: string) => {
-        let options = authOptions;
-        options.method = "GET";
-        delete options.body;
+        const loaderOptions = authOptions;
+        loaderOptions.method = 'GET';
+        delete loaderOptions.body;
 
-        return fetchJsonLd(input, options).then((response) => {
+        return fetchJsonLd(input, loaderOptions).then((response) => {
           if (!('body' in response)) {
             throw new Error(
               'An empty response was received when expanding JSON-LD error document.',
@@ -53,12 +53,14 @@ function fetchHydra(
           }
           return response;
         });
-      }
+      };
 
       return documentLoader(getDocumentationUrlFromHeaders(headers))
-                .then((response) => jsonld.expand(body, {
-                      expandContext: response.document as any
-                }))
+        .then((response) =>
+          jsonld.expand(body, {
+            expandContext: response.document as ContextDefinition,
+          }),
+        )
 
         .then((json) =>
           Promise.reject(
