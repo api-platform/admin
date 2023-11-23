@@ -22,23 +22,25 @@ Then, if it appears that it's a real bug, you may report it using GitHub by foll
 
 ### Writing a Pull Request
 
-Please base your changes on the `master` branch.
+Please base your changes on the `main` branch.
 
-### Installing the Source Version
+### Two ways to write your patch
 
-To install the source version of API Platform Admin in your project and contribute a patch, follow the instructions below.
+You can patch `@api-platform/admin` by two different ways:
+- by linking `@api-platform/admin` sources to an existing project;
+- by installing this project and running it through Storybook.
 
-Create your client that will use `api-platform-admin` (replace `<yourproject>` by your project's name):
+> Prerequiste: running Api-Platform backend. See the [Getting Started guide](https://api-platform.com/docs/distribution/) to learn more.
 
-```shell
-yarn create react-app <yourproject>
-cd <yourproject>
-yarn add @api-platform/admin
-```
+#### Linking the Source Version to an existing project
 
-Replace `src/App.js` by this one:
+If you already have a project in progress, you can develop directly from it.
 
-```javascript
+The instructions below explain how to install the source version of API Platform Admin in your project and contribute a patch.
+
+Your client should already uses `@api-platform/admin` and its bootstrap file (usually: `src/App.tsx`) should at least contains: 
+
+```tsx
 import React from 'react';
 import { HydraAdmin } from '@api-platform/admin';
 
@@ -86,7 +88,50 @@ cd ../<yourproject>/
 yarn start
 ```
 
-You can now hack in the cloned repository of `api-platform-admin`.
+> You can now hack in the cloned repository of `api-platform-admin`.
+
+#### Running Admin through Storybook
+
+If you don't have an existing API Platform application, you can use one of the bundled example APIs, and visualize the admin through [Storybook](https://storybook.js.org/).
+
+Get the source of `@api-platform/admin`:
+
+```shell
+cd ..
+git clone https://github.com/api-platform/admin.git
+```
+
+Install everything:
+
+```shell
+cd admin
+# Install JS dependencies
+make install
+# (optional) Initizalize a .env containing the URL of the API 
+make cp-env
+```
+
+The default API URL is in the `.env`. You can customize it according to your needs:
+
+```env
+SIMPLE_HTTP_PORT=8000
+SIMPLE_HTTPS_PORT=4430
+SIMPLE_ENTRYPOINT=https://localhost:${SIMPLE_HTTPS_PORT}/api
+```
+
+Run the simple API Platform backend (uses docker) and launch Storybook:
+
+```shell
+make start-simple
+```
+
+Go to http://localhost:4430, accept the self-signed certificate, visit http://localhost:6006 to see the running Admin.
+
+To stop and prune the simple API Platform backend:
+
+```shell
+make stop-simple
+```
 
 ### Testing Your Changes
 
