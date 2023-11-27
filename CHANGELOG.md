@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.5
+
+* Fix validation errors shown as "Server communication error" when creating an entity
+
 ## 3.4.4
 
 * Enum support in field guesser
