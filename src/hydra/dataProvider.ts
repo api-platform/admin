@@ -44,6 +44,8 @@ import type {
 const isPlainObject = (value: any): value is object =>
   lodashIsPlainObject(value);
 
+let apiSchema: Api & { resources: Resource[] };
+
 class ReactAdminDocument implements ApiPlatformAdminRecord {
   originId?: string;
 
@@ -193,8 +195,6 @@ function dataProvider(
         ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
       }
     : null;
-
-  let apiSchema: Api & { resources: Resource[] };
 
   const convertReactAdminDataToHydraData = (
     resource: Resource,
@@ -674,7 +674,7 @@ function dataProvider(
 
     if (
       pageResult.data.length > 0 &&
-      ((result.total && result.data.length < result.total) ||
+      ((!!result.total && result.data.length < result.total) ||
         result.pageInfo?.hasNextPage)
     ) {
       pageParams.pagination.page += 1;
@@ -722,7 +722,7 @@ function dataProvider(
               page: 1,
             },
             filter: { id: params.ids },
-            sort: { field: '', order: '' },
+            sort: { field: '', order: 'ASC' },
           }).then(({ data }) => ({ data }));
         }
 

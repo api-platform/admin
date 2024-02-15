@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.4.5
+
+* Fix validation errors shown as "Server communication error" when creating an entity
+
+## 3.4.4
+
+* Enum support in field guesser
+* Fix random error message about apiSchema being null
+
 ## 3.4.3
 
 * Fix inconsistencies between dark and light theme

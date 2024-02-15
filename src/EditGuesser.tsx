@@ -197,7 +197,10 @@ export const IntrospectedEditGuesser = ({
       id={id}
       mutationMode={mutationMode}
       redirect={redirectTo}
-      transform={(data) => ({ ...data, extraInformation: { hasFileField } })}
+      transform={(data: Partial<RaRecord>) => ({
+        ...data,
+        extraInformation: { hasFileField },
+      })}
       {...props}>
       <FormType
         onSubmit={mutationMode !== 'pessimistic' ? undefined : save}

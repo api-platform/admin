@@ -9,8 +9,8 @@ import {
   Box,
   Button,
   Typography,
+  styled,
 } from '@mui/material';
-import { styled } from '@mui/material/styles/index.js'; // eslint-disable-line import/extensions
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js'; // eslint-disable-line import/extensions
 import HistoryIcon from '@mui/icons-material/History.js'; // eslint-disable-line import/extensions
 import RefreshIcon from '@mui/icons-material/Refresh.js'; // eslint-disable-line import/extensions

@@ -227,22 +227,22 @@ export type ApiPlatformAdminDataProviderTypeParams<T extends DataProviderType> =
   T extends typeof GET_LIST
     ? ApiPlatformAdminGetListParams
     : T extends typeof GET_ONE
-    ? ApiPlatformAdminGetOneParams
-    : T extends typeof GET_MANY
-    ? ApiPlatformAdminGetManyParams
-    : T extends typeof GET_MANY_REFERENCE
-    ? ApiPlatformAdminGetManyReferenceParams
-    : T extends typeof UPDATE
-    ? ApiPlatformAdminUpdateParams
-    : T extends typeof UPDATE_MANY
-    ? ApiPlatformAdminUpdateManyParams
-    : T extends typeof CREATE
-    ? ApiPlatformAdminCreateParams
-    : T extends typeof DELETE
-    ? ApiPlatformAdminDeleteParams
-    : T extends typeof DELETE_MANY
-    ? ApiPlatformAdminDeleteManyParams
-    : never;
+      ? ApiPlatformAdminGetOneParams
+      : T extends typeof GET_MANY
+        ? ApiPlatformAdminGetManyParams
+        : T extends typeof GET_MANY_REFERENCE
+          ? ApiPlatformAdminGetManyReferenceParams
+          : T extends typeof UPDATE
+            ? ApiPlatformAdminUpdateParams
+            : T extends typeof UPDATE_MANY
+              ? ApiPlatformAdminUpdateManyParams
+              : T extends typeof CREATE
+                ? ApiPlatformAdminCreateParams
+                : T extends typeof DELETE
+                  ? ApiPlatformAdminDeleteParams
+                  : T extends typeof DELETE_MANY
+                    ? ApiPlatformAdminDeleteManyParams
+                    : never;
 
 export interface ApiPlatformAdminDataProviderFactoryParams {
   entrypoint: string;
