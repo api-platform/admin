@@ -370,6 +370,7 @@ type CreateFormProps = Omit<
   CreateProps & SimpleFormProps & TabbedFormProps,
   'children'
 > &
+  Partial<PickRename<CreateProps, 'component', 'viewComponent'>> &
   Partial<
     PickRename<SimpleFormProps & TabbedFormProps, 'component', 'formComponent'>
   > & {
@@ -388,6 +389,7 @@ type EditFormProps = Omit<
   EditProps & SimpleFormProps & TabbedFormProps,
   'children'
 > &
+  Partial<PickRename<EditProps, 'component', 'viewComponent'>> &
   Partial<
     PickRename<SimpleFormProps & TabbedFormProps, 'component', 'formComponent'>
   > & {
@@ -421,9 +423,10 @@ export type ListGuesserProps = Omit<
 type ShowFormProps = Omit<
   ShowProps & SimpleFormProps & TabbedFormProps,
   'children'
-> & {
-  children?: ReactNode;
-};
+> &
+  Partial<PickRename<ShowProps, 'component', 'viewComponent'>> & {
+    children?: ReactNode;
+  };
 
 export type IntrospectedShowGuesserProps = ShowFormProps &
   IntrospectedGuesserProps;
