@@ -70,6 +70,7 @@ export const IntrospectedListGuesser = ({
   empty,
   hover,
   expand,
+  expandSingle,
   optimized,
   size,
   children,
@@ -122,6 +123,7 @@ export const IntrospectedListGuesser = ({
         empty={empty}
         hover={hover}
         expand={expand}
+        expandSingle={expandSingle}
         optimized={optimized}
         size={size}
         sx={datagridSx}>
