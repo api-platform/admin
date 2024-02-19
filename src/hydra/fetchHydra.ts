@@ -4,7 +4,7 @@ import {
   getDocumentationUrlFromHeaders,
 } from '@api-platform/api-doc-parser';
 import jsonld from 'jsonld';
-import type { ContextDefinition, NodeObject } from 'jsonld';
+import type { NodeObject } from 'jsonld';
 import type { JsonLdObj } from 'jsonld/jsonld-spec';
 import type { HttpClientOptions, HydraHttpClientResponse } from '../types.js';
 
@@ -55,13 +55,11 @@ function fetchHydra(
         });
       };
 
-      return documentLoader(getDocumentationUrlFromHeaders(headers))
-        .then((response) =>
-          jsonld.expand(body, {
-            expandContext: response.document as ContextDefinition,
-          }),
-        )
-
+      return jsonld
+        .expand(body, {
+          base: getDocumentationUrlFromHeaders(headers),
+          documentLoader,
+        })
         .then((json) =>
           Promise.reject(
             new HttpError(
