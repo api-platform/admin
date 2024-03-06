@@ -9,17 +9,23 @@ jobs:
     name: Continuous integration
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 'current'
-      - name: Install dependencies
+      -
+        name: Install dependencies
         run: yarn install
-      - name: Check build
+      -
+        name: Check build
         run: yarn build
-      - name: Check coding standards
+      -
+        name: Check coding standards
         run: yarn lint
-      - name: Run tests
+      -
+        name: Run tests
         run: yarn test
