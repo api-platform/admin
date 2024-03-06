@@ -24,6 +24,46 @@ Then, if it appears that it's a real bug, you may report it using GitHub by foll
 
 Please base your changes on the `master` branch.
 
+
+### Testing Changes With the Distribution
+
+Start your project:
+
+```console
+docker compose up --wait
+```
+
+Clone the API Platform Admin repository:
+
+```console
+git clone https://github.com/api-platform/admin.git
+```
+
+Start your distribution-based project:
+
+```console
+cd <your-project>
+docker compose up --wait
+```
+
+Change the entrypoint of the API to use the one served by Docker in `pwa/pages/admin/index.tsx`:
+
+```patch
+-      setDynamicAdmin(<HydraAdmin entrypoint={window.origin}></HydraAdmin>);
++      setDynamicAdmin(<HydraAdmin entrypoint="https://localhost"</HydraAdmin>);
+```
+
+Link your local version of API Plarform Admin and start the PWA locally (outside Docker):
+
+```console
+cd pwa/
+pnpm link ../../admin
+pnpm run dev
+```
+
+
+
+
 ### Installing the Source Version
 
 To install the source version of API Platform Admin in your project and contribute a patch, follow the instructions below.

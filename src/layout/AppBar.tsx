@@ -9,7 +9,6 @@ import type { AppBarProps } from 'react-admin';
 import { Box, Typography } from '@mui/material';
 
 import Logo from './Logo.js';
-import { darkTheme, lightTheme } from './themes.js';
 
 const CustomAppBar = ({ classes, userMenu, ...props }: AppBarProps) => {
   const authProvider = useAuthProvider();
@@ -24,7 +23,7 @@ const CustomAppBar = ({ classes, userMenu, ...props }: AppBarProps) => {
       />
       <Logo />
       <Box component="span" sx={{ flex: 1 }} />
-      <ToggleThemeButton lightTheme={lightTheme} darkTheme={darkTheme} />
+      <ToggleThemeButton />
     </AppBar>
   );
 };
