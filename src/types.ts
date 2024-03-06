@@ -47,6 +47,7 @@ import type {
   ResourceProps,
   ShowProps,
   SimpleFormProps,
+  SingleFieldListProps,
   TabbedFormProps,
   TextFieldProps,
   TextInputProps,
@@ -452,7 +453,7 @@ export type FieldProps =
   | UrlFieldProps
   | EmailFieldProps
   | ArrayFieldProps
-  | ReferenceArrayFieldProps
+  | (ReferenceArrayFieldProps & Pick<SingleFieldListProps, 'linkType'>)
   | EnumFieldProps
   | ReferenceFieldProps;
 
