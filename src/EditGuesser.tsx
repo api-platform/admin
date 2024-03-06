@@ -62,6 +62,7 @@ export const IntrospectedEditGuesser = ({
   toolbar,
   warnWhenUnsavedChanges,
   formComponent,
+  viewComponent,
   sanitizeEmptyValues = true,
   children,
   ...props
@@ -197,6 +198,7 @@ export const IntrospectedEditGuesser = ({
       id={id}
       mutationMode={mutationMode}
       redirect={redirectTo}
+      component={viewComponent}
       transform={(data: Partial<RaRecord>) => ({
         ...data,
         extraInformation: { hasFileField },

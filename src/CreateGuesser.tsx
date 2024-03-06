@@ -59,6 +59,7 @@ export const IntrospectedCreateGuesser = ({
   warnWhenUnsavedChanges,
   sanitizeEmptyValues = true,
   formComponent,
+  viewComponent,
   children,
   ...props
 }: IntrospectedCreateGuesserProps) => {
@@ -162,7 +163,7 @@ export const IntrospectedCreateGuesser = ({
   const FormType = hasFormTab ? TabbedForm : SimpleForm;
 
   return (
-    <Create resource={resource} {...props}>
+    <Create resource={resource} component={viewComponent} {...props}>
       <FormType
         onSubmit={save}
         mode={mode}
