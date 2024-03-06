@@ -703,8 +703,13 @@ function dataProvider(
     apiDocumentationParser,
     mercure: factoryParams.mercure ?? true,
   });
-  mercureManager.setDataTransformer(
-    transformJsonLdDocumentToReactAdminDocument,
+  mercureManager.setDataTransformer((jsonLdDocument) =>
+    transformJsonLdDocumentToReactAdminDocument(
+      jsonLdDocument,
+      true,
+      !disableCache,
+      useEmbedded,
+    ),
   );
 
   return {
