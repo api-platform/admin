@@ -603,4 +603,45 @@ describe('Transform a React Admin request to an Hydra request', () => {
       'http://localhost/entrypoint/comments?order%5Bid%5D=ASC&page=1&itemsPerPage=30',
     );
   });
+
+  test('React Admin get list with compound order', async () => {
+    mockFetchHydra.mockClear();
+    mockFetchHydra.mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: {
+          'hydra:member': [
+            { '@id': '/comments/423' },
+            { '@id': '/comments/976' },
+          ],
+          'hydra:totalItems': 2,
+          'hydra:view': {
+            '@id': '/comments?page=1',
+            '@type': 'hydra:PartialCollectionView',
+            'hydra:first': '/comments?page=1',
+            'hydra:last': '/comments?page=1',
+            'hydra:next': '/comments?page=1',
+          },
+        },
+      }),
+    );
+    const result = await dataProvider.current.getList('comments', {
+      pagination: { page: 1, perPage: 30 },
+      sort: { field: 'text, id', order: 'DESC' },
+      filter: false,
+    });
+    expect(result).toEqual({
+      data: [
+        { '@id': '/comments/423', id: '/comments/423' },
+        { '@id': '/comments/976', id: '/comments/976' },
+      ],
+      total: 2,
+    });
+    const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
+    expect(url).toBeInstanceOf(URL);
+    expect(url.toString()).toEqual(
+      'http://localhost/entrypoint/comments?order%5Btext%5D=DESC&order%5Bid%5D=DESC&page=1&itemsPerPage=30',
+    );
+  });
 });
