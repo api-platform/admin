@@ -6,6 +6,7 @@ import {
   I18nContextProvider,
   Loading,
   ThemeProvider,
+  ThemesContext,
   defaultI18nProvider,
 } from 'react-admin';
 import { createHashHistory, createMemoryHistory } from 'history';
@@ -231,11 +232,17 @@ const AdminGuesserWithError = ({
 
   return (
     <I18nContextProvider value={i18nProvider}>
-      <ThemeProvider theme={theme}>
-        <ErrorBoundary onError={handleError} fallbackRender={renderError}>
-          <AdminGuesser {...props} i18nProvider={i18nProvider} theme={theme} />
-        </ErrorBoundary>
-      </ThemeProvider>
+      <ThemesContext.Provider value={theme}>
+        <ThemeProvider>
+          <ErrorBoundary onError={handleError} fallbackRender={renderError}>
+            <AdminGuesser
+              {...props}
+              i18nProvider={i18nProvider}
+              theme={theme}
+            />
+          </ErrorBoundary>
+        </ThemeProvider>
+      </ThemesContext.Provider>
     </I18nContextProvider>
   );
 };
