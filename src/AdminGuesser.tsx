@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { CoreAdminContext } from 'ra-core';
 import PropTypes from 'prop-types';
 import {
   Admin,
@@ -175,23 +176,25 @@ const AdminGuesser = ({
   );
 
   return (
-    <IntrospectionContext.Provider value={introspectionContext}>
-      <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
-        <AdminResourcesGuesser
-          includeDeprecated={includeDeprecated}
-          resources={resources}
-          loading={loading}
-          dataProvider={dataProvider}
-          history={adminHistory}
-          layout={layout}
-          loginPage={loginPage}
-          loadingPage={loadingPage}
-          theme={theme}
-          {...rest}>
-          {children}
-        </AdminResourcesGuesser>
-      </SchemaAnalyzerContext.Provider>
-    </IntrospectionContext.Provider>
+    <CoreAdminContext dataProvider={dataProvider} {...rest}>
+      <IntrospectionContext.Provider value={introspectionContext}>
+        <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
+          <AdminResourcesGuesser
+            includeDeprecated={includeDeprecated}
+            resources={resources}
+            loading={loading}
+            dataProvider={dataProvider}
+            history={adminHistory}
+            layout={layout}
+            loginPage={loginPage}
+            loadingPage={loadingPage}
+            theme={theme}
+            {...rest}>
+            {children}
+          </AdminResourcesGuesser>
+        </SchemaAnalyzerContext.Provider>
+      </IntrospectionContext.Provider>
+    </CoreAdminContext>
   );
 };
 
