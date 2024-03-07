@@ -22,39 +22,44 @@ Then, if it appears that it's a real bug, you may report it using GitHub by foll
 
 ### Writing a Pull Request
 
-Please base your changes on the `master` branch.
+Please base your changes on the `main` branch.
 
 ### Installing the Source Version
 
 To install the source version of API Platform Admin in your project and contribute a patch, follow the instructions below.
 
-Create your client that will use `api-platform-admin` (replace `<yourproject>` by your project's name):
+Create your client that will use `@api-platform/admin` (replace `<yourproject>` by your project's name):
 
-```shell
-yarn create react-app <yourproject>
+```console
+yarn create vite <yourproject> --template react-ts
 cd <yourproject>
 yarn add @api-platform/admin
 ```
 
-Replace `src/App.js` by this one:
+Replace `src/App.tsx` by this one:
 
-```javascript
-import React from 'react';
+```typescript
 import { HydraAdmin } from '@api-platform/admin';
 
-export default () => <HydraAdmin entrypoint="https://demo.api-platform.com" />; // Replace with your own API entrypoint
+function App() {
+  return (
+    <HydraAdmin entrypoint="https://demo.api-platform.com" />
+  )
+}
+
+export default App
 ```
 
 Install your own version of `@api-platform/admin`:
 
-```shell
+```console
 cd ..
 git clone https://github.com/api-platform/admin.git
 ```
 
 Link it:
 
-```shell
+```console
 cd admin
 yarn link
 cd ../<yourproject>
@@ -63,17 +68,17 @@ yarn link "@api-platform/admin"
 
 Use the React version of your project to build `@api-platform/admin`:
 
-```shell
+```console
 cd node_modules/react/
 yarn link
 cd ../../../admin
 yarn link react
 ```
 
-Start your `api-platform-admin` version:
+Build continuously your `@api-platform/admin` version:
 
-```shell
-yarn install
+```console
+yarn install --force
 yarn watch
 ```
 
@@ -81,18 +86,26 @@ Open a new terminal console with the same path.
 
 Start your client:
 
-```shell
+```console
 cd ../<yourproject>/
-yarn start
+yarn install --force
+yarn dev --force
 ```
 
 You can now hack in the cloned repository of `api-platform-admin`.
+
+Each time you change your code, you must restart vite with `--force` option [for your changes to be taken into account](https://vitejs.dev/guide/troubleshooting.html#outdated-pre-bundled-deps-when-linking-to-a-local-package
+):
+
+```console
+yarn dev --force
+```
 
 ### Testing Your Changes
 
 Before sending a Pull Request, make sure the tests pass correctly:
 
-```shell
+```console
 yarn test
 ```
 
