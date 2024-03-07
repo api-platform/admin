@@ -3,7 +3,7 @@
 exports[`<AdminGuesser /> renders loading 1`] = `<Loading />`;
 
 exports[`<AdminGuesser /> renders with custom resources 1`] = `
-<Admin
+<AdminUI
   dataProvider={
     {
       "create": [Function],
@@ -25,11 +25,11 @@ exports[`<AdminGuesser /> renders with custom resources 1`] = `
   <ResourceGuesser
     name="custom"
   />
-</Admin>
+</AdminUI>
 `;
 
 exports[`<AdminGuesser /> renders without custom resources 1`] = `
-<Admin
+<AdminUI
   dataProvider={
     {
       "create": [Function],
@@ -51,11 +51,11 @@ exports[`<AdminGuesser /> renders without custom resources 1`] = `
   <ResourceGuesser
     name="books"
   />
-</Admin>
+</AdminUI>
 `;
 
 exports[`<AdminGuesser /> renders without data 1`] = `
-<Admin
+<AdminUI
   dataProvider={
     {
       "create": [Function],
