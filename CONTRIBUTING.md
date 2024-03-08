@@ -30,15 +30,13 @@ You can patch `@api-platform/admin` by two different ways:
 - by linking `@api-platform/admin` sources to an existing project;
 - by installing this project and running it through Storybook.
 
-> Prerequiste: running Api-Platform backend. See the [Getting Started guide](https://api-platform.com/docs/distribution/) to learn more.
-
 #### Linking the Source Version to an existing project
 
 If you already have a project in progress, you can develop directly from it.
 
 The instructions below explain how to install the source version of API Platform Admin in your project and contribute a patch.
 
-Your client should already uses `@api-platform/admin` and its bootstrap file (usually: `src/App.tsx`) should at least contains: 
+Your client should already use `@api-platform/admin` and its bootstrap file (usually: `src/App.tsx`) should at least contains: 
 
 ```tsx
 import React from 'react';
@@ -99,53 +97,17 @@ yarn dev --force
 
 #### Running Admin through Storybook
 
-If you don't have an existing API Platform application, you can use one of the bundled example APIs, and visualize the admin through [Storybook](https://storybook.js.org/).
-
-Get the source of `@api-platform/admin`:
-
-```shell
-cd ..
-git clone https://github.com/api-platform/admin.git
-```
+If you don't have an existing API Platform application, or don't want to use `yarn link`, you can use one of the bundled example APIs, and visualize the admin through [Storybook](https://storybook.js.org/).
 
 Install everything:
 
 ```shell
-cd admin
-# Install JS dependencies
-make install
-# (optional) Initizalize a .env containing the URL of the API 
-make cp-env
+docker compose up
 ```
 
-The default API URL is in the `.env`. You can customize it according to your needs:
-
-```env
-SIMPLE_HTTP_PORT=8000
-SIMPLE_HTTPS_PORT=4430
-SIMPLE_ENTRYPOINT=https://localhost:${SIMPLE_HTTPS_PORT}/api
-```
-
-Run the simple API Platform backend (uses docker) and launch Storybook:
-
-```shell
-make start-simple
-```
-
-Go to http://localhost:4430, accept the self-signed certificate, visit http://localhost:6006 to see the running Admin.
+Go to http://localhost, accept the self-signed certificate, and see the running Admin.
 
 To stop and prune the simple API Platform backend:
-
-```shell
-make stop-simple
-```
-
-Each time you change your code, you must restart vite with `--force` option [for your changes to be taken into account](https://vitejs.dev/guide/troubleshooting.html#outdated-pre-bundled-deps-when-linking-to-a-local-package
-):
-
-```console
-yarn dev --force
-```
 
 ### Testing Your Changes
 
