@@ -27,6 +27,17 @@
     "react-error-boundary": "^4.0.13"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@storybook/addon-essentials": "^7.5.3",
+    "@storybook/addon-interactions": "^7.5.3",
+    "@storybook/addon-links": "^7.5.3",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.5.3",
+    "@storybook/react": "^7.5.3",
+    "@storybook/react-webpack5": "^7.5.3",
+    "@storybook/testing-library": "^0.2.2",
     "@testing-library/jest-dom": "^6.1.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
@@ -46,6 +57,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.12.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-tree-shaking": "^1.10.0",
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
@@ -55,6 +67,8 @@
     "react-dom": "^18.0.0",
     "react-test-renderer": "^18.0.0",
     "rimraf": "^5.0.0",
+    "serve": "^14.2.1",
+    "storybook": "^7.5.3",
     "ts-jest": "^29.0.0",
     "ts-node": "^10.4.0",
     "typescript": "^5.2.0"
@@ -66,10 +80,13 @@
   "scripts": {
     "build": "rimraf ./lib && tsc",
     "eslint-check": "eslint-config-prettier .eslintrc.cjs",
-    "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
-    "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",
+    "fix": "eslint --ignore-pattern 'lib/*' --ignore-pattern 'api/*' --ext .ts,.tsx,.js --fix .",
+    "lint": "eslint --ignore-pattern 'lib/*' --ignore-pattern 'api/*' --ext .ts,.tsx,.js .",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest src",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch src",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "storybook": "storybook dev -p 3000",
+    "storybook:build": "storybook build",
+    "storybook:serve": "serve storybook-static"
   }
 }

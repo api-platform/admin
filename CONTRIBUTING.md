@@ -24,21 +24,22 @@ Then, if it appears that it's a real bug, you may report it using GitHub by foll
 
 Please base your changes on the `main` branch.
 
-### Installing the Source Version
+### Two ways to write your patch
 
-To install the source version of API Platform Admin in your project and contribute a patch, follow the instructions below.
+You can patch `@api-platform/admin` by two different ways:
+- by linking `@api-platform/admin` sources to an existing project;
+- by installing this project and running it through Storybook.
 
-Create your client that will use `@api-platform/admin` (replace `<yourproject>` by your project's name):
+#### Linking the Source Version to an existing project
 
-```console
-yarn create vite <yourproject> --template react-ts
-cd <yourproject>
-yarn add @api-platform/admin
-```
+If you already have a project in progress, you can develop directly from it.
 
-Replace `src/App.tsx` by this one:
+The instructions below explain how to install the source version of API Platform Admin in your project and contribute a patch.
 
-```typescript
+Your client should already use `@api-platform/admin` and its bootstrap file (usually: `src/App.tsx`) should at least contains: 
+
+```tsx
+import React from 'react';
 import { HydraAdmin } from '@api-platform/admin';
 
 function App() {
@@ -92,14 +93,21 @@ yarn install --force
 yarn dev --force
 ```
 
-You can now hack in the cloned repository of `api-platform-admin`.
+> You can now hack in the cloned repository of `api-platform-admin`.
 
-Each time you change your code, you must restart vite with `--force` option [for your changes to be taken into account](https://vitejs.dev/guide/troubleshooting.html#outdated-pre-bundled-deps-when-linking-to-a-local-package
-):
+#### Running Admin through Storybook
 
-```console
-yarn dev --force
+If you don't have an existing API Platform application, or don't want to use `yarn link`, you can use one of the bundled example APIs, and visualize the admin through [Storybook](https://storybook.js.org/).
+
+Install everything:
+
+```shell
+docker compose up
 ```
+
+Go to http://localhost, accept the self-signed certificate, and see the running Admin.
+
+To stop and prune the simple API Platform backend:
 
 ### Testing Your Changes
 
