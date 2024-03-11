@@ -15,14 +15,25 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /srv/app
 
 RUN corepack enable && \
-	corepack prepare --activate pnpm@latest && \
-	pnpm config -g set store-dir /.pnpm-store
-
-# Development image
-FROM base as dev
+	corepack prepare --activate yarn@*
 
 EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME localhost
 
-CMD ["sh", "-c", "pnpm install; pnpm storybook"]
+# Development image
+FROM base as dev
+
+CMD ["sh", "-c", "yarn install; yarn storybook"]
+
+FROM base as ci
+
+COPY --link package.json yarn.lock ./
+RUN set -eux; \
+	yarn
+
+# copy sources
+COPY --link . ./
+RUN yarn storybook:build
+
+CMD ["yarn", "serve"]

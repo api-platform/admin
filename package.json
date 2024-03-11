@@ -67,6 +67,7 @@
     "react-dom": "^18.0.0",
     "react-test-renderer": "^18.0.0",
     "rimraf": "^5.0.0",
+    "serve": "^14.2.1",
     "storybook": "^7.5.3",
     "ts-jest": "^29.0.0",
     "ts-node": "^10.4.0",
@@ -85,6 +86,7 @@
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch src",
     "watch": "tsc --watch",
     "storybook": "storybook dev -p 3000",
-    "build-storybook": "storybook build"
+    "storybook:build": "storybook build",
+    "storybook:serve": "serve storybook-static"
   }
 }
