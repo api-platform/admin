@@ -30,7 +30,7 @@ export default (
       apiSchema
         ? Promise.resolve({ data: apiSchema })
         : apiDocumentationParser(docEntrypointUrl.toString(), {
-            headers: { 'accept': 'application/ld+json' },
+            headers: { accept: 'application/ld+json' },
           })
             .then(({ api }: ApiDocumentationParserResponse) => {
               if (api.resources && api.resources.length > 0) {

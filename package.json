@@ -79,8 +79,8 @@
   "scripts": {
     "build": "rimraf ./lib && tsc",
     "eslint-check": "eslint-config-prettier .eslintrc.cjs",
-    "fix": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md --fix .",
-    "lint": "eslint --ignore-pattern 'lib/*' --ext .ts,.tsx,.js,.md .",
+    "fix": "eslint --ignore-pattern 'lib/*' --ignore-pattern 'api/*' --ext .ts,.tsx,.js --fix .",
+    "lint": "eslint --ignore-pattern 'lib/*' --ignore-pattern 'api/*' --ext .ts,.tsx,.js .",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest src",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch src",
     "watch": "tsc --watch",

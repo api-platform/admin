@@ -17,6 +17,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Admin: Story = {
   args: {
-    entrypoint: 'https://localhost'
+    entrypoint: 'https://localhost',
   },
 };
