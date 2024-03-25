@@ -54,8 +54,13 @@ services:
     build:
       context: .
       target: dev
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
     volumes:
       - .:/srv/app
+    ports:
+      - target: 3000
+        published: ${PWA_PORT:-3000}
 
 ###> doctrine/doctrine-bundle ###
   database:
