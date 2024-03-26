@@ -55,7 +55,7 @@ services:
       context: .
       target: dev
     environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      API_URL: ${API_URL:-http://php}
     volumes:
       - .:/srv/app
     ports:

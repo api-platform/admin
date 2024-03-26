@@ -24,7 +24,7 @@ ENV HOSTNAME localhost
 # Development image
 FROM base as dev
 
-CMD ["sh", "-c", "yarn install; yarn storybook"]
+CMD ["sh", "-c", "yarn install; yarn playwright install --with-deps; yarn storybook"]
 
 FROM base as ci
 
