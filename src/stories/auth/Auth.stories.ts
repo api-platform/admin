@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from '@storybook/test';
+import { userEvent, within } from '@storybook/test';
 
 import Admin from './Admin';
 
