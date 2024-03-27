@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Admin,
+  AdminContext,
+  AdminUI,
   ComponentPropType,
-  I18nContextProvider,
   Loading,
-  ThemeProvider,
   defaultI18nProvider,
 } from 'react-admin';
-import { createHashHistory, createMemoryHistory } from 'history';
 import { ErrorBoundary } from 'react-error-boundary';
 import type { FallbackProps } from 'react-error-boundary';
 import type { ComponentType, ErrorInfo } from 'react';
@@ -22,6 +20,7 @@ import {
   Error as DefaultError,
   Layout,
   LoginPage,
+  darkTheme,
   lightTheme,
 } from './layout/index.js';
 import getRoutesAndResourcesFromNodes, {
@@ -67,7 +66,7 @@ const getOverrideCode = (resources: Resource[]) => {
 export const AdminResourcesGuesser = ({
   // Admin props
   loadingPage: LoadingPage = Loading,
-  admin: AdminEl = Admin,
+  admin: AdminEl = AdminUI,
   // Props
   children,
   includeDeprecated,
@@ -115,7 +114,7 @@ const AdminGuesser = ({
   includeDeprecated = false,
   // Admin props
   dataProvider,
-  history,
+  i18nProvider,
   layout = Layout,
   loginPage = LoginPage,
   loading: loadingPage,
@@ -128,14 +127,6 @@ const AdminGuesser = ({
   const [loading, setLoading] = useState(true);
   const [, setError] = useState();
   const [introspect, setIntrospect] = useState(true);
-  let adminHistory = history;
-
-  if (!adminHistory) {
-    adminHistory =
-      typeof window === 'undefined'
-        ? createMemoryHistory()
-        : createHashHistory();
-  }
 
   useEffect(() => {
     if (typeof dataProvider.introspect !== 'function') {
@@ -174,23 +165,29 @@ const AdminGuesser = ({
   );
 
   return (
-    <IntrospectionContext.Provider value={introspectionContext}>
-      <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
-        <AdminResourcesGuesser
-          includeDeprecated={includeDeprecated}
-          resources={resources}
-          loading={loading}
-          dataProvider={dataProvider}
-          history={adminHistory}
-          layout={layout}
-          loginPage={loginPage}
-          loadingPage={loadingPage}
-          theme={theme}
-          {...rest}>
-          {children}
-        </AdminResourcesGuesser>
-      </SchemaAnalyzerContext.Provider>
-    </IntrospectionContext.Provider>
+    <AdminContext
+      i18nProvider={i18nProvider}
+      dataProvider={dataProvider}
+      theme={theme}
+      darkTheme={darkTheme}
+      lightTheme={lightTheme}>
+      <IntrospectionContext.Provider value={introspectionContext}>
+        <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
+          <AdminResourcesGuesser
+            includeDeprecated={includeDeprecated}
+            resources={resources}
+            loading={loading}
+            dataProvider={dataProvider}
+            layout={layout}
+            loginPage={loginPage}
+            loadingPage={loadingPage}
+            theme={theme}
+            {...rest}>
+            {children}
+          </AdminResourcesGuesser>
+        </SchemaAnalyzerContext.Provider>
+      </IntrospectionContext.Provider>
+    </AdminContext>
   );
 };
 
@@ -230,13 +227,9 @@ const AdminGuesserWithError = ({
   );
 
   return (
-    <I18nContextProvider value={i18nProvider}>
-      <ThemeProvider theme={theme}>
-        <ErrorBoundary onError={handleError} fallbackRender={renderError}>
-          <AdminGuesser {...props} i18nProvider={i18nProvider} theme={theme} />
-        </ErrorBoundary>
-      </ThemeProvider>
-    </I18nContextProvider>
+    <ErrorBoundary onError={handleError} fallbackRender={renderError}>
+      <AdminGuesser {...props} i18nProvider={i18nProvider} theme={theme} />
+    </ErrorBoundary>
   );
 };
 

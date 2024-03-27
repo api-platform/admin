@@ -7,6 +7,7 @@ module.exports = {
     'airbnb/hooks',
     'prettier',
     'plugin:markdown/recommended',
+    'plugin:storybook/recommended'
   ],
   rules: {
     'prettier/prettier': 'error',

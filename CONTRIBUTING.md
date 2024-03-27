@@ -22,39 +22,45 @@ Then, if it appears that it's a real bug, you may report it using GitHub by foll
 
 ### Writing a Pull Request
 
-Please base your changes on the `master` branch.
+Please base your changes on the `main` branch.
 
-### Installing the Source Version
+### Two ways to write your patch
 
-To install the source version of API Platform Admin in your project and contribute a patch, follow the instructions below.
+You can patch `@api-platform/admin` by two different ways:
+- by linking `@api-platform/admin` sources to an existing project;
+- by installing this project and running it through Storybook.
 
-Create your client that will use `api-platform-admin` (replace `<yourproject>` by your project's name):
+#### Linking the Source Version to an existing project
 
-```shell
-yarn create react-app <yourproject>
-cd <yourproject>
-yarn add @api-platform/admin
-```
+If you already have a project in progress, you can develop directly from it.
 
-Replace `src/App.js` by this one:
+The instructions below explain how to install the source version of API Platform Admin in your project and contribute a patch.
 
-```javascript
+Your client should already use `@api-platform/admin` and its bootstrap file (usually: `src/App.tsx`) should at least contains: 
+
+```tsx
 import React from 'react';
 import { HydraAdmin } from '@api-platform/admin';
 
-export default () => <HydraAdmin entrypoint="https://demo.api-platform.com" />; // Replace with your own API entrypoint
+function App() {
+  return (
+    <HydraAdmin entrypoint="https://demo.api-platform.com" />
+  )
+}
+
+export default App
 ```
 
 Install your own version of `@api-platform/admin`:
 
-```shell
+```console
 cd ..
 git clone https://github.com/api-platform/admin.git
 ```
 
 Link it:
 
-```shell
+```console
 cd admin
 yarn link
 cd ../<yourproject>
@@ -63,17 +69,17 @@ yarn link "@api-platform/admin"
 
 Use the React version of your project to build `@api-platform/admin`:
 
-```shell
+```console
 cd node_modules/react/
 yarn link
 cd ../../../admin
 yarn link react
 ```
 
-Start your `api-platform-admin` version:
+Build continuously your `@api-platform/admin` version:
 
-```shell
-yarn install
+```console
+yarn install --force
 yarn watch
 ```
 
@@ -81,18 +87,33 @@ Open a new terminal console with the same path.
 
 Start your client:
 
-```shell
+```console
 cd ../<yourproject>/
-yarn start
+yarn install --force
+yarn dev --force
 ```
 
-You can now hack in the cloned repository of `api-platform-admin`.
+> You can now hack in the cloned repository of `api-platform-admin`.
+
+#### Running Admin through Storybook
+
+If you don't have an existing API Platform application, or don't want to use `yarn link`, you can use one of the bundled example APIs, and visualize the admin through [Storybook](https://storybook.js.org/).
+
+Install everything:
+
+```shell
+docker compose up
+```
+
+Go to http://localhost, accept the self-signed certificate, and see the running Admin.
+
+To stop and prune the simple API Platform backend:
 
 ### Testing Your Changes
 
 Before sending a Pull Request, make sure the tests pass correctly:
 
-```shell
+```console
 yarn test
 ```
 

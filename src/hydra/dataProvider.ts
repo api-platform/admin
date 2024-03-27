@@ -44,6 +44,8 @@ import type {
 const isPlainObject = (value: any): value is object =>
   lodashIsPlainObject(value);
 
+let apiSchema: Api & { resources: Resource[] };
+
 class ReactAdminDocument implements ApiPlatformAdminRecord {
   originId?: string;
 
@@ -193,8 +195,6 @@ function dataProvider(
         ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
       }
     : null;
-
-  let apiSchema: Api & { resources: Resource[] };
 
   const convertReactAdminDataToHydraData = (
     resource: Resource,
@@ -387,7 +387,9 @@ function dataProvider(
         } = params as GetListParams | GetManyReferenceParams;
 
         if (order && field) {
-          url.searchParams.set(`order[${field}]`, order);
+          field.split(',').forEach((fieldName) => {
+            url.searchParams.set(`order[${fieldName.trim()}]`, order);
+          });
         }
         if (page) url.searchParams.set('page', page.toString());
         if (perPage) url.searchParams.set('itemsPerPage', perPage.toString());
@@ -673,7 +675,7 @@ function dataProvider(
 
     if (
       pageResult.data.length > 0 &&
-      ((result.total && result.data.length < result.total) ||
+      ((!!result.total && result.data.length < result.total) ||
         result.pageInfo?.hasNextPage)
     ) {
       pageParams.pagination.page += 1;
@@ -700,8 +702,13 @@ function dataProvider(
     apiDocumentationParser,
     mercure: factoryParams.mercure ?? true,
   });
-  mercureManager.setDataTransformer(
-    transformJsonLdDocumentToReactAdminDocument,
+  mercureManager.setDataTransformer((jsonLdDocument) =>
+    transformJsonLdDocumentToReactAdminDocument(
+      jsonLdDocument,
+      true,
+      !disableCache,
+      useEmbedded,
+    ),
   );
 
   return {
@@ -721,7 +728,7 @@ function dataProvider(
               page: 1,
             },
             filter: { id: params.ids },
-            sort: { field: '', order: '' },
+            sort: { field: '', order: 'ASC' },
           }).then(({ data }) => ({ data }));
         }
 

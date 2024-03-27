@@ -44,6 +44,7 @@ export const IntrospectedShowGuesser = ({
   writableFields,
   schema,
   schemaAnalyzer,
+  viewComponent,
   children,
   ...props
 }: IntrospectedShowGuesserProps) => {
@@ -70,7 +71,7 @@ export const IntrospectedShowGuesser = ({
   const ShowLayout = hasTab ? TabbedShowLayout : SimpleShowLayout;
 
   return (
-    <Show {...props}>
+    <Show component={viewComponent} {...props}>
       <ShowLayout>{fieldChildren}</ShowLayout>
     </Show>
   );
