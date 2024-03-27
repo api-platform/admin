@@ -2,5 +2,6 @@
 declare var process: {
   env: {
     ENTRYPOINT: string;
+    NODE_ENV: string;
   };
 };

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within } from '@storybook/test';
+import { within } from '@storybook/test';
 import Basic from './Basic';
 
 const meta = {
