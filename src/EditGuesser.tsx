@@ -61,6 +61,7 @@ export const IntrospectedEditGuesser = ({
   transform,
   toolbar,
   warnWhenUnsavedChanges,
+  formId,
   formComponent,
   viewComponent,
   sanitizeEmptyValues = true,
@@ -205,6 +206,7 @@ export const IntrospectedEditGuesser = ({
       })}
       {...props}>
       <FormType
+        id={formId}
         onSubmit={mutationMode !== 'pessimistic' ? undefined : save}
         mode={mode}
         defaultValues={defaultValues}
