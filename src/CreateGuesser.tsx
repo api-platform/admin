@@ -58,6 +58,7 @@ export const IntrospectedCreateGuesser = ({
   toolbar,
   warnWhenUnsavedChanges,
   sanitizeEmptyValues = true,
+  formId,
   formComponent,
   viewComponent,
   children,
@@ -166,6 +167,7 @@ export const IntrospectedCreateGuesser = ({
   return (
     <Create resource={resource} component={viewComponent} {...props}>
       <FormType
+        id={formId}
         onSubmit={save}
         mode={mode}
         defaultValues={defaultValues}

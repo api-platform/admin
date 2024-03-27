@@ -22,6 +22,7 @@ import type {
   DeleteResult,
   EditProps,
   EmailFieldProps,
+  FormProps,
   GET_LIST,
   GET_MANY,
   GET_MANY_REFERENCE,
@@ -371,6 +372,7 @@ type CreateFormProps = Omit<
   CreateProps & SimpleFormProps & TabbedFormProps,
   'children'
 > &
+  Partial<PickRename<FormProps, 'id', 'formId'>> &
   Partial<PickRename<CreateProps, 'component', 'viewComponent'>> &
   Partial<
     PickRename<SimpleFormProps & TabbedFormProps, 'component', 'formComponent'>
@@ -391,6 +393,7 @@ type EditFormProps = Omit<
   'children'
 > &
   Partial<PickRename<EditProps, 'component', 'viewComponent'>> &
+  Partial<PickRename<FormProps, 'id', 'formId'>> &
   Partial<
     PickRename<SimpleFormProps & TabbedFormProps, 'component', 'formComponent'>
   > & {
