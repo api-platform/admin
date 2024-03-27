@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { within } from '@storybook/test';
+import { expect, within } from '@storybook/test';
 import Basic from './Basic';
 
 const meta = {
@@ -18,9 +18,9 @@ type Story = StoryObj<typeof meta>;
 export const Admin: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByText('No Greeting yet.');
+    await canvas.findByRole('heading', { name: 'Greetings' });
   },
   args: {
-    entrypoint: process.env.API_URL,
+    entrypoint: process.env.ENTRYPOINT,
   },
 };

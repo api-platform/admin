@@ -52,6 +52,9 @@ jobs:
       -
         name: Run migrations
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
+      -
+        name: Run interactions tests
+        run: docker compose exec -T pwa yarn storybook:test --url http://127.0.0.1:3000
       # -
       #   name: Doctrine Schema Validator
       #   run: docker compose exec -T pwa pnpm run storybook

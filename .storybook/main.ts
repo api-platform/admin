@@ -17,7 +17,7 @@ const config: StorybookConfig = {
   },
   env: (config) => ({
     ...config,
-    entrypoint: process.env.API_URL || 'https://localhost',
+    ENTRYPOINT: process.env.ENTRYPOINT ?? 'https://localhost',
   }),
   async webpackFinal(config, { configType }) {
     config.resolve = {

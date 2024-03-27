@@ -55,7 +55,7 @@ services:
       context: .
       target: dev
     environment:
-      API_URL: ${API_URL:-http://php}
+      ENTRYPOINT: ${ENTRYPOINT:-https://localhost}
     volumes:
       - .:/srv/app
     ports:

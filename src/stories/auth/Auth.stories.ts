@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
+import { expect, userEvent, within } from '@storybook/test';
 
 import Admin from './Admin';
-import authProvider from './basicAuth';
 
 const meta = {
   title: 'Admin/Auth',
@@ -18,32 +17,35 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await canvas.findByText('Sign in');
-    const username = await canvas.findByLabelText('Username *');
-    await userEvent.type(username, 'john');
-    const password = await canvas.findByLabelText('Password *');
-    await userEvent.type(password, '123');
+    await step('Enter email and password', async () => {
+      await userEvent.type(canvas.getByLabelText('Username *'), 'john');
+      await userEvent.type(canvas.getByLabelText('Password *'), '123');
+    });
   },
   args: {
-    entrypoint: process.env.API_URL,
-    authProvider,
+    entrypoint: process.env.ENTRYPOINT,
   },
 };
 
 export const Loggedin: Story = {
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const submit = await canvas.findByText('Sign in');
-    const username = await canvas.findByLabelText('Username *');
-    await userEvent.type(username, 'john');
-    const password = await canvas.findByLabelText('Password *');
-    await userEvent.type(password, '123');
-    await userEvent.click(submit);
+    const signIn = await canvas.findByText('Sign in');
+    await step('Enter email and password', async () => {
+      await userEvent.type(canvas.getByLabelText('Username *'), 'john');
+      await userEvent.type(canvas.getByLabelText('Password *'), '123');
+    });
+
+    await step('Submit form', async () => {
+      await userEvent.click(signIn);
+    });
+
+    await canvas.findByText('John Doe');
   },
   args: {
-    entrypoint: process.env.API_URL,
-    authProvider,
+    entrypoint: process.env.ENTRYPOINT,
   },
 };
