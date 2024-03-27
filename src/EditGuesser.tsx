@@ -199,7 +199,6 @@ export const IntrospectedEditGuesser = ({
       id={id}
       mutationMode={mutationMode}
       redirect={redirectTo}
-      transform={(data) => data}
       component={viewComponent}
       {...props}>
       <FormType
