@@ -123,7 +123,8 @@ export const IntrospectedEditGuesser = ({
           resource,
           {
             id,
-            data: { ...data, extraInformation: { hasFileField } },
+            data,
+            meta: { hasFileField },
           },
           { returnPromise: true },
         );
@@ -200,10 +201,6 @@ export const IntrospectedEditGuesser = ({
       mutationMode={mutationMode}
       redirect={redirectTo}
       component={viewComponent}
-      transform={(data: Partial<RaRecord>) => ({
-        ...data,
-        extraInformation: { hasFileField },
-      })}
       {...props}>
       <FormType
         id={formId}
