@@ -1,4 +1,5 @@
 import { getJestConfig, waitForPageReady } from '@storybook/test-runner';
+import { Page } from 'playwright';
 // The default Jest configuration comes from @storybook/test
 module.exports = {
   // The default Jest configuration comes from @storybook/test
@@ -9,7 +10,7 @@ module.exports = {
    */
   testTimeout: 30000,
 
-  async postVisit(page) {
+  async postVisit(page: Page) {
     await waitForPageReady(page);
   },
 };
