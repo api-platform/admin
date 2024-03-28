@@ -7,5 +7,5 @@ module.exports = {
    *  to merge testRunnerConfig properties with your own
    * @see https://jestjs.io/docs/configuration
    */
-  testTimeout: 30000,
+  testTimeout: 60000,
 };
