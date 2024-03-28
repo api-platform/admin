@@ -3,3 +3,5 @@ services:
     build:
       context: .
       target: ci
+    environment:
+      ENTRYPOINT: http://php

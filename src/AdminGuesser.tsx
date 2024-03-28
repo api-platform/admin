@@ -121,6 +121,7 @@ const AdminGuesser = ({
   theme = lightTheme,
   // Other props
   children,
+  authProvider,
   ...rest
 }: AdminGuesserProps) => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -170,7 +171,8 @@ const AdminGuesser = ({
       dataProvider={dataProvider}
       theme={theme}
       darkTheme={darkTheme}
-      lightTheme={lightTheme}>
+      lightTheme={lightTheme}
+      authProvider={authProvider}>
       <IntrospectionContext.Provider value={introspectionContext}>
         <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
           <AdminResourcesGuesser
