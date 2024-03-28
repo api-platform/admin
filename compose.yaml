@@ -58,6 +58,12 @@ services:
       ENTRYPOINT: ${ENTRYPOINT:-https://localhost}
     volumes:
       - .:/srv/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 1m
 
 ###> doctrine/doctrine-bundle ###
   database:
