@@ -32,7 +32,7 @@ const useOnSubmit = ({
 
   return useCallback(
     async (values: Partial<RaRecord>) => {
-      const isCreate = id === undefined;
+      const isCreate = id === '';
       const data = transform ? transform(values) : values;
 
       // Identifiers need to be formatted in case they have not been modified in the form.
