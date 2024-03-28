@@ -58,9 +58,6 @@ services:
       ENTRYPOINT: ${ENTRYPOINT:-https://localhost}
     volumes:
       - .:/srv/app
-    ports:
-      - target: 3000
-        published: ${PWA_PORT:-3000}
 
 ###> doctrine/doctrine-bundle ###
   database:

@@ -42,7 +42,7 @@ jobs:
         run: curl -v --fail-with-body http://localhost
       -
         name: Check PWA reachability
-        run: "curl -vk --fail-with-body -H 'Accept: text/html' http://localhost:3000"
+        run: "curl -vk --fail-with-body -H 'Accept: text/html' https://localhost"
       -
         name: Check API reachability
         run: "curl -vk --fail-with-body -H 'Accept: application/ld+json' https://localhost"
