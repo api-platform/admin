@@ -18,8 +18,8 @@ const useOnSubmit = ({
   schemaAnalyzer,
   fields,
   mutationOptions,
-  redirectTo = 'list',
   transform,
+  redirectTo = 'list',
 }: UseOnSubmitProps): ((
   values: Partial<RaRecord>,
 ) => Promise<SubmissionErrors | undefined>) => {
