@@ -46,6 +46,7 @@
     "@types/jest": "^29.0.0",
     "@types/jsonld": "^1.5.0",
     "@types/lodash.isplainobject": "^4.0.0",
+    "@types/node": "^20.11.30",
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
