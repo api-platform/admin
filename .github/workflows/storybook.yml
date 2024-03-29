@@ -55,6 +55,13 @@ jobs:
       -
         name: Run interactions tests
         run: docker compose exec -T pwa yarn storybook:test --url http://127.0.0.1:3000 --maxWorkers 1
+      - 
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
       # -
       #   name: Doctrine Schema Validator
       #   run: docker compose exec -T pwa pnpm run storybook

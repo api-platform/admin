@@ -1,4 +1,4 @@
-import { getJestConfig, waitForPageReady } from '@storybook/test-runner';
+import { getJestConfig } from '@storybook/test-runner';
 
 /**
  * Jest configuration for running tests in Storybook.
