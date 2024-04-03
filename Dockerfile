@@ -17,16 +17,19 @@ WORKDIR /srv/app
 RUN corepack enable && \
 	corepack prepare --activate yarn@*
 
+ENV HOSTNAME localhost
 EXPOSE 3000
 ENV PORT 3000
-ENV HOSTNAME localhost
 
 # Development image
 FROM base as dev
 
-CMD ["sh", "-c", "yarn install; yarn playwright install --with-deps; yarn storybook"]
+CMD ["sh", "-c", "yarn install; yarn storybook"]
 
 FROM base as ci
+
+# EXPOSE 3001
+# ENV PORT 3001
 
 COPY --link package.json yarn.lock ./
 RUN set -eux; \
@@ -34,6 +37,9 @@ RUN set -eux; \
 
 # copy sources
 COPY --link . ./
-RUN yarn storybook:build
 
-CMD ["yarn", "serve"]
+RUN set -eux; \
+	yarn playwright install --with-deps
+
+# CMD ["sh", "-c", "yarn storybook:build; yarn storybook:serve -p 3000"]
+CMD ["sh", "-c", "yarn storybook;"]

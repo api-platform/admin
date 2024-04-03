@@ -64,7 +64,10 @@ services:
       timeout: 10s
       retries: 5
       start_period: 1m
-
+    ports:
+      - target: 3000
+        published: ${PWA_PORT:-3000}
+      
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
