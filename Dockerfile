@@ -31,13 +31,11 @@ FROM base as ci
 # EXPOSE 3001
 # ENV PORT 3001
 
-COPY --link package.json yarn.lock ./
+# copy sources
+COPY --link . ./
 
 RUN set -eux; \
 	yarn
-
-# copy sources
-COPY --link . ./
 
 RUN set -eux; \
 	yarn playwright install --with-deps
