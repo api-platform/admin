@@ -28,14 +28,12 @@ CMD ["sh", "-c", "yarn install; yarn storybook"]
 
 FROM base as ci
 
-# EXPOSE 3001
-# ENV PORT 3001
+COPY --link package.json yarn.lock .yarnrc.yml ./
+RUN set -eux; \
+	yarn
 
 # copy sources
 COPY --link . ./
-
-RUN set -eux; \
-	yarn
 
 RUN set -eux; \
 	yarn playwright install --with-deps
