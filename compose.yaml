@@ -62,8 +62,8 @@ services:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
       interval: 10s
       timeout: 10s
-      retries: 5
-      start_period: 1m
+      retries: 15
+      start_period: 20s
     ports:
       - target: 3000
         published: ${PWA_PORT:-3000}
