@@ -31,15 +31,16 @@ FROM base as ci
 # EXPOSE 3001
 # ENV PORT 3001
 
-# COPY --link package.json yarn.lock ./
-# RUN set -eux; \
-# 	yarn
+COPY --link package.json yarn.lock ./
 
-# # copy sources
-# COPY --link . ./
+RUN set -eux; \
+	yarn
 
-# RUN set -eux; \
-# 	yarn playwright install --with-deps
+# copy sources
+COPY --link . ./
 
-CMD ["sh", "-c", "yarn install && yarn storybook:build && yarn storybook:serve -p 3000"]
+RUN set -eux; \
+	yarn playwright install --with-deps
+
+CMD ["sh", "-c", "yarn storybook:build && yarn storybook:serve -p 3000"]
 # CMD ["sh", "-c", "yarn storybook;"]
