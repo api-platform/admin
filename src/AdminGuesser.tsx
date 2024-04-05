@@ -113,8 +113,13 @@ const AdminGuesser = ({
   // Props for AdminResourcesGuesser
   includeDeprecated = false,
   // Admin props
+  basename,
+  store,
   dataProvider,
   i18nProvider,
+  authProvider,
+  queryClient,
+  defaultTheme,
   layout = Layout,
   loginPage = LoginPage,
   loading: loadingPage,
@@ -168,9 +173,14 @@ const AdminGuesser = ({
     <AdminContext
       i18nProvider={i18nProvider}
       dataProvider={dataProvider}
+      basename={basename}
+      authProvider={authProvider}
+      store={store}
+      queryClient={queryClient}
       theme={theme}
       darkTheme={darkTheme}
-      lightTheme={lightTheme}>
+      lightTheme={lightTheme}
+      defaultTheme={defaultTheme}>
       <IntrospectionContext.Provider value={introspectionContext}>
         <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
           <AdminResourcesGuesser
