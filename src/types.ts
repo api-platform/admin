@@ -504,3 +504,10 @@ export type IntrospecterProps = (
   | ShowGuesserProps
 ) &
   BaseIntrospecterProps;
+
+export type UseOnSubmitProps = Pick<
+  IntrospectedGuesserProps,
+  'schemaAnalyzer' | 'resource' | 'fields'
+> &
+  Pick<CreateProps, 'mutationOptions' | 'transform'> &
+  PickRename<CreateProps, 'redirect', 'redirectTo'>;

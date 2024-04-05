@@ -1,26 +1,20 @@
-import React, { useCallback } from 'react';
-import type { PropsWithChildren, ReactNode } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Edit,
-  FileInput,
   FormTab,
   SimpleForm,
   TabbedForm,
-  useNotify,
-  useRedirect,
   useResourceContext,
-  useUpdate,
 } from 'react-admin';
-import type { HttpError, RaRecord } from 'react-admin';
 import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
 import InputGuesser from './InputGuesser.js';
 import Introspecter from './Introspecter.js';
-import getIdentifierValue from './getIdentifierValue.js';
 import useMercureSubscription from './useMercureSubscription.js';
 import useDisplayOverrideCode from './useDisplayOverrideCode.js';
+import useOnSubmit from './useOnSubmit.js';
 import type {
   EditGuesserProps,
   IntrospectedEditGuesserProps,
@@ -69,11 +63,15 @@ export const IntrospectedEditGuesser = ({
 }: IntrospectedEditGuesserProps) => {
   const { id: routeId } = useParams<'id'>();
   const id = decodeURIComponent(routeId ?? '');
+  const save = useOnSubmit({
+    resource,
+    schemaAnalyzer,
+    fields,
+    mutationOptions,
+    transform,
+    redirectTo,
+  });
   useMercureSubscription(resource, id);
-
-  const [update] = useUpdate();
-  const notify = useNotify();
-  const redirect = useRedirect();
 
   const displayOverrideCode = useDisplayOverrideCode();
 
@@ -84,107 +82,6 @@ export const IntrospectedEditGuesser = ({
     ));
     displayOverrideCode(getOverrideCode(schema, writableFields));
   }
-  const hasFileFieldElement = (elements: Array<ReactNode>): boolean =>
-    elements.some(
-      (child) =>
-        React.isValidElement(child) &&
-        (child.type === FileInput ||
-          hasFileFieldElement(
-            React.Children.toArray((child.props as PropsWithChildren).children),
-          )),
-    );
-  const hasFileField = hasFileFieldElement(inputChildren);
-
-  const save = useCallback(
-    async (values: Partial<RaRecord>) => {
-      if (id === undefined) {
-        return undefined;
-      }
-      let data = values;
-      if (transform) {
-        data = transform(values);
-      }
-      // Identifiers need to be formatted in case they have not been modified in the form.
-      Object.entries(values).forEach(([key, value]) => {
-        const identifierValue = getIdentifierValue(
-          schemaAnalyzer,
-          resource,
-          fields,
-          key,
-          value,
-        );
-        if (identifierValue !== value) {
-          data[key] = identifierValue;
-        }
-      });
-      try {
-        const response = await update(
-          resource,
-          {
-            id,
-            data: { ...data, extraInformation: { hasFileField } },
-          },
-          { returnPromise: true },
-        );
-        const success =
-          mutationOptions?.onSuccess ??
-          ((updatedRecord: RaRecord) => {
-            notify('ra.notification.updated', {
-              type: 'info',
-              messageArgs: { smart_count: 1 },
-            });
-            redirect(redirectTo, resource, updatedRecord.id, updatedRecord);
-          });
-        success(response, { id, data: response, previousData: values }, {});
-        return undefined;
-      } catch (mutateError) {
-        const submissionErrors = schemaAnalyzer.getSubmissionErrors(
-          mutateError as HttpError,
-        );
-        const failure =
-          mutationOptions?.onError ??
-          ((error: string | Error) => {
-            let message = 'ra.notification.http_error';
-            if (!submissionErrors) {
-              message =
-                typeof error === 'string' ? error : error.message || message;
-            }
-            let errorMessage;
-            if (typeof error === 'string') {
-              errorMessage = error;
-            } else if (error?.message) {
-              errorMessage = error.message;
-            }
-            notify(message, {
-              type: 'warning',
-              messageArgs: { _: errorMessage },
-            });
-          });
-        failure(
-          mutateError as string | Error,
-          { id, data: values, previousData: values },
-          {},
-        );
-        if (submissionErrors) {
-          return submissionErrors;
-        }
-        return {};
-      }
-    },
-    [
-      fields,
-      hasFileField,
-      id,
-      mutationOptions,
-      notify,
-      redirect,
-      redirectTo,
-      resource,
-      schemaAnalyzer,
-      transform,
-      update,
-    ],
-  );
 
   const hasFormTab = inputChildren.some(
     (child) =>
@@ -199,10 +96,6 @@ export const IntrospectedEditGuesser = ({
       mutationMode={mutationMode}
       redirect={redirectTo}
       component={viewComponent}
-      transform={(data: Partial<RaRecord>) => ({
-        ...data,
-        extraInformation: { hasFileField },
-      })}
       {...props}>
       <FormType
         onSubmit={mutationMode !== 'pessimistic' ? undefined : save}

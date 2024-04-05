@@ -351,9 +351,8 @@ function dataProvider(
       }
     });
     let extraInformation: { hasFileField?: boolean } = {};
-    if ('data' in params && params.data.extraInformation) {
-      extraInformation = params.data.extraInformation;
-      delete params.data.extraInformation;
+    if ('meta' in params) {
+      extraInformation = params.meta;
     }
     const updateHttpMethod = extraInformation.hasFileField ? 'POST' : 'PUT';
 
