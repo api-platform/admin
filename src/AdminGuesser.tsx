@@ -126,7 +126,6 @@ const AdminGuesser = ({
   theme = lightTheme,
   // Other props
   children,
-  authProvider,
   ...rest
 }: AdminGuesserProps) => {
   const [resources, setResources] = useState<Resource[]>([]);
