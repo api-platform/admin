@@ -69,11 +69,11 @@
 
 	# Matches requests for HTML documents, for static files and for Storybook files,
 	# except for known API paths and paths with extensions handled by API Platform
-	@pwa expression `(!header({'Accept': 'application/ld+json'}) && path('*.js', '*.html', '/', '*.json', '*.svg', '*.css', '*.woff2', '/__webpack_hmr')) || (header({'Connection': '*Upgrade*'}) && header({'Upgrade': 'websocket'}))`
+	@pwa expression `(!header({'Accept': 'application/ld+json'}) && path('*.js', '*.html', '/', '*.json', '*.svg', '*.css', '*.woff2', '/__webpack_hmr', '/iframe')) || (header({'Connection': '*Upgrade*'}) && header({'Upgrade': 'websocket'}))`
 
 	# Comment the following line if you don't want Next.js to catch requests for HTML documents.
 	# In this case, they will be handled by the PHP app.
-	# reverse_proxy @pwa http://{$PWA_UPSTREAM}
+	reverse_proxy @pwa http://{$PWA_UPSTREAM}
 
 	php_server
 }
