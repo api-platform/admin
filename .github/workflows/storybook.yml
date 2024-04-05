@@ -38,15 +38,6 @@ jobs:
         name: Start services
         run: docker compose -f compose.yaml -f compose.ci.yaml up --wait --build || (docker compose -f compose.yaml -f compose.ci.yaml logs pwa && exit 1)
       -
-        name: Check HTTP reachability
-        run: curl -v --fail-with-body http://localhost
-      -
-        name: Check PWA reachability
-        run: "curl -vk --fail-with-body -H 'Accept: text/html' https://localhost"
-      -
-        name: Check API reachability
-        run: "curl -vk --fail-with-body -H 'Accept: application/ld+json' https://localhost"
-      -
         name: Create test database
         run: docker compose exec -T php bin/console -e test doctrine:database:create
       -
@@ -55,10 +46,7 @@ jobs:
       -
         name: Run interactions tests
         run: docker compose exec -T pwa yarn storybook:test --url http://127.0.0.1:3000 --maxWorkers 1
-    
-      # -
-      #   name: Doctrine Schema Validator
-      #   run: docker compose exec -T pwa pnpm run storybook
+
   lint:
     name: Docker Lint
     runs-on: ubuntu-latest

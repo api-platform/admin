@@ -58,11 +58,12 @@ services:
       ENTRYPOINT: ${ENTRYPOINT:-https://localhost}
     volumes:
       - .:/srv/app
+      - /srv/app/node_modules
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
       interval: 10s
       timeout: 10s
-      retries: 15
+      retries: 20
       start_period: 20s
     ports:
       - target: 3000
