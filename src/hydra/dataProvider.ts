@@ -351,7 +351,7 @@ function dataProvider(
       }
     });
     let extraInformation: { hasFileField?: boolean } = {};
-    if ('meta' in defaultParams) {
+    if ('meta' in params) {
       extraInformation = params.meta;
     }
     const updateHttpMethod = extraInformation?.hasFileField ? 'POST' : 'PUT';
