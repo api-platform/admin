@@ -28,7 +28,7 @@ Please base your changes on the `main` branch.
 
 You can patch `@api-platform/admin` by two different ways:
 - by linking `@api-platform/admin` sources to an existing project;
-- by installing this project and running it through Storybook.
+- by installing this project and running it through Storybook (recommended).
 
 #### Linking the Source Version to an existing project
 
@@ -97,7 +97,11 @@ yarn dev --force
 
 #### Running Admin through Storybook
 
-If you don't have an existing API Platform application, or don't want to use `yarn link`, you can use one of the bundled example APIs, and visualize the admin through [Storybook](https://storybook.js.org/).
+If you don't have an existing API Platform application, or don't want to use `yarn link`, you can run and visualize the admin through Docker and [Storybook](https://storybook.js.org/).
+
+This development stack consists of two containers: 
+- `pwa`: containing the `<Admin>` sources and Storybook
+- `php`: holding the API sources
 
 Install everything:
 
@@ -105,9 +109,18 @@ Install everything:
 docker compose up
 ```
 
-Go to http://localhost, accept the self-signed certificate, and see the running Admin.
+Before accessing the Storybook instance, make sure to go to https://localhost to accept the self-signed certificate. Once it's dene, you'll see the API documentation running on a customized version of Swagger UI.
 
-To stop and prune the simple API Platform backend:
+Now you can go to http://localhost:3000/ to see the Storybook instance in action. The changes you'll make in the source code will be hot-reloaded.
+
+To access run a command directly inside a container, run:
+```shell
+# Run a command in the php container 
+docker compose exec -T php your-command
+
+# Run a command in the pwa container
+docker compose exec -T pwa your-command
+```
 
 ### Testing Your Changes
 
