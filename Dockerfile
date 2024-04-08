@@ -30,10 +30,7 @@ FROM base as ci
 
 COPY --link package.json yarn.lock .yarnrc.yml ./
 RUN set -eux; \
-	yarn
-
-RUN set -eux; \
-	yarn cache clean
+	yarn && yarn cache clean
 
 # copy sources
 COPY --link . ./
@@ -42,5 +39,3 @@ RUN set -eux; \
 	yarn playwright install --with-deps
 
 CMD ["sh", "-c", "yarn storybook:build && yarn storybook:serve -p 3000"]
-# CMD ["sh", "-c", "yarn && yarn playwright install --with-deps && yarn storybook:build && yarn storybook:serve -p 3000"]
-# CMD ["sh", "-c", "yarn storybook;"]
