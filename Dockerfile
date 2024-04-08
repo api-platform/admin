@@ -24,14 +24,12 @@ ENV PORT 3000
 # Development image
 FROM base as dev
 
-# hadolint ignore=DL3060
 CMD ["sh", "-c", "yarn install; yarn storybook"]
 
 FROM base as ci
 
 COPY --link package.json yarn.lock .yarnrc.yml ./
 
-# hadolint ignore=DL3060
 RUN set -eux; \
 	yarn && yarn cache clean
 
@@ -39,6 +37,6 @@ RUN set -eux; \
 COPY --link . ./
 
 RUN set -eux; \
-	yarn playwright install --with-deps
+	yarn playwright install --with-deps && yarn cache clean
 
 CMD ["sh", "-c", "yarn storybook:build && yarn storybook:serve -p 3000"]
