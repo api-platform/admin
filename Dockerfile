@@ -32,6 +32,9 @@ COPY --link package.json yarn.lock .yarnrc.yml ./
 RUN set -eux; \
 	yarn
 
+RUN set -eux; \
+	yarn cache clean
+
 # copy sources
 COPY --link . ./
 
