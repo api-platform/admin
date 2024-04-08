@@ -27,10 +27,10 @@ Please base your changes on the `main` branch.
 ### Two ways to write your patch
 
 You can patch `@api-platform/admin` by two different ways:
-- by linking `@api-platform/admin` sources to an existing project;
-- by installing this project and running it through Storybook (recommended).
+- if you already have a project in progress: read [Linking the Source Version to an Existing Project](#linking-the-source-version-to-an-existing-project);
+- if you do not have an existing project: read [Running Admin Through Storybook](#running-admin-through-storybook).
 
-#### Linking the Source Version to an existing project
+#### Linking the Source Version to an Existing Project
 
 If you already have a project in progress, you can develop directly from it.
 
@@ -95,13 +95,15 @@ yarn dev --force
 
 > You can now hack in the cloned repository of `api-platform-admin`.
 
-#### Running Admin through Storybook
+#### Running Admin Through Storybook
 
-If you don't have an existing API Platform application, or don't want to use `yarn link`, you can run and visualize the admin through Docker and [Storybook](https://storybook.js.org/).
+If you do not have an existing project, you can contribute by visualizing directly the changes you made the sources through [Storybook](https://storybook.js.org/). 
 
-This development stack consists of two containers: 
-- `pwa`: containing the `<Admin>` sources and Storybook
-- `php`: holding the API sources
+This development stack consists of two Docker containers: 
+- `pwa`: containing the `<Admin>` sources and Storybook;
+- `php`: holding the API sources.
+
+Additionally, this method allows testing the integration between Api-platform and the `admin` component by writing stories, scenarios and tests.
 
 Install everything:
 
@@ -109,7 +111,7 @@ Install everything:
 docker compose up
 ```
 
-Before accessing the Storybook instance, make sure to go to https://localhost to accept the self-signed certificate. Once it's dene, you'll see the API documentation running on a customized version of Swagger UI.
+Before accessing the Storybook instance, make sure to go to https://localhost to accept the self-signed certificate. Once it's done, you'll see the API documentation running on a customized version of Swagger UI.
 
 Now you can go to http://localhost:3000/ to see the Storybook instance in action. The changes you'll make in the source code will be hot-reloaded.
 
@@ -124,10 +126,31 @@ docker compose exec -T pwa your-command
 
 ### Testing Your Changes
 
-Before sending a Pull Request, make sure the tests pass correctly:
+Before sending a Pull Request, make sure the tests pass correctly.
+
+#### With Linked Sources
+
+If you have chosen to link `admin` sources, simply run:
 
 ```console
 yarn test
+```
+
+#### With Admin Through Storybook
+
+If you have chosen to develop with Storybook, you have to build the CI stack first:
+
+```console
+docker compose docker compose -f compose.yaml -f compose.ci.yaml up
+```
+
+Once the containes are healthy, run 
+```console
+# fonctional tests
+docker compose exec -T pwa yarn test
+
+# End to end tests (Running with Storybook interactions https://storybook.js.org/docs/writing-stories/play-function)
+docker compose exec -T pwa yarn storybook:test --url http://127.0.0.1:3000
 ```
 
 ### Matching Coding Standards
