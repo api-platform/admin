@@ -24,6 +24,7 @@ ENV PORT 3000
 # Development image
 FROM base as dev
 
+# hadolint ignore=DL3060
 CMD ["sh", "-c", "yarn install; yarn storybook"]
 
 FROM base as ci
