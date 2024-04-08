@@ -29,8 +29,9 @@ CMD ["sh", "-c", "yarn install; yarn storybook"]
 FROM base as ci
 
 COPY --link package.json yarn.lock .yarnrc.yml ./
-RUN set -eux; \
-	yarn && yarn cache clean
+
+RUN yarn install \
+  && yarn cache clean
 
 # copy sources
 COPY --link . ./
