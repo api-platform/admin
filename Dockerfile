@@ -30,8 +30,9 @@ FROM base as ci
 
 COPY --link package.json yarn.lock .yarnrc.yml ./
 
-RUN yarn install \
-  && yarn cache clean
+# hadolint ignore=DL3060
+RUN set -eux; \
+	yarn && yarn cache clean
 
 # copy sources
 COPY --link . ./
