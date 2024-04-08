@@ -1,0 +1,16 @@
+import { Canvas, Meta } from '@storybook/blocks';
+
+import * as AuthStories from './Auth.stories';
+
+<Meta of={AuthStories} />
+
+# Protected HydraAdmin
+
+The `<HydraAdmin>` component protected by the `authProvider` which is a basic authentication provider.
+
+> Login with: **john** / **123**
+
+See the [React-admin documentation](https://marmelab.com/react-admin/Authentication.html) to learn more.
+
+<Canvas of={AuthStories.Loggedin} />
+

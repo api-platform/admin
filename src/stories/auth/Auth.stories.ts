@@ -6,7 +6,6 @@ import Admin from './Admin';
 const meta = {
   title: 'Admin/Auth',
   component: Admin,
-  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
   },

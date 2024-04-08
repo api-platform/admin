@@ -1,6 +1,10 @@
 import React from 'react';
 import { HydraAdmin, type HydraAdminProps } from '../hydra';
 
+/**
+ * # Basic `<HydraAdmin>` component
+ * The `<HydraAdmin>` component without any parameter.
+ */
 const Basic = ({ entrypoint }: BasicProps) => (
   <HydraAdmin entrypoint={entrypoint} />
 );
