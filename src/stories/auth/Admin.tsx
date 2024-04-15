@@ -3,7 +3,7 @@ import { HydraAdmin, type HydraAdminProps } from '../../hydra';
 import authProvider from './basicAuth';
 
 /**
- * # Pretected `<HydraAdmin>`
+ * # Protected `<HydraAdmin>`
  * The `<HydraAdmin>` component protected by the `authProvider` which is a basic authentication provider.
  *
  * Login with: john/123

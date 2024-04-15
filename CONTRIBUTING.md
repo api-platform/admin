@@ -97,13 +97,13 @@ yarn dev --force
 
 #### Running Admin Through Storybook
 
-If you do not have an existing project, you can contribute by visualizing directly the changes you made the sources through [Storybook](https://storybook.js.org/). 
+If you do not have an existing project, you can use [Storybook](https://storybook.js.org/) to visualize changes in the source code, and test them. 
 
 This development stack consists of two Docker containers: 
 - `pwa`: containing the `<Admin>` sources and Storybook;
 - `php`: holding the API sources.
 
-Additionally, this method allows testing the integration between Api-platform and the `admin` component by writing stories, scenarios and tests.
+Additionally, this method allows testing the integration between API Platform and the `admin` component by writing stories, scenarios and tests.
 
 Install everything:
 
@@ -144,9 +144,9 @@ If you have chosen to develop with Storybook, you have to build the CI stack fir
 docker compose docker compose -f compose.yaml -f compose.ci.yaml up
 ```
 
-Once the containes are healthy, run 
+Once the containers are healthy, run 
 ```console
-# fonctional tests
+# Functional tests
 docker compose exec -T pwa yarn test
 
 # End to end tests (Running with Storybook interactions https://storybook.js.org/docs/writing-stories/play-function)

@@ -15,7 +15,6 @@ const authProvider = {
   checkError: (error: { status: number }) => {
     const { status } = error;
     if (status === 401 || status === 403) {
-      localStorage.removeItem('username');
       return Promise.reject();
     }
     // other error code (404, 500, etc): no need to log out
