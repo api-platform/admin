@@ -141,7 +141,7 @@ yarn test
 If you have chosen to develop with Storybook, you have to build the CI stack first:
 
 ```console
-docker compose docker compose -f compose.yaml -f compose.ci.yaml up
+docker compose -f compose.yaml -f compose.ci.yaml up
 ```
 
 Once the containers are healthy, run 
