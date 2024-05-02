@@ -115,7 +115,9 @@ Before accessing the Storybook instance, make sure to go to https://localhost to
 
 Now you can go to http://localhost:3000/ to see the Storybook instance in action. The changes you'll make in the source code will be hot-reloaded.
 
-To access run a command directly inside a container, run:
+> Tips: you can run Storybook directly in your local machine by running `yarn storybook`. It will take another port, usually 3001. Make sure to have the API running before.
+
+To run a command directly inside a container, run:
 ```shell
 # Run a command in the php container 
 docker compose exec -T php your-command
@@ -126,32 +128,18 @@ docker compose exec -T pwa your-command
 
 ### Testing Your Changes
 
-Before sending a Pull Request, make sure the tests pass correctly.
+Before sending a Pull Request, make sure the tests pass correctly:
 
-#### With Linked Sources
-
-If you have chosen to link `admin` sources, simply run:
-
-```console
-yarn test
-```
-
-#### With Admin Through Storybook
-
-If you have chosen to develop with Storybook, you have to build the CI stack first:
-
-```console
-docker compose -f compose.yaml -f compose.ci.yaml up
-```
-
-Once the containers are healthy, run 
-```console
+```shell
 # Functional tests
-docker compose exec -T pwa yarn test
-
-# End to end tests (Running with Storybook interactions https://storybook.js.org/docs/writing-stories/play-function)
-docker compose exec -T pwa yarn storybook:test --url http://127.0.0.1:3000
+yarn test
+# End to end tests
+yarn test-storybook --url http://127.0.0.1:3000/
 ```
+
+If you add a new feature, don't forget to add tests for it. 
+- Functionnal tests are written with [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/);
+- End-to-end tests are written with [Storybook play funcitons](https://storybook.js.org/docs/writing-stories/play-function/).
 
 ### Matching Coding Standards
 
