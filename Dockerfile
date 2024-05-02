@@ -17,13 +17,6 @@ ENV HOSTNAME localhost
 EXPOSE 3000
 ENV PORT 3000
 
-# Development image
-FROM base as dev
-
-CMD ["sh", "-c", "yarn install; yarn storybook"]
-
-FROM base as ci
-
 COPY --link package.json yarn.lock .yarnrc.yml ./
 
 RUN set -eux; \
@@ -34,5 +27,12 @@ COPY --link . ./
 
 RUN set -eux; \
 	yarn playwright install --with-deps && yarn cache clean
+
+# Development image
+FROM base as dev
+
+CMD ["sh", "-c", "yarn storybook"]
+
+FROM base as ci
 
 CMD ["sh", "-c", "yarn storybook:build && yarn storybook:serve -p 3000"]
