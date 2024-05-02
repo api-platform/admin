@@ -13,4 +13,11 @@ module.exports = {
    * @see https://jestjs.io/docs/configuration
    */
   testTimeout: 30000,
+  testEnvironmentOptions: {
+    'jest-playwright': {
+      launchOptions: {
+        args: ['--ignore-certificate-errors']
+      }
+    }
+  }
 };
