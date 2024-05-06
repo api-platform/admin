@@ -54,9 +54,20 @@ services:
     build:
       context: .
       target: dev
+    environment:
+      ENTRYPOINT: ${ENTRYPOINT:-https://localhost}
     volumes:
       - .:/srv/app
-
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 20s
+    ports:
+      - target: 3000
+        published: ${PWA_PORT:-3000}
+      
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine

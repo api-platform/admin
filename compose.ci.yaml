@@ -3,3 +3,7 @@ services:
     build:
       context: .
       target: ci
+    environment:
+      ENTRYPOINT: http://php
+    volumes:
+      - /srv/app/node_modules

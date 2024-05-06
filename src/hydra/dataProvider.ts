@@ -354,7 +354,7 @@ function dataProvider(
     if ('meta' in params) {
       extraInformation = params.meta;
     }
-    const updateHttpMethod = extraInformation.hasFileField ? 'POST' : 'PUT';
+    const updateHttpMethod = extraInformation?.hasFileField ? 'POST' : 'PUT';
 
     switch (type) {
       case CREATE:

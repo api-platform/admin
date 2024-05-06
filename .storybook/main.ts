@@ -7,6 +7,8 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
+    '@storybook/addon-mdx-gfm',
+    '@storybook/addon-webpack5-compiler-babel'
   ],
   framework: {
     name: '@storybook/react-webpack5',
@@ -17,6 +19,7 @@ const config: StorybookConfig = {
   },
   env: (config) => ({
     ...config,
+    ENTRYPOINT: process.env.ENTRYPOINT ?? 'https://localhost',
   }),
   async webpackFinal(config, { configType }) {
     config.resolve = {

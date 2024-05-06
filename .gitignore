@@ -3,3 +3,6 @@ node_modules/
 /yarn.lock
 .vscode/
 .env.local
+.yarn/
+storybook-static/
+.cache/
