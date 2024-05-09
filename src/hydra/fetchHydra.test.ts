@@ -1,5 +1,4 @@
 import type { HttpError } from 'react-admin';
-// import type { SubmissionErrors } from '../types.js';
 import fetchMock from 'jest-fetch-mock';
 import fetchHydra from './fetchHydra.js';
 import schemaAnalyzer from './schemaAnalyzer.js';
