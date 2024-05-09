@@ -73,7 +73,7 @@ test.each([
       [
         JSON.stringify({
           '@context': {
-            '@vocab': 'https://localhost/docs.jsonld#',
+            '@vocab': 'http://localhost/docs.jsonld#',
             hydra: 'http://www.w3.org/ns/hydra/core#',
           },
         }),
