@@ -97,5 +97,5 @@
     "storybook:serve": "serve storybook-static",
     "storybook:test": "test-storybook"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@4.2.2"
 }
