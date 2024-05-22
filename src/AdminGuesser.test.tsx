@@ -1,7 +1,10 @@
 import React from 'react';
+import { AdminUI, AuthContext } from 'react-admin';
+import type { AdminProps, AuthProvider } from 'react-admin';
 import ReactTestRenderer from 'react-test-renderer/shallow';
-import { AdminResourcesGuesser } from './AdminGuesser.js';
+import AdminGuesser, { AdminResourcesGuesser } from './AdminGuesser.js';
 import ResourceGuesser from './ResourceGuesser.js';
+import schemaAnalyzer from './hydra/schemaAnalyzer.js';
 import resources from './__fixtures__/resources.js';
 import { API_DATA } from './__fixtures__/parsedData.js';
 import type {
@@ -78,6 +81,38 @@ describe('<AdminGuesser />', () => {
         loading={false}
         includeDeprecated={false}
         dataProvider={dataProvider}
+      />,
+    );
+
+    expect(renderer.getRenderOutput()).toMatchSnapshot();
+  });
+
+  test('renders with admin element', () => {
+    const authProvider: AuthProvider = {
+      getPermissions: () => Promise.resolve(['user']),
+      getIdentity: () =>
+        Promise.resolve({
+          id: '/users/2',
+          fullName: 'Test User',
+          avatar: undefined,
+        }),
+      login: () => Promise.resolve(),
+      logout: () => Promise.resolve(),
+      checkAuth: () => Promise.resolve(),
+      checkError: () => Promise.resolve(),
+    };
+
+    const AdminEl = (props: AdminProps) => (
+      <AuthContext.Provider value={authProvider}>
+        <AdminUI {...props} />
+      </AuthContext.Provider>
+    );
+
+    renderer.render(
+      <AdminGuesser
+        admin={AdminEl}
+        dataProvider={dataProvider}
+        schemaAnalyzer={schemaAnalyzer()}
       />,
     );
 
