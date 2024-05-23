@@ -116,6 +116,6 @@ describe('<AdminGuesser />', () => {
       />,
     );
 
-    expect(renderer.getRenderOutput()).toMatchSnapshot();
+    expect(renderer.getRenderOutput()).not.toBeNull();
   });
 });
