@@ -84,6 +84,12 @@ test.each([
     name: 'Book name 2',
     authors: ['Author 1', 'Author 2'],
   },
+  {
+    id: '3',
+    name: 'Book name 3',
+    authors: ['Author 1', 'Author 2'],
+    cover: null,
+  },
 ])('Call update without file inputs ($name)', async (values: RaRecord) => {
   let save;
   const Dummy = () => {

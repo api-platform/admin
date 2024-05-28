@@ -2,15 +2,17 @@ import { useCallback } from 'react';
 import { useCreate, useNotify, useRedirect, useUpdate } from 'react-admin';
 import type { HttpError, RaRecord } from 'react-admin';
 import { useParams } from 'react-router-dom';
+import lodashIsPlainObject from 'lodash.isplainobject';
 import getIdentifierValue from './getIdentifierValue.js';
 import type { SubmissionErrors, UseOnSubmitProps } from './types.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const findFile = (values: any[]): object | undefined =>
+const findFile = (values: any[]): Blob | undefined =>
   values.find((value) =>
     Array.isArray(value)
       ? findFile(value)
-      : typeof value === 'object' && value.rawFile instanceof File,
+      : lodashIsPlainObject(value) &&
+        Object.values(value).find((val) => val instanceof File),
   );
 
 const useOnSubmit = ({
