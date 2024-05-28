@@ -333,6 +333,7 @@ describe('Transform a React Admin request to an Hydra request', () => {
       previousData: {
         id: '/entrypoint/resource/1',
       },
+      meta: undefined,
     });
     const url = mockFetchHydra.mock.calls?.[0]?.[0] ?? new URL('https://foo');
     expect(url).toBeInstanceOf(URL);

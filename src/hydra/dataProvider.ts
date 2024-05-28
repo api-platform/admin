@@ -351,10 +351,10 @@ function dataProvider(
       }
     });
     let extraInformation: { hasFileField?: boolean } = {};
-    if ('meta' in params) {
+    if (typeof params.meta === 'object') {
       extraInformation = params.meta;
     }
-    const updateHttpMethod = extraInformation?.hasFileField ? 'POST' : 'PUT';
+    const updateHttpMethod = extraInformation.hasFileField ? 'POST' : 'PUT';
 
     switch (type) {
       case CREATE:
