@@ -30,6 +30,7 @@ import useDisplayOverrideCode from './useDisplayOverrideCode.js';
 import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types.js';
 
 export interface AdminGuesserProps extends AdminProps {
+  admin?: ComponentType<AdminProps>;
   dataProvider: ApiPlatformAdminDataProvider;
   schemaAnalyzer: SchemaAnalyzer;
   includeDeprecated?: boolean;
@@ -214,6 +215,7 @@ AdminGuesser.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   theme: PropTypes.object,
   includeDeprecated: PropTypes.bool,
+  admin: PropTypes.elementType,
 };
 /* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
