@@ -1,10 +1,10 @@
 import React from 'react';
+import type { SortPayload } from 'react-admin';
 import {
   AdminContext,
   Edit,
   ResourceContextProvider,
   SimpleForm,
-  SortPayload,
 } from 'react-admin';
 import { Resource } from '@api-platform/api-doc-parser';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -251,7 +251,10 @@ describe('<InputGuesser />', () => {
           <ResourceContextProvider value="users">
             <Edit id="/users/123" mutationMode="pessimistic">
               <SimpleForm>
-                <InputGuesser source="owner" sort={{field: "id", order: "DESC" } as SortPayload} />
+                <InputGuesser
+                  source="owner"
+                  sort={{ field: 'id', order: 'DESC' } as SortPayload}
+                />
               </SimpleForm>
             </Edit>
           </ResourceContextProvider>
