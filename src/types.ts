@@ -45,6 +45,8 @@ import type {
   ReferenceFieldProps,
   ReferenceInputProps,
   ResourceProps,
+  SelectArrayInputProps,
+  SelectInputProps,
   ShowProps,
   SimpleFormProps,
   SingleFieldListProps,
@@ -479,8 +481,10 @@ type InputProps =
   | BooleanInputProps
   | NumberInputProps
   | ArrayInputProps
-  | ReferenceArrayInputProps
-  | ReferenceInputProps;
+  | (ReferenceArrayInputProps & SelectArrayInputProps)
+  | (ReferenceInputProps & SelectInputProps)
+  | SelectArrayInputProps
+  | SelectInputProps;
 
 export type IntrospectedInputGuesserProps = Partial<InputProps> &
   IntrospectedGuesserProps & {

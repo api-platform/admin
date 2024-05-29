@@ -4,6 +4,7 @@ import {
   Edit,
   ResourceContextProvider,
   SimpleForm,
+  SortPayload,
 } from 'react-admin';
 import { Resource } from '@api-platform/api-doc-parser';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -241,6 +242,26 @@ describe('<InputGuesser />', () => {
         ],
       });
     });
+  });
+
+  test('renders reference input', async () => {
+    render(
+      <AdminContext dataProvider={dataProvider}>
+        <SchemaAnalyzerContext.Provider value={hydraSchemaAnalyzer}>
+          <ResourceContextProvider value="users">
+            <Edit id="/users/123" mutationMode="pessimistic">
+              <SimpleForm>
+                <InputGuesser source="owner" sort={{field: "id", order: "DESC" } as SortPayload} />
+              </SimpleForm>
+            </Edit>
+          </ResourceContextProvider>
+        </SchemaAnalyzerContext.Provider>
+      </AdminContext>,
+    );
+
+    expect(
+      await screen.findAllByText('resources.users.fields.owner'),
+    ).toHaveLength(1);
   });
 
   test.each([

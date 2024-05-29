@@ -111,4 +111,17 @@ export const API_FIELDS_DATA = [
     enum: { Epic: 'EPIC', 'Fairy tale': 'FAIRY_TALE', Myth: 'MYTH' },
     required: false,
   }),
+  new Field('owner', {
+    id: 'http://localhost/owner',
+    range: 'https://schema.org/Person',
+    reference: {
+      id: 'https://schema.org/Person',
+      name: 'users',
+      url: 'http://localhost/users',
+      fields: [],
+    },
+    embedded: null,
+    maxCardinality: 1,
+    required: false,
+  }),
 ];
