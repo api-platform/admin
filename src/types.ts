@@ -481,8 +481,16 @@ type InputProps =
   | BooleanInputProps
   | NumberInputProps
   | ArrayInputProps
-  | (ReferenceArrayInputProps & SelectArrayInputProps)
-  | (ReferenceInputProps & SelectInputProps)
+  | (Pick<
+      ReferenceArrayInputProps,
+      'filter' | 'page' | 'perPage' | 'sort' | 'enableGetChoices'
+    > &
+      SelectArrayInputProps)
+  | (Pick<
+      ReferenceInputProps,
+      'filter' | 'page' | 'perPage' | 'sort' | 'enableGetChoices'
+    > &
+      SelectInputProps)
   | SelectArrayInputProps
   | SelectInputProps;
 
