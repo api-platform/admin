@@ -158,7 +158,11 @@ ListGuesser.propTypes = {
   filters: PropTypes.element,
   hasShow: PropTypes.bool,
   hasEdit: PropTypes.bool,
-  rowClick: PropTypes.string,
+  rowClick: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+    PropTypes.oneOf([false]),
+  ]),
 };
 /* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
