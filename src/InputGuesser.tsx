@@ -59,7 +59,7 @@ export const IntrospectedInputGuesser = ({
 
   if (field.reference !== null && typeof field.reference === 'object') {
     if (field.maxCardinality === 1) {
-      const { filter, page, perPage, sort, enableGetChoices } =
+      const { filter, page, perPage, sort, enableGetChoices, ...rest } =
         props as ReferenceInputProps;
 
       return (
@@ -75,13 +75,13 @@ export const IntrospectedInputGuesser = ({
           <SelectInput
             optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
             validate={guessedValidate}
-            {...(props as SelectInputProps)}
+            {...(rest as SelectInputProps)}
           />
         </ReferenceInput>
       );
     }
 
-    const { filter, page, perPage, sort, enableGetChoices } =
+    const { filter, page, perPage, sort, enableGetChoices, ...rest } =
       props as ReferenceArrayInputProps;
 
     return (
@@ -97,7 +97,7 @@ export const IntrospectedInputGuesser = ({
         <SelectArrayInput
           optionText={schemaAnalyzer.getFieldNameFromSchema(field.reference)}
           validate={guessedValidate}
-          {...(props as SelectArrayInputProps)}
+          {...(rest as SelectArrayInputProps)}
         />
       </ReferenceArrayInput>
     );

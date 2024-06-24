@@ -45,6 +45,8 @@ import type {
   ReferenceFieldProps,
   ReferenceInputProps,
   ResourceProps,
+  SelectArrayInputProps,
+  SelectInputProps,
   ShowProps,
   SimpleFormProps,
   SingleFieldListProps,
@@ -479,20 +481,26 @@ type InputProps =
   | BooleanInputProps
   | NumberInputProps
   | ArrayInputProps
-  | ReferenceArrayInputProps
-  | ReferenceInputProps;
+  | SelectArrayInputProps
+  | SelectInputProps;
 
 export type IntrospectedInputGuesserProps = Partial<InputProps> &
   IntrospectedGuesserProps & {
     transformEnum?: (value: string | number) => string | number;
-  };
+  } & Pick<
+    ReferenceInputProps | ReferenceArrayInputProps,
+    'filter' | 'page' | 'perPage' | 'sort' | 'enableGetChoices'
+  >;
 
 export type InputGuesserProps = Omit<
   InputProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
 > & {
   transformEnum?: (value: string | number) => string | number;
-};
+} & Pick<
+    ReferenceInputProps | ReferenceArrayInputProps,
+    'filter' | 'page' | 'perPage' | 'sort' | 'enableGetChoices'
+  >;
 
 export type IntrospecterProps = (
   | CreateGuesserProps
