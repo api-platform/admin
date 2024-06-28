@@ -65,7 +65,7 @@ const useOnSubmit = ({
         const success =
           mutationOptions?.onSuccess ??
           ((record: RaRecord) => {
-            notify('ra.notification.updated', {
+            notify(isCreate ? 'ra.notification.created' : 'ra.notification.updated', {
               type: 'info',
               messageArgs: { smart_count: 1 },
             });
