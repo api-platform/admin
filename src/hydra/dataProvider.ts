@@ -41,7 +41,7 @@ import type {
 } from '../types.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isPlainObject = (value: any): value is object =>
+const isPlainObject = (value: any): value is Record<string, any> =>
   lodashIsPlainObject(value);
 
 let apiSchema: Api & { resources: Resource[] };
@@ -287,16 +287,17 @@ function dataProvider(
       ).forEach(([key, value]) => {
         // React-Admin FileInput format is an object containing a file.
         if (containFile(value)) {
-          const findFile = (element: string | ToJSONObject): Blob =>
-            Object.values(element).find((val) => val instanceof File);
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          Array.isArray(value)
-            ? value
-                .map((val) => findFile(val))
-                .forEach((file) => {
-                  body.append(key.endsWith('[]') ? key : `${key}[]`, file);
-                })
-            : body.append(key, findFile(value));
+          const findFile = (element: string | ToJSONObject): Blob | undefined =>
+            Object.values(element).find((val) => val instanceof Blob);
+          if (Array.isArray(value)) {
+            value
+              .map((val) => findFile(val))
+              .forEach((file) => {
+                body.append(key.endsWith('[]') ? key : `${key}[]`, file!);
+              });
+          } else {
+            body.append(key, findFile(value)!);
+          }
 
           return;
         }
