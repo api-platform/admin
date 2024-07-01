@@ -65,10 +65,13 @@ const useOnSubmit = ({
         const success =
           mutationOptions?.onSuccess ??
           ((record: RaRecord) => {
-            notify(isCreate ? 'ra.notification.created' : 'ra.notification.updated', {
-              type: 'info',
-              messageArgs: { smart_count: 1 },
-            });
+            notify(
+              isCreate ? 'ra.notification.created' : 'ra.notification.updated',
+              {
+                type: 'info',
+                messageArgs: { smart_count: 1 },
+              },
+            );
             redirect(redirectTo, resource, record.id, record);
           });
         success(
