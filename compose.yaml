@@ -58,6 +58,7 @@ services:
       ENTRYPOINT: ${ENTRYPOINT:-https://localhost}
     volumes:
       - .:/srv/app
+      - pwa_node_modules:/srv/app/node_modules
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
       interval: 10s
@@ -67,8 +68,8 @@ services:
     ports:
       - target: 3000
         published: ${PWA_PORT:-3000}
-      
-###> doctrine/doctrine-bundle ###
+
+  ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
     environment:
@@ -93,8 +94,9 @@ services:
 volumes:
   caddy_data:
   caddy_config:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   db_data:
-###< doctrine/doctrine-bundle ###
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+    ###< doctrine/doctrine-bundle ###
+    ###> symfony/mercure-bundle ###
+    ###< symfony/mercure-bundle ###
+  pwa_node_modules:
