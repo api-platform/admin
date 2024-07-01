@@ -69,7 +69,7 @@ services:
       - target: 3000
         published: ${PWA_PORT:-3000}
 
-  ###> doctrine/doctrine-bundle ###
+###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
     environment:
@@ -94,9 +94,9 @@ services:
 volumes:
   caddy_data:
   caddy_config:
-  ###> doctrine/doctrine-bundle ###
+###> doctrine/doctrine-bundle ###
   db_data:
-    ###< doctrine/doctrine-bundle ###
-    ###> symfony/mercure-bundle ###
-    ###< symfony/mercure-bundle ###
+###< doctrine/doctrine-bundle ###
+###> symfony/mercure-bundle ###
+###< symfony/mercure-bundle ###
   pwa_node_modules:
