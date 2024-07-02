@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Datagrid,
   DatagridBody,
@@ -140,6 +139,9 @@ const ListGuesser = ({
   ...props
 }: ListGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -150,20 +152,5 @@ const ListGuesser = ({
     />
   );
 };
-
-/* eslint-disable tree-shaking/no-side-effects-in-initialization */
-ListGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string,
-  filters: PropTypes.element,
-  hasShow: PropTypes.bool,
-  hasEdit: PropTypes.bool,
-  rowClick: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-    PropTypes.oneOf([false]),
-  ]),
-};
-/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default ListGuesser;

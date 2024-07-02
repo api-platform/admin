@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import type { GetListResult, Identifier } from 'react-admin';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import type { ApiPlatformAdminRecord } from '../types.js';
 
 const useUpdateCache = () => {
@@ -40,19 +40,19 @@ const useUpdateCache = () => {
         }),
       );
       queryClient.setQueriesData(
-        [resource, 'getList'],
+        { queryKey: [resource, 'getList'] },
         (res: GetListResult<ApiPlatformAdminRecord> | undefined) =>
           res?.data
             ? { data: updateColl(res.data), total: res.total }
             : { data: [data] },
       );
       queryClient.setQueriesData(
-        [resource, 'getMany'],
+        { queryKey: [resource, 'getMany'] },
         (coll: ApiPlatformAdminRecord[] | undefined) =>
           coll && coll.length > 0 ? updateColl(coll) : [data],
       );
       queryClient.setQueriesData(
-        [resource, 'getManyReference'],
+        { queryKey: [resource, 'getManyReference'] },
         (res: GetListResult<ApiPlatformAdminRecord> | undefined) =>
           res?.data
             ? { data: updateColl(res.data), total: res.total }

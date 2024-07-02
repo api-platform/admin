@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   ArrayField,
   BooleanField,
@@ -157,6 +156,9 @@ export const IntrospectedFieldGuesser = ({
 
 const FieldGuesser = (props: FieldGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -166,13 +168,6 @@ const FieldGuesser = (props: FieldGuesserProps) => {
       {...props}
     />
   );
-};
-
-FieldGuesser.propTypes = {
-  source: PropTypes.string.isRequired,
-  resource: PropTypes.string,
-  sortable: PropTypes.bool,
-  sortBy: PropTypes.string,
 };
 
 export default FieldGuesser;

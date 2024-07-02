@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Edit,
   FormTab,
@@ -114,6 +113,9 @@ export const IntrospectedEditGuesser = ({
 
 const EditGuesser = (props: EditGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -123,12 +125,5 @@ const EditGuesser = (props: EditGuesserProps) => {
     />
   );
 };
-
-/* eslint-disable tree-shaking/no-side-effects-in-initialization */
-EditGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string,
-};
-/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default EditGuesser;

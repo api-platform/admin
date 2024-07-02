@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import dataProviderFactory from './dataProvider.js';
 import { restDataProvider } from '../dataProvider/index.js';
 import /* tree-shaking no-side-effects-when-called */ schemaAnalyzer from './schemaAnalyzer.js';
@@ -40,9 +39,5 @@ const OpenApiAdmin = ({
     {...props}
   />
 );
-
-OpenApiAdmin.propTypes = {
-  entrypoint: PropTypes.string.isRequired,
-};
 
 export default OpenApiAdmin;

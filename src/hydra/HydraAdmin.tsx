@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import dataProviderFactory from './dataProvider.js';
 import /* tree-shaking no-side-effects-when-called */ schemaAnalyzer from './schemaAnalyzer.js';
 import AdminGuesser from '../AdminGuesser.js';
@@ -35,9 +34,5 @@ const HydraAdmin = ({
     {...props}
   />
 );
-
-HydraAdmin.propTypes = {
-  entrypoint: PropTypes.string.isRequired,
-};
 
 export default HydraAdmin;
