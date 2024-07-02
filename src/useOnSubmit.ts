@@ -108,7 +108,7 @@ const useOnSubmit = ({
             });
           });
         failure(
-          mutateError as string | Error,
+          mutateError as Error,
           {
             data: values,
             ...(isCreate ? {} : { id, previousData: values }),
