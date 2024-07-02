@@ -20,13 +20,10 @@ ENV PORT 3000
 COPY --link package.json yarn.lock .yarnrc.yml ./
 
 RUN set -eux; \
-	yarn && yarn cache clean
+	yarn && yarn playwright install --with-deps && yarn cache clean
 
 # copy sources
 COPY --link . ./
-
-RUN set -eux; \
-	yarn playwright install --with-deps && yarn cache clean
 
 # Development image
 FROM base as dev
