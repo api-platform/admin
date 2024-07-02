@@ -49,6 +49,9 @@ export const IntrospectedFilterGuesser = ({
 
 const FilterGuesser = (props: FilterGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import {
   Resource,
   useResourceDefinition,
@@ -110,9 +109,5 @@ ResourceGuesser.registerResource = (
   hasCreate: true,
   hasShow: true,
 });
-
-ResourceGuesser.propTypes = {
-  name: PropTypes.string.isRequired,
-};
 
 export default ResourceGuesser;

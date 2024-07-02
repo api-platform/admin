@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Create,
   FormTab,
@@ -102,6 +101,9 @@ export const IntrospectedCreateGuesser = ({
 
 const CreateGuesser = (props: CreateGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -111,12 +113,5 @@ const CreateGuesser = (props: CreateGuesserProps) => {
     />
   );
 };
-
-/* eslint-disable tree-shaking/no-side-effects-in-initialization */
-CreateGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string,
-};
-/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default CreateGuesser;

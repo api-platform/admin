@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Show,
   SimpleShowLayout,
@@ -79,6 +78,9 @@ export const IntrospectedShowGuesser = ({
 
 const ShowGuesser = (props: ShowGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -88,12 +90,5 @@ const ShowGuesser = (props: ShowGuesserProps) => {
     />
   );
 };
-
-/* eslint-disable tree-shaking/no-side-effects-in-initialization */
-ShowGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string,
-};
-/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default ShowGuesser;

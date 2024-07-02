@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   ArrayInput,
   BooleanInput,
@@ -263,6 +262,9 @@ export const IntrospectedInputGuesser = ({
 
 const InputGuesser = (props: InputGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -272,11 +274,6 @@ const InputGuesser = (props: InputGuesserProps) => {
       {...props}
     />
   );
-};
-
-InputGuesser.propTypes = {
-  source: PropTypes.string.isRequired,
-  alwaysOn: PropTypes.bool,
 };
 
 export default InputGuesser;
