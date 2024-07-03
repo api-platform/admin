@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { jest } from '@jest/globals';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, waitFor } from '@testing-library/react';
 import type { CreateResult, RaRecord, UpdateResult } from 'react-admin';
 import { DataProviderContext, testDataProvider } from 'react-admin';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+
 import useOnSubmit from './useOnSubmit.js';
 import schemaAnalyzer from './hydra/schemaAnalyzer.js';
 import { API_FIELDS_DATA } from './__fixtures__/parsedData.js';

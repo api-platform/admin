@@ -19,13 +19,9 @@
   "sideEffects": false,
   "dependencies": {
     "@api-platform/api-doc-parser": "^0.16.2",
-    "history": "^5.0.0",
     "jsonld": "^8.1.0",
     "lodash.isplainobject": "^4.0.6",
-    "prop-types": "^15.6.2",
-    "react-admin": "^5.0.3",
-    "react-error-boundary": "^4.0.13",
-    "@tanstack/react-query": "^5.49.2"
+    "react-admin": "^5.0.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.3",
