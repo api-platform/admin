@@ -381,12 +381,11 @@ function dataProvider(
 
       case GET_LIST:
       case GET_MANY_REFERENCE: {
-        const {
-          pagination: { page, perPage },
-          sort: { field, order },
-          filter,
-        } = params as GetListParams | GetManyReferenceParams;
-
+        const { pagination, sort, filter } = params as
+          | GetListParams
+          | GetManyReferenceParams;
+        const { page, perPage } = pagination || { page: 1, perPage: 25 };
+        const { field, order } = sort || { field: 'id', order: 'DESC' };
         if (order && field) {
           field.split(',').forEach((fieldName) => {
             url.searchParams.set(`order[${fieldName.trim()}]`, order);
@@ -670,7 +669,10 @@ function dataProvider(
     }
 
     // Minimalist infinite loop protection
-    if (pageParams.pagination.page >= result.data.length) {
+    if (
+      pageParams.pagination?.page &&
+      pageParams.pagination?.page >= result.data.length
+    ) {
       return result;
     }
 
@@ -679,7 +681,11 @@ function dataProvider(
       ((!!result.total && result.data.length < result.total) ||
         result.pageInfo?.hasNextPage)
     ) {
-      pageParams.pagination.page += 1;
+      if (pageParams.pagination) {
+        pageParams.pagination.page += 1;
+      } else {
+        pageParams.pagination = { page: 2, perPage: 25 };
+      }
       return fetchAllPages(type, resource, pageParams, result);
     }
 

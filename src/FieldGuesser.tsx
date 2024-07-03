@@ -137,6 +137,10 @@ export const IntrospectedFieldGuesser = ({
   schemaAnalyzer,
   ...props
 }: IntrospectedFieldGuesserProps) => {
+  if (!props.source) {
+    console.error('FieldGuesser: missing source property.');
+    return null;
+  }
   const field = fields.find((f) => f.name === props.source);
 
   if (!field) {
@@ -151,6 +155,7 @@ export const IntrospectedFieldGuesser = ({
   return renderField(field, schemaAnalyzer, {
     sortable: isFieldSortable(field, schema),
     ...props,
+    source: props.source,
   });
 };
 

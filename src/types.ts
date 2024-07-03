@@ -460,13 +460,13 @@ export type FieldProps =
   | ArrayFieldProps
   | (ReferenceArrayFieldProps & Pick<SingleFieldListProps, 'linkType'>)
   | EnumFieldProps
-  | ReferenceFieldProps;
+  | Omit<ReferenceFieldProps, 'reference'>;
 
 export type EnumFieldProps = TextFieldProps & {
   transformEnum?: (value: string | number) => string | number;
 };
 
-export type IntrospectedFieldGuesserProps = FieldProps &
+export type IntrospectedFieldGuesserProps = Partial<FieldProps> &
   IntrospectedGuesserProps;
 
 export type FieldGuesserProps = Omit<
