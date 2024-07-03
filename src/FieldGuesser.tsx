@@ -138,6 +138,7 @@ export const IntrospectedFieldGuesser = ({
   ...props
 }: IntrospectedFieldGuesserProps) => {
   if (!props.source) {
+    // eslint-disable-next-line no-console
     console.error('FieldGuesser: missing source property.');
     return null;
   }

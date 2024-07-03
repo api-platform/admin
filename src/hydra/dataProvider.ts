@@ -384,8 +384,8 @@ function dataProvider(
         const { pagination, sort, filter } = params as
           | GetListParams
           | GetManyReferenceParams;
-        const { page, perPage } = pagination || { page: 1, perPage: 25 };
-        const { field, order } = sort || { field: 'id', order: 'DESC' };
+        const { page, perPage } = pagination ?? { page: 1, perPage: 25 };
+        const { field, order } = sort ?? { field: 'id', order: 'DESC' };
         if (order && field) {
           field.split(',').forEach((fieldName) => {
             url.searchParams.set(`order[${fieldName.trim()}]`, order);
