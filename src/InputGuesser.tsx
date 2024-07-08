@@ -177,6 +177,7 @@ export const IntrospectedInputGuesser = ({
           <SimpleFormIterator>
             <TextInput
               source=""
+              label={`resources.${props.resource}.fields.${field.name}`}
               format={formatProp ?? format}
               parse={parseProp ?? parse}
             />

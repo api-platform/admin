@@ -209,11 +209,8 @@ describe('<InputGuesser />', () => {
       'resources.users.fields.embedded',
     );
     expect(embeddedField).toHaveValue('{"address":"91 rue du Temple"}');
-    expect(
-      await screen.findAllByText('resources.users.fields.embeddeds.0'),
-    ).toHaveLength(1);
-    const embeddedsField = screen.getByLabelText(
-      'resources.users.fields.embeddeds.0',
+    const embeddedsField = await screen.findByLabelText(
+      'resources.users.fields.embeddeds',
     );
     expect(embeddedsField).toHaveValue('{"address":"16 avenue de Rivoli"}');
 
