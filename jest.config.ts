@@ -9,6 +9,8 @@ const config: JestConfigWithTsJest = {
   moduleNameMapper: {
     '^(\\.{1,2}/.*/llhttp\\.wasm\\.js)$': '$1',
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^@tanstack/react-query$':
+      '<rootDir>/node_modules/@tanstack/react-query/build/modern/index.cjs',
   },
   transform: {
     '^.+\\.tsx?$': [
