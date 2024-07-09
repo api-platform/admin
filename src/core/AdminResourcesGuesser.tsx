@@ -8,9 +8,9 @@ import ResourceGuesser from './ResourceGuesser.js';
 
 import getRoutesAndResourcesFromNodes, {
   isSingleChildFunction,
-} from './getRoutesAndResourcesFromNodes.js';
-import useDisplayOverrideCode from './useDisplayOverrideCode.js';
-import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types.js';
+} from '../introspection/getRoutesAndResourcesFromNodes.js';
+import useDisplayOverrideCode from '../useDisplayOverrideCode.js';
+import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from '../types.js';
 
 export interface AdminGuesserProps extends AdminProps {
   admin?: ComponentType<AdminProps>;

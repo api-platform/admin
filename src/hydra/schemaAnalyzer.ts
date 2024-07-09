@@ -4,7 +4,7 @@ import type { JsonLdObj } from 'jsonld/jsonld-spec';
 import {
   getFiltersParametersFromSchema,
   getOrderParametersFromSchema,
-} from '../schemaAnalyzer.js';
+} from '../introspection/schemaAnalyzer.js';
 import type { SchemaAnalyzer, SubmissionErrors } from '../types.js';
 
 const withHttpScheme = (value: string | null | undefined) =>

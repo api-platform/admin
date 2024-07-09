@@ -3,7 +3,7 @@ import { useLogoutIfAccessDenied } from 'react-admin';
 
 import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
 import useIntrospect from './useIntrospect.js';
-import type { IntrospecterProps, SchemaAnalyzer } from './types.js';
+import type { IntrospecterProps, SchemaAnalyzer } from '../types.js';
 import ResourcesIntrospecter from './ResourcesIntrospecter.js';
 
 const Introspecter = ({

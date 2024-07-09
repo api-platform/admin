@@ -1,67 +1,62 @@
 import React from 'react';
 import {
-  Edit,
+  Create,
   FormTab,
   SimpleForm,
   TabbedForm,
   useResourceContext,
 } from 'react-admin';
-import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import InputGuesser from './InputGuesser.js';
-import Introspecter from './Introspecter.js';
-import useMercureSubscription from './useMercureSubscription.js';
-import useDisplayOverrideCode from './useDisplayOverrideCode.js';
-import useOnSubmit from './useOnSubmit.js';
+import InputGuesser from '../input/InputGuesser.js';
+import Introspecter from '../introspection/Introspecter.js';
+import useDisplayOverrideCode from '../useDisplayOverrideCode.js';
+import useOnSubmit from '../useOnSubmit.js';
 import type {
-  EditGuesserProps,
-  IntrospectedEditGuesserProps,
-} from './types.js';
+  CreateGuesserProps,
+  IntrospectedCreateGuesserProps,
+} from '../types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
-    'If you want to override at least one input, paste this content in the <EditGuesser> component of your resource:\n\n';
+    'If you want to override at least one input, paste this content in the <CreateGuesser> component of your resource:\n\n';
 
-  code += `const ${schema.title}Edit = props => (\n`;
-  code += `    <EditGuesser {...props}>\n`;
+  code += `const ${schema.title}Create = props => (\n`;
+  code += `    <CreateGuesser {...props}>\n`;
 
   fields.forEach((field) => {
     code += `        <InputGuesser source={"${field.name}"} />\n`;
   });
-  code += `    </EditGuesser>\n`;
+  code += `    </CreateGuesser>\n`;
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${schema.name}"} edit={${schema.title}Edit} />`;
+  code += `<ResourceGuesser name={"${schema.name}"} create={${schema.title}Create} />`;
 
   return code;
 };
 
-export const IntrospectedEditGuesser = ({
+export const IntrospectedCreateGuesser = ({
   fields,
   readableFields,
   writableFields,
   schema,
   schemaAnalyzer,
   resource,
-  mutationMode = 'pessimistic',
   mutationOptions,
   redirect: redirectTo = 'list',
   mode,
   defaultValues,
-  validate,
   transform,
+  validate,
   toolbar,
   warnWhenUnsavedChanges,
+  sanitizeEmptyValues = true,
   formComponent,
   viewComponent,
-  sanitizeEmptyValues = true,
   children,
   ...props
-}: IntrospectedEditGuesserProps) => {
-  const { id: routeId } = useParams<'id'>();
-  const id = decodeURIComponent(routeId ?? '');
+}: IntrospectedCreateGuesserProps) => {
   const save = useOnSubmit({
     resource,
     schemaAnalyzer,
@@ -70,7 +65,6 @@ export const IntrospectedEditGuesser = ({
     transform,
     redirectTo,
   });
-  useMercureSubscription(resource, id);
 
   const displayOverrideCode = useDisplayOverrideCode();
 
@@ -89,15 +83,9 @@ export const IntrospectedEditGuesser = ({
   const FormType = hasFormTab ? TabbedForm : SimpleForm;
 
   return (
-    <Edit
-      resource={resource}
-      id={id}
-      mutationMode={mutationMode}
-      redirect={redirectTo}
-      component={viewComponent}
-      {...props}>
+    <Create resource={resource} component={viewComponent} {...props}>
       <FormType
-        onSubmit={mutationMode !== 'pessimistic' ? undefined : save}
+        onSubmit={save}
         mode={mode}
         defaultValues={defaultValues}
         validate={validate}
@@ -107,11 +95,11 @@ export const IntrospectedEditGuesser = ({
         component={formComponent}>
         {inputChildren}
       </FormType>
-    </Edit>
+    </Create>
   );
 };
 
-const EditGuesser = (props: EditGuesserProps) => {
+const CreateGuesser = (props: CreateGuesserProps) => {
   const resource = useResourceContext(props);
   if (!resource) {
     throw new Error('guesser must be used with a resource');
@@ -119,11 +107,11 @@ const EditGuesser = (props: EditGuesserProps) => {
 
   return (
     <Introspecter
-      component={IntrospectedEditGuesser}
+      component={IntrospectedCreateGuesser}
       resource={resource}
       {...props}
     />
   );
 };
 
-export default EditGuesser;
+export default CreateGuesser;

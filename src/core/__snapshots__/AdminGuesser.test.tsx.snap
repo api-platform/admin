@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AdminGuesser /> renders loading 1`] = `<Loading />`;
+
+exports[`<AdminGuesser /> renders with custom resources 1`] = `
+<AdminUI
+  dataProvider={
+    {
+      "create": [Function],
+      "delete": [Function],
+      "deleteMany": [Function],
+      "getList": [Function],
+      "getMany": [Function],
+      "getManyReference": [Function],
+      "getOne": [Function],
+      "introspect": [Function],
+      "subscribe": [Function],
+      "unsubscribe": [Function],
+      "update": [Function],
+      "updateMany": [Function],
+    }
+  }
+  loading={[Function]}
+>
+  <ResourceGuesser
+    name="custom"
+  />
+</AdminUI>
+`;
+
+exports[`<AdminGuesser /> renders without custom resources 1`] = `
+<AdminUI
+  dataProvider={
+    {
+      "create": [Function],
+      "delete": [Function],
+      "deleteMany": [Function],
+      "getList": [Function],
+      "getMany": [Function],
+      "getManyReference": [Function],
+      "getOne": [Function],
+      "introspect": [Function],
+      "subscribe": [Function],
+      "unsubscribe": [Function],
+      "update": [Function],
+      "updateMany": [Function],
+    }
+  }
+  loading={[Function]}
+>
+  <ResourceGuesser
+    name="books"
+  />
+</AdminUI>
+`;
+
+exports[`<AdminGuesser /> renders without data 1`] = `
+<AdminUI
+  dataProvider={
+    {
+      "create": [Function],
+      "delete": [Function],
+      "deleteMany": [Function],
+      "getList": [Function],
+      "getMany": [Function],
+      "getManyReference": [Function],
+      "getOne": [Function],
+      "introspect": [Function],
+      "subscribe": [Function],
+      "unsubscribe": [Function],
+      "update": [Function],
+      "updateMany": [Function],
+    }
+  }
+  loading={[Function]}
+/>
+`;

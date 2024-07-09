@@ -4,7 +4,7 @@ import type { UseQueryOptions } from '@tanstack/react-query';
 import type {
   ApiPlatformAdminDataProvider,
   IntrospectPayload,
-} from './types.js';
+} from '../types.js';
 
 const useIntrospect = (options?: UseQueryOptions<IntrospectPayload, Error>) => {
   const dataProvider = useDataProvider<ApiPlatformAdminDataProvider>();

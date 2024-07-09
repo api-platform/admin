@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ResourcesIntrospecterProps } from './types.js';
+import type { ResourcesIntrospecterProps } from '../types.js';
 
 const ResourcesIntrospecter = ({
   component: Component,

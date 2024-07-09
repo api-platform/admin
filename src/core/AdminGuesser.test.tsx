@@ -5,13 +5,13 @@ import ReactTestRenderer from 'react-test-renderer/shallow';
 import AdminGuesser from './AdminGuesser.js';
 import { AdminResourcesGuesser } from './AdminResourcesGuesser.js';
 import ResourceGuesser from './ResourceGuesser.js';
-import schemaAnalyzer from './hydra/schemaAnalyzer.js';
-import resources from './__fixtures__/resources.js';
-import { API_DATA } from './__fixtures__/parsedData.js';
+import schemaAnalyzer from '../hydra/schemaAnalyzer.js';
+import resources from '../__fixtures__/resources.js';
+import { API_DATA } from '../__fixtures__/parsedData.js';
 import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminRecord,
-} from './types.js';
+} from '../types.js';
 
 const dataProvider: ApiPlatformAdminDataProvider = {
   getList: () => Promise.resolve({ data: [], total: 0 }),

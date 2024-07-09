@@ -27,12 +27,12 @@ import type {
   TextInputProps,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
-import Introspecter from './Introspecter.js';
-import getIdentifierValue, { isIdentifier } from './getIdentifierValue.js';
+import Introspecter from '../introspection/Introspecter.js';
+import getIdentifierValue, { isIdentifier } from '../getIdentifierValue.js';
 import type {
   InputGuesserProps,
   IntrospectedInputGuesserProps,
-} from './types.js';
+} from '../types.js';
 
 export const IntrospectedInputGuesser = ({
   fields,

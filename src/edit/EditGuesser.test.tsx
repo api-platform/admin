@@ -5,14 +5,14 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import EditGuesser from './EditGuesser.js';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
-import schemaAnalyzer from './hydra/schemaAnalyzer.js';
+import SchemaAnalyzerContext from '../introspection/SchemaAnalyzerContext.js';
+import schemaAnalyzer from '../hydra/schemaAnalyzer.js';
 import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminRecord,
-} from './types.js';
+} from '../types.js';
 
-import { API_FIELDS_DATA } from './__fixtures__/parsedData.js';
+import { API_FIELDS_DATA } from '../__fixtures__/parsedData.js';
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
 const dataProvider: ApiPlatformAdminDataProvider = {

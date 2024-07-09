@@ -11,16 +11,16 @@ import {
 import type { DatagridBodyProps } from 'react-admin';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import FieldGuesser from './FieldGuesser.js';
+import FieldGuesser from '../field/FieldGuesser.js';
 import FilterGuesser from './FilterGuesser.js';
-import Introspecter from './Introspecter.js';
-import useMercureSubscription from './useMercureSubscription.js';
-import useDisplayOverrideCode from './useDisplayOverrideCode.js';
+import Introspecter from '../introspection/Introspecter.js';
+import useMercureSubscription from '../mercure/useMercureSubscription.js';
+import useDisplayOverrideCode from '../useDisplayOverrideCode.js';
 import type {
   ApiPlatformAdminRecord,
   IntrospectedListGuesserProps,
   ListGuesserProps,
-} from './types.js';
+} from '../types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =

@@ -6,16 +6,16 @@ import type { AdminProps } from 'react-admin';
 import type { Resource } from '@api-platform/api-doc-parser';
 
 import { AdminResourcesGuesser } from './AdminResourcesGuesser.js';
-import IntrospectionContext from './IntrospectionContext.js';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
+import IntrospectionContext from '../introspection/IntrospectionContext.js';
+import SchemaAnalyzerContext from '../introspection/SchemaAnalyzerContext.js';
 import {
   Error as DefaultError,
   Layout,
   LoginPage,
   darkTheme,
   lightTheme,
-} from './layout/index.js';
-import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from './types.js';
+} from '../layout/index.js';
+import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from '../types.js';
 
 export interface AdminGuesserProps extends AdminProps {
   admin?: ComponentType<AdminProps>;

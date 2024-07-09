@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ResourceGuesser /> renders with create 1`] = `
+<Introspecter
+  component={[Function]}
+  create={[Function]}
+  resource="dummy"
+/>
+`;
+
+exports[`<ResourceGuesser /> renders with edit 1`] = `
+<Introspecter
+  component={[Function]}
+  edit={[Function]}
+  resource="dummy"
+/>
+`;
+
+exports[`<ResourceGuesser /> renders with list 1`] = `
+<Introspecter
+  component={[Function]}
+  list={[Function]}
+  resource="dummy"
+/>
+`;
+
+exports[`<ResourceGuesser /> renders with show 1`] = `
+<Introspecter
+  component={[Function]}
+  resource="dummy"
+  show={[Function]}
+/>
+`;
+
+exports[`<ResourceGuesser /> renders without create 1`] = `
+<Introspecter
+  component={[Function]}
+  resource="dummy"
+/>
+`;
+
+exports[`<ResourceGuesser /> renders without edit 1`] = `
+<Introspecter
+  component={[Function]}
+  resource="dummy"
+/>
+`;
+
+exports[`<ResourceGuesser /> renders without list 1`] = `
+<Introspecter
+  component={[Function]}
+  resource="dummy"
+/>
+`;
+
+exports[`<ResourceGuesser /> renders without show 1`] = `
+<Introspecter
+  component={[Function]}
+  resource="dummy"
+/>
+`;

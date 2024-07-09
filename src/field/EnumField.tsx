@@ -6,7 +6,7 @@ import {
   useRecordContext,
 } from 'react-admin';
 import type { TextFieldProps } from 'react-admin';
-import type { EnumFieldProps } from './types.js';
+import type { EnumFieldProps } from '../types.js';
 
 const EnumField = ({ transformEnum, source, ...props }: EnumFieldProps) => {
   const record = useRecordContext();

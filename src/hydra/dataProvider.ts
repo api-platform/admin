@@ -23,7 +23,7 @@ import type {
 } from 'react-admin';
 
 import fetchHydra from './fetchHydra.js';
-import { resolveSchemaParameters } from '../schemaAnalyzer.js';
+import { resolveSchemaParameters } from '../introspection/schemaAnalyzer.js';
 import { adminDataProvider } from '../dataProvider/index.js';
 import { mercureManager } from '../mercure/index.js';
 import { removeTrailingSlash } from '../removeTrailingSlash.js';
