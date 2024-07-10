@@ -8,6 +8,11 @@ import type {
   IntrospectedFiterGuesserProps,
 } from '../types.js';
 
+/**
+ * Adds filters based on the #ApiFilters attribute
+ *
+ * @see https://api-platform.com/docs/core/filters/
+ */
 export const IntrospectedFilterGuesser = ({
   fields,
   readableFields,
