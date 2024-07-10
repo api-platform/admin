@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 export const Admin: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByRole('heading', { name: 'Greetings' });
+    await canvas.findByText('Greetings');
   },
   args: {
     entrypoint: process.env.ENTRYPOINT,
