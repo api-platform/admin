@@ -102,7 +102,7 @@ export const IntrospectedCreateGuesser = ({
 const CreateGuesser = (props: CreateGuesserProps) => {
   const resource = useResourceContext(props);
   if (!resource) {
-    throw new Error('guesser must be used with a resource');
+    throw new Error('CreateGuesser must be used with a resource');
   }
 
   return (

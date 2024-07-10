@@ -140,7 +140,7 @@ const ListGuesser = ({
 }: ListGuesserProps) => {
   const resource = useResourceContext(props);
   if (!resource) {
-    throw new Error('guesser must be used with a resource');
+    throw new Error('ListGuesser must be used with a resource');
   }
 
   return (

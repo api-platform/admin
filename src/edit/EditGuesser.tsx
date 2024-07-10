@@ -114,7 +114,7 @@ export const IntrospectedEditGuesser = ({
 const EditGuesser = (props: EditGuesserProps) => {
   const resource = useResourceContext(props);
   if (!resource) {
-    throw new Error('guesser must be used with a resource');
+    throw new Error('EditGuesser must be used with a resource');
   }
 
   return (

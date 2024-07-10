@@ -163,7 +163,7 @@ export const IntrospectedFieldGuesser = ({
 const FieldGuesser = (props: FieldGuesserProps) => {
   const resource = useResourceContext(props);
   if (!resource) {
-    throw new Error('guesser must be used with a resource');
+    throw new Error('FieldGuesser must be used with a resource');
   }
 
   return (
