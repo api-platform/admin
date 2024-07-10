@@ -21,17 +21,17 @@ const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
     'If you want to override at least one input, paste this content in the <CreateGuesser> component of your resource:\n\n';
 
-  code += `const ${schema.title}Create = props => (\n`;
-  code += `    <CreateGuesser {...props}>\n`;
+  code += `const ${schema.title}Create = () => (\n`;
+  code += `    <CreateGuesser>\n`;
 
   fields.forEach((field) => {
-    code += `        <InputGuesser source={"${field.name}"} />\n`;
+    code += `        <InputGuesser source="${field.name}" />\n`;
   });
   code += `    </CreateGuesser>\n`;
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${schema.name}"} create={${schema.title}Create} />`;
+  code += `<ResourceGuesser name="${schema.name}" create={${schema.title}Create} />`;
 
   return code;
 };
