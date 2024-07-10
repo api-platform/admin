@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0
+
+* Compatibility with react-admin v5
+
 ## 3.4.5
 
 * Fix validation errors shown as "Server communication error" when creating an entity
