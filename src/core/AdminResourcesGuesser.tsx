@@ -32,7 +32,7 @@ const getOverrideCode = (resources: Resource[]) => {
     'If you want to override at least one resource, paste this content in the <AdminGuesser> component of your app:\n\n';
 
   resources.forEach((r) => {
-    code += `<ResourceGuesser name={"${r.name}"} />\n`;
+    code += `<ResourceGuesser name="${r.name}" />\n`;
   });
 
   return code;
