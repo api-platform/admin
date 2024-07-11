@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   ArrayField,
   BooleanField,
@@ -29,7 +28,7 @@ import type {
 } from 'react-admin';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import Introspecter from './Introspecter.js';
+import Introspecter from '../introspection/Introspecter.js';
 import EnumField from './EnumField.js';
 import type {
   EnumFieldProps,
@@ -37,7 +36,7 @@ import type {
   FieldProps,
   IntrospectedFieldGuesserProps,
   SchemaAnalyzer,
-} from './types.js';
+} from '../types.js';
 
 const isFieldSortable = (field: Field, schema: Resource) =>
   !!schema.parameters &&
@@ -138,6 +137,11 @@ export const IntrospectedFieldGuesser = ({
   schemaAnalyzer,
   ...props
 }: IntrospectedFieldGuesserProps) => {
+  if (!props.source) {
+    // eslint-disable-next-line no-console
+    console.error('FieldGuesser: missing source property.');
+    return null;
+  }
   const field = fields.find((f) => f.name === props.source);
 
   if (!field) {
@@ -152,11 +156,15 @@ export const IntrospectedFieldGuesser = ({
   return renderField(field, schemaAnalyzer, {
     sortable: isFieldSortable(field, schema),
     ...props,
+    source: props.source,
   });
 };
 
 const FieldGuesser = (props: FieldGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('FieldGuesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -166,13 +174,6 @@ const FieldGuesser = (props: FieldGuesserProps) => {
       {...props}
     />
   );
-};
-
-FieldGuesser.propTypes = {
-  source: PropTypes.string.isRequired,
-  resource: PropTypes.string,
-  sortable: PropTypes.bool,
-  sortBy: PropTypes.string,
 };
 
 export default FieldGuesser;

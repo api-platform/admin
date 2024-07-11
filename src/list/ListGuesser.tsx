@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Datagrid,
   DatagridBody,
@@ -12,32 +11,32 @@ import {
 import type { DatagridBodyProps } from 'react-admin';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import FieldGuesser from './FieldGuesser.js';
+import FieldGuesser from '../field/FieldGuesser.js';
 import FilterGuesser from './FilterGuesser.js';
-import Introspecter from './Introspecter.js';
-import useMercureSubscription from './useMercureSubscription.js';
-import useDisplayOverrideCode from './useDisplayOverrideCode.js';
+import Introspecter from '../introspection/Introspecter.js';
+import useMercureSubscription from '../mercure/useMercureSubscription.js';
+import useDisplayOverrideCode from '../useDisplayOverrideCode.js';
 import type {
   ApiPlatformAdminRecord,
   IntrospectedListGuesserProps,
   ListGuesserProps,
-} from './types.js';
+} from '../types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
     'If you want to override at least one field, paste this content in the <ListGuesser> component of your resource:\n\n';
 
-  code += `const ${schema.title}List = props => (\n`;
-  code += `    <ListGuesser {...props}>\n`;
+  code += `const ${schema.title}List = () => (\n`;
+  code += `    <ListGuesser>\n`;
 
   fields.forEach((field) => {
-    code += `        <FieldGuesser source={"${field.name}"} />\n`;
+    code += `        <FieldGuesser source="${field.name}" />\n`;
   });
   code += `    </ListGuesser>\n`;
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${schema.name}"} list={${schema.title}List} />`;
+  code += `<ResourceGuesser name="${schema.name}" list={${schema.title}List} />`;
 
   return code;
 };
@@ -140,6 +139,9 @@ const ListGuesser = ({
   ...props
 }: ListGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('ListGuesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -150,20 +152,5 @@ const ListGuesser = ({
     />
   );
 };
-
-/* eslint-disable tree-shaking/no-side-effects-in-initialization */
-ListGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string,
-  filters: PropTypes.element,
-  hasShow: PropTypes.bool,
-  hasEdit: PropTypes.bool,
-  rowClick: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-    PropTypes.oneOf([false]),
-  ]),
-};
-/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default ListGuesser;

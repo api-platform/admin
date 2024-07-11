@@ -3,7 +3,7 @@ import getIdentifierValue from './getIdentifierValue.js';
 import {
   getFiltersParametersFromSchema,
   getOrderParametersFromSchema,
-} from './schemaAnalyzer.js';
+} from './introspection/schemaAnalyzer.js';
 import type { SchemaAnalyzer } from './types.js';
 
 const schemaAnalyzer: SchemaAnalyzer = {

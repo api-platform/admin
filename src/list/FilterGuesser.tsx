@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Filter, useResourceContext } from 'react-admin';
-import InputGuesser from './InputGuesser.js';
-import Introspecter from './Introspecter.js';
+import InputGuesser from '../input/InputGuesser.js';
+import Introspecter from '../introspection/Introspecter.js';
 import type {
   FilterGuesserProps,
   FilterParameter,
   IntrospectedFiterGuesserProps,
-} from './types.js';
+} from '../types.js';
 
+/**
+ * Adds filters based on the #ApiFilters attribute
+ *
+ * @see https://api-platform.com/docs/core/filters/
+ */
 export const IntrospectedFilterGuesser = ({
   fields,
   readableFields,
@@ -49,6 +54,9 @@ export const IntrospectedFilterGuesser = ({
 
 const FilterGuesser = (props: FilterGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('FilterGuesser must be used with a resource');
+  }
 
   return (
     <Introspecter

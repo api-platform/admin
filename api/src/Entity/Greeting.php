@@ -5,12 +5,15 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
-/**
- * This is a dummy entity. Remove it!
- */
+
 #[ApiResource(mercure: true)]
 #[ORM\Entity]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['name'], arguments: ['orderParameterName' => 'order'])]
 class Greeting
 {
     /**

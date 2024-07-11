@@ -3,6 +3,7 @@ import { useCreate, useNotify, useRedirect, useUpdate } from 'react-admin';
 import type { HttpError, RaRecord } from 'react-admin';
 import { useParams } from 'react-router-dom';
 import lodashIsPlainObject from 'lodash.isplainobject';
+
 import getIdentifierValue from './getIdentifierValue.js';
 import type { SubmissionErrors, UseOnSubmitProps } from './types.js';
 
@@ -108,7 +109,7 @@ const useOnSubmit = ({
             });
           });
         failure(
-          mutateError as string | Error,
+          mutateError as Error,
           {
             data: values,
             ...(isCreate ? {} : { id, previousData: values }),

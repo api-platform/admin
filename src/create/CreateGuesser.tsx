@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Create,
   FormTab,
@@ -9,30 +8,30 @@ import {
 } from 'react-admin';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import InputGuesser from './InputGuesser.js';
-import Introspecter from './Introspecter.js';
-import useDisplayOverrideCode from './useDisplayOverrideCode.js';
-import useOnSubmit from './useOnSubmit.js';
+import InputGuesser from '../input/InputGuesser.js';
+import Introspecter from '../introspection/Introspecter.js';
+import useDisplayOverrideCode from '../useDisplayOverrideCode.js';
+import useOnSubmit from '../useOnSubmit.js';
 import type {
   CreateGuesserProps,
   IntrospectedCreateGuesserProps,
-} from './types.js';
+} from '../types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
     'If you want to override at least one input, paste this content in the <CreateGuesser> component of your resource:\n\n';
 
-  code += `const ${schema.title}Create = props => (\n`;
-  code += `    <CreateGuesser {...props}>\n`;
+  code += `const ${schema.title}Create = () => (\n`;
+  code += `    <CreateGuesser>\n`;
 
   fields.forEach((field) => {
-    code += `        <InputGuesser source={"${field.name}"} />\n`;
+    code += `        <InputGuesser source="${field.name}" />\n`;
   });
   code += `    </CreateGuesser>\n`;
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${schema.name}"} create={${schema.title}Create} />`;
+  code += `<ResourceGuesser name="${schema.name}" create={${schema.title}Create} />`;
 
   return code;
 };
@@ -102,6 +101,9 @@ export const IntrospectedCreateGuesser = ({
 
 const CreateGuesser = (props: CreateGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('CreateGuesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -111,12 +113,5 @@ const CreateGuesser = (props: CreateGuesserProps) => {
     />
   );
 };
-
-/* eslint-disable tree-shaking/no-side-effects-in-initialization */
-CreateGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string,
-};
-/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default CreateGuesser;

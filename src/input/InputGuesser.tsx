@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   ArrayInput,
   BooleanInput,
@@ -28,12 +27,12 @@ import type {
   TextInputProps,
 } from 'react-admin';
 import isPlainObject from 'lodash.isplainobject';
-import Introspecter from './Introspecter.js';
-import getIdentifierValue, { isIdentifier } from './getIdentifierValue.js';
+import Introspecter from '../introspection/Introspecter.js';
+import getIdentifierValue, { isIdentifier } from '../getIdentifierValue.js';
 import type {
   InputGuesserProps,
   IntrospectedInputGuesserProps,
-} from './types.js';
+} from '../types.js';
 
 export const IntrospectedInputGuesser = ({
   fields,
@@ -178,6 +177,7 @@ export const IntrospectedInputGuesser = ({
           <SimpleFormIterator>
             <TextInput
               source=""
+              label={`resources.${props.resource}.fields.${field.name}`}
               format={formatProp ?? format}
               parse={parseProp ?? parse}
             />
@@ -263,6 +263,9 @@ export const IntrospectedInputGuesser = ({
 
 const InputGuesser = (props: InputGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('guesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -272,11 +275,6 @@ const InputGuesser = (props: InputGuesserProps) => {
       {...props}
     />
   );
-};
-
-InputGuesser.propTypes = {
-  source: PropTypes.string.isRequired,
-  alwaysOn: PropTypes.bool,
 };
 
 export default InputGuesser;

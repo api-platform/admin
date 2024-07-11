@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Show,
   SimpleShowLayout,
@@ -10,30 +9,30 @@ import {
 import { useParams } from 'react-router-dom';
 import type { Field, Resource } from '@api-platform/api-doc-parser';
 
-import FieldGuesser from './FieldGuesser.js';
-import Introspecter from './Introspecter.js';
-import useMercureSubscription from './useMercureSubscription.js';
-import useDisplayOverrideCode from './useDisplayOverrideCode.js';
+import FieldGuesser from '../field/FieldGuesser.js';
+import Introspecter from '../introspection/Introspecter.js';
+import useMercureSubscription from '../mercure/useMercureSubscription.js';
+import useDisplayOverrideCode from '../useDisplayOverrideCode.js';
 import type {
   IntrospectedShowGuesserProps,
   ShowGuesserProps,
-} from './types.js';
+} from '../types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code =
     'If you want to override at least one field, paste this content in the <ShowGuesser> component of your resource:\n\n';
 
-  code += `const ${schema.title}Show = props => (\n`;
-  code += `    <ShowGuesser {...props}>\n`;
+  code += `const ${schema.title}Show = () => (\n`;
+  code += `    <ShowGuesser>\n`;
 
   fields.forEach((field) => {
-    code += `        <FieldGuesser source={"${field.name}"} />\n`;
+    code += `        <FieldGuesser source="${field.name}" />\n`;
   });
   code += `    </ShowGuesser>\n`;
   code += `);\n`;
   code += `\n`;
   code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name={"${schema.name}"} show={${schema.title}Show} />`;
+  code += `<ResourceGuesser name="${schema.name}" show={${schema.title}Show} />`;
 
   return code;
 };
@@ -79,6 +78,9 @@ export const IntrospectedShowGuesser = ({
 
 const ShowGuesser = (props: ShowGuesserProps) => {
   const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error('ShowGuesser must be used with a resource');
+  }
 
   return (
     <Introspecter
@@ -88,12 +90,5 @@ const ShowGuesser = (props: ShowGuesserProps) => {
     />
   );
 };
-
-/* eslint-disable tree-shaking/no-side-effects-in-initialization */
-ShowGuesser.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  resource: PropTypes.string,
-};
-/* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
 export default ShowGuesser;

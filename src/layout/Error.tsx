@@ -1,6 +1,11 @@
 import React from 'react';
-import type { HtmlHTMLAttributes } from 'react';
-import { Title, useTranslate } from 'react-admin';
+import type { ComponentType, ErrorInfo, HtmlHTMLAttributes } from 'react';
+import {
+  Title,
+  useDefaultTitle,
+  useResetErrorBoundaryOnLocationChange,
+  useTranslate,
+} from 'react-admin';
 import type { ErrorProps } from 'react-admin';
 import {
   Accordion,
@@ -29,13 +34,6 @@ export const ErrorClasses = {
   toolbar: `${PREFIX}-toolbar`,
   advice: `${PREFIX}-advice`,
 };
-
-interface InternalErrorProps
-  extends Omit<HtmlHTMLAttributes<HTMLDivElement>, 'title'>,
-    Partial<Pick<FallbackProps, 'resetErrorBoundary'>>,
-    ErrorProps {
-  className?: string;
-}
 
 // eslint-disable-next-line tree-shaking/no-side-effects-in-initialization
 const Root = styled('div', {
@@ -87,15 +85,30 @@ const goBack = () => {
   window.history.go(-1);
 };
 
-const CustomError = ({
+interface InternalErrorProps
+  extends Omit<HtmlHTMLAttributes<HTMLDivElement>, 'title'>,
+    FallbackProps {
+  className?: string;
+  errorInfo?: ErrorInfo;
+}
+
+const Error = ({
   error,
+  errorComponent: ErrorComponent,
   errorInfo,
-  title,
   resetErrorBoundary,
   className,
   ...rest
-}: InternalErrorProps) => {
+}: InternalErrorProps & {
+  errorComponent?: ComponentType<ErrorProps>;
+}) => {
   const translate = useTranslate();
+  const title = useDefaultTitle();
+  useResetErrorBoundaryOnLocationChange(resetErrorBoundary);
+
+  if (ErrorComponent) {
+    return <ErrorComponent error={error} errorInfo={errorInfo} title={title} />;
+  }
 
   return (
     <>
@@ -195,4 +208,4 @@ const CustomError = ({
   );
 };
 
-export default CustomError;
+export default Error;

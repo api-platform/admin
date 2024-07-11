@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   ArrayField,
   SingleFieldList,
@@ -7,7 +6,7 @@ import {
   useRecordContext,
 } from 'react-admin';
 import type { TextFieldProps } from 'react-admin';
-import type { EnumFieldProps } from './types.js';
+import type { EnumFieldProps } from '../types.js';
 
 const EnumField = ({ transformEnum, source, ...props }: EnumFieldProps) => {
   const record = useRecordContext();
@@ -33,10 +32,5 @@ const EnumField = ({ transformEnum, source, ...props }: EnumFieldProps) => {
 };
 
 EnumField.displayName = 'EnumField';
-
-EnumField.propTypes = {
-  ...TextField.propTypes,
-  transformEnum: PropTypes.func,
-};
 
 export default EnumField;

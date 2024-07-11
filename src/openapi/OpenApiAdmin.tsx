@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import dataProviderFactory from './dataProvider.js';
 import { restDataProvider } from '../dataProvider/index.js';
 import /* tree-shaking no-side-effects-when-called */ schemaAnalyzer from './schemaAnalyzer.js';
-import AdminGuesser from '../AdminGuesser.js';
-import type { AdminGuesserProps } from '../AdminGuesser.js';
+import AdminGuesser from '../core/AdminGuesser.js';
+import type { AdminGuesserProps } from '../core/AdminGuesser.js';
 import type { MercureOptions } from '../types.js';
 
 type AdminGuesserPartialProps = Omit<
@@ -40,9 +39,5 @@ const OpenApiAdmin = ({
     {...props}
   />
 );
-
-OpenApiAdmin.propTypes = {
-  entrypoint: PropTypes.string.isRequired,
-};
 
 export default OpenApiAdmin;

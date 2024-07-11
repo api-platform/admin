@@ -13,8 +13,8 @@ export default (
 
   return {
     getList: async (resource, params) => {
-      const { page, perPage } = params.pagination;
-      const { field, order } = params.sort;
+      const { page, perPage } = params.pagination ?? { page: 1, perPage: 25 };
+      const { field, order } = params.sort ?? { field: 'id', order: 'DESC' };
 
       const rangeStart = (page - 1) * perPage;
       const rangeEnd = page * perPage - 1;

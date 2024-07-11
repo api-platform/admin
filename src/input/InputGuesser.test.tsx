@@ -8,17 +8,18 @@ import {
 } from 'react-admin';
 import { Resource } from '@api-platform/api-doc-parser';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
 import InputGuesser from './InputGuesser.js';
-import SchemaAnalyzerContext from './SchemaAnalyzerContext.js';
-import schemaAnalyzer from './hydra/schemaAnalyzer.js';
+import SchemaAnalyzerContext from '../introspection/SchemaAnalyzerContext.js';
+import schemaAnalyzer from '../hydra/schemaAnalyzer.js';
 import type {
   ApiPlatformAdminDataProvider,
   ApiPlatformAdminRecord,
-} from './types.js';
+} from '../types.js';
 
-import { API_FIELDS_DATA } from './__fixtures__/parsedData.js';
+import { API_FIELDS_DATA } from '../__fixtures__/parsedData.js';
 
 const hydraSchemaAnalyzer = schemaAnalyzer();
 const dataProvider: ApiPlatformAdminDataProvider = {
@@ -209,11 +210,8 @@ describe('<InputGuesser />', () => {
       'resources.users.fields.embedded',
     );
     expect(embeddedField).toHaveValue('{"address":"91 rue du Temple"}');
-    expect(
-      await screen.findAllByText('resources.users.fields.embeddeds.0'),
-    ).toHaveLength(1);
-    const embeddedsField = screen.getByLabelText(
-      'resources.users.fields.embeddeds.0',
+    const embeddedsField = await screen.findByLabelText(
+      'resources.users.fields.embeddeds',
     );
     expect(embeddedsField).toHaveValue('{"address":"16 avenue de Rivoli"}');
 

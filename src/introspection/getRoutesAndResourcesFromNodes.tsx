@@ -53,6 +53,7 @@ const getRoutesAndResourcesFromNodes = (children: AdminChildren) => {
     };
   }
 
+  // @ts-expect-error for some reason, typescript doesn't narrow down the type after calling the isSingleChildFunction type guard
   Children.forEach(children, (element) => {
     if (!React.isValidElement(element)) {
       // Ignore non-elements. This allows people to more easily inline

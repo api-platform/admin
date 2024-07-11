@@ -2,7 +2,7 @@ import type { Field, Resource } from '@api-platform/api-doc-parser';
 import {
   getFiltersParametersFromSchema,
   getOrderParametersFromSchema,
-} from '../schemaAnalyzer.js';
+} from '../introspection/schemaAnalyzer.js';
 import type { SchemaAnalyzer } from '../types.js';
 
 /**

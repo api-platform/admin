@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import {
   Resource,
   useResourceDefinition,
   useResourceDefinitionContext,
 } from 'react-admin';
 import type { ResourceDefinition, ResourceProps } from 'react-admin';
-import ListGuesser from './ListGuesser.js';
-import CreateGuesser from './CreateGuesser.js';
-import EditGuesser from './EditGuesser.js';
-import ShowGuesser from './ShowGuesser.js';
-import Introspecter from './Introspecter.js';
+import ListGuesser from '../list/ListGuesser.js';
+import CreateGuesser from '../create/CreateGuesser.js';
+import EditGuesser from '../edit/EditGuesser.js';
+import ShowGuesser from '../show/ShowGuesser.js';
+import Introspecter from '../introspection/Introspecter.js';
 import type {
   IntrospectedResourceGuesserProps,
   ResourceGuesserProps,
-} from './types.js';
+} from '../types.js';
 
 export const IntrospectedResourceGuesser = ({
   resource,
@@ -110,9 +109,5 @@ ResourceGuesser.registerResource = (
   hasCreate: true,
   hasShow: true,
 });
-
-ResourceGuesser.propTypes = {
-  name: PropTypes.string.isRequired,
-};
 
 export default ResourceGuesser;
