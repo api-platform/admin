@@ -34,6 +34,9 @@ export const darkTheme: RaThemeOptions = {
         },
       },
     },
+    MuiFilledInput: {
+      styleOverrides: undefined,
+    },
   },
 };
 
