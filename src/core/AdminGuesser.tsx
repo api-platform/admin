@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   AdminContext,
   defaultI18nProvider,
-  localStorageStore,
+  /* tree-shaking no-side-effects-when-called */ localStorageStore,
 } from 'react-admin';
 
 import type { ComponentType } from 'react';
