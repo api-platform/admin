@@ -497,6 +497,8 @@ export type InputGuesserProps = Omit<
   'component'
 > & {
   transformEnum?: (value: string | number) => string | number;
+  // don't know why this TextInputProps doesn't surface in the final type, re-adding it here
+  multiline?: boolean;
 } & Pick<
     ReferenceInputProps | ReferenceArrayInputProps,
     'filter' | 'page' | 'perPage' | 'sort' | 'enableGetChoices'
