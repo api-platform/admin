@@ -1,8 +1,5 @@
 # Changelog
 
-* Fix Inputs background in darkTheme
-* Fix default store isn't using localStorage
-
 ## 4.0.0
 
 * Compatibility with react-admin v5
