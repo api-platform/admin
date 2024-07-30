@@ -18,20 +18,29 @@ import type {
 } from '../types.js';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
-  let code =
-    'If you want to override at least one input, paste this content in the <CreateGuesser> component of your resource:\n\n';
-
-  code += `const ${schema.title}Create = () => (\n`;
+  let code = `If you want to override at least one input, create a ${schema.title}Create component with this content:\n`;
+  code += `\n`;
+  code += `import { CreateGuesser, InputGuesser } from "@api-platform/admin";\n`;
+  code += `\n`;
+  code += `export const ${schema.title}Create = () => (\n`;
   code += `    <CreateGuesser>\n`;
-
   fields.forEach((field) => {
     code += `        <InputGuesser source="${field.name}" />\n`;
   });
   code += `    </CreateGuesser>\n`;
   code += `);\n`;
   code += `\n`;
-  code += `And don't forget update your <ResourceGuesser> component:\n`;
-  code += `<ResourceGuesser name="${schema.name}" create={${schema.title}Create} />`;
+  code += `Then, update your main admin component:\n`;
+  code += `\n`;
+  code += `import { HydraAdmin, ResourceGuesser } from "@api-platform/admin";\n`;
+  code += `import { ${schema.title}Create } from './${schema.title}Create';\n`;
+  code += `\n`;
+  code += `const App = () => (\n`;
+  code += `    <HydraAdmin entrypoint={...}>\n`;
+  code += `        <ResourceGuesser name="${schema.name}" create={${schema.title}Create} />\n`;
+  code += `        {/* ... */}\n`;
+  code += `    </HydraAdmin>\n`;
+  code += `);\n`;
 
   return code;
 };
