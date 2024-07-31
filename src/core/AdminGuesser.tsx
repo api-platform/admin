@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AdminContext, defaultI18nProvider } from 'react-admin';
+import {
+  AdminContext,
+  defaultI18nProvider,
+  /* tree-shaking no-side-effects-when-called */ localStorageStore,
+} from 'react-admin';
 
 import type { ComponentType } from 'react';
 import type { AdminProps } from 'react-admin';
@@ -12,8 +16,8 @@ import {
   Error as DefaultError,
   Layout,
   LoginPage,
-  darkTheme,
-  lightTheme,
+  darkTheme as defaultDarkTheme,
+  lightTheme as defaultLightTheme,
 } from '../layout/index.js';
 import type { ApiPlatformAdminDataProvider, SchemaAnalyzer } from '../types.js';
 
@@ -24,6 +28,8 @@ export interface AdminGuesserProps extends AdminProps {
   includeDeprecated?: boolean;
 }
 
+const defaultStore = localStorageStore();
+
 const AdminGuesser = ({
   // Props for SchemaAnalyzerContext
   schemaAnalyzer,
@@ -33,7 +39,7 @@ const AdminGuesser = ({
   basename,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error = DefaultError as any,
-  store,
+  store = defaultStore,
   dataProvider,
   i18nProvider = defaultI18nProvider,
   authProvider,
@@ -42,7 +48,8 @@ const AdminGuesser = ({
   layout = Layout,
   loginPage = LoginPage,
   loading: loadingPage,
-  theme = lightTheme,
+  theme = defaultLightTheme,
+  darkTheme = defaultDarkTheme,
   // Other props
   children,
   ...rest
@@ -98,7 +105,6 @@ const AdminGuesser = ({
       queryClient={queryClient}
       theme={theme}
       darkTheme={darkTheme}
-      lightTheme={lightTheme}
       defaultTheme={defaultTheme}>
       <IntrospectionContext.Provider value={introspectionContext}>
         <SchemaAnalyzerContext.Provider value={schemaAnalyzer}>
