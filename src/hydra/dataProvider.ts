@@ -70,6 +70,8 @@ class ReactAdminDocument implements ApiPlatformAdminRecord {
   }
 }
 
+export const prefixHydraKey = (hasPrefix: boolean = true, str: string) =>  hasPrefix ? 'hydra:'+str : str;
+
 /**
  * Local cache containing embedded documents.
  * It will be used to prevent useless extra HTTP query if the relation is displayed.
@@ -551,16 +553,20 @@ function dataProvider(
             new Error(`An empty response was received for "${type}".`),
           );
         }
-        if (!('hydra:member' in response.json)) {
+        if (
+          !('hydra:member' in response.json) ||
+          !('member' in response.json)
+        ) {
           return Promise.reject(
             new Error(`Response doesn't have a "hydra:member" field.`),
           );
         }
+        const hasPrefix = 'hydra:member' in response.json ? true : false;
         // TODO: support other prefixes than "hydra:"
         // eslint-disable-next-line no-case-declarations
         const hydraCollection = response.json as HydraCollection;
         return Promise.resolve(
-          hydraCollection['hydra:member'].map((document) =>
+          hydraCollection[prefixHydraKey('member')].map((document) =>
             transformJsonLdDocumentToReactAdminDocument(
               document,
               true,
@@ -577,17 +583,17 @@ function dataProvider(
             ),
           )
           .then((data) => {
-            if (hydraCollection['hydra:totalItems'] !== undefined) {
+            if (hydraCollection[prefixHydraKey('totalItems')] !== undefined) {
               return {
                 data,
-                total: hydraCollection['hydra:totalItems'],
+                total: hydraCollection[prefixHydraKey('totalItems')],
               };
             }
-            if (hydraCollection['hydra:view']) {
+            if (hydraCollection[prefixHydraKey('view')]) {
               const pageInfo = {
-                hasNextPage: !!hydraCollection['hydra:view']['hydra:next'],
+                hasNextPage: !!hydraCollection[prefixHydraKey('view')][prefixHydraKey('next')],
                 hasPreviousPage:
-                  !!hydraCollection['hydra:view']['hydra:previous'],
+                  !!hydraCollection[prefixHydraKey('view')][prefixHydraKey('previous')],
               };
               return {
                 data,
