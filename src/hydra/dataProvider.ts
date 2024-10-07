@@ -35,7 +35,7 @@ import type {
   DataProviderType,
   HydraCollection,
   HydraDataProviderFactoryParams,
-  HydraHttpClientResponse,
+  HydraHttpClientResponse, HydraView,
   MercureOptions,
   SearchParams,
 } from '../types.js';
@@ -159,6 +159,16 @@ const defaultParams: Required<
   useEmbedded: true,
   disableCache: false,
 };
+
+function normalizeHydraKey(json: JsonLdObj, key: string): JsonLdObj {
+  if (json[`hydra:${key}`]) {
+    const copy = JSON.parse(JSON.stringify(json));
+    copy[key] = copy[`hydra:${key}`];
+    delete copy[`hydra:${key}`];
+    return copy;
+  }
+  return json;
+}
 
 /**
  * Maps react-admin queries to a Hydra powered REST API
@@ -545,22 +555,22 @@ function dataProvider(
 
     switch (type) {
       case GET_LIST:
-      case GET_MANY_REFERENCE:
+      case GET_MANY_REFERENCE: {
         if (!response.json) {
           return Promise.reject(
             new Error(`An empty response was received for "${type}".`),
           );
         }
-        if (!('hydra:member' in response.json)) {
+        const json = normalizeHydraKey(response.json, 'member');
+        if (!json.member) {
           return Promise.reject(
-            new Error(`Response doesn't have a "hydra:member" field.`),
+            new Error("Response doesn't have a member field."),
           );
         }
         // TODO: support other prefixes than "hydra:"
-        // eslint-disable-next-line no-case-declarations
-        const hydraCollection = response.json as HydraCollection;
+        let hydraCollection = json as HydraCollection;
         return Promise.resolve(
-          hydraCollection['hydra:member'].map((document) =>
+          hydraCollection.member.map((document: JsonLdObj) =>
             transformJsonLdDocumentToReactAdminDocument(
               document,
               true,
@@ -577,17 +587,29 @@ function dataProvider(
             ),
           )
           .then((data) => {
-            if (hydraCollection['hydra:totalItems'] !== undefined) {
+            hydraCollection = normalizeHydraKey(
+              hydraCollection,
+              'totalItems',
+            ) as HydraCollection;
+            if (hydraCollection.totalItems !== undefined) {
               return {
                 data,
-                total: hydraCollection['hydra:totalItems'],
+                total: hydraCollection.totalItems,
               };
             }
-            if (hydraCollection['hydra:view']) {
+            hydraCollection = normalizeHydraKey(
+              hydraCollection,
+              'view',
+            ) as HydraCollection;
+            if (hydraCollection.view) {
+              let hydraView = normalizeHydraKey(
+                hydraCollection.view,
+                'next',
+              ) as HydraView;
+              hydraView = normalizeHydraKey(hydraView, 'previous') as HydraView;
               const pageInfo = {
-                hasNextPage: !!hydraCollection['hydra:view']['hydra:next'],
-                hasPreviousPage:
-                  !!hydraCollection['hydra:view']['hydra:previous'],
+                hasNextPage: !!hydraView.next,
+                hasPreviousPage: !!hydraView.previous,
               };
               return {
                 data,
@@ -599,7 +621,7 @@ function dataProvider(
               data,
             };
           });
-
+      }
       case DELETE:
         return Promise.resolve({ data: { id: (params as DeleteParams).id } });
 

@@ -78,17 +78,17 @@ export type DataTransformer = (parsedData: any) => ApiPlatformAdminRecord;
 export type Hydra = JsonLdObj | HydraCollection;
 
 export interface HydraView extends JsonLdObj {
-  '@type': 'hydra:PartialCollectionView';
-  'hydra:first': string;
-  'hydra:last': string;
-  'hydra:next': string;
-  'hydra:previous': string;
+  '@type': string;
+  first: string;
+  last: string;
+  next: string;
+  previous: string;
 }
 
 export interface HydraCollection extends JsonLdObj {
-  'hydra:member': JsonLdObj[];
-  'hydra:totalItems'?: number;
-  'hydra:view'?: HydraView;
+  member: JsonLdObj[];
+  totalItems?: number;
+  view?: HydraView;
 }
 
 export interface HttpClientOptions {
