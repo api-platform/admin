@@ -18,8 +18,8 @@
   "license": "MIT",
   "sideEffects": false,
   "dependencies": {
-    "@api-platform/api-doc-parser": "^0.16.2",
-    "jsonld": "^8.1.0",
+    "@api-platform/api-doc-parser": "^0.16.4",
+    "jsonld": "^8.3.2",
     "lodash.isplainobject": "^4.0.6",
     "react-admin": "^5.0.3"
   },

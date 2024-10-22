@@ -29,9 +29,7 @@ export default (
     introspect: (_resource = '', _params = {}) =>
       apiSchema
         ? Promise.resolve({ data: apiSchema })
-        : apiDocumentationParser(docEntrypointUrl.toString(), {
-            headers: { accept: 'application/ld+json' },
-          })
+        : apiDocumentationParser(docEntrypointUrl.toString())
             .then(({ api }: ApiDocumentationParserResponse) => {
               if (api.resources && api.resources.length > 0) {
                 apiSchema = { ...api, resources: api.resources };

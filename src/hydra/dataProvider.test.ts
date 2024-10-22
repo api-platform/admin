@@ -645,4 +645,61 @@ describe('Transform a React Admin request to an Hydra request', () => {
       'http://localhost/entrypoint/comments?order%5Btext%5D=DESC&order%5Bid%5D=DESC&page=1&itemsPerPage=30',
     );
   });
+
+  test('React Admin get list without hydra prefix', async () => {
+    mockFetchHydra.mockClear();
+    mockFetchHydra.mockReturnValue(
+      Promise.resolve({
+        status: 200,
+        headers: new Headers(),
+        json: { member: [], totalItems: 3 },
+      }),
+    );
+    await dataProvider.current.getList('resource', {
+      pagination: {
+        page: 1,
+        perPage: 30,
+      },
+      sort: {
+        order: 'ASC',
+        field: '',
+      },
+      filter: {
+        simple: 'foo',
+        nested: { param: 'bar' },
+        sub_nested: { sub: { param: true } },
+        array: ['/iri/1', '/iri/2'],
+        nested_array: { nested: ['/nested_iri/1', '/nested_iri/2'] },
+        exists: { foo: true },
+        nested_date: { date: { before: '2000' } },
+        nested_range: { range: { between: '12.99..15.99' } },
+      },
+      searchParams: { pagination: 'true' },
+    });
+    const searchParams = Array.from(
+      mockFetchHydra.mock.calls?.[0]?.[0]?.searchParams.entries() ?? [],
+    );
+    expect(searchParams[0]).toEqual(['pagination', 'true']);
+    expect(searchParams[1]).toEqual(['page', '1']);
+    expect(searchParams[2]).toEqual(['itemsPerPage', '30']);
+    expect(searchParams[3]).toEqual(['simple', 'foo']);
+    expect(searchParams[4]).toEqual(['nested.param', 'bar']);
+    expect(searchParams[5]).toEqual(['sub_nested.sub.param', 'true']);
+    expect(searchParams[6]).toEqual(['array[0]', '/iri/1']);
+    expect(searchParams[7]).toEqual(['array[1]', '/iri/2']);
+    expect(searchParams[8]).toEqual([
+      'nested_array.nested[0]',
+      '/nested_iri/1',
+    ]);
+    expect(searchParams[9]).toEqual([
+      'nested_array.nested[1]',
+      '/nested_iri/2',
+    ]);
+    expect(searchParams[10]).toEqual(['exists[foo]', 'true']);
+    expect(searchParams[11]).toEqual(['nested_date.date[before]', '2000']);
+    expect(searchParams[12]).toEqual([
+      'nested_range.range[between]',
+      '12.99..15.99',
+    ]);
+  });
 });

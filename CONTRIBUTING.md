@@ -36,7 +36,7 @@ If you already have a project in progress, you can develop directly from it.
 
 The instructions below explain how to install the source version of API Platform Admin in your project and contribute a patch.
 
-Your client should already use `@api-platform/admin` and its bootstrap file (usually: `src/App.tsx`) should at least contains: 
+Your client should already use `@api-platform/admin` and its bootstrap file (usually: `src/App.tsx`) should at least contains:
 
 ```tsx
 import React from 'react';
@@ -97,9 +97,9 @@ yarn dev --force
 
 #### Running Admin Through Storybook
 
-If you do not have an existing project, you can use [Storybook](https://storybook.js.org/) to visualize changes in the source code, and test them. 
+If you do not have an existing project, you can use [Storybook](https://storybook.js.org/) to visualize changes in the source code, and test them.
 
-This development stack consists of two Docker containers: 
+This development stack consists of two Docker containers:
 - `pwa`: containing the `<Admin>` sources and Storybook;
 - `php`: holding the API sources.
 
@@ -119,7 +119,7 @@ Now you can go to http://localhost:3000/ to see the Storybook instance in action
 
 To run a command directly inside a container, run:
 ```shell
-# Run a command in the php container 
+# Run a command in the php container
 docker compose exec -T php your-command
 
 # Run a command in the pwa container
@@ -137,9 +137,9 @@ yarn test
 yarn test-storybook --url http://127.0.0.1:3000/
 ```
 
-If you add a new feature, don't forget to add tests for it. 
+If you add a new feature, don't forget to add tests for it.
 - Functionnal tests are written with [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/);
-- End-to-end tests are written with [Storybook play funcitons](https://storybook.js.org/docs/writing-stories/play-function/).
+- End-to-end tests are written with [Storybook play functions](https://storybook.js.org/docs/writing-stories/play-function/).
 
 ### Matching Coding Standards
 
