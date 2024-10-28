@@ -35,7 +35,8 @@ import type {
   DataProviderType,
   HydraCollection,
   HydraDataProviderFactoryParams,
-  HydraHttpClientResponse, HydraView,
+  HydraHttpClientResponse,
+  HydraView,
   MercureOptions,
   SearchParams,
 } from '../types.js';
