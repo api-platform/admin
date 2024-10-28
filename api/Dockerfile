@@ -5,7 +5,7 @@
 
 # Versions
 # hadolint ignore=DL3007
-FROM dunglas/frankenphp:latest-alpine AS frankenphp_upstream
+FROM dunglas/frankenphp:1-php8.3-alpine AS frankenphp_upstream
 
 
 # The different stages of this Dockerfile are meant to be built into separate images
