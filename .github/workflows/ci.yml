@@ -19,7 +19,9 @@ jobs:
           node-version: 'current'
       -
         name: Enable corepack
-        run: corepack enable
+        run: |
+          corepack install yarn@1
+          corepack enable
       -
         name: Install dependencies
         run: yarn install
