@@ -19,6 +19,7 @@ const onSubmitProps = {
   fields: API_FIELDS_DATA,
   resource: 'books',
   schemaAnalyzer: schemaAnalyzer(),
+  children: [],
 };
 
 jest.mock('./getIdentifierValue.js');

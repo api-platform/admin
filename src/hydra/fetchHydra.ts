@@ -72,7 +72,7 @@ function fetchHydra(
           Promise.reject(
             new HttpError(
               (
-                json[0][
+                json[0]?.[
                   'http://www.w3.org/ns/hydra/core#description'
                 ] as JsonLdObj[]
               )?.[0]?.['@value'],

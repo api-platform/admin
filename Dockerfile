@@ -11,7 +11,7 @@ FROM node_upstream AS base
 WORKDIR /srv/app
 
 RUN corepack enable && \
-	corepack prepare --activate yarn@*
+	corepack prepare --activate yarn@4
 
 ENV HOSTNAME localhost
 EXPOSE 3000
