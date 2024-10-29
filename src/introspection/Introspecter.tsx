@@ -63,6 +63,7 @@ const Introspecter = ({
 
   return (
     <ResourcesIntrospecter
+      {...rest}
       component={component}
       schemaAnalyzer={schemaAnalyzerProxy}
       includeDeprecated={includeDeprecated}
@@ -70,7 +71,6 @@ const Introspecter = ({
       resources={resources ?? []}
       loading={isPending}
       error={error}
-      {...rest}
     />
   );
 };
