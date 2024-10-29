@@ -78,6 +78,7 @@ export const IntrospectedEditGuesser = ({
     mutationOptions,
     transform,
     redirectTo,
+    children: []
   });
   useMercureSubscription(resource, id);
 
