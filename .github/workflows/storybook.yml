@@ -37,7 +37,9 @@ jobs:
                 *.cache-to=type=gha,scope=${{github.ref}},mode=max
       -
         name: Start services
-        run: docker compose -f compose.yaml -f compose.ci.yaml up --wait --no-build
+        run: |
+          docker compose -f compose.yaml -f compose.ci.yaml build --pull
+          docker compose -f compose.yaml -f compose.ci.yaml up --wait --no-build
       -
         name: Create test database
         run: docker compose exec -T php bin/console -e test doctrine:database:create
