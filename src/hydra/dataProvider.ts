@@ -182,7 +182,7 @@ function normalizeHydraKey(json: JsonLdObj, key: string): JsonLdObj {
  * GET_LIST => GET http://my.api.url/posts
  * GET_MANY => GET http://my.api.url/posts/123, GET http://my.api.url/posts/456, GET http://my.api.url/posts/789
  * GET_ONE  => GET http://my.api.url/posts/123
- * UPDATE   => PUT http://my.api.url/posts/123
+ * UPDATE   => PATCH http://my.api.url/posts/123
  */
 function dataProvider(
   factoryParams: HydraDataProviderFactoryParams,
@@ -253,13 +253,10 @@ function dataProvider(
   };
 
   const transformReactAdminDataToRequestBody = (
-    resource: string,
+    apiResource: undefined | Resource,
     data: Record<string, unknown> | XMLHttpRequestBodyInit,
     extraInformation: { hasFileField?: boolean },
   ): Promise<XMLHttpRequestBodyInit> => {
-    const apiResource = apiSchema.resources.find(
-      ({ name }) => resource === name,
-    );
     if (undefined === apiResource) {
       return Promise.resolve(data as XMLHttpRequestBodyInit);
     }
@@ -366,12 +363,23 @@ function dataProvider(
     if (typeof params.meta === 'object') {
       extraInformation = params.meta;
     }
-    const updateHttpMethod = extraInformation.hasFileField ? 'POST' : 'PUT';
+
+    const apiResource = (apiSchema?.resources ?? []).find(
+      ({ name }) => resource === name,
+    );
+
+    let updateHttpMethod = 'POST';
+
+    if (!extraInformation.hasFileField) {
+      updateHttpMethod =
+        apiResource?.operations?.find((operation) => operation.type === 'edit')
+          ?.method ?? 'PUT';
+    }
 
     switch (type) {
       case CREATE:
         return transformReactAdminDataToRequestBody(
-          resource,
+          apiResource,
           (params as CreateParams).data,
           extraInformation,
         ).then((body) => ({
@@ -481,13 +489,17 @@ function dataProvider(
 
       case UPDATE:
         return transformReactAdminDataToRequestBody(
-          resource,
+          apiResource,
           (params as UpdateParams).data,
           extraInformation,
         ).then((body) => ({
           options: {
             body,
             method: updateHttpMethod,
+            headers:
+              updateHttpMethod === 'PATCH'
+                ? { 'content-type': 'application/merge-patch+json' }
+                : {},
           },
           url,
         }));
