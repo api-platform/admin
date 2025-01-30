@@ -16,9 +16,9 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js'; // eslint-disable-line import/extensions
-import HistoryIcon from '@mui/icons-material/History.js'; // eslint-disable-line import/extensions
-import RefreshIcon from '@mui/icons-material/Refresh.js'; // eslint-disable-line import/extensions
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // eslint-disable-line import/extensions
+import HistoryIcon from '@mui/icons-material/History'; // eslint-disable-line import/extensions
+import RefreshIcon from '@mui/icons-material/Refresh'; // eslint-disable-line import/extensions
 import type { FallbackProps } from 'react-error-boundary';
 import LogoError from './LogoError.js';
 
