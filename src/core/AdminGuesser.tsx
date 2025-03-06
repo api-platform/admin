@@ -97,7 +97,7 @@ const AdminGuesser = ({
   );
 
   if (loading) {
-    return React.createElement(Loading, null);
+    return <Loading />;
   }
   
   return (
