@@ -3,13 +3,31 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 
-#[ApiResource]
+#[ApiResource(mercure: true)]
 #[ORM\Entity]
+#[ApiFilter(OrderFilter::class, properties: [
+    'id' => 'ASC', 
+    'isbn' => 'ASC', 
+    'title' => 'ASC', 
+    'author' => 'ASC', 
+    'publicationDate' => 'DESC'
+])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact', 
+    'title' => 'ipartial', 
+    'author' => 'ipartial'
+])]
+#[ApiFilter(DateFilter::class, properties: ['publicationDate'])]
 class Book
 {
     /** The ID of this book */
@@ -25,6 +43,7 @@ class Book
     /** The title of this book */
     #[ORM\Column]
     #[Assert\NotBlank]
+    #[ApiProperty(iris: ['http://schema.org/name'])]
     public string $title = '';
 
     /** The description of this book */

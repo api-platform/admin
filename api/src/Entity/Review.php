@@ -3,12 +3,31 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 
-#[ApiResource]
+#[ApiResource(mercure: true)]
 #[ORM\Entity]
+#[ApiFilter(OrderFilter::class, properties: [
+    'id' => 'ASC', 
+    'rating' => 'ASC', 
+    'author' => 'ASC', 
+    'publicationDate' => 'DESC'
+])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact', 
+    'body' => 'ipartial', 
+    'author' => 'ipartial'
+])]
+#[ApiFilter(NumericFilter::class, properties: ['rating'])]
+#[ApiFilter(DateFilter::class, properties: ['publicationDate'])]
 class Review
 {
     /** The ID of this review */
@@ -35,6 +54,7 @@ class Review
     /** The publication date of this review */
     #[ORM\Column]
     #[Assert\NotNull]
+    #[ApiProperty(iris: ['http://schema.org/name'])]
     public ?\DateTimeImmutable $publicationDate = null;
 
     /** The book this review is about */
