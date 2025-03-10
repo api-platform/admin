@@ -99,7 +99,7 @@ const AdminGuesser = ({
   if (loading) {
     return <Loading />;
   }
-  
+
   return (
     <AdminContext
       i18nProvider={i18nProvider}
