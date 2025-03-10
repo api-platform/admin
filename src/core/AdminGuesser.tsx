@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AdminContext,
+  Loading,
   defaultI18nProvider,
   /* tree-shaking no-side-effects-when-called */ localStorageStore,
 } from 'react-admin';
@@ -94,6 +95,10 @@ const AdminGuesser = ({
     }),
     [setLoading, setIntrospect],
   );
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <AdminContext
