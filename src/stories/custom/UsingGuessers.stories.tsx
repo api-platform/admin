@@ -1,3 +1,5 @@
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import ReviewsIcon from '@mui/icons-material/Reviews';
 import React from 'react';
 import { HydraAdmin } from '../../hydra';
 import ResourceGuesser from '../../core/ResourceGuesser';
@@ -103,6 +105,7 @@ export const UsingGuessers = () => (
       show={BookShow}
       edit={BookEdit}
       create={BookCreate}
+      icon={AutoStoriesIcon}
     />
     <ResourceGuesser
       name="reviews"
@@ -110,6 +113,7 @@ export const UsingGuessers = () => (
       show={ReviewShow}
       edit={ReviewEdit}
       create={ReviewCreate}
+      icon={ReviewsIcon}
     />
   </HydraAdmin>
 );
