@@ -15,15 +15,15 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@api-platform/api-doc-parser@^0.16.7":
-  version "0.16.7"
-  resolved "https://registry.yarnpkg.com/@api-platform/api-doc-parser/-/api-doc-parser-0.16.7.tgz#a9262bf488cae518eec3d0d1fe2cefeb869c6bf3"
-  integrity sha512-olktqiKzakiRx0nBFXs9JT2rl2ZEq3M8KKXCDG2qfa8RppV+fIm0HSrC0ZeOIREZ+RbQP5Rheh/L/nPI/DRtSg==
+"@api-platform/api-doc-parser@^0.16.8":
+  version "0.16.8"
+  resolved "https://registry.yarnpkg.com/@api-platform/api-doc-parser/-/api-doc-parser-0.16.8.tgz#6fde9af49903d5c9fc0f4d95013b66ea80ecce9e"
+  integrity sha512-fOpMd7RND3+NWER5s5Ps00mcqI7QdPiZw2OgZnTCOG9r7oIElW/O5JgvviRRpM1vTu9LziBLDoNyT2qbT0LOrg==
   dependencies:
     graphql "^16.0.0"
-    inflection "^1.13.0"
+    inflection "^3.0.0"
     jsonld "^8.3.2"
-    jsonref "^8.0.0"
+    jsonref "^9.0.0"
     lodash.get "^4.4.0"
     tslib "^2.0.0"
 
@@ -5959,11 +5959,6 @@ indent-string@^4.0.0:
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
   integrity sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==
 
-inflection@^1.13.0:
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/inflection/-/inflection-1.13.4.tgz#65aa696c4e2da6225b148d7a154c449366633a32"
-  integrity sha512-6I/HUDeYFfuNCVS3td055BaXBwKYuzw7K3ExVMStBowKo9oOAMJIXIHvdyR3iboTCp1b+1i5DSkIZTcwIktuDw==
-
 inflection@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/inflection/-/inflection-3.0.0.tgz#6a956fa90d72a27d22e6b32ec1064877593ee23b"
@@ -6989,10 +6984,10 @@ jsonld@^8.3.2:
     lru-cache "^6.0.0"
     rdf-canonize "^3.4.0"
 
-jsonref@^8.0.0:
-  version "8.0.8"
-  resolved "https://registry.yarnpkg.com/jsonref/-/jsonref-8.0.8.tgz#ca3bd34eccbec4a914b1bf3796fb960ce82946a8"
-  integrity sha512-K978Ev7Gsq0aDvyLNI7N717Ya8OIISIm2Rv1o37V8sOfxsN6q71P3lpvtC2Kob5Q+HaJx2JEtwT4E2ZtFH/H/w==
+jsonref@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/jsonref/-/jsonref-9.0.0.tgz#ff897da6dfd66bdff9e7f5dfb474bce548ce5ab1"
+  integrity sha512-ZTL2Q9aus/aycsxw/pB5ffWcbrr/219DTlJ/TTvTOMWMcxkUCCMxdvJ/6zrWGNACVdlO2ySad5EShC8d52IwEA==
 
 "jsx-ast-utils@^2.4.1 || ^3.0.0", jsx-ast-utils@^3.3.5:
   version "3.3.5"
