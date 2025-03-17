@@ -231,7 +231,7 @@ export const AdvancedCustomization = () => (
       show={BookShow}
       edit={BookEdit}
       create={BookCreate}
-      recordRepresentation="name"
+      recordRepresentation="title"
       icon={AutoStoriesIcon}
     />
     <ResourceGuesser
