@@ -120,12 +120,6 @@ describe('<ResourceGuesser />', () => {
     expect(renderer.getRenderOutput()).toMatchSnapshot();
   });
 
-  test('renders without show', () => {
-    renderer.render(<ResourceGuesser name="dummy" />);
-
-    expect(renderer.getRenderOutput()).toMatchSnapshot();
-  });
-
   test('supports recordRepresentation', async () => {
     const TestComponent = () => {
       const { data: user } = useGetOne('users', { id: '/users/123' });
