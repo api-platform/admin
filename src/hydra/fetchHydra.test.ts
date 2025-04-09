@@ -55,6 +55,32 @@ test.each([
         'At least one product must be selected if policy is restricted.',
     },
   ],
+  [
+    'problem+json',
+    {
+      '@context': '/contexts/ConstraintViolation',
+      '@id': '/validation_errors/2881c032-660f-46b6-8153-d352d9706640',
+      '@type': 'ConstraintViolation',
+      status: 422,
+      violations: [
+        {
+          propertyPath: 'isbn',
+          'ConstraintViolation/message':
+            'This value is neither a valid ISBN-10 nor a valid ISBN-13.',
+          'ConstraintViolation/code': '2881c032-660f-46b6-8153-d352d9706640',
+        },
+      ],
+      detail:
+        'isbn: This value is neither a valid ISBN-10 nor a valid ISBN-13.',
+      description:
+        'isbn: This value is neither a valid ISBN-10 nor a valid ISBN-13.',
+      type: '/validation_errors/2881c032-660f-46b6-8153-d352d9706640',
+      title: 'An error occurred',
+    },
+    {
+      isbn: 'This value is neither a valid ISBN-10 nor a valid ISBN-13.',
+    },
+  ],
 ])(
   '%s violation list expanding',
   async (format: string, resBody: object, expected: object) => {

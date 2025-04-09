@@ -68,6 +68,10 @@ const getFieldType = (field: Field) => {
   }
 };
 
+const getViolationMessage = (violation: JsonLdObj, base: string) =>
+  violation[`${base}#message`] ??
+  violation[`${base}#ConstraintViolation/message`];
+
 const getSubmissionErrors = (error: HttpError) => {
   if (!error.body?.[0]) {
     return null;
@@ -84,15 +88,16 @@ const getSubmissionErrors = (error: HttpError) => {
 
   const violations: SubmissionErrors = content[violationKey].reduce(
     (previousViolations: SubmissionErrors, violation: JsonLdObj) =>
-      !violation[`${base}#propertyPath`] || !violation[`${base}#message`]
+      !violation[`${base}#propertyPath`] ||
+      !getViolationMessage(violation, base)
         ? previousViolations
         : {
             ...previousViolations,
             [(violation[`${base}#propertyPath`] as JsonLdObj[])[0]?.[
               '@value'
-            ] as string]: (violation[`${base}#message`] as JsonLdObj[])[0]?.[
-              '@value'
-            ],
+            ] as string]: (
+              getViolationMessage(violation, base) as JsonLdObj[]
+            )[0]?.['@value'],
           },
     {},
   );
