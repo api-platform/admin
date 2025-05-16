@@ -195,7 +195,7 @@ Now force push to update your PR:
 git push --force-with-lease
 ```
 
-# Tag a New Version (Contributors Only)
+# Release a New Version (Contributors Only)
 
 Always execute the tests before releasing a new version:
 
@@ -215,7 +215,19 @@ git push
 git push --tags
 ```
 
-Travis will then publish the version on npm.
+GitHub CI/CD Actions will then publish the version on npm.
+
+To create a new release:
+
+```shell
+gh release create
+```
+
+When asked about the **release notes**, pick *'Write using generated notes as template'*.
+
+Finally, don't forget to **update the [milestones](https://github.com/api-platform/admin/milestones)**:
+- Close the milestone you just released
+- Create a new milestone for the next version
 
 # License and Copyright Attribution
 
