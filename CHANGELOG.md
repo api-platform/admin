@@ -1,5 +1,9 @@
 # Changelog
 
+## Newer versions
+
+See release notes: https://github.com/api-platform/admin/releases
+
 ## 4.0.0
 
 * Compatibility with react-admin v5
