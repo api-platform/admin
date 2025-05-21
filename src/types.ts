@@ -60,6 +60,7 @@ import type {
   UpdateParams,
   UpdateResult,
   UrlFieldProps,
+  UseResourceDefinitionOptions,
 } from 'react-admin';
 import type { Api, Field, Resource } from '@api-platform/api-doc-parser';
 import type { SxProps } from '@mui/system';
@@ -418,10 +419,11 @@ type ListDatagridProps = Omit<
 export type IntrospectedListGuesserProps = ListDatagridProps &
   IntrospectedGuesserProps;
 
-export type ListGuesserProps = Omit<
-  ListDatagridProps & Omit<BaseIntrospecterProps, 'resource'>,
-  'component'
->;
+export type ListGuesserProps = UseResourceDefinitionOptions &
+  Omit<
+    ListDatagridProps & Omit<BaseIntrospecterProps, 'resource'>,
+    'component'
+  >;
 
 type ShowFormProps = Omit<
   ShowProps & SimpleFormProps & TabbedFormProps,
