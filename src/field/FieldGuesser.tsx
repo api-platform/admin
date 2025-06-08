@@ -121,6 +121,8 @@ const renderField = (
       return <BooleanField {...(props as BooleanFieldProps)} />;
 
     case 'date':
+      return <DateField showTime={false} {...(props as DateFieldProps)} />;
+
     case 'dateTime':
       return <DateField {...(props as DateFieldProps)} />;
 
