@@ -1,6 +1,7 @@
 import React from 'react';
 import { HydraAdmin, type HydraAdminProps } from '../../hydra';
 import authProvider from './basicAuth';
+import DevtoolsLayout from '../layout/DevtoolsLayout';
 
 /**
  * # Protected `<HydraAdmin>`
@@ -9,7 +10,12 @@ import authProvider from './basicAuth';
  * Login with: john/123
  */
 const Admin = ({ entrypoint }: JwtAuthProps) => (
-  <HydraAdmin entrypoint={entrypoint} authProvider={authProvider} requireAuth />
+  <HydraAdmin
+    entrypoint={entrypoint}
+    authProvider={authProvider}
+    requireAuth
+    layout={DevtoolsLayout}
+  />
 );
 
 export default Admin;
