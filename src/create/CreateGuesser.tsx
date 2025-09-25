@@ -73,7 +73,6 @@ export const IntrospectedCreateGuesser = ({
     mutationOptions,
     transform,
     redirectTo,
-    children: [],
   });
 
   const displayOverrideCode = useDisplayOverrideCode();
