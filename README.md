@@ -20,7 +20,7 @@ You can also customize all screens by using React-admin components and even raw 
 
 ## Demo
 
-[Click here](https://demo.api-platform.com/admin) to test API Platform Admin in live.
+[Click here](https://demo.api-platform.com/) to test API Platform Admin in live.
 
 The source code of the demo is available [in this repository](https://github.com/api-platform/demo).
 
