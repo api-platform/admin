@@ -492,14 +492,18 @@ export type IntrospectedInputGuesserProps = Partial<InputProps> &
     'filter' | 'page' | 'perPage' | 'sort' | 'enableGetChoices'
   >;
 
-export type InputGuesserProps = Omit<
+// Thanks Tkdodo!
+// https://tkdodo.eu/blog/omit-for-discriminated-unions-in-type-script#distributive-omit
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DistributiveOmit<T, K extends keyof T> = T extends any
+  ? Omit<T, K>
+  : never;
+
+export type InputGuesserProps = DistributiveOmit<
   InputProps & Omit<BaseIntrospecterProps, 'resource'>,
   'component'
 > & {
   transformEnum?: (value: string | number) => string | number;
-  // due to the union type some TextInputProps don't surface in the final type, re-adding them here
-  multiline?: boolean;
-  readOnly?: boolean;
 } & Pick<
     ReferenceInputProps | ReferenceArrayInputProps,
     'filter' | 'page' | 'perPage' | 'sort' | 'enableGetChoices'
