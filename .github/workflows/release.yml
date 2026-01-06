@@ -6,6 +6,10 @@ on:
       - 'v*'
   workflow_dispatch: ~
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   release:
     name: Create and publish a release
@@ -35,5 +39,3 @@ jobs:
       -
         name: Publish to npm
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
