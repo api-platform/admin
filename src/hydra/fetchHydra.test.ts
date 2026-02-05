@@ -120,3 +120,129 @@ test.each([
     expect(violations).toStrictEqual(expected);
   },
 );
+
+describe('fetchHydra header handling', () => {
+  beforeEach(() => {
+    fetchMock.resetMocks();
+  });
+
+  test('should preserve headers when using function headers with authentication', async () => {
+    fetchMock.mockResponse(
+      JSON.stringify({
+        '@id': '/users/1',
+        '@type': 'User',
+        id: 1,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/ld+json',
+          Link: '<http://localhost/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"',
+        },
+      },
+    );
+
+    const getHeaders = () => ({
+      'Content-Type': 'application/merge-patch+json',
+    });
+
+    await fetchHydra(new URL('http://localhost/users/1'), {
+      headers: getHeaders,
+      user: {
+        authenticated: true,
+        token: 'Bearer test-token',
+      },
+      method: 'PATCH',
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const call = fetchMock.mock.calls[0];
+    expect(call).toBeDefined();
+    const requestHeaders = call![1]?.headers as Headers;
+
+    expect(requestHeaders).toBeInstanceOf(Headers);
+    expect(requestHeaders.get('Content-Type')).toBe(
+      'application/merge-patch+json',
+    );
+    expect(requestHeaders.get('Authorization')).toBe('Bearer test-token');
+  });
+
+  test('should preserve headers when using object headers with authentication', async () => {
+    fetchMock.mockResponse(
+      JSON.stringify({
+        '@id': '/users/1',
+        '@type': 'User',
+        id: 1,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/ld+json',
+          Link: '<http://localhost/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"',
+        },
+      },
+    );
+
+    await fetchHydra(new URL('http://localhost/users/1'), {
+      headers: {
+        'Content-Type': 'application/merge-patch+json',
+      },
+      user: {
+        authenticated: true,
+        token: 'Bearer test-token',
+      },
+      method: 'PATCH',
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const call = fetchMock.mock.calls[0];
+    expect(call).toBeDefined();
+    const requestHeaders = call![1]?.headers as Headers;
+
+    expect(requestHeaders).toBeInstanceOf(Headers);
+    expect(requestHeaders.get('Content-Type')).toBe(
+      'application/merge-patch+json',
+    );
+    expect(requestHeaders.get('Authorization')).toBe('Bearer test-token');
+  });
+
+  test('should add authentication header without overriding existing headers', async () => {
+    fetchMock.mockResponse(
+      JSON.stringify({
+        '@id': '/users/1',
+        '@type': 'User',
+        id: 1,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/ld+json',
+          Link: '<http://localhost/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"',
+        },
+      },
+    );
+
+    await fetchHydra(new URL('http://localhost/users/1'), {
+      headers: {
+        'Content-Type': 'application/merge-patch+json',
+        'X-Custom-Header': 'custom-value',
+      },
+      user: {
+        authenticated: true,
+        token: 'Bearer test-token',
+      },
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const call = fetchMock.mock.calls[0];
+    expect(call).toBeDefined();
+    const requestHeaders = call![1]?.headers as Headers;
+
+    expect(requestHeaders).toBeInstanceOf(Headers);
+    expect(requestHeaders.get('Content-Type')).toBe(
+      'application/merge-patch+json',
+    );
+    expect(requestHeaders.get('X-Custom-Header')).toBe('custom-value');
+    expect(requestHeaders.get('Authorization')).toBe('Bearer test-token');
+  });
+});

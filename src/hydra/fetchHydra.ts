@@ -17,13 +17,14 @@ function fetchHydra(
 ): Promise<HydraHttpClientResponse> {
   let requestHeaders = options.headers ?? new Headers();
 
-  if (
-    typeof requestHeaders !== 'function' &&
-    options.user &&
-    options.user.authenticated &&
-    options.user.token
-  ) {
-    requestHeaders = new Headers(requestHeaders);
+  // Resolve headers if it's a function
+  if (typeof requestHeaders === 'function') {
+    requestHeaders = requestHeaders();
+  }
+
+  // Convert to Headers object and add authentication if needed
+  requestHeaders = new Headers(requestHeaders);
+  if (options.user && options.user.authenticated && options.user.token) {
     requestHeaders.set('Authorization', options.user.token);
   }
 
