@@ -48,7 +48,7 @@ const AdminGuesser = ({
   defaultTheme,
   layout = Layout,
   loginPage = LoginPage,
-  loading: loadingPage,
+  loading: LoadingPage = Loading,
   theme = defaultLightTheme,
   darkTheme = defaultDarkTheme,
   // Other props
@@ -97,7 +97,7 @@ const AdminGuesser = ({
   );
 
   if (loading) {
-    return <Loading />;
+    return <LoadingPage />;
   }
 
   return (
@@ -120,7 +120,7 @@ const AdminGuesser = ({
             dataProvider={dataProvider}
             layout={layout}
             loginPage={loginPage}
-            loadingPage={loadingPage}
+            loadingPage={LoadingPage}
             theme={theme}
             error={error}
             {...rest}>
