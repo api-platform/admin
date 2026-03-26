@@ -11,7 +11,6 @@ import {
 } from 'react-admin';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-import useOnSubmit from './useOnSubmit.js';
 import schemaAnalyzer from './hydra/schemaAnalyzer.js';
 import { API_FIELDS_DATA } from './__fixtures__/parsedData.js';
 
@@ -56,6 +55,7 @@ test.each([
 ])(
   'Call create with file input ($name)',
   async (values: Omit<RaRecord, 'id'>) => {
+    const { default: useOnSubmit } = await import('./useOnSubmit.js');
     let save;
     const Dummy = () => {
       const onSubmit = useOnSubmit(onSubmitProps);
@@ -108,6 +108,7 @@ test.each([
     cover: null,
   },
 ])('Call update without file inputs ($name)', async (values: RaRecord) => {
+  const { default: useOnSubmit } = await import('./useOnSubmit.js');
   let save;
   const Dummy = () => {
     const onSubmit = useOnSubmit(onSubmitProps);
@@ -141,43 +142,47 @@ test.each([
   });
 });
 
-test('skip validation errors notification handling', async () => {
-  notify.mockClear();
-  const validationError = { name: 'Book name is required' };
-  dataProvider.create = jest.fn(() => Promise.reject(new Error('Validation')));
+test.each([{ name: 'Required' }, null])(
+  'notification handling on validation errors (%s)',
+  async (submissionErrors) => {
+    const { default: useOnSubmit } = await import('./useOnSubmit.js');
+    notify.mockClear();
+    dataProvider.create = jest.fn(() =>
+      Promise.reject(new Error('Service Unavailable')),
+    );
 
-  let save;
-  const Dummy = () => {
-    const onSubmit = useOnSubmit({
-      ...onSubmitProps,
-      schemaAnalyzer: {
-        ...onSubmitProps.schemaAnalyzer,
-        getSubmissionErrors: () => validationError,
-      },
+    let save;
+    const Dummy = () => {
+      const onSubmit = useOnSubmit({
+        ...onSubmitProps,
+        schemaAnalyzer: {
+          ...onSubmitProps.schemaAnalyzer,
+          getSubmissionErrors: () => submissionErrors,
+        },
+      });
+      save = onSubmit;
+      return <span />;
+    };
+
+    render(
+      <DataProviderContext.Provider value={dataProvider}>
+        <QueryClientProvider client={new QueryClient()}>
+          <MemoryRouter initialEntries={['/books/create']}>
+            <Routes>
+              <Route path="/books/create" element={<Dummy />} />
+            </Routes>
+          </MemoryRouter>
+        </QueryClientProvider>
+      </DataProviderContext.Provider>,
+    );
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const errors = await save({ author: 'Author 1' });
+
+    await waitFor(() => {
+      expect(dataProvider.create).toHaveBeenCalled();
     });
-    save = onSubmit;
-    return <span />;
-  };
-
-  render(
-    <DataProviderContext.Provider value={dataProvider}>
-      <QueryClientProvider client={new QueryClient()}>
-        <MemoryRouter initialEntries={['/books/create']}>
-          <Routes>
-            <Route path="/books/create" element={<Dummy />} />
-          </Routes>
-        </MemoryRouter>
-      </QueryClientProvider>
-    </DataProviderContext.Provider>,
-  );
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const errors = await save({ author: 'Author 1' });
-
-  await waitFor(() => {
-    expect(dataProvider.create).toHaveBeenCalled();
-  });
-  expect(notify).not.toHaveBeenCalled();
-  expect(errors).toEqual(validationError);
-});
+    (submissionErrors ? expect(notify).not : expect(notify)).toHaveBeenCalled();
+    expect(errors).toEqual(submissionErrors ?? {});
+  },
+);
