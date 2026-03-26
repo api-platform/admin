@@ -10,7 +10,6 @@ import {
   DateField,
   Edit,
   Labeled,
-  Layout,
   List,
   NumberField,
   ReferenceArrayField,
@@ -34,6 +33,7 @@ import ResourceGuesser from '../../core/ResourceGuesser';
 import FieldGuesser from '../../field/FieldGuesser';
 import { HydraAdmin } from '../../hydra';
 import InputGuesser from '../../input/InputGuesser';
+import DevtoolsLayout from '../layout/DevtoolsLayout';
 
 export default {
   title: 'Admin/Custom/AdvancedCustomization',
@@ -222,7 +222,7 @@ const ReviewList = () => (
 export const AdvancedCustomization = () => (
   <HydraAdmin
     entrypoint={process.env.ENTRYPOINT}
-    layout={Layout}
+    layout={DevtoolsLayout}
     theme={defaultLightTheme}
     darkTheme={defaultDarkTheme}>
     <ResourceGuesser

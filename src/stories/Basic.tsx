@@ -1,12 +1,13 @@
 import React from 'react';
 import { HydraAdmin, type HydraAdminProps } from '../hydra';
+import DevtoolsLayout from './layout/DevtoolsLayout';
 
 /**
  * # Basic `<HydraAdmin>` component
  * The `<HydraAdmin>` component without any parameter.
  */
 const Basic = ({ entrypoint }: BasicProps) => (
-  <HydraAdmin entrypoint={entrypoint} />
+  <HydraAdmin entrypoint={entrypoint} layout={DevtoolsLayout} />
 );
 
 export default Basic;

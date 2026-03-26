@@ -9,6 +9,7 @@ import FieldGuesser from '../../field/FieldGuesser';
 import EditGuesser from '../../edit/EditGuesser';
 import InputGuesser from '../../input/InputGuesser';
 import CreateGuesser from '../../create/CreateGuesser';
+import DevtoolsLayout from '../layout/DevtoolsLayout';
 
 export default {
   title: 'Admin/Custom/UsingGuessers',
@@ -98,7 +99,7 @@ const ReviewList = () => (
 );
 
 export const UsingGuessers = () => (
-  <HydraAdmin entrypoint={process.env.ENTRYPOINT}>
+  <HydraAdmin entrypoint={process.env.ENTRYPOINT} layout={DevtoolsLayout}>
     <ResourceGuesser
       name="books"
       list={BookList}

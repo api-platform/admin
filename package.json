@@ -1,6 +1,6 @@
 {
   "name": "@api-platform/admin",
-  "version": "4.0.7",
+  "version": "4.0.9",
   "description": "Automatic administration interface for Hydra-enabled APIs.",
   "files": [
     "*.md",
@@ -21,23 +21,24 @@
     "@api-platform/api-doc-parser": "^0.16.8",
     "jsonld": "^8.3.2",
     "lodash.isplainobject": "^4.0.6",
-    "react-admin": "^5.0.3"
+    "react-admin": "^5.8.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@storybook/addon-essentials": "^8.0.5",
-    "@storybook/addon-interactions": "^8.0.5",
-    "@storybook/addon-links": "^8.0.5",
-    "@storybook/addon-mdx-gfm": "^8.0.5",
-    "@storybook/addon-onboarding": "^8.0.5",
+    "@storybook/addon-essentials": "^8.6.15",
+    "@storybook/addon-interactions": "^8.6.15",
+    "@storybook/addon-links": "^8.6.15",
+    "@storybook/addon-mdx-gfm": "^8.6.15",
+    "@storybook/addon-onboarding": "^8.6.15",
     "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
-    "@storybook/blocks": "^8.0.5",
-    "@storybook/react": "^8.0.5",
-    "@storybook/react-webpack5": "^8.0.5",
-    "@storybook/test": "^8.0.5",
+    "@storybook/blocks": "^8.6.15",
+    "@storybook/react": "^8.6.15",
+    "@storybook/react-webpack5": "^8.6.15",
+    "@storybook/test": "^8.6.15",
     "@storybook/test-runner": "^0.17.0",
+    "@tanstack/react-query-devtools": "^5.80.6",
     "@testing-library/jest-dom": "^6.1.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
@@ -72,7 +73,7 @@
     "react-test-renderer": "^18.0.0",
     "rimraf": "^5.0.0",
     "serve": "^14.2.1",
-    "storybook": "^8.0.5",
+    "storybook": "^8.6.15",
     "ts-jest": "^29.0.0",
     "ts-node": "^10.4.0",
     "typescript": "^5.2.0"
@@ -94,5 +95,9 @@
     "storybook:serve": "serve storybook-static",
     "storybook:test": "test-storybook"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "resolutions": {
+    "react-router-dom": "^6",
+    "react-router": "^6"
+  }
 }
