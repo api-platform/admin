@@ -92,11 +92,14 @@ const useOnSubmit = ({
         const failure =
           mutationOptions?.onError ??
           ((error: string | Error) => {
-            let message = 'ra.notification.http_error';
-            if (!submissionErrors) {
-              message =
-                typeof error === 'string' ? error : error.message || message;
+            // Notification will be handled by the useNotifyIsFormInvalid hook.
+            if (submissionErrors) {
+              return;
             }
+            const message =
+              typeof error === 'string'
+                ? error
+                : error.message || 'ra.notification.http_error';
             let errorMessage;
             if (typeof error === 'string') {
               errorMessage = error;
@@ -116,10 +119,7 @@ const useOnSubmit = ({
           },
           {},
         );
-        if (submissionErrors) {
-          return submissionErrors;
-        }
-        return {};
+        return submissionErrors ?? {};
       }
     },
     [

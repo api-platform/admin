@@ -2,8 +2,13 @@ import * as React from 'react';
 import { jest } from '@jest/globals';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, waitFor } from '@testing-library/react';
-import type { CreateResult, RaRecord, UpdateResult } from 'react-admin';
-import { DataProviderContext, testDataProvider } from 'react-admin';
+import {
+  type CreateResult,
+  DataProviderContext,
+  type RaRecord,
+  type UpdateResult,
+  testDataProvider,
+} from 'react-admin';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import useOnSubmit from './useOnSubmit.js';
@@ -23,6 +28,16 @@ const onSubmitProps = {
 };
 
 jest.mock('./getIdentifierValue.js');
+const notify = jest.fn();
+const reactAdminActual = jest.requireActual('react-admin') as Record<
+  string,
+  unknown
+>;
+jest.mock('react-admin', () => ({
+  __esModule: true,
+  ...reactAdminActual,
+  useNotify: () => notify,
+}));
 
 test.each([
   {
@@ -124,4 +139,45 @@ test.each([
       previousData: undefined,
     });
   });
+});
+
+test('skip validation errors notification handling', async () => {
+  notify.mockClear();
+  const validationError = { name: 'Book name is required' };
+  dataProvider.create = jest.fn(() => Promise.reject(new Error('Validation')));
+
+  let save;
+  const Dummy = () => {
+    const onSubmit = useOnSubmit({
+      ...onSubmitProps,
+      schemaAnalyzer: {
+        ...onSubmitProps.schemaAnalyzer,
+        getSubmissionErrors: () => validationError,
+      },
+    });
+    save = onSubmit;
+    return <span />;
+  };
+
+  render(
+    <DataProviderContext.Provider value={dataProvider}>
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter initialEntries={['/books/create']}>
+          <Routes>
+            <Route path="/books/create" element={<Dummy />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>
+    </DataProviderContext.Provider>,
+  );
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const errors = await save({ author: 'Author 1' });
+
+  await waitFor(() => {
+    expect(dataProvider.create).toHaveBeenCalled();
+  });
+  expect(notify).not.toHaveBeenCalled();
+  expect(errors).toEqual(validationError);
 });
