@@ -21,6 +21,7 @@ const useOnSubmit = ({
   schemaAnalyzer,
   fields,
   mutationOptions,
+  mutationMode = 'pessimistic',
   transform,
   redirectTo = 'list',
 }: UseOnSubmitProps): ((
@@ -93,7 +94,7 @@ const useOnSubmit = ({
           mutationOptions?.onError ??
           ((error: string | Error) => {
             // Notification will be handled by the useNotifyIsFormInvalid hook.
-            if (submissionErrors) {
+            if (submissionErrors && mutationMode === 'pessimistic') {
               return;
             }
             const message =
@@ -125,6 +126,7 @@ const useOnSubmit = ({
     [
       fields,
       id,
+      mutationMode,
       mutationOptions,
       notify,
       redirect,

@@ -5,6 +5,7 @@ import { render, waitFor } from '@testing-library/react';
 import {
   type CreateResult,
   DataProviderContext,
+  type MutationMode,
   type RaRecord,
   type UpdateResult,
   testDataProvider,
@@ -142,9 +143,15 @@ test.each([
   });
 });
 
-test.each([{ name: 'Required' }, null])(
-  'notification handling on validation errors (%s)',
-  async (submissionErrors) => {
+test.each`
+  submissionErrors        | mutationMode     | shouldNotify
+  ${{ name: 'Required' }} | ${'pessimistic'} | ${false}
+  ${{ name: 'Required' }} | ${'optimistic'}  | ${true}
+  ${{ name: 'Required' }} | ${'undoable'}    | ${true}
+  ${null}                 | ${'pessimistic'} | ${true}
+`(
+  'notification handling on validation errors ($submissionErrors, $mutationMode)',
+  async ({ submissionErrors, mutationMode, shouldNotify }) => {
     const { default: useOnSubmit } = await import('./useOnSubmit.js');
     notify.mockClear();
     dataProvider.create = jest.fn(() =>
@@ -155,6 +162,7 @@ test.each([{ name: 'Required' }, null])(
     const Dummy = () => {
       const onSubmit = useOnSubmit({
         ...onSubmitProps,
+        mutationMode: mutationMode as MutationMode,
         schemaAnalyzer: {
           ...onSubmitProps.schemaAnalyzer,
           getSubmissionErrors: () => submissionErrors,
@@ -182,7 +190,7 @@ test.each([{ name: 'Required' }, null])(
     await waitFor(() => {
       expect(dataProvider.create).toHaveBeenCalled();
     });
-    (submissionErrors ? expect(notify).not : expect(notify)).toHaveBeenCalled();
+    (shouldNotify ? expect(notify) : expect(notify).not).toHaveBeenCalled();
     expect(errors).toEqual(submissionErrors ?? {});
   },
 );
