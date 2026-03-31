@@ -2,11 +2,16 @@ import * as React from 'react';
 import { jest } from '@jest/globals';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, waitFor } from '@testing-library/react';
-import type { CreateResult, RaRecord, UpdateResult } from 'react-admin';
-import { DataProviderContext, testDataProvider } from 'react-admin';
+import {
+  type CreateResult,
+  DataProviderContext,
+  type MutationMode,
+  type RaRecord,
+  type UpdateResult,
+  testDataProvider,
+} from 'react-admin';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-import useOnSubmit from './useOnSubmit.js';
 import schemaAnalyzer from './hydra/schemaAnalyzer.js';
 import { API_FIELDS_DATA } from './__fixtures__/parsedData.js';
 
@@ -23,6 +28,16 @@ const onSubmitProps = {
 };
 
 jest.mock('./getIdentifierValue.js');
+const notify = jest.fn();
+const reactAdminActual = jest.requireActual('react-admin') as Record<
+  string,
+  unknown
+>;
+jest.mock('react-admin', () => ({
+  __esModule: true,
+  ...reactAdminActual,
+  useNotify: () => notify,
+}));
 
 test.each([
   {
@@ -41,6 +56,7 @@ test.each([
 ])(
   'Call create with file input ($name)',
   async (values: Omit<RaRecord, 'id'>) => {
+    const { default: useOnSubmit } = await import('./useOnSubmit.js');
     let save;
     const Dummy = () => {
       const onSubmit = useOnSubmit(onSubmitProps);
@@ -93,6 +109,7 @@ test.each([
     cover: null,
   },
 ])('Call update without file inputs ($name)', async (values: RaRecord) => {
+  const { default: useOnSubmit } = await import('./useOnSubmit.js');
   let save;
   const Dummy = () => {
     const onSubmit = useOnSubmit(onSubmitProps);
@@ -125,3 +142,55 @@ test.each([
     });
   });
 });
+
+test.each`
+  submissionErrors        | mutationMode     | shouldNotify
+  ${{ name: 'Required' }} | ${'pessimistic'} | ${false}
+  ${{ name: 'Required' }} | ${'optimistic'}  | ${true}
+  ${{ name: 'Required' }} | ${'undoable'}    | ${true}
+  ${null}                 | ${'pessimistic'} | ${true}
+`(
+  'notification handling on validation errors ($submissionErrors, $mutationMode)',
+  async ({ submissionErrors, mutationMode, shouldNotify }) => {
+    const { default: useOnSubmit } = await import('./useOnSubmit.js');
+    notify.mockClear();
+    dataProvider.create = jest.fn(() =>
+      Promise.reject(new Error('Service Unavailable')),
+    );
+
+    let save;
+    const Dummy = () => {
+      const onSubmit = useOnSubmit({
+        ...onSubmitProps,
+        mutationMode: mutationMode as MutationMode,
+        schemaAnalyzer: {
+          ...onSubmitProps.schemaAnalyzer,
+          getSubmissionErrors: () => submissionErrors,
+        },
+      });
+      save = onSubmit;
+      return <span />;
+    };
+
+    render(
+      <DataProviderContext.Provider value={dataProvider}>
+        <QueryClientProvider client={new QueryClient()}>
+          <MemoryRouter initialEntries={['/books/create']}>
+            <Routes>
+              <Route path="/books/create" element={<Dummy />} />
+            </Routes>
+          </MemoryRouter>
+        </QueryClientProvider>
+      </DataProviderContext.Provider>,
+    );
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const errors = await save({ author: 'Author 1' });
+
+    await waitFor(() => {
+      expect(dataProvider.create).toHaveBeenCalled();
+    });
+    (shouldNotify ? expect(notify) : expect(notify).not).toHaveBeenCalled();
+    expect(errors).toEqual(submissionErrors ?? {});
+  },
+);
