@@ -409,9 +409,11 @@ export type EditGuesserProps = Omit<
 
 type ListDatagridProps = Omit<
   ListProps & Omit<DatagridProps, 'sx'>,
-  'children'
+  'children' | 'empty'
 > & {
   datagridSx?: SxProps;
+  listEmpty?: ListProps['empty'];
+  empty?: DatagridProps['empty'];
   children?: ReactNode;
 };
 

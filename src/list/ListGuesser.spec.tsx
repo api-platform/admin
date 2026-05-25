@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Resource } from '@api-platform/api-doc-parser';
 import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { AdminContext } from 'react-admin';
 import type { GetListResult, GetManyResult } from 'react-admin';
 import ListGuesser from './ListGuesser';
@@ -57,5 +58,20 @@ describe('ListGuesser', () => {
         </SchemaAnalyzerContext.Provider>
       </AdminContext>,
     );
+  });
+
+  it('renders datagrid empty on empty data and no filters', async () => {
+    const { findByText } = render(
+      <AdminContext dataProvider={dataProvider}>
+        <SchemaAnalyzerContext.Provider value={schemaAnalyzer()}>
+          <ListGuesser
+            resource="books"
+            listEmpty={false}
+            empty={<div>No results</div>}
+          />
+        </SchemaAnalyzerContext.Provider>
+      </AdminContext>,
+    );
+    expect(await findByText('No results')).toBeInTheDocument();
   });
 });
