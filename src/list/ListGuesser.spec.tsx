@@ -48,7 +48,6 @@ const dataProvider: ApiPlatformAdminDataProvider = {
   unsubscribe: () => Promise.resolve({ data: null }),
 };
 
-// eslint-disable-next-line tree-shaking/no-side-effects-in-initialization
 describe('ListGuesser', () => {
   it('renders datagrid empty on empty data and no filters', async () => {
     const { findByText } = render(
