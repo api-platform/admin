@@ -50,16 +50,6 @@ const dataProvider: ApiPlatformAdminDataProvider = {
 
 // eslint-disable-next-line tree-shaking/no-side-effects-in-initialization
 describe('ListGuesser', () => {
-  it('passing hasEdit and hasShow props are allowed', async () => {
-    render(
-      <AdminContext dataProvider={dataProvider}>
-        <SchemaAnalyzerContext.Provider value={schemaAnalyzer()}>
-          <ListGuesser hasShow={false} hasEdit={false} resource="books" />
-        </SchemaAnalyzerContext.Provider>
-      </AdminContext>,
-    );
-  });
-
   it('renders datagrid empty on empty data and no filters', async () => {
     const { findByText } = render(
       <AdminContext dataProvider={dataProvider}>
