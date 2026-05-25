@@ -76,6 +76,7 @@ export const IntrospectedEditGuesser = ({
     schemaAnalyzer,
     fields,
     mutationOptions,
+    mutationMode,
     transform,
     redirectTo,
     children: [],

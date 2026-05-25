@@ -525,4 +525,5 @@ export type UseOnSubmitProps = Pick<
   'schemaAnalyzer' | 'resource' | 'fields'
 > &
   Pick<CreateProps, 'mutationOptions' | 'transform'> &
-  PickRename<CreateProps, 'redirect', 'redirectTo'>;
+  PickRename<CreateProps, 'redirect', 'redirectTo'> &
+  Partial<Pick<EditProps, 'mutationMode'>>;
