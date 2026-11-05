@@ -46,8 +46,12 @@
 	}
 
 	mercure {
+		# Share the hub between the addresses listed in SERVER_NAME (e.g. "localhost, php:80")
+		name default
 		# Transport to use (default to Bolt)
-		transport_url {$MERCURE_TRANSPORT_URL:bolt:///data/mercure.db}
+		transport bolt {
+			path /data/mercure.db
+		}
 		# Publisher JWT key
 		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
 		# Subscriber JWT key
@@ -56,6 +60,8 @@
 		anonymous
 		# Enable the subscription API (double-check that it's what you want)
 		subscriptions
+		# Keep legacy publisher_jwt/subscriber_jwt directives (newer Mercure versions require an explicit opt-in)
+		protocol_version_compatibility 8
 		# Extra directives
 		{$MERCURE_EXTRA_DIRECTIVES}
 	}
