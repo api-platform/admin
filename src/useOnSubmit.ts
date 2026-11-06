@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useCreate, useNotify, useRedirect, useUpdate } from 'react-admin';
 import type { HttpError, RaRecord } from 'react-admin';
 import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import lodashIsPlainObject from 'lodash.isplainobject';
 
 import getIdentifierValue from './getIdentifierValue.js';
@@ -33,6 +34,7 @@ const useOnSubmit = ({
   const [update] = useUpdate();
   const notify = useNotify();
   const redirect = useRedirect();
+  const queryClient = useQueryClient();
 
   return useCallback(
     async (values: Partial<RaRecord>) => {
@@ -83,6 +85,7 @@ const useOnSubmit = ({
             ...(isCreate ? {} : { id, previousData: values }),
           },
           {},
+          { client: queryClient, meta: mutationOptions?.meta },
         );
 
         return undefined;
@@ -119,6 +122,7 @@ const useOnSubmit = ({
             ...(isCreate ? {} : { id, previousData: values }),
           },
           {},
+          { client: queryClient, meta: mutationOptions?.meta },
         );
         return submissionErrors ?? {};
       }
@@ -136,6 +140,7 @@ const useOnSubmit = ({
       transform,
       create,
       update,
+      queryClient,
     ],
   );
 };

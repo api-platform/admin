@@ -2,6 +2,7 @@ import * as React from 'react';
 import { jest } from '@jest/globals';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, waitFor } from '@testing-library/react';
+import * as reactAdminActual from 'react-admin';
 import {
   type CreateResult,
   DataProviderContext,
@@ -29,12 +30,7 @@ const onSubmitProps = {
 
 jest.mock('./getIdentifierValue.js');
 const notify = jest.fn();
-const reactAdminActual = jest.requireActual('react-admin') as Record<
-  string,
-  unknown
->;
-jest.mock('react-admin', () => ({
-  __esModule: true,
+jest.unstable_mockModule('react-admin', () => ({
   ...reactAdminActual,
   useNotify: () => notify,
 }));

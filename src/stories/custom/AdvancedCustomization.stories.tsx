@@ -53,7 +53,7 @@ const BookCreate = () => (
         helperText={false}
         validate={required()}
       />
-      <Stack direction="row" gap={2} width="100%">
+      <Stack direction="row" sx={{ gap: 2, width: '100%' }}>
         <InputGuesser source="isbn" label="ISBN" helperText={false} />
         <InputGuesser source="publicationDate" helperText={false} />
       </Stack>
@@ -72,7 +72,7 @@ const BookEdit = () => (
         helperText={false}
         validate={required()}
       />
-      <Stack direction="row" gap={2} width="100%">
+      <Stack direction="row" sx={{ gap: 2, width: '100%' }}>
         <InputGuesser source="isbn" label="ISBN" helperText={false} />
         <InputGuesser source="publicationDate" helperText={false} />
       </Stack>
@@ -87,7 +87,7 @@ const BookShow = () => (
         <TextField source="title" variant="h5" />
         <TextField source="author" variant="body1" />
         <TextField source="description" variant="body1" />
-        <SimpleShowLayout direction="row" gap={2} sx={{ p: 0 }}>
+        <SimpleShowLayout direction="row" sx={{ gap: 2, p: 0 }}>
           <TextField source="isbn" label="ISBN" variant="body1" />
           <DateField source="publicationDate" variant="body1" />
         </SimpleShowLayout>

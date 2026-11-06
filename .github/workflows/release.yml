@@ -22,7 +22,7 @@ jobs:
         name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'current'
+          node-version: 'lts/*'
           registry-url: https://registry.npmjs.org
       -
         name: Install dependencies
