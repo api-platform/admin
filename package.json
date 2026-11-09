@@ -100,10 +100,13 @@
     "react-router-dom": "^6",
     "react-router": "^6",
     "**/@typescript-eslint/typescript-estree/minimatch": "^11.0.5",
-    "compression": "^1.8.2",
-    "serialize-javascript": "^7.1.4",
-    "undici": "^6.29.1",
-    "uuid": "^11.1.1",
-    "webpack-dev-middleware": "^7.4.6"
+    "**/serve/compression": "^1.8.2",
+    "**/terser-webpack-plugin/serialize-javascript": "^7.1.4",
+    "**/@digitalbazaar/http-client/undici": "^6.29.1",
+    "**/@storybook/addon-actions/uuid": "^11.1.1",
+    "**/istanbul-lib-processinfo/uuid": "^11.1.1",
+    "**/jest-junit/uuid": "^11.1.1",
+    "**/jest-playwright-preset/uuid": "^11.1.1",
+    "**/@storybook/builder-webpack5/webpack-dev-middleware": "^7.4.6"
   }
 }
