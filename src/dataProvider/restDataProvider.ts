@@ -1,4 +1,4 @@
-import { stringify } from 'query-string';
+import { stringify } from '@marmelab/query-string';
 import { fetchUtils } from 'react-admin';
 import type { DataProvider } from 'react-admin';
 import { removeTrailingSlash } from '../removeTrailingSlash.js';

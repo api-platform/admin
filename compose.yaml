@@ -68,6 +68,7 @@ services:
     ports:
       - target: 3000
         published: ${PWA_PORT:-3000}
+        host_ip: 127.0.0.1
 
 ###> doctrine/doctrine-bundle ###
   database:

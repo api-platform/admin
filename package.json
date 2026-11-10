@@ -19,6 +19,7 @@
   "sideEffects": false,
   "dependencies": {
     "@api-platform/api-doc-parser": "^0.16.12",
+    "@marmelab/query-string": "^7.1.4",
     "jsonld": "^8.3.3",
     "lodash.isplainobject": "^4.0.6",
     "react-admin": "^5.15.5"
@@ -27,16 +28,16 @@
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@storybook/addon-essentials": "^8.6.15",
-    "@storybook/addon-interactions": "^8.6.15",
-    "@storybook/addon-links": "^8.6.15",
-    "@storybook/addon-mdx-gfm": "^8.6.15",
-    "@storybook/addon-onboarding": "^8.6.15",
+    "@storybook/addon-essentials": "^8.6.19",
+    "@storybook/addon-interactions": "^8.6.19",
+    "@storybook/addon-links": "^8.6.19",
+    "@storybook/addon-mdx-gfm": "^8.6.19",
+    "@storybook/addon-onboarding": "^8.6.19",
     "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
-    "@storybook/blocks": "^8.6.15",
-    "@storybook/react": "^8.6.15",
-    "@storybook/react-webpack5": "^8.6.15",
-    "@storybook/test": "^8.6.15",
+    "@storybook/blocks": "^8.6.19",
+    "@storybook/react": "^8.6.19",
+    "@storybook/react-webpack5": "^8.6.19",
+    "@storybook/test": "^8.6.19",
     "@storybook/test-runner": "^0.17.0",
     "@tanstack/react-query-devtools": "^5.80.6",
     "@testing-library/jest-dom": "^6.1.0",
@@ -62,6 +63,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-tree-shaking": "^1.10.0",
+    "http-server": "^14.1.1",
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
     "jest-fetch-mock": "^3.0.3",
@@ -71,9 +73,8 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-test-renderer": "^18.0.0",
-    "rimraf": "^5.0.0",
-    "serve": "^14.2.1",
-    "storybook": "^8.6.15",
+    "rimraf": "^6.1.4",
+    "storybook": "^8.6.19",
     "ts-jest": "^29.0.0",
     "ts-node": "^10.4.0",
     "typescript": "^5.2.0"
@@ -92,12 +93,8 @@
     "watch": "tsc --watch",
     "storybook": "storybook dev -p 3000",
     "storybook:build": "storybook build",
-    "storybook:serve": "serve storybook-static",
+    "storybook:serve": "http-server storybook-static",
     "storybook:test": "test-storybook"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
-  "resolutions": {
-    "react-router-dom": "^6",
-    "react-router": "^6"
-  }
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
