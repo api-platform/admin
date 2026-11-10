@@ -98,15 +98,6 @@
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "resolutions": {
     "react-router-dom": "^6",
-    "react-router": "^6",
-    "**/@typescript-eslint/typescript-estree/minimatch": "^11.0.5",
-    "**/serve/compression": "^1.8.2",
-    "**/terser-webpack-plugin/serialize-javascript": "^7.1.4",
-    "**/@digitalbazaar/http-client/undici": "^6.29.1",
-    "**/@storybook/addon-actions/uuid": "^11.1.1",
-    "**/istanbul-lib-processinfo/uuid": "^11.1.1",
-    "**/jest-junit/uuid": "^11.1.1",
-    "**/jest-playwright-preset/uuid": "^11.1.1",
-    "**/@storybook/builder-webpack5/webpack-dev-middleware": "^7.4.6"
+    "react-router": "^6"
   }
 }
