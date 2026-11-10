@@ -28,7 +28,7 @@ COPY --link . ./
 # Development image
 FROM base as dev
 
-CMD ["sh", "-c", "yarn storybook --no-open"]
+CMD ["sh", "-c", "yarn storybook --no-open --host 0.0.0.0"]
 
 FROM base as ci
 
