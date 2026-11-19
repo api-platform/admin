@@ -75,6 +75,7 @@ export const IntrospectedListGuesser = ({
   isRowExpandable,
   body = DatagridBodyWithMercure,
   header,
+  listEmpty,
   empty,
   hover,
   expand,
@@ -119,7 +120,7 @@ export const IntrospectedListGuesser = ({
   }
 
   return (
-    <List {...props}>
+    <List {...props} empty={listEmpty}>
       <Datagrid
         bulkActionButtons={bulkActionButtons}
         rowClick={rowClick}
