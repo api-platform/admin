@@ -1,10 +1,30 @@
+import type { ReactElement } from 'react';
 import React, { useEffect, useState } from 'react';
 import {
+  ArrayField,
+  BooleanField,
+  ChipField,
   Datagrid,
   DatagridBody,
+  DateField,
   EditButton,
+  EmailField,
+  FileField,
+  FunctionField,
+  ImageField,
   List,
+  NumberField,
+  ReferenceArrayField,
+  ReferenceField,
+  ReferenceManyField,
+  ReferenceOneField,
+  RichTextField,
+  SelectField,
   ShowButton,
+  TextField,
+  TranslatableFields,
+  UrlField,
+  WrapperField,
   useResourceContext,
   useResourceDefinition,
 } from 'react-admin';
@@ -21,6 +41,7 @@ import type {
   IntrospectedListGuesserProps,
   ListGuesserProps,
 } from '../types.js';
+import EnumField from '../field/EnumField';
 
 const getOverrideCode = (schema: Resource, fields: Field[]) => {
   let code = `If you want to override at least one field, create a ${schema.title}List component with this content:\n`;
@@ -61,6 +82,30 @@ export const DatagridBodyWithMercure = (props: DatagridBodyProps) => {
   return <DatagridBody {...props} />;
 };
 
+const reactAdminFieldTypes = [
+  ArrayField,
+  BooleanField,
+  ChipField,
+  DateField,
+  EmailField,
+  EnumField,
+  FieldGuesser,
+  FileField,
+  FunctionField,
+  ImageField,
+  NumberField,
+  ReferenceArrayField,
+  ReferenceField,
+  ReferenceManyField,
+  ReferenceOneField,
+  RichTextField,
+  SelectField,
+  TextField,
+  TranslatableFields,
+  UrlField,
+  WrapperField,
+];
+
 export const IntrospectedListGuesser = ({
   fields,
   readableFields,
@@ -97,8 +142,8 @@ export const IntrospectedListGuesser = ({
 
   const displayOverrideCode = useDisplayOverrideCode();
 
-  let fieldChildren = children;
-  if (!fieldChildren) {
+  let fieldChildren;
+  if (!children) {
     fieldChildren = readableFields.map((field) => {
       const orderField = orderParameters.find(
         (orderParameter) => orderParameter.split('.')[0] === field.name,
@@ -116,6 +161,29 @@ export const IntrospectedListGuesser = ({
     });
 
     displayOverrideCode(getOverrideCode(schema, readableFields));
+  } else {
+    // Add missing sort properties on react-admin fields, that have been added manually in the ListGuesser
+    fieldChildren = children.map((field: ReactElement): ReactElement => {
+      if (!reactAdminFieldTypes.includes(field.type)) {
+        return field;
+      }
+
+      const orderField =
+        field.props.sortBy ??
+        orderParameters.find(
+          (orderParameter) =>
+            orderParameter.split('.')[0] === field.props.source,
+        );
+
+      const fieldProps = {
+        ...field.props,
+        key: field.props.source + (orderField ? `-${orderField}` : ''),
+        sortBy: orderField,
+        sortable: !!orderField,
+      };
+
+      return <field.type {...fieldProps} />;
+    });
   }
 
   return (
