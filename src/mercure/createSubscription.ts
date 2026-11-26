@@ -28,15 +28,8 @@ const createSubscription = (
     new URL(topic, mercure.topicUrl).toString(),
   );
 
-  if (mercure.jwt !== null) {
-    const cookieName = legacy
-      ? 'mercureAuthorization'
-      : '__Secure-mercure_access_token';
-    document.cookie = `${cookieName}=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
-  }
-
   const eventSource = new EventSource(url.toString(), {
-    withCredentials: mercure.jwt !== null,
+    withCredentials: mercure.withCredentials ?? false,
   });
   const eventListener = (event: MessageEvent) => {
     const document = transformData(JSON.parse(event.data));
