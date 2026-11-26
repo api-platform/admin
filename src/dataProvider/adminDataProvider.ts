@@ -16,7 +16,6 @@ export default (
   const mercure: MercureOptions | null = factoryParams.mercure
     ? {
         hub: null,
-        jwt: null,
         topicUrl: entrypointUrl,
         ...(factoryParams.mercure === true ? {} : factoryParams.mercure),
       }
