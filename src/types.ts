@@ -153,6 +153,8 @@ export interface MercureOptions {
   hub: string | null;
   jwt: string | null;
   topicUrl: URL;
+  /** Protocol spoken by the hub: '1.0' (default) or '0.x' for hubs older than Mercure 1.0. */
+  protocolVersion?: '1.0' | '0.x';
 }
 
 export interface MercureSubscription {

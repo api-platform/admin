@@ -21,11 +21,18 @@ const createSubscription = (
     };
   }
 
+  const legacy = mercure.protocolVersion === '0.x';
   const url = new URL(mercure.hub, window.origin);
-  url.searchParams.append('topic', new URL(topic, mercure.topicUrl).toString());
+  url.searchParams.append(
+    legacy ? 'topic' : 'match',
+    new URL(topic, mercure.topicUrl).toString(),
+  );
 
   if (mercure.jwt !== null) {
-    document.cookie = `mercureAuthorization=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
+    const cookieName = legacy
+      ? 'mercureAuthorization'
+      : '__Secure-mercure_access_token';
+    document.cookie = `${cookieName}=${mercure.jwt}; Path=${mercure.hub}; Secure; SameSite=None`;
   }
 
   const eventSource = new EventSource(url.toString(), {
